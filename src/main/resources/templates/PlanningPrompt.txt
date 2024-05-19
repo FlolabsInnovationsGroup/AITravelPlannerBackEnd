@@ -1,0 +1,7 @@
+Below is the user's requirement. 
+Please provide a travel itinerary divided into three parts for each day: morning activities (10 AM - 1 PM), 
+afternoon activities (2 PM - 5 PM), and dinner. Please consider the time spent at each attraction and the travel time between them, 
+ensuring that the total time does not exceed the allocated morning and afternoon slots by much. The museum visiting time should be no less than 2 hours, 
+ travel time no less than 30 minutes, and parks and squares no less than 1 hour. 
+ 
+ "Plan a trip for me: I am traveling with one companion from Boston to New York on June 1st for 4 days."
