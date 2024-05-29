@@ -13,7 +13,7 @@ import com.google.cloud.dialogflow.cx.v3beta1.WebhookResponse.FulfillmentRespons
 import com.google.protobuf.Value;
 import com.google.cloud.dialogflow.cx.v3beta1.ResponseMessage;
 import com.google.protobuf.util.JsonFormat;
-import com.springboot.FlomadAIplanner.controller.FlightOfferController;
+import com.springboot.FlomadAIplanner.controller.Amadeus.FlightOfferController;
 
 @Service
 public class WebhookFlightJumpPageService {

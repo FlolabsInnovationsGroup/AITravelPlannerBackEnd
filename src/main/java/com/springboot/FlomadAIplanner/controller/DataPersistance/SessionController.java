@@ -1,4 +1,4 @@
-package com.springboot.FlomadAIplanner.controller;
+package com.springboot.FlomadAIplanner.controller.DataPersistance;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.springboot.FlomadAIplanner.DTO.UpdateTitleRequest;
 import com.springboot.FlomadAIplanner.DatabaseManagement.NewSession;
 import com.springboot.FlomadAIplanner.DatabaseManagement.SessionDto;
-import com.springboot.FlomadAIplanner.service.SessionService;
+import com.springboot.FlomadAIplanner.service.DataPersistance.SessionService;
 
 import java.util.List;
 

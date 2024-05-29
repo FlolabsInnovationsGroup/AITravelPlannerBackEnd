@@ -1,11 +1,11 @@
-package com.springboot.FlomadAIplanner.controller;
+package com.springboot.FlomadAIplanner.controller.Amadeus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.springboot.FlomadAIplanner.service.ReferenceDataService;
+import com.springboot.FlomadAIplanner.service.Amadeus.ReferenceDataService;
 
 ////////////////////////////////////////////
 /**

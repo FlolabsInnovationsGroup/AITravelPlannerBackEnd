@@ -1,4 +1,4 @@
-package com.springboot.FlomadAIplanner.service;
+package com.springboot.FlomadAIplanner.service.DataPersistance;
 
 import org.springframework.stereotype.Service;
 

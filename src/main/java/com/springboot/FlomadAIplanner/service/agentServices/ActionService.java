@@ -28,6 +28,6 @@ public class ActionService {
         variables.put("lastUserMessage", messages.get(messages.size() - 1));
 
         String geminiRequestText = thymeleafService.renderPlainText("ActionPrompt", variables);
-        return geminiService.callGeminiApi(geminiRequestText);
+        return geminiService.sendMessageToGemini(geminiRequestText);
     }
 }

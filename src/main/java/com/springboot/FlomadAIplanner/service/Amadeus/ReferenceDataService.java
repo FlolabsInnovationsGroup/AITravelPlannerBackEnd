@@ -1,4 +1,4 @@
-package com.springboot.FlomadAIplanner.service;
+package com.springboot.FlomadAIplanner.service.Amadeus;
 
 import org.springframework.web.client.RestTemplate;
 import org.springframework.stereotype.Service;

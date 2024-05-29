@@ -1,4 +1,4 @@
-package com.springboot.FlomadAIplanner.service;
+package com.springboot.FlomadAIplanner.service.Amadeus;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;

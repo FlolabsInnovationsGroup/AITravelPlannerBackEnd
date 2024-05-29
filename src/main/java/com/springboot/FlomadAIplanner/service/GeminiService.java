@@ -24,7 +24,7 @@ public class GeminiService {
         this.restTemplate = restTemplate;
     }
 
-    public String callGeminiApi(String text) {
+    public String sendMessageToGemini(String text) {
         String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=" + apiKey;
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

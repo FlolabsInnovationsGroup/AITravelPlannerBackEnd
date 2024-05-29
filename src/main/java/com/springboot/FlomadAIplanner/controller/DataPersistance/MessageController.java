@@ -1,4 +1,4 @@
-package com.springboot.FlomadAIplanner.controller;
+package com.springboot.FlomadAIplanner.controller.DataPersistance;
 
 import java.util.List;
 

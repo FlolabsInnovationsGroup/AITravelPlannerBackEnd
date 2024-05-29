@@ -27,6 +27,6 @@ public class IntentService {
         variables.put("lastUserMessage", messages.get(messages.size() - 1));
 
         String geminiRequestText = thymeleafService.renderPlainText("IntentPrompt", variables);
-        return geminiService.callGeminiApi(geminiRequestText);
+        return geminiService.sendMessageToGemini(geminiRequestText);
     }
 }

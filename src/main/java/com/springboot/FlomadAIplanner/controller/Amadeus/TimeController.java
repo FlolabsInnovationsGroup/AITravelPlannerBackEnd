@@ -1,4 +1,4 @@
-package com.springboot.FlomadAIplanner.controller;
+package com.springboot.FlomadAIplanner.controller.Amadeus;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

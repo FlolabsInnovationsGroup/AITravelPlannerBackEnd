@@ -1,4 +1,4 @@
-package com.springboot.FlomadAIplanner.controller;
+package com.springboot.FlomadAIplanner.controller.Amadeus;
 import java.util.Collections;
 
 import org.springframework.http.MediaType;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import com.springboot.FlomadAIplanner.service.AmadeusAuthService;
+import com.springboot.FlomadAIplanner.service.Amadeus.AmadeusAuthService;
 
 ////////////////////////////////////////////
 /**
