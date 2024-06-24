@@ -19,4 +19,3 @@ Your response should be like the following format:
         ...
 
     "Your human-like response to the user's message"
-

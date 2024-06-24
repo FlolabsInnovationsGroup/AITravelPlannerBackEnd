@@ -54,6 +54,7 @@ public class LLMService {
         // openAiModels.put("GPT-4 Turbo", "gpt-4-turbo");
         openAiModels.put("GPT-3.5 Turbo", "gpt-3.5-turbo-0125");
         openAiModels.put("GPT-4 Turbo", "gpt-4-turbo");
+        openAiModels.put("GPT-4o", "gpt-4o");
 
     }
 
