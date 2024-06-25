@@ -20,20 +20,15 @@ package com.springboot.FlomadAIplanner.controller;
 // import java.util.stream.Collectors;
 
 // import org.springframework.beans.factory.annotation.Autowired;
+
 import com.springboot.FlomadAIplanner.service.DialogflowService;
-
 import jakarta.servlet.http.HttpServletResponse;
-
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMethod;
-
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.*;
 
 
 ////////////////////////////////////////////
+
 /**
  * @class
  * @description Send request to dialogflow CX then receive response.
@@ -45,14 +40,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 //     public DialogflowController(DialogflowService dialogflowService) {
 //         this.dialogflowService = dialogflowService;
 //     }
-    
+
 //     @Override
 //     public void service(HttpRequest httpRequest, HttpResponse httpResponse) throws Exception {
 //         logger.info("1");
 //         httpResponse.appendHeader("Access-Control-Allow-Origin", "*");
 //         httpResponse.appendHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
 //         httpResponse.appendHeader("Access-Control-Allow-Headers", "Content-Type");
-        
+
 //         if (httpRequest.getMethod().equals("OPTIONS")) {
 //             httpResponse.setStatusCode(204);
 //             return;
@@ -80,7 +75,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 //                     .build();
 
 
-
 //             DetectIntentResponse response = sessionsClient.detectIntent(detectIntentRequest);
 //             QueryResult queryResult = response.getQueryResult();
 //             StringBuilder fulfillmentTextBuilder = new StringBuilder();
@@ -94,7 +88,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 //             writeResponse(httpResponse, fulfillmentTextBuilder.toString());
 //         }
 
-        
+
 //     }
 //     private void writeResponse(HttpResponse httpResponse, String responseText) throws IOException {
 //         httpResponse.setContentType("application/json; charset=UTF-8");
@@ -120,7 +114,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 //     methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS}, 
 //     allowCredentials = "true"
 // )
-
 
 
 // @CrossOrigin(origins = "*", allowCredentials = "true")
@@ -164,7 +157,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 //     }
 // }
 
-
+@Slf4j
 @RestController
 @RequestMapping("/dialogflow")
 public class DialogflowController {
@@ -177,23 +170,29 @@ public class DialogflowController {
 
     @PostMapping("/detect_intent")
     public String detectIntent(@RequestBody String userInput, HttpServletResponse response) {
+        log.info("User input: {}", userInput);
         setCorsHeaders(response);
         try {
             return dialogflowService.detectIntentText(userInput);
         } catch (Exception e) {
+            log.error("Error processing the request: {}", e.getMessage());
             return "Error processing the request: " + e.getMessage();
         }
     }
 
     private void setCorsHeaders(HttpServletResponse response) {
+        log.info("Setting CORS headers");
         response.setHeader("Access-Control-Allow-Origin", "*");
         response.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
         response.setHeader("Access-Control-Allow-Headers", "Content-Type");
+        log.info("CORS headers set");
     }
 
     @RequestMapping(value = "/**", method = RequestMethod.OPTIONS)
     public void handleOptions(HttpServletResponse response) {
+        log.info("Handling OPTIONS request");
         setCorsHeaders(response);
         response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+        log.info("OPTIONS request handled");
     }
 }

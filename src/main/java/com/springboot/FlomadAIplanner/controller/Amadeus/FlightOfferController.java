@@ -1,28 +1,27 @@
 package com.springboot.FlomadAIplanner.controller.Amadeus;
-import java.util.Collections;
 
+import com.springboot.FlomadAIplanner.service.Amadeus.AmadeusAuthService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import com.springboot.FlomadAIplanner.service.Amadeus.AmadeusAuthService;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
-import org.springframework.web.bind.annotation.*;
 import java.util.Collections;
 
 ////////////////////////////////////////////
+
 /**
  * @class
  * @description This is a controller that fetch flight information from Amadeus API
  */
 //////////////////////////////////////////
+@Slf4j
 @RestController
-public class FlightOfferController {        
+public class FlightOfferController {
     @Value("${amadeus.api.key}")
     private String apiKey;
 
@@ -43,9 +42,11 @@ public class FlightOfferController {
                                   @RequestParam String returnDate,
                                   @RequestParam int adults,
                                   @RequestParam int max) {
+        log.info("Retrieving flight offers");
         // use the token to get access
         String accessToken = amadeusAuthService.getAccessToken();
         if (accessToken == null) {
+            log.error("Failed to retrieve access token");
             return "Failed to retrieve access token";
         }
 
@@ -58,15 +59,17 @@ public class FlightOfferController {
 
         HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
         String url = "https://test.api.amadeus.com/v2/shopping/flight-offers" +
-                     "?originLocationCode={originLocationCode}" +
-                     "&destinationLocationCode={destinationLocationCode}" +
-                     "&departureDate={departureDate}" +
-                     "&returnDate={returnDate}" +
-                     "&adults={adults}" +
-                     "&max={max}";
+                "?originLocationCode={originLocationCode}" +
+                "&destinationLocationCode={destinationLocationCode}" +
+                "&departureDate={departureDate}" +
+                "&returnDate={returnDate}" +
+                "&adults={adults}" +
+                "&max={max}";
 
+        log.info("Sending request to Amadeus API");
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class,
                 originLocationCode, destinationLocationCode, departureDate, returnDate, adults, max);
+        log.info("Received response from Amadeus API");
         return response.getBody();
     }
 }

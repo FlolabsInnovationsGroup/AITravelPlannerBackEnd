@@ -1,17 +1,18 @@
 package com.springboot.FlomadAIplanner.service;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.http.HttpEntity;
 
-import org.springframework.http.HttpHeaders;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.MediaType;
+import java.util.HashMap;
+import java.util.Map;
 
+@Slf4j
 @Service
 public class GeminiService {
 
@@ -25,6 +26,7 @@ public class GeminiService {
     }
 
     public String sendMessageToGemini(String text) {
+        log.info("Sending message to Gemini: {}", text);
         String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=" + apiKey;
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -44,7 +46,10 @@ public class GeminiService {
 
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
 
+        log.info("requestBody: {}", requestBody);
+
         ResponseEntity<String> response = restTemplate.postForEntity(url, entity, String.class);
+        log.info("Received response from Gemini: {}", response.getBody());
         return response.getBody();
     }
 }

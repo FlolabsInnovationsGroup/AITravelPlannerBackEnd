@@ -1,28 +1,28 @@
 package com.springboot.FlomadAIplanner.service.DataPersistance;
-import java.util.logging.Logger;
-import java.util.Optional;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import com.springboot.FlomadAIplanner.DatabaseManagement.DestinationRepository;
 import com.springboot.FlomadAIplanner.DatabaseManagement.Destinations;
-import com.springboot.FlomadAIplanner.service.LLMService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
+@Slf4j
 @Service
 public class DestinationsDatabaseService {
     @Autowired
     private DestinationRepository destinationRepository;
 
-    private static final Logger logger = Logger.getLogger(LLMService.class.getName());
 
     public Integer getDestinationIdByName(String destinationName) {
-        logger.info("destinationName:"+destinationName);
+        log.info("destinationName:" + destinationName);
         Destinations destination = destinationRepository.findByDestinationName(destinationName);
-        logger.info("destination:"+destination);
+        log.info("destination:" + destination);
         if (destination != null) {
             return destination.getDestinationId();
         }
-        return null; 
+        return null;
     }
 
     public long countDestinations() {
@@ -32,10 +32,10 @@ public class DestinationsDatabaseService {
     public Destinations getFirstDestination() {
         Optional<Destinations> destination = destinationRepository.findAll().stream().findFirst();
         if (destination.isPresent()) {
-            logger.info("First destination: " + destination.get());
+            log.info("First destination: " + destination.get());
             return destination.get();
         }
-        logger.info("No destinations found.");
+        log.info("No destinations found.");
         return null;
     }
 }

@@ -29,22 +29,21 @@ package com.springboot.FlomadAIplanner.controller;
 // }
 
 
-
+import com.springboot.FlomadAIplanner.DTO.DialogflowRequest;
+import com.springboot.FlomadAIplanner.service.DialogflowService;
+import com.springboot.FlomadAIplanner.service.WebhookFlightJumpPageService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import com.springboot.FlomadAIplanner.DTO.DialogflowRequest;
-import com.springboot.FlomadAIplanner.service.DialogflowService;
-import com.springboot.FlomadAIplanner.service.WebhookFlightJumpPageService;
-import java.util.logging.Logger;
 
+@Slf4j
 @RestController
 public class WebhookController {
     private final WebhookFlightJumpPageService service;
-    private static final Logger logger = Logger.getLogger(WebhookController.class.getName());
 
     @Autowired
     public WebhookController(WebhookFlightJumpPageService service) {
@@ -54,14 +53,16 @@ public class WebhookController {
     @Autowired
     private DialogflowService dialogflowService;
 
-    @CrossOrigin(origins = {"http://localhost:4200","https://aitravelplanner-e6f156c81d14.herokuapp.com/"})
+    @CrossOrigin(origins = {"http://localhost:4200", "https://aitravelplanner-e6f156c81d14.herokuapp.com/"})
     @PostMapping("/dialogflowLiaison")
     public ResponseEntity<String> handleDialogflowRequest(@RequestBody DialogflowRequest request) {
+        log.info("Received request: {}", request.getMessage());
         try {
             String userInput = request.getMessage();
             String responseText = dialogflowService.processInput(userInput);
             return ResponseEntity.ok(responseText);
         } catch (Exception e) {
+            log.error("An error occurred while processing the request: {}", e.getMessage());
             e.printStackTrace();
             return ResponseEntity.internalServerError().build();
         }

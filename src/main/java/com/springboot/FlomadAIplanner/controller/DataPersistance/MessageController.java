@@ -1,29 +1,25 @@
 package com.springboot.FlomadAIplanner.controller.DataPersistance;
 
-import java.util.List;
-
+import com.springboot.FlomadAIplanner.DatabaseManagement.MessagesDto;
+import com.springboot.FlomadAIplanner.DatabaseManagement.NewMessage;
+import com.springboot.FlomadAIplanner.service.ConversationService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.springboot.FlomadAIplanner.DatabaseManagement.NewMessage;
-import com.springboot.FlomadAIplanner.DatabaseManagement.MessagesDto;
-import com.springboot.FlomadAIplanner.service.ConversationService;
+import java.util.List;
 
 
 ////////////////////////////////////////////
+
 /**
  * @class
  * @description This is a controller that allows you to talk to Gemini API
  */
 //////////////////////////////////////////
 // @CrossOrigin(origins = "http://localhost:4200")
+@Slf4j
 @RestController
 @RequestMapping("/messagesPersistence")
 public class MessageController {
@@ -32,13 +28,17 @@ public class MessageController {
 
     @PostMapping
     public ResponseEntity<NewMessage> createMessage(@RequestBody MessagesDto dto) {
-        NewMessage newMessage = service.saveMessage( dto.getID(),dto.getMessage(),dto.getTimestamp(), dto.getSpeaker());
+        log.info("Creating new message: {}", dto);
+        NewMessage newMessage = service.saveMessage(dto.getID(), dto.getMessage(), dto.getTimestamp(), dto.getSpeaker());
+        log.info("Message created");
         return ResponseEntity.ok(newMessage);
     }
 
     @GetMapping("/getSessionMessages")
     public ResponseEntity<List<NewMessage>> getSessionMessages(@RequestParam String sessionId) {
+        log.info("Retrieving messages for session: {}", sessionId);
         List<NewMessage> messages = service.getMessagesBySessionId(sessionId);
+        log.info("Messages retrieved");
         return ResponseEntity.ok(messages);
     }
 }

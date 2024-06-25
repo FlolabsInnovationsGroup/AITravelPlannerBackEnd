@@ -2,15 +2,13 @@ package com.springboot.FlomadAIplanner.service;
 
 import com.google.cloud.dialogflow.cx.v3.*;
 import com.google.cloud.dialogflow.cx.v3.ResponseMessage.Text;
-
+import com.google.protobuf.util.JsonFormat;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Logger;
-import com.google.protobuf.util.JsonFormat;
-
 
 
 // @Service
@@ -33,7 +31,7 @@ import com.google.protobuf.util.JsonFormat;
 //         String endpoint = locationId + "-dialogflow.googleapis.com:443";
 //         logger.info("QQQQQQQQQQQQ333333333333333333333333333333333333333333333333333");
 //         try (SessionsClient sessionsClient = SessionsClient.create(
-            
+
 //             SessionsSettings.newBuilder().setEndpoint(endpoint).build())) {
 //             SessionName session = SessionName.of(projectId, locationId, agentId, sessionId);
 //             TextInput.Builder textInput = TextInput.newBuilder().setText(text);
@@ -78,9 +76,9 @@ import com.google.protobuf.util.JsonFormat;
 // }
 
 
+@Slf4j
 @Service
 public class DialogflowService {
-    private static final Logger logger = Logger.getLogger(DialogflowService.class.getName());
 
     @Value("${dialogflow.projectId}")
     private String projectId;
@@ -96,34 +94,34 @@ public class DialogflowService {
 
     public String detectIntentText(String text) throws IOException {
         String endpoint = locationId + "-dialogflow.googleapis.com:443";
-        logger.info("endpoint:"+endpoint);
+        log.info("endpoint:" + endpoint);
         SessionsSettings sessionsSettings = SessionsSettings.newBuilder()
-            .setEndpoint(endpoint)
-            .build();
+                .setEndpoint(endpoint)
+                .build();
 
         try (SessionsClient sessionsClient = SessionsClient.create(sessionsSettings)) {
             // Use the SessionName class from Google Cloud Dialogflow CX v3
             SessionName session = SessionName.of(projectId, locationId, agentId, sessionId);
-            logger.info("!!!!!!!!!!!!!!!");
+            log.info("!!!!!!!!!!!!!!!");
 
 
             // Create the text input with the language code
             TextInput.Builder textInput = TextInput.newBuilder().setText(text);
             QueryInput queryInput = QueryInput.newBuilder()
-                .setText(textInput)
-                .setLanguageCode("en-US")
-                .build();
+                    .setText(textInput)
+                    .setLanguageCode("en-US")
+                    .build();
 
             // Build the DetectIntentRequest with a new QueryParameters instance using the builder
             DetectIntentRequest request = DetectIntentRequest.newBuilder()
-                .setSession(session.toString())
-                .setQueryParams(QueryParameters.newBuilder().build())
-                .setQueryInput(queryInput)
-                .build();            
+                    .setSession(session.toString())
+                    .setQueryParams(QueryParameters.newBuilder().build())
+                    .setQueryInput(queryInput)
+                    .build();
 
             // Log the request for debugging
             String requestJson = JsonFormat.printer().print(request);
-            logger.info("Request JSON: " + requestJson);
+            log.info("Request JSON: " + requestJson);
 
             // Perform the detect intent request
             DetectIntentResponse response = sessionsClient.detectIntent(request);
@@ -136,15 +134,16 @@ public class DialogflowService {
                     message.getText().getTextList().forEach(textSegment -> responses.append(textSegment).append("\n"));
                 }
             }
-            logger.info("Detected Intent Response: " + responses.toString().trim());
+            log.info("Detected Intent Response: " + responses.toString().trim());
             return responses.toString().trim();
         } catch (Exception e) {
-            logger.severe("Error communicating with Dialogflow: " + e.getMessage());
+            log.error("Error communicating with Dialogflow: " + e.getMessage());
             throw new IOException("Failed to communicate with Dialogflow API", e);
         }
     }
 
     public String processInput(String userInput) throws Exception {
+        log.info("Processing input: " + userInput);
         String projectId = "flomadaiplanner";
         String locationId = "us-central1";
         String agentId = "7fb1e868-d836-46d8-b57a-91fd6c0e6d34";
@@ -163,10 +162,10 @@ public class DialogflowService {
                     .setSession(sessionPath)
                     .setQueryInput(queryInput)
                     .build();
-            logger.info(detectIntentRequest.toString());
+            log.info(detectIntentRequest.toString());
 
             DetectIntentResponse response = sessionsClient.detectIntent(detectIntentRequest);
-            logger.info("response:"+response.toString());
+            log.info("response:" + response.toString());
 
             QueryResult queryResult = response.getQueryResult();
 
@@ -178,7 +177,7 @@ public class DialogflowService {
                     responseTextBuilder.append(String.join("\n", textMessage.getTextList()));
                 }
             }
-            logger.info("responseTextBuilder:"+responseTextBuilder.toString());
+            log.info("responseTextBuilder: " + responseTextBuilder);
             return responseTextBuilder.toString();
         }
     }
