@@ -1,27 +1,24 @@
 package com.springboot.FlomadAIplanner.service;
 
+import com.springboot.FlomadAIplanner.DTO.MessageDTO;
+import com.springboot.FlomadAIplanner.controller.ModelController;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.springboot.FlomadAIplanner.DTO.MessageDTO;
-import com.springboot.FlomadAIplanner.controller.ModelController;
-
 import javax.annotation.PostConstruct;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
-import java.util.logging.Logger;
 
+@Slf4j
 @Service
 public class LLMService {
 
-    private static final Logger logger = Logger.getLogger(LLMService.class.getName());
-    
     @Autowired
     private ThymeleafService thymeleafService;
 
@@ -47,6 +44,7 @@ public class LLMService {
 
     @PostConstruct
     public void init() {
+        log.info("Initializing LLMService");
         geminiModels.put("Gemini 1.0 Pro", "gemini-pro");
         // geminiModels.put("gemini", "gemini");
 
@@ -55,28 +53,35 @@ public class LLMService {
         openAiModels.put("GPT-3.5 Turbo", "gpt-3.5-turbo-0125");
         openAiModels.put("GPT-4 Turbo", "gpt-4-turbo");
         openAiModels.put("GPT-4o", "gpt-4o");
+        log.info("Initialized LLMService");
 
     }
 
     public Map<String, Map<String, String>> listModels() {
+        log.debug("Listing models");
         Map<String, Map<String, String>> models = new HashMap<>();
         models.put("GEMINI", geminiModels);
         models.put("OPENAI", openAiModels);
+        log.debug("Listed models");
         return models;
     }
 
     public String intentRecognition(List<MessageDTO> messages) throws Exception {
+        log.debug("Performing intent recognition");
         String modelId = modelController.getSelectedModel();
         if (modelId == null) {
+            log.error("No model selected");
             throw new IllegalStateException("No model selected");
         }
-        
+
         String modelType = getModelType(modelId);
         if (modelType == null) {
+            log.error("Model {} not supported", modelId);
             throw new IllegalArgumentException("Model " + modelId + " not supported");
         }
 
         if (messages == null || messages.isEmpty()) {
+            log.error("No messages provided");
             return "No messages provided";
         }
 
@@ -85,27 +90,32 @@ public class LLMService {
             promptArray[i] = messages.get(i).getMessage();
         }
         String promptString = String.join(" ", promptArray);
-        
+
         Map<String, Object> variables = new HashMap<>();
         variables.put("sessionMessages", String.join(" ", promptString));
         variables.put("lastUserMessage", messages.get(messages.size() - 1));
 
         String RequestText = thymeleafService.renderPlainText("IntentPrompt", variables);
+
         Callable<String> inferenceTask = () -> performInference(modelType, RequestText);
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         Future<String> future = executorService.submit(inferenceTask);
 
         try {
             String response = future.get(timeoutInference, TimeUnit.SECONDS);
+            log.debug("Response: {}", response);
             if (logPrompts) {
                 System.out.println("Response1: " + response);
             }
             return response;
         } catch (TimeoutException e) {
+            log.error("intentRecognition took too long. Please try again.");
             throw new Exception("intentRecognition took too long. Please try again.", e);
         } catch (Exception e) {
+            log.error("intentRecognition failed.");
             throw new Exception("intentRecognition failed.", e);
         } finally {
+            log.debug("Shutting down executor service");
             executorService.shutdown();
         }
     }
@@ -116,7 +126,7 @@ public class LLMService {
         if (modelId == null) {
             throw new IllegalStateException("No model selected");
         }
-        
+
         String modelType = getModelType(modelId);
         if (modelType == null) {
             throw new IllegalArgumentException("Model " + modelId + " not supported");
@@ -159,7 +169,7 @@ public class LLMService {
             // return restTemplate.postForObject("https://api.gemini.ai/v1/inference", prompt, String.class);
         } else if (modelType.equals("OPENAI")) {
             temp = this.openAIService.sendMessageToOpenAI(prompt); // Assign a value to 'temp'
-            logger.info("Response from OpenAI: " + temp); // Log the response from OpenAI
+            log.info("Response from OpenAI: " + temp); // Log the response from OpenAI
             return temp; // Return 'temp'
             // return restTemplate.postForObject("https://api.openai.com/v1/inference", prompt, String.class);
         }

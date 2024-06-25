@@ -1,21 +1,26 @@
 package com.springboot.FlomadAIplanner.service.Amadeus;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-import java.util.HashMap;
+
 import java.util.Map;
-import org.springframework.http.*;
 
 ////////////////////////////////////////////
+
 /**
  * @class
  * @description get Amadeus Auth token, without the token, Amadeus rejects the request
  */
 //////////////////////////////////////////
+@Slf4j
 @Service
 public class AmadeusAuthService {
     @Value("${amadeus.api.key}")
@@ -31,6 +36,7 @@ public class AmadeusAuthService {
     }
 
     public String getAccessToken() {
+        log.info("Getting access token from Amadeus");
         String url = "https://test.api.amadeus.com/v1/security/oauth2/token";
 
         // request head
@@ -46,13 +52,16 @@ public class AmadeusAuthService {
         // HttpEntity object
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(requestBody, headers);
 
+        log.info("Requesting access token from Amadeus");
         // send post request
         ResponseEntity<Map> responseEntity = restTemplate.postForEntity(url, requestEntity, Map.class);
 
         // get access_token
         if (responseEntity.getBody() != null && responseEntity.getBody().containsKey("access_token")) {
+            log.info("Received access token from Amadeus");
             return responseEntity.getBody().get("access_token").toString();
         } else {
+            log.error("Failed to get access token from Amadeus");
             return null;
         }
     }
