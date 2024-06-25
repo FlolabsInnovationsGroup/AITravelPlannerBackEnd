@@ -1,26 +1,23 @@
 package com.springboot.FlomadAIplanner.controller.DataPersistance;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.springboot.FlomadAIplanner.DTO.UpdateTitleRequest;
 import com.springboot.FlomadAIplanner.DatabaseManagement.NewSession;
 import com.springboot.FlomadAIplanner.DatabaseManagement.SessionDto;
 import com.springboot.FlomadAIplanner.service.DataPersistance.SessionService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 ////////////////////////////////////////////
+
 /**
  * @class
  * @description provide a controller for the front end that can operate the database
  */
 //////////////////////////////////////////
+@Slf4j
 @RestController
 public class SessionController {
     private final SessionService sessionService;
@@ -30,24 +27,28 @@ public class SessionController {
     }
 
     /**
-   * @method
-   * @description  get all the id of all sessions under a given user 
-   */
+     * @method
+     * @description get all the id of all sessions under a given user
+     */
     @GetMapping("/users/{userId}/sessions")
     public List<SessionDto> getSessionIdsByUserId(@PathVariable String userId) {
+        log.info("Retrieving session ids for user: {}", userId);
         return sessionService.findSessionIdsByUserId(userId);
     }
 
     /**
-   * @method
-   * @description add a new line in the session table
-   */
+     * @method
+     * @description add a new line in the session table
+     */
     @PostMapping("/add_session")
     public ResponseEntity<NewSession> addSession(@RequestBody NewSession session) {
+        log.info("Creating new session: {}", session);
         if (session.getSessionId() == null || session.getSessionId().isEmpty()) {
+            log.error("Session ID is not provided.");
             throw new RuntimeException("Session ID is not provided.");
         }
         NewSession savedSession = sessionService.saveSession(session);
+        log.info("Session created");
         return ResponseEntity.ok(savedSession);
     }
 

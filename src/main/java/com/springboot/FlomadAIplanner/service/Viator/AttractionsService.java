@@ -1,6 +1,6 @@
 package com.springboot.FlomadAIplanner.service.Viator;
 
-import java.util.logging.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -10,12 +10,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-
+@Slf4j
 @Service
 public class AttractionsService {
-    private static final Logger logger = Logger.getLogger(AttractionsService.class.getName());
     @Value("${viator.api.baseurl}")
-    private String baseUrl; 
+    private String baseUrl;
 
     @Value("${viator.api.partnerKey}")
     private String apiKey;
@@ -27,6 +26,7 @@ public class AttractionsService {
     }
 
     public String getAttractions(int destId, String topX, String sortOrder) {
+        log.info("Getting attractions for destination: {}", destId);
         String url = baseUrl + "/v1/taxonomy/attractions";
         HttpHeaders headers = new HttpHeaders();
         headers.set("exp-api-key", apiKey);
@@ -35,14 +35,13 @@ public class AttractionsService {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         JSONObject requestBody = new JSONObject();
-        requestBody.put("destId",destId);
+        requestBody.put("destId", destId);
         requestBody.put("topX", topX);
         requestBody.put("sortOrder", "RECOMMENDED");
 
         HttpEntity<String> entity = new HttpEntity<>(requestBody.toString(), headers);
-        logger.info("entity: " + entity);
+        log.info("entity: " + entity);
         ResponseEntity<String> response = restTemplate.postForEntity(url, entity, String.class);
-
         return response.getBody();
 
     }

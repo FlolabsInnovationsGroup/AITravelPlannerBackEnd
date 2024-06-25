@@ -1,22 +1,18 @@
 package com.springboot.FlomadAIplanner.service.Viator;
 
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.logging.Logger;
-
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
+
+import java.util.Arrays;
+import java.util.List;
 
 
+@Slf4j
 @Service
 public class TourlistService {
-    private static final Logger logger = Logger.getLogger(TourlistService.class.getName());
     @Value("${viator.api.key}")
     private String apiKey;
 
@@ -24,13 +20,11 @@ public class TourlistService {
     private String apiUrl;
 
 
-
     // @Value("${viator.reseller.id}")
-    private int resellerId=1000;
+    private final int resellerId = 1000;
 
     // @Value("${viator.supplier.id}")
-    private int supplierId=1004;
-
+    private final int supplierId = 1004;
 
 
     private final RestTemplate restTemplate;
@@ -40,6 +34,7 @@ public class TourlistService {
     }
 
     public String getTourList(String destinationId, int topX) {
+        log.info("Getting tour list for destination: {}", destinationId);
 
         TourListRequest.Data requestData = new TourListRequest.Data();
         requestData.setApiKey(apiKey);
@@ -55,21 +50,19 @@ public class TourlistService {
         request.setData(requestData);
 
 
-        
-
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-Type", "application/json");
-        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-        headers.set("Accept-Version", "v1"); 
+        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+        headers.set("Accept-Version", "v1");
 
         HttpEntity<TourListRequest> entity = new HttpEntity<>(request, headers);
 
         ResponseEntity<String> response = restTemplate.exchange(apiUrl, HttpMethod.GET, entity, String.class);
-        logger.info(response.getBody());
+        log.info("response: " + response.getBody());
+
         return response.getBody();
 
 
-        
         // String url = String.format("%s?destId=%s&topX=%d", apiUrl, destinationId, topX);
         // HttpHeaders headers = new HttpHeaders();
         // headers.set("exp-api-key", apiKey);
@@ -77,7 +70,7 @@ public class TourlistService {
         // HttpEntity<String> entity = new HttpEntity<>(headers);
 
         // ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
-        
+
 
     }
 }
