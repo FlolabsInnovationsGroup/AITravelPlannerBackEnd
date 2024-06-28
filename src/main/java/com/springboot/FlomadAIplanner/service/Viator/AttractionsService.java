@@ -13,13 +13,11 @@ import org.springframework.web.client.RestTemplate;
 @Slf4j
 @Service
 public class AttractionsService {
+    private final RestTemplate restTemplate;
     @Value("${viator.api.baseurl}")
     private String baseUrl;
-
     @Value("${viator.api.partnerKey}")
     private String apiKey;
-
-    private final RestTemplate restTemplate;
 
     public AttractionsService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;

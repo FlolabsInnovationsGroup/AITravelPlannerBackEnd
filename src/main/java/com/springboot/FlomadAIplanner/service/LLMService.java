@@ -1,6 +1,6 @@
 package com.springboot.FlomadAIplanner.service;
 
-import com.springboot.FlomadAIplanner.DTO.MessageDTO;
+import com.springboot.FlomadAIplanner.DTO.LLMMessageDTO;
 import com.springboot.FlomadAIplanner.controller.ModelController;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,28 +19,21 @@ import java.util.concurrent.*;
 @Service
 public class LLMService {
 
-    @Autowired
-    private ThymeleafService thymeleafService;
-
-    @Autowired
-    private ModelController modelController;
-
-    @Autowired
-    private GeminiService geminiService;
-
-    @Autowired
-    private OpenAIService openAIService;
-
-    @Value("${llm.timeout.inference}")
-    private long timeoutInference;
-
-    @Value("${llm.log.prompts}")
-    private boolean logPrompts;
-
     private final RestTemplate restTemplate = new RestTemplate();
-
     private final Map<String, String> geminiModels = new HashMap<>();
     private final Map<String, String> openAiModels = new HashMap<>();
+    @Autowired
+    private ThymeleafService thymeleafService;
+    @Autowired
+    private ModelController modelController;
+    @Autowired
+    private GeminiService geminiService;
+    @Autowired
+    private OpenAIService openAIService;
+    @Value("${llm.timeout.inference}")
+    private long timeoutInference;
+    @Value("${llm.log.prompts}")
+    private boolean logPrompts;
 
     @PostConstruct
     public void init() {
@@ -66,7 +59,7 @@ public class LLMService {
         return models;
     }
 
-    public String intentRecognition(List<MessageDTO> messages) throws Exception {
+    public String intentRecognition(List<LLMMessageDTO> messages) throws Exception {
         log.debug("Performing intent recognition");
         String modelId = modelController.getSelectedModel();
         if (modelId == null) {
@@ -121,7 +114,7 @@ public class LLMService {
     }
 
 
-    public String inference(List<MessageDTO> prompt, String propmptTemplate) throws Exception {
+    public String inference(List<LLMMessageDTO> prompt, String propmptTemplate) throws Exception {
         String modelId = modelController.getSelectedModel();
         if (modelId == null) {
             throw new IllegalStateException("No model selected");

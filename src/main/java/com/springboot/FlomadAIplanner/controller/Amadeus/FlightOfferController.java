@@ -12,23 +12,19 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Collections;
 
-////////////////////////////////////////////
 
 /**
  * @class
  * @description This is a controller that fetch flight information from Amadeus API
  */
-//////////////////////////////////////////
 @Slf4j
 @RestController
 public class FlightOfferController {
+    private final AmadeusAuthService amadeusAuthService;
     @Value("${amadeus.api.key}")
     private String apiKey;
-
     @Value("${amadeus.api.secret}")
     private String apiSecret;
-
-    private final AmadeusAuthService amadeusAuthService;
 
     @Autowired
     public FlightOfferController(AmadeusAuthService amadeusAuthService) {

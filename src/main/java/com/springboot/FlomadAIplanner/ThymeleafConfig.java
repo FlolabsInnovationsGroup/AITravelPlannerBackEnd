@@ -7,7 +7,7 @@ import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
 @Configuration
 public class ThymeleafConfig {
-    
+
     @Bean
     public TemplateEngine customTemplateEngine() {
         TemplateEngine engine = new TemplateEngine();
@@ -18,12 +18,12 @@ public class ThymeleafConfig {
     @Bean
     public ClassLoaderTemplateResolver textTemplateResolver() {
         ClassLoaderTemplateResolver textResolver = new ClassLoaderTemplateResolver();
-        textResolver.setPrefix("templates/"); 
-        textResolver.setSuffix(".txt");      
-        textResolver.setTemplateMode("TEXT"); 
+        textResolver.setPrefix("templates/");
+        textResolver.setSuffix(".txt");
+        textResolver.setTemplateMode("TEXT");
         textResolver.setCharacterEncoding("UTF-8");
-        textResolver.setOrder(1);             
-        textResolver.setCheckExistence(true); 
+        textResolver.setOrder(1);
+        textResolver.setCheckExistence(true);
         return textResolver;
     }
 }

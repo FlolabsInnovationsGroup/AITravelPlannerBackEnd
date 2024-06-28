@@ -1,7 +1,7 @@
 package com.springboot.FlomadAIplanner.service.DataPersistance;
 
-import com.springboot.FlomadAIplanner.DatabaseManagement.DestinationRepository;
-import com.springboot.FlomadAIplanner.DatabaseManagement.Destinations;
+import com.springboot.FlomadAIplanner.model.entities.Destination;
+import com.springboot.FlomadAIplanner.model.repository.DestinationRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,7 @@ public class DestinationsDatabaseService {
 
     public Integer getDestinationIdByName(String destinationName) {
         log.info("destinationName:" + destinationName);
-        Destinations destination = destinationRepository.findByDestinationName(destinationName);
+        Destination destination = destinationRepository.findByDestinationName(destinationName);
         log.info("destination:" + destination);
         if (destination != null) {
             return destination.getDestinationId();
@@ -29,8 +29,8 @@ public class DestinationsDatabaseService {
         return destinationRepository.count();
     }
 
-    public Destinations getFirstDestination() {
-        Optional<Destinations> destination = destinationRepository.findAll().stream().findFirst();
+    public Destination getFirstDestination() {
+        Optional<Destination> destination = destinationRepository.findAll().stream().findFirst();
         if (destination.isPresent()) {
             log.info("First destination: " + destination.get());
             return destination.get();

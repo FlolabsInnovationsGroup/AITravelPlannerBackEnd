@@ -13,23 +13,19 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
 
-////////////////////////////////////////////
 
 /**
  * @class
  * @description get Amadeus Auth token, without the token, Amadeus rejects the request
  */
-//////////////////////////////////////////
 @Slf4j
 @Service
 public class AmadeusAuthService {
+    private final RestTemplate restTemplate;
     @Value("${amadeus.api.key}")
     private String clientId;
-
     @Value("${amadeus.api.secret}")
     private String clientSecret;
-
-    private final RestTemplate restTemplate;
 
     public AmadeusAuthService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;

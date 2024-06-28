@@ -1,6 +1,6 @@
 package com.springboot.FlomadAIplanner.controller.DataPersistance;
 
-import com.springboot.FlomadAIplanner.DatabaseManagement.Destinations;
+import com.springboot.FlomadAIplanner.model.entities.Destination;
 import com.springboot.FlomadAIplanner.service.DataPersistance.DestinationsDatabaseService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ public class DestinationDatabaseController {
     }
 
     @GetMapping("/getFirstDestination")
-    public Destinations getFirstDestination() {
+    public Destination getFirstDestination() {
         log.info("Retrieving first destination");
         return destinationService.getFirstDestination();
     }

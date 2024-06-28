@@ -1,24 +1,20 @@
 package com.springboot.FlomadAIplanner.DTO;
 
+import com.springboot.FlomadAIplanner.model.entities.Speaker;
+import lombok.Data;
+
+import java.time.LocalDateTime;
+
+
+/**
+ * @class
+ * @description This is a class store data sent from the front end, in this case, store a new message.
+ */
+@Data
 public class MessageDTO {
-    private String sender;
+    private Speaker speaker;
     private String message;
+    private LocalDateTime timestamp;
+    private String id;
 
-    // getters and setters
-
-    public String getSender() {
-        return sender;
-    }
-
-    public void setSender(String sender) {
-        this.sender = sender;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
 }

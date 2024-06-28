@@ -1,13 +1,9 @@
 package com.springboot.FlomadAIplanner.DTO;
 
+import lombok.Data;
+
+@Data
 public class UpdateTitleRequest {
     private String title;
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
 }

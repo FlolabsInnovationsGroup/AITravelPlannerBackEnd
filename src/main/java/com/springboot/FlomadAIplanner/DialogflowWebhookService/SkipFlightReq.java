@@ -6,14 +6,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 
-////////////////////////////////////////////
-
 /**
  * @class
  * @description Since the dialogflow CX can only communicate with a function that have been deployed on the internet, all code here
  * transfered to webhook file in root path
  */
-//////////////////////////////////////////
 @Slf4j
 @RestController
 public class SkipFlightReq {

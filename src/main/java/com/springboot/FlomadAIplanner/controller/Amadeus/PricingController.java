@@ -13,31 +13,26 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-////////////////////////////////////////////
 
 /**
  * @class
  * @description This is a controller that checking whether the price of flights you fetched have changed.
  */
-//////////////////////////////////////////
 @Slf4j
 @RestController
 public class PricingController {
+    private final AmadeusAuthService amadeusAuthService;
     @Value("${amadeus.api.key}")
     private String apiKey;
-
     @Value("${amadeus.api.secret}")
     private String apiSecret;
-
-    private final AmadeusAuthService amadeusAuthService;
+    @Autowired
+    private RestTemplate restTemplate;
 
     @Autowired
     public PricingController(AmadeusAuthService amadeusAuthService) {
         this.amadeusAuthService = amadeusAuthService;
     }
-
-    @Autowired
-    private RestTemplate restTemplate;
 
     @PostMapping("/pricing")
     public String verifyFlightOffer(@RequestBody String offer) {

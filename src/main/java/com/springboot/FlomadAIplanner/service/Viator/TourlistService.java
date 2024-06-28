@@ -1,33 +1,27 @@
 package com.springboot.FlomadAIplanner.service.Viator;
 
+import com.springboot.FlomadAIplanner.DTO.TourListRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Arrays;
 import java.util.List;
 
 
 @Slf4j
 @Service
 public class TourlistService {
-    @Value("${viator.api.key}")
-    private String apiKey;
-
-    @Value("${viator.api.url}")
-    private String apiUrl;
-
-
     // @Value("${viator.reseller.id}")
     private final int resellerId = 1000;
-
     // @Value("${viator.supplier.id}")
     private final int supplierId = 1004;
-
-
     private final RestTemplate restTemplate;
+    @Value("${viator.api.key}")
+    private String apiKey;
+    @Value("${viator.api.url}")
+    private String apiUrl;
 
     public TourlistService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;

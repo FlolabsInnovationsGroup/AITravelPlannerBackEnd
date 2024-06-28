@@ -27,13 +27,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 
-////////////////////////////////////////////
-
 /**
  * @class
  * @description Send request to dialogflow CX then receive response.
  */
-//////////////////////////////////////////
 // public class DialogflowController implements HttpFunction {
 //     private static final Logger logger = Logger.getLogger(DialogflowController.class.getName());
 //     private final DialogflowService dialogflowService;

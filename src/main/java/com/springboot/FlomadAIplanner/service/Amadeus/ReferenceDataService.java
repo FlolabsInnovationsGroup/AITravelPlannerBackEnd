@@ -14,21 +14,16 @@ import org.springframework.web.client.RestTemplate;
 @Slf4j
 @Service
 public class ReferenceDataService {
-
-
     private AmadeusAuthService amadeusAuthService = null;
+    @Value("${amadeus.api.key}")
+    private String apiKey;
+    @Value("${amadeus.api.secret}")
+    private String apiSecret;
 
     @Autowired
     public ReferenceDataService(AmadeusAuthService amadeusAuthService) {
         this.amadeusAuthService = amadeusAuthService;
     }
-
-
-    @Value("${amadeus.api.key}")
-    private String apiKey;
-
-    @Value("${amadeus.api.secret}")
-    private String apiSecret;
 
     public JsonNode getAirportCode(String cityName) {
         log.info("Getting airport code for city: {}", cityName);

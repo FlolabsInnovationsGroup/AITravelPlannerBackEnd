@@ -1,14 +1,14 @@
 package com.springboot.FlomadAIplanner.controller.agents;
 
-import java.util.List;
-
+import com.springboot.FlomadAIplanner.service.agentServices.IntentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import com.springboot.FlomadAIplanner.service.agentServices.IntentService;
+
+import java.util.List;
 
 @Slf4j
 @Controller

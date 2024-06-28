@@ -1,6 +1,6 @@
 package com.springboot.FlomadAIplanner.controller;
 
-import com.springboot.FlomadAIplanner.DTO.MessageDTO;
+import com.springboot.FlomadAIplanner.DTO.LLMMessageDTO;
 import com.springboot.FlomadAIplanner.DTO.OpenAIDataDTO;
 import com.springboot.FlomadAIplanner.service.GeminiService;
 import com.springboot.FlomadAIplanner.service.LLMService;
@@ -15,13 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-////////////////////////////////////////////
 
 /**
  * @class
  * @description This is a controller that allows you to talk to Gemini API
  */
-//////////////////////////////////////////
 @Slf4j
 @RestController
 public class LLMController {
@@ -61,7 +59,7 @@ public class LLMController {
 
 
     @PostMapping("/generate-content/LLM")
-    public ResponseEntity<String> getResponseFromLLM(@RequestBody List<MessageDTO> messages) throws Exception {
+    public ResponseEntity<String> getResponseFromLLM(@RequestBody List<LLMMessageDTO> messages) throws Exception {
         log.info("Generating content for text: {}", messages);
         // JSONObject intentJson = llmService.intentRecognition(messages);
         String intentResponse = llmService.intentRecognition(messages);

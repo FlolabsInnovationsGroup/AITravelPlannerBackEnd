@@ -7,13 +7,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-////////////////////////////////////////////
 
 /**
  * @class
  * @description Amadeus API only accepts IATA code rather than city name, so translation is needed here
  */
-//////////////////////////////////////////
 @Slf4j
 @RestController
 public class ReferenceDataController {
