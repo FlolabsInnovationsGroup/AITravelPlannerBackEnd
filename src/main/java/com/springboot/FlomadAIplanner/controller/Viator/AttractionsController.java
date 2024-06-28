@@ -1,5 +1,6 @@
 package com.springboot.FlomadAIplanner.controller.Viator;
 
+import com.springboot.FlomadAIplanner.DTO.AttractionsRequest;
 import com.springboot.FlomadAIplanner.service.Viator.AttractionsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

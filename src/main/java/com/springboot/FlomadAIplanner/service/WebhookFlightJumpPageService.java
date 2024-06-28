@@ -11,10 +11,12 @@ import com.google.protobuf.util.JsonFormat;
 import com.springboot.FlomadAIplanner.controller.Amadeus.FlightOfferController;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -257,7 +259,7 @@ public class WebhookFlightJumpPageService {
             responseBuilder.setFulfillmentResponse(fulfillmentResponse);
 
             // invoke the flight offer API
-            String flightOffers = flightOfferController.getFlightOffers(
+            ResponseEntity<String> flightOffers = flightOfferController.getFlightOffers(
                     parameters.get("departure_city").getStringValue(),
                     parameters.get("destination_city").getStringValue(),
                     parameters.get("dep_date").getStringValue(),
@@ -267,7 +269,7 @@ public class WebhookFlightJumpPageService {
             );
 
             ResponseMessage.Text flightOffersText = ResponseMessage.Text.newBuilder()
-                    .addText(flightOffers)
+                    .addText(Objects.requireNonNull(flightOffers.getBody()))
                     .build();
 
             ResponseMessage flightOffersMessage = ResponseMessage.newBuilder()

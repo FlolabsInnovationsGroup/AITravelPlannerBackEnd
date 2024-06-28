@@ -1,7 +1,9 @@
 package com.springboot.FlomadAIplanner.DTO;
 
 import com.springboot.FlomadAIplanner.model.entities.Speaker;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
@@ -11,6 +13,8 @@ import java.time.LocalDateTime;
  * @description This is a class store data sent from the front end, in this case, store a new message.
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class MessageDTO {
     private Speaker speaker;
     private String message;

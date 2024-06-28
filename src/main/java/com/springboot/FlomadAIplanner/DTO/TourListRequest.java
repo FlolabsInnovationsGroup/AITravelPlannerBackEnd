@@ -1,24 +1,24 @@
 package com.springboot.FlomadAIplanner.DTO;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class TourListRequest {
     private String requestType;
     private Data data;
 
-    @Getter
-    @Setter
-    @ToString
+    @lombok.Data
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Data {
-        private String apiKey;
         private int resellerId;
         private int supplierId;
         private String externalReference;
         private String timestamp;
-
     }
 }
+
