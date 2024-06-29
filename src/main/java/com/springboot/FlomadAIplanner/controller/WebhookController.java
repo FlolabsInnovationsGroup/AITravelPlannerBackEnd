@@ -31,7 +31,7 @@ package com.springboot.FlomadAIplanner.controller;
 
 import com.springboot.FlomadAIplanner.DTO.DialogflowRequest;
 import com.springboot.FlomadAIplanner.service.DialogflowService;
-import com.springboot.FlomadAIplanner.service.WebhookFlightJumpPageService;
+import com.springboot.FlomadAIplanner.webhook.WebhookFlightJumpPageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
