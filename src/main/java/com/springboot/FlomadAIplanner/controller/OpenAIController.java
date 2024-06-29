@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+
 @Slf4j
 @RestController
 @RequestMapping("/api/chat")
@@ -18,13 +20,9 @@ public class OpenAIController {
     private OpenAIService openAIService;
 
     @PostMapping
-    public String getResponseFromOpenAI(@RequestBody OpenAIDataDTO request) {
+    public String getResponseFromOpenAI(@RequestBody OpenAIDataDTO request) throws IOException {
         log.info("Generating content for text: {}", request.getMessage());
-        try {
-            return openAIService.sendMessageToOpenAI(request.getMessage());
-        } catch (Exception e) {
-            log.error("An error occurred while calling OpenAI: {}", e.getMessage());
-            return "Error while calling OpenAI: " + e.getMessage();
-        }
+
+        return openAIService.sendMessageToOpenAI(request.getMessage());
     }
 }

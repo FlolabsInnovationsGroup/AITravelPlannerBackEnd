@@ -60,12 +60,8 @@ public class SessionController {
     @PostMapping("/users/{userId}/sessions/{sessionId}/updateTitle")
     public ResponseEntity<Session> updateSessionTitle(@PathVariable String userId, @PathVariable String sessionId,
                                                       @RequestBody UpdateTitleRequest updateRequest) {
-        try {
-            Session updatedSession = sessionService.updateSessionTitle(sessionId, userId, updateRequest.getTitle());
-            return ResponseEntity.ok(updatedSession);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(null);
-        }
+        Session updatedSession = sessionService.updateSessionTitle(sessionId, userId, updateRequest.getTitle());
+        return ResponseEntity.ok(updatedSession);
     }
 
 }

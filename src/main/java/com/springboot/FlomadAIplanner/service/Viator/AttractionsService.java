@@ -1,6 +1,7 @@
 package com.springboot.FlomadAIplanner.service.Viator;
 
 import com.springboot.FlomadAIplanner.DTO.AttractionsRequest;
+import com.springboot.FlomadAIplanner.exceptions.ViatorAPIException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,9 +21,14 @@ public class AttractionsService {
 
     public String getAttractions(int destId, String topX, String sortOrder) {
         log.info("Getting attractions for destination: {}", destId);
-        AttractionsRequest request = new AttractionsRequest(destId, topX, sortOrder);
-        String response = viatorClient.getAttractions(ACCEPT_LANGUAGE, request);
-        log.info("Received attractions: {}", response);
-        return response;
+        try {
+            AttractionsRequest request = new AttractionsRequest(destId, topX, sortOrder);
+            String response = viatorClient.getAttractions(ACCEPT_LANGUAGE, request);
+            log.info("Received attractions: {}", response);
+            return response;
+        } catch (Exception e) {
+            log.error("Error getting attractions", e);
+            throw new ViatorAPIException("Error getting attractions", e);
+        }
     }
 }

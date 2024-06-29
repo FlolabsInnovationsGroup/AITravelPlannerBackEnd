@@ -20,13 +20,9 @@ public class AttractionsController {
     @PostMapping("/attractions")
     public ResponseEntity<String> getAttractions(@RequestBody AttractionsRequest request) {
         log.info("Retrieving attractions for destination: {}", request.getDestId());
-        try {
-            String response = attractionsService.getAttractions(request.getDestId(), request.getTopX(), request.getSortOrder());
-            log.info("Attractions retrieved");
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            log.error("An error occurred while retrieving attractions: {}", e.getMessage());
-            return ResponseEntity.internalServerError().body("An error occurred: " + e.getMessage());
-        }
+
+        String response = attractionsService.getAttractions(request.getDestId(), request.getTopX(), request.getSortOrder());
+        log.info("Attractions retrieved");
+        return ResponseEntity.ok(response);
     }
 }

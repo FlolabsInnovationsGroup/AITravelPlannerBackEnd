@@ -1,6 +1,7 @@
 package com.springboot.FlomadAIplanner.service.Amadeus;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.springboot.FlomadAIplanner.exceptions.AmadeusAPIException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,13 +22,15 @@ public class ReferenceDataService {
     public JsonNode getAirportCode(String cityName) {
         log.info("Getting airport code for city: {}", cityName);
         String accessToken = amadeusAuthService.getAccessToken();
-        if (accessToken == null) {
-            log.error("Cannot get airport code without access token");
-            return null;
+
+        try {
+            String authorizationHeader = "Bearer " + accessToken;
+            JsonNode response = amadeusClient.getLocations(authorizationHeader, "AIRPORT", cityName, null, null, null);
+            log.info("Received response from Amadeus: {}", response);
+            return response;
+        } catch (Exception e) {
+            log.error("Error getting airport code", e);
+            throw new AmadeusAPIException("Error getting airport code", e);
         }
-        String authorizationHeader = "Bearer " + accessToken;
-        JsonNode response = amadeusClient.getLocations(authorizationHeader, "CITY,AIRPORT", cityName, null, null, null);
-        log.info("Received response from Amadeus: {}", response);
-        return response;
     }
 }

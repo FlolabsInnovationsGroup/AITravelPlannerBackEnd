@@ -31,18 +31,13 @@ public class FlightOfferController {
                                                   @RequestParam int max) {
         log.info("Retrieving flight offers from {} to {} for {} adults", originLocationCode, destinationLocationCode, adults);
 
-        try {
-            // Use the service to get flight offers
-            JsonNode response = amadeusShoppingService.getFlightOffers(originLocationCode, destinationLocationCode, departureDate, returnDate, adults, max);
-            if (response == null) {
-                log.error("Failed to retrieve flight offers");
-                return ResponseEntity.status(500).body("Failed to retrieve flight offers");
-            }
-            log.info("Received flight offers from Amadeus API");
-            return ResponseEntity.ok(response.toString());
-        } catch (Exception e) {
-            log.error("Error retrieving flight offers from Amadeus API", e);
-            return ResponseEntity.status(500).body("Error retrieving flight offers from Amadeus API");
+        // Use the service to get flight offers
+        JsonNode response = amadeusShoppingService.getFlightOffers(originLocationCode, destinationLocationCode, departureDate, returnDate, adults, max);
+        if (response == null) {
+            log.error("Failed to retrieve flight offers");
+            return ResponseEntity.status(500).body("Failed to retrieve flight offers");
         }
+        log.info("Received flight offers from Amadeus API");
+        return ResponseEntity.ok(response.toString());
     }
 }

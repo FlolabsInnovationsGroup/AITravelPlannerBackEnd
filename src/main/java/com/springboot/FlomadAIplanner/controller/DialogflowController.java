@@ -26,6 +26,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 
 /**
  * @class
@@ -166,15 +168,12 @@ public class DialogflowController {
     }
 
     @PostMapping("/detect_intent")
-    public String detectIntent(@RequestBody String userInput, HttpServletResponse response) {
+    public String detectIntent(@RequestBody String userInput, HttpServletResponse response) throws IOException {
         log.info("User input: {}", userInput);
         setCorsHeaders(response);
-        try {
-            return dialogflowService.detectIntentText(userInput);
-        } catch (Exception e) {
-            log.error("Error processing the request: {}", e.getMessage());
-            return "Error processing the request: " + e.getMessage();
-        }
+
+        return dialogflowService.detectIntentText(userInput);
+
     }
 
     private void setCorsHeaders(HttpServletResponse response) {

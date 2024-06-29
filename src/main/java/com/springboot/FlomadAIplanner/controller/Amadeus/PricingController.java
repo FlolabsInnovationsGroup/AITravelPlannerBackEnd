@@ -28,17 +28,9 @@ public class PricingController {
     public ResponseEntity<JsonNode> getOfferPricing(@RequestBody @NotNull @NotEmpty String offer) {
         log.info("Received offer: {}", offer);
 
-        try {
-            JsonNode response = amadeusShoppingService.getOfferPricing(offer);
-            if (response == null) {
-                log.error("Failed to verify flight offer pricing");
-                return ResponseEntity.status(500).body(null);
-            }
-            log.info("Received response from Amadeus API");
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            log.error("Error processing the request: {}", e.getMessage());
-            return ResponseEntity.status(500).body(null);
-        }
+        JsonNode response = amadeusShoppingService.getOfferPricing(offer);
+
+        log.info("Received response from Amadeus API");
+        return ResponseEntity.ok(response);
     }
 }

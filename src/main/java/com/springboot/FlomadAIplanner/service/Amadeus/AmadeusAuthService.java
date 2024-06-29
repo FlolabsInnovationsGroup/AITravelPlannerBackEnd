@@ -1,5 +1,6 @@
 package com.springboot.FlomadAIplanner.service.Amadeus;
 
+import com.springboot.FlomadAIplanner.exceptions.AmadeusAPIException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -34,37 +35,31 @@ public class AmadeusAuthService {
 
     public String getAccessToken() {
         log.info("Getting access token from Amadeus");
+        return retrieveAccessToken();
+    }
 
-        // Prepare the headers
+    private String retrieveAccessToken() throws AmadeusAPIException {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
-        // Prepare the request body
         MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
         requestBody.add("client_id", clientId);
         requestBody.add("client_secret", clientSecret);
         requestBody.add("grant_type", "client_credentials");
-
-        // Create the HttpEntity object
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(requestBody, headers);
 
         try {
-            // Send the POST request
             ResponseEntity<Map> responseEntity = restTemplate.postForEntity(amadeusOauthApiUrl, requestEntity, Map.class);
-
-            // Extract the access token from the response
             Map<String, Object> responseBody = responseEntity.getBody();
             if (responseBody != null && responseBody.containsKey("access_token")) {
                 String accessToken = responseBody.get("access_token").toString();
                 log.info("Received access token from Amadeus");
                 return accessToken;
             } else {
-                log.error("Failed to get access token from Amadeus: Missing access_token in response");
+                throw new AmadeusAPIException("Failed to get access token: Failed to authorize in third-party service.");
             }
         } catch (Exception e) {
             log.error("Failed to get access token from Amadeus", e);
+            throw new AmadeusAPIException("Error retrieving access token from Amadeus", e);
         }
-
-        return null;
     }
 }
