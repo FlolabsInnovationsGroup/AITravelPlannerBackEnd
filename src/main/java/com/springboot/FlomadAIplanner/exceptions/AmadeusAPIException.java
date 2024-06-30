@@ -1,7 +1,7 @@
 package com.springboot.FlomadAIplanner.exceptions;
 
 
-public class AmadeusAPIException extends RuntimeException {
+public class AmadeusAPIException extends Exception {
     public AmadeusAPIException(String message) {
         super(message);
     }

@@ -9,6 +9,7 @@ import com.google.gson.JsonParser;
 import com.google.protobuf.Value;
 import com.google.protobuf.util.JsonFormat;
 import com.springboot.FlomadAIplanner.controller.amadeus.AmadeusFlightOfferController;
+import com.springboot.FlomadAIplanner.exceptions.AmadeusAPIException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class WebhookFlightJumpPageService {
     @Autowired
     private AmadeusFlightOfferController flightOfferController;
 
-    public String processRequest(String requestBody) {
+    public String processRequest(String requestBody) throws AmadeusAPIException {
         log.info("Received request: " + requestBody);
         JsonObject json = JsonParser.parseString(requestBody).getAsJsonObject();
         String currentPage = json.getAsJsonObject("pageInfo").get("currentPage").getAsString();
@@ -67,7 +68,7 @@ public class WebhookFlightJumpPageService {
         return parameters;
     }
 
-    public WebhookResponse handleWebhookRequest(Map<String, Value> parameters, String currentPage) {
+    public WebhookResponse handleWebhookRequest(Map<String, Value> parameters, String currentPage) throws AmadeusAPIException {
         boolean shouldGoToPageFlightOffers = false;
         boolean shouldGoToPageLocationReq = false;
         boolean shouldGoToPageDestinationReq = false;

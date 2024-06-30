@@ -1,5 +1,6 @@
 package com.springboot.FlomadAIplanner.controller.amadeus;
 
+import com.springboot.FlomadAIplanner.exceptions.AmadeusAPIException;
 import com.springboot.FlomadAIplanner.service.amadeus.AmadeusAuthService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ public class AmadeusAuthController {
     }
 
     @GetMapping("/auth/token")
-    public ResponseEntity<String> getAuthToken() {
+    public ResponseEntity<String> getAuthToken() throws AmadeusAPIException {
         log.info("Retrieving access token");
         String token = amadeusAuthService.getAccessToken();
         if (token != null) {

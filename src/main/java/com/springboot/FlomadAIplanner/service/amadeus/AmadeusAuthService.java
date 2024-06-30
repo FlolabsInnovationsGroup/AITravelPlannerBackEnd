@@ -33,7 +33,7 @@ public class AmadeusAuthService {
         this.restTemplate = restTemplate;
     }
 
-    public String getAccessToken() {
+    public String getAccessToken() throws AmadeusAPIException {
         log.info("Getting access token from Amadeus");
         return retrieveAccessToken();
     }

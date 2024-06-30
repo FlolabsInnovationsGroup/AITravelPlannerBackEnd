@@ -9,5 +9,6 @@ Guidelines for Crafting the Message:
 4. Include an appropriate HTTP status code: use 400 for errors related to user input, 500 for internal server issues, or other relevant codes based on the error nature.
 5. Maintain consistency in your responses; the same error should always result in the same user message and status code.
 6. If uncertain about the error specifics, default to a 500 status code, indicating a server error.
+7. Try to be as informative as possible without overwhelming the user with unnecessary details.
 
 Your goal is to help the user understand the issue and guide them on how to resolve it or who to contact for further assistance.

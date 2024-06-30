@@ -1,6 +1,7 @@
 package com.springboot.FlomadAIplanner.controller.amadeus;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.springboot.FlomadAIplanner.exceptions.AmadeusAPIException;
 import com.springboot.FlomadAIplanner.service.amadeus.AmadeusShoppingService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ public class AmadeusFlightOfferController {
                                                   @RequestParam String departureDate,
                                                   @RequestParam String returnDate,
                                                   @RequestParam int adults,
-                                                  @RequestParam int max) {
+                                                  @RequestParam int max) throws AmadeusAPIException {
         log.info("Retrieving flight offers from {} to {} for {} adults", originLocationCode, destinationLocationCode, adults);
 
         // Use the service to get flight offers

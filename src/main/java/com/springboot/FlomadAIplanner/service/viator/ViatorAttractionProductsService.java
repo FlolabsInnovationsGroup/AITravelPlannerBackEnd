@@ -15,7 +15,7 @@ public class ViatorAttractionProductsService {
         this.viatorClient = viatorClient;
     }
 
-    public String getAttractionProducts(String acceptLanguage, int seoId, String topX, String sortOrder, String currencyCode) {
+    public String getAttractionProducts(String acceptLanguage, int seoId, String topX, String sortOrder, String currencyCode) throws ViatorAPIException {
         log.info("Getting attraction products for SEO ID: {}", seoId);
 
         try {

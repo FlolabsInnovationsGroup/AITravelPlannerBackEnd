@@ -19,7 +19,7 @@ public class ReferenceDataService {
         this.amadeusClient = amadeusClient;
     }
 
-    public JsonNode getAirportCode(String cityName) {
+    public JsonNode getAirportCode(String cityName) throws AmadeusAPIException {
         log.info("Getting airport code for city: {}", cityName);
         String accessToken = amadeusAuthService.getAccessToken();
 

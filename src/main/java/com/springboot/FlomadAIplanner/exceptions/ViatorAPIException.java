@@ -1,6 +1,6 @@
 package com.springboot.FlomadAIplanner.exceptions;
 
-public class ViatorAPIException extends RuntimeException {
+public class ViatorAPIException extends Exception {
 
     public ViatorAPIException(String message) {
         super(message);

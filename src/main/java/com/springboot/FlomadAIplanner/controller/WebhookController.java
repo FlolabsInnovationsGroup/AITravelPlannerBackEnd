@@ -30,6 +30,7 @@ package com.springboot.FlomadAIplanner.controller;
 
 
 import com.springboot.FlomadAIplanner.DTO.DialogflowRequest;
+import com.springboot.FlomadAIplanner.exceptions.AmadeusAPIException;
 import com.springboot.FlomadAIplanner.service.DialogflowService;
 import com.springboot.FlomadAIplanner.webhook.WebhookFlightJumpPageService;
 import lombok.extern.slf4j.Slf4j;
@@ -68,7 +69,7 @@ public class WebhookController {
     }
 
     @PostMapping("/webhook")
-    public String handleWebhook(@RequestBody String request) {
+    public String handleWebhook(@RequestBody String request) throws AmadeusAPIException {
         return service.processRequest(request);
     }
 }

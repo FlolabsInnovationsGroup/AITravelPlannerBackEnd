@@ -1,5 +1,6 @@
 package com.springboot.FlomadAIplanner.handler;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.PromptChatMemoryAdvisor;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
 
+import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvisor.CHAT_MEMORY_CONVERSATION_ID_KEY;
 import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvisor.CHAT_MEMORY_RETRIEVE_SIZE_KEY;
 
 @Slf4j
@@ -22,6 +24,7 @@ import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvis
 public class GlobalExceptionHandler {
 
     private final ChatClient chatClient;
+
 
     public GlobalExceptionHandler(ChatClient.Builder builder, ChatMemory chatMemory,
                                   @Value("classpath:/templates/ExceptionHandlingPrompt.txt") Resource promptResource) {
@@ -33,13 +36,17 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     @ResponseBody
-    public ResponseEntity<String> handleException(Exception e) {
+    public ResponseEntity<String> handleException(HttpServletRequest request, Exception e) {
         log.error("Exception caught: ", e);
+
+        String sessionId = request.getSession().getId();
 
         // Send stack trace to LLM
         ExceptionRecord response = chatClient.prompt()
                 .user("Here is the stack trace of an exception:\n" + Arrays.toString(e.getStackTrace()))
-                .advisors(a -> a.param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 10))
+                .advisors(a -> a
+                        .param(CHAT_MEMORY_CONVERSATION_ID_KEY, sessionId)
+                        .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 10))
                 .call()
                 .entity(ExceptionRecord.class);
 
@@ -48,4 +55,5 @@ public class GlobalExceptionHandler {
         // Return the response
         return new ResponseEntity<>(response.customerErrorMessage(), response.httpStatus());
     }
+
 }

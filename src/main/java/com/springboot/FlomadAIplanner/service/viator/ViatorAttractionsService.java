@@ -19,7 +19,7 @@ public class ViatorAttractionsService {
         this.viatorClient = viatorClient;
     }
 
-    public String getAttractions(int destId, String topX, String sortOrder) {
+    public String getAttractions(int destId, String topX, String sortOrder) throws ViatorAPIException {
         log.info("Getting attractions for destination: {}", destId);
         try {
             AttractionsRequest request = new AttractionsRequest(destId, topX, sortOrder);

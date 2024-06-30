@@ -1,6 +1,7 @@
 package com.springboot.FlomadAIplanner.controller.amadeus;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.springboot.FlomadAIplanner.exceptions.AmadeusAPIException;
 import com.springboot.FlomadAIplanner.service.amadeus.AmadeusShoppingService;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -25,7 +26,7 @@ public class AmadeusPricingController {
     }
 
     @PostMapping("/pricing")
-    public ResponseEntity<JsonNode> getOfferPricing(@RequestBody @NotNull @NotEmpty String offer) {
+    public ResponseEntity<JsonNode> getOfferPricing(@RequestBody @NotNull @NotEmpty String offer) throws AmadeusAPIException {
         log.info("Received offer: {}", offer);
 
         JsonNode response = amadeusShoppingService.getOfferPricing(offer);

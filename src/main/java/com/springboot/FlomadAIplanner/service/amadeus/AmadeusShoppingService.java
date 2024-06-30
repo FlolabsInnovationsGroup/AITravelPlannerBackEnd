@@ -19,7 +19,7 @@ public class AmadeusShoppingService {
         this.amadeusClient = amadeusClient;
     }
 
-    public JsonNode getFlightDestinations(String origin, String maxPrice) {
+    public JsonNode getFlightDestinations(String origin, String maxPrice) throws AmadeusAPIException {
         log.info("Getting flight destinations from origin: {} with max price: {}", origin, maxPrice);
         String accessToken = amadeusAuthService.getAccessToken();
 
@@ -34,7 +34,7 @@ public class AmadeusShoppingService {
         }
     }
 
-    public JsonNode getFlightOffers(String originLocationCode, String destinationLocationCode, String departureDate, String returnDate, int adults, int max) {
+    public JsonNode getFlightOffers(String originLocationCode, String destinationLocationCode, String departureDate, String returnDate, int adults, int max) throws AmadeusAPIException {
         log.info("Getting flight offers from {} to {} for {} adults", originLocationCode, destinationLocationCode, adults);
         String accessToken = amadeusAuthService.getAccessToken();
 
@@ -49,7 +49,7 @@ public class AmadeusShoppingService {
         }
     }
 
-    public JsonNode getOfferPricing(String offer) {
+    public JsonNode getOfferPricing(String offer) throws AmadeusAPIException {
         log.info("Verifying flight offer pricing");
         String accessToken = amadeusAuthService.getAccessToken();
 

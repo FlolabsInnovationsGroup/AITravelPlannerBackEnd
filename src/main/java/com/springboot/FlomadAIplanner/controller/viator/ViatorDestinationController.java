@@ -1,5 +1,6 @@
 package com.springboot.FlomadAIplanner.controller.viator;
 
+import com.springboot.FlomadAIplanner.exceptions.ViatorAPIException;
 import com.springboot.FlomadAIplanner.service.viator.ViatorDestinationsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,7 @@ public class ViatorDestinationController {
     private ViatorDestinationsService destinationsService;
 
     @GetMapping("/get_destinations")
-    public String getDestinations() {
+    public String getDestinations() throws ViatorAPIException {
         log.info("Retrieving destinations");
         return destinationsService.getDestinations();
     }
