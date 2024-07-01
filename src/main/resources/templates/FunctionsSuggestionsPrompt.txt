@@ -1,0 +1,5 @@
+Suggest recommended functions from that might be used during processing the request:
+User message: ${message}
+Available functions: {functionsList}
+
+If you see that none of the function from the list is suitable for the request, you need to return an empty List.

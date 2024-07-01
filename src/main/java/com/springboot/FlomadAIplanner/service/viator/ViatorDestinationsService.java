@@ -12,13 +12,10 @@ import org.springframework.stereotype.Service;
 public class ViatorDestinationsService {
 
     private final ViatorClient viatorClient;
-    private final AmadeusClient amadeusClient;
 
     public String getDestinations() throws ViatorAPIException {
         log.info("Getting destinations");
         try {
-            amadeusClient.getOfferPricing("LON", "2021-12-01", "2021-12-02");
-
             String response = viatorClient.getDestinations();
             log.info("Received destinations response.");
             return response;
