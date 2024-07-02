@@ -1,6 +1,6 @@
 package com.springboot.FlomadAIplanner.controller.model;
 
-import com.springboot.FlomadAIplanner.DTO.MessageDTO;
+import com.springboot.FlomadAIplanner.dto.MessageDTO;
 import com.springboot.FlomadAIplanner.model.entities.Message;
 import com.springboot.FlomadAIplanner.service.model.MessageService;
 import lombok.extern.slf4j.Slf4j;

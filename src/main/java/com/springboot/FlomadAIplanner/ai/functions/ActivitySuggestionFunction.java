@@ -1,15 +1,15 @@
 package com.springboot.FlomadAIplanner.ai.functions;
 
+import com.fasterxml.jackson.annotation.JsonClassDescription;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Description;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Slf4j
 @Component
-@Description("Suggests activities for a given location.")
+@JsonClassDescription("Suggests activities for a given location.")
 public class ActivitySuggestionFunction implements AIFunction<ActivitySuggestionFunction.ActivitySuggestionRequest, ActivitySuggestionFunction.ActivitySuggestionResponse> {
 
     @Override

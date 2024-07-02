@@ -1,6 +1,6 @@
 package com.springboot.FlomadAIplanner.service.model;
 
-import com.springboot.FlomadAIplanner.DTO.SessionDto;
+import com.springboot.FlomadAIplanner.dto.SessionDTO;
 import com.springboot.FlomadAIplanner.model.entities.Session;
 import com.springboot.FlomadAIplanner.model.repository.SessionRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -26,12 +26,12 @@ public class SessionService {
         this.sessionRepository = sessionRepository;
     }
 
-    public List<SessionDto> findSessionIdsByUserId(String userId) {
+    public List<SessionDTO> findSessionIdsByUserId(String userId) {
         log.info("Finding entity for user: {}", userId);
         return sessionRepository.findByUserId(userId)
                 .stream()
                 .sorted(Comparator.comparing(Session::getTimestamp).reversed())
-                .map(session -> new SessionDto(session.getSessionId(), session.getUserId(), session.getTitle(), session.getTimestamp()))
+                .map(session -> new SessionDTO(session.getSessionId(), session.getUserId(), session.getTitle(), session.getTimestamp()))
                 .collect(Collectors.toList());
     }
 

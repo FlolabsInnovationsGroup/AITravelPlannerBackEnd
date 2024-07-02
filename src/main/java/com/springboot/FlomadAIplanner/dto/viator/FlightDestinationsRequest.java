@@ -1,4 +1,4 @@
-package com.springboot.FlomadAIplanner.DTO;
+package com.springboot.FlomadAIplanner.dto.viator;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

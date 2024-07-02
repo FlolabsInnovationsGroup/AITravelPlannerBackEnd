@@ -14,15 +14,14 @@ import java.util.List;
 @Slf4j
 public abstract class AbstractChatService {
 
+    protected final ChatClientFactory chatClientFactory;
+    protected final List<String> aiFunctionDescriptions;
     @Value("classpath:/templates/FunctionsSuggestionsPrompt.txt")
     protected Resource functionSuggestionsPrompt;
     @Value("classpath:/templates/SingleQuestionPrompt.txt")
     protected Resource singleQuestionPrompt;
     @Value("classpath:/templates/WithFunctionsQuestionPrompt.txt")
     protected Resource withFunctionsQuestionPrompt;
-
-    protected final ChatClientFactory chatClientFactory;
-    protected final List<String> aiFunctionDescriptions;
 
     public AbstractChatService(ChatClientFactory chatClientFactory, List<String> aiFunctionDescriptions) {
         this.chatClientFactory = chatClientFactory;

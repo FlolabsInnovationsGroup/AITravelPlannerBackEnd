@@ -1,7 +1,7 @@
 package com.springboot.FlomadAIplanner.controller.model;
 
-import com.springboot.FlomadAIplanner.DTO.SessionDto;
-import com.springboot.FlomadAIplanner.DTO.UpdateTitleRequest;
+import com.springboot.FlomadAIplanner.dto.SessionDTO;
+import com.springboot.FlomadAIplanner.dto.UpdateTitleRequest;
 import com.springboot.FlomadAIplanner.model.entities.Session;
 import com.springboot.FlomadAIplanner.service.model.SessionService;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +29,7 @@ public class SessionController {
      * @description get all the id of all sessions under a given user
      */
     @GetMapping("/users/{userId}/sessions")
-    public List<SessionDto> getSessionIdsByUserId(@PathVariable String userId) {
+    public List<SessionDTO> getSessionIdsByUserId(@PathVariable String userId) {
         log.info("Retrieving session ids for user: {}", userId);
         return sessionService.findSessionIdsByUserId(userId);
     }
@@ -52,7 +52,7 @@ public class SessionController {
 
     @PostMapping("/users/{userId}/sessions/{sessionId}")
     public ResponseEntity<Session> updateSession(@PathVariable String userId, @PathVariable String sessionId,
-                                                 @RequestBody SessionDto sessionDto) {
+                                                 @RequestBody SessionDTO sessionDto) {
         Session updatedSession = sessionService.updateSession(sessionId, userId, sessionDto.getTitle(), sessionDto.getTimestamp());
         return ResponseEntity.ok(updatedSession);
     }

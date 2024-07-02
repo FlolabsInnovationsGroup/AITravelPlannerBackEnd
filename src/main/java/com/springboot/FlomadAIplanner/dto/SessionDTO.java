@@ -1,4 +1,4 @@
-package com.springboot.FlomadAIplanner.DTO;
+package com.springboot.FlomadAIplanner.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SessionDto {
+public class SessionDTO {
     private String sessionId;
     private String userId;
     private String title;

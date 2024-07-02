@@ -1,4 +1,4 @@
-package com.springboot.FlomadAIplanner.DTO;
+package com.springboot.FlomadAIplanner.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class OpenAIDataDTO {
-    private String message;
+public class UpdateTitleRequest {
+    private String title;
 
 }

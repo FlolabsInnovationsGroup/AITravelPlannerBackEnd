@@ -1,7 +1,6 @@
 package com.springboot.FlomadAIplanner.service.viator;
 
 import com.springboot.FlomadAIplanner.exceptions.ViatorAPIException;
-import com.springboot.FlomadAIplanner.service.amadeus.AmadeusClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

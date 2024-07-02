@@ -1,6 +1,7 @@
 package com.springboot.FlomadAIplanner.service.amadeus;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.springboot.FlomadAIplanner.dto.amadeus.FlightOffersRequest;
 import com.springboot.FlomadAIplanner.exceptions.AmadeusAPIException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,18 +20,18 @@ public class AmadeusShoppingService {
         this.amadeusClient = amadeusClient;
     }
 
-    public JsonNode getFlightDestinations(String origin, String maxPrice) throws AmadeusAPIException {
-        log.info("Getting flight destinations from origin: {} with max price: {}", origin, maxPrice);
+    public JsonNode getFlightOffersPost(FlightOffersRequest flightOffersRequest) throws AmadeusAPIException {
+        log.info("Getting flight offers with POST request");
         String accessToken = amadeusAuthService.getAccessToken();
 
         try {
             String authorizationHeader = "Bearer " + accessToken;
-            JsonNode response = amadeusClient.getFlightDestinations(authorizationHeader, origin, maxPrice);
-            log.info("Received response from Amadeus: {}", response);
+            JsonNode response = amadeusClient.getFlightOffersPost(authorizationHeader, "GET", flightOffersRequest);
+            log.info("Received flight offers from Amadeus using POST request");
             return response;
         } catch (Exception e) {
-            log.error("Error getting flight destinations", e);
-            throw new AmadeusAPIException("Error getting flight destinations", e);
+            log.error("Error getting flight offers with POST request", e);
+            throw new AmadeusAPIException("Error getting flight offers with POST request", e);
         }
     }
 
@@ -46,6 +47,21 @@ public class AmadeusShoppingService {
         } catch (Exception e) {
             log.error("Error getting flight offers", e);
             throw new AmadeusAPIException("Error getting flight offers", e);
+        }
+    }
+
+    public JsonNode getFlightDestinations(String origin, String maxPrice) throws AmadeusAPIException {
+        log.info("Getting flight destinations from origin: {} with max price: {}", origin, maxPrice);
+        String accessToken = amadeusAuthService.getAccessToken();
+
+        try {
+            String authorizationHeader = "Bearer " + accessToken;
+            JsonNode response = amadeusClient.getFlightDestinations(authorizationHeader, origin, maxPrice);
+            log.info("Received response from Amadeus: {}", response);
+            return response;
+        } catch (Exception e) {
+            log.error("Error getting flight destinations", e);
+            throw new AmadeusAPIException("Error getting flight destinations", e);
         }
     }
 

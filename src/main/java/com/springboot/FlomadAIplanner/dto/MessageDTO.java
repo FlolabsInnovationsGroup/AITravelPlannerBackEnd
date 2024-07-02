@@ -1,4 +1,4 @@
-package com.springboot.FlomadAIplanner.DTO;
+package com.springboot.FlomadAIplanner.dto;
 
 import com.springboot.FlomadAIplanner.model.entities.Speaker;
 import lombok.AllArgsConstructor;

@@ -13,17 +13,16 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.core.io.Resource;
-import org.springframework.web.context.annotation.SessionScope;
 
 import java.util.Map;
 
 @Configuration
 public class AIConfig {
 
-    @Value("classpath:/templates/DefaultPrompt.txt")
-    private Resource promptResource;
     public static final String OPENAI_MODEL = "openai";
     public static final String GEMINI_MODEL = "gemini";
+    @Value("classpath:/templates/DefaultPrompt.txt")
+    private Resource promptResource;
 
     @Bean
     public ChatMemory chatMemory() {

@@ -1,4 +1,4 @@
-package com.springboot.FlomadAIplanner.DTO;
+package com.springboot.FlomadAIplanner.dto.viator;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;

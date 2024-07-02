@@ -1,7 +1,7 @@
 package com.springboot.FlomadAIplanner.service.viator;
 
-import com.springboot.FlomadAIplanner.DTO.AttractionProductsRequest;
-import com.springboot.FlomadAIplanner.DTO.AttractionsRequest;
+import com.springboot.FlomadAIplanner.dto.viator.AttractionProductsRequest;
+import com.springboot.FlomadAIplanner.dto.viator.AttractionsRequest;
 import com.springboot.FlomadAIplanner.service.viator.confg.ViatorClientConfig;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;

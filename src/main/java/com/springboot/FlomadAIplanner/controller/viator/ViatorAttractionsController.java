@@ -1,6 +1,6 @@
 package com.springboot.FlomadAIplanner.controller.viator;
 
-import com.springboot.FlomadAIplanner.DTO.AttractionsRequest;
+import com.springboot.FlomadAIplanner.dto.viator.AttractionsRequest;
 import com.springboot.FlomadAIplanner.exceptions.ViatorAPIException;
 import com.springboot.FlomadAIplanner.service.viator.ViatorAttractionsService;
 import lombok.extern.slf4j.Slf4j;
