@@ -1,4 +1,4 @@
-package com.springboot.FlomadAIplanner;
+package com.springboot.FlomadAIplanner.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
