@@ -1,5 +1,6 @@
 package com.springboot.FlomadAIplanner.ai.functions;
 
+import com.fasterxml.jackson.annotation.JsonClassDescription;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Description;
@@ -10,7 +11,7 @@ import java.util.List;
 @Slf4j
 @Component
 @Description("Searches for available hotels based on the provided criteria.")
-public class HotelSearchFunction implements AIFunction<HotelSearchFunction.HotelSearchRequest, HotelSearchFunction.HotelSearchResponse> {
+public class HotelSearchFunctionMock implements AIFunction<HotelSearchFunctionMock.HotelSearchRequest, HotelSearchFunctionMock.HotelSearchResponse> {
 
     @Override
     public HotelSearchResponse apply(HotelSearchRequest request) {
