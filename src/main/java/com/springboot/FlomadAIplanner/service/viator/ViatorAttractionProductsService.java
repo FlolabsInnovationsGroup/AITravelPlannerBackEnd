@@ -15,11 +15,11 @@ public class ViatorAttractionProductsService {
         this.viatorClient = viatorClient;
     }
 
-    public String getAttractionProducts(String acceptLanguage, int seoId, String topX, String sortOrder, String currencyCode) throws ViatorAPIException {
-        log.info("Getting attraction products for SEO ID: {}", seoId);
+    public String getAttractionProducts(String acceptLanguage, AttractionProductsRequest request) throws ViatorAPIException {
+        log.info("Getting attraction products for SEO ID: {}", request.getSeoId());
 
         try {
-            AttractionProductsRequest request = new AttractionProductsRequest(seoId, topX, sortOrder, currencyCode);
+            log.info("Performing attraction products search with the following header {}, and parameters: {}", acceptLanguage, request);
             String response = viatorClient.getAttractionProducts(acceptLanguage, request);
             log.info("Received attraction products: {}", response);
             return response;

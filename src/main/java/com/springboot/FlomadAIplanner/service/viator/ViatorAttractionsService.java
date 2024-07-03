@@ -10,8 +10,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class ViatorAttractionsService {
 
-    private final static String ACCEPT_LANGUAGE = "en-US";
-
     private final ViatorClient viatorClient;
 
     @Autowired
@@ -19,11 +17,11 @@ public class ViatorAttractionsService {
         this.viatorClient = viatorClient;
     }
 
-    public String getAttractions(int destId, String topX, String sortOrder) throws ViatorAPIException {
-        log.info("Getting attractions for destination: {}", destId);
+    public String getAttractions(String acceptLang, AttractionsRequest request) throws ViatorAPIException {
+        log.info("Getting attractions for destination: {}", request.getDestId());
         try {
-            AttractionsRequest request = new AttractionsRequest(destId, topX, sortOrder);
-            String response = viatorClient.getAttractions(ACCEPT_LANGUAGE, request);
+            log.info("Performing attractions search with the following header {}, and parameters: {}", acceptLang, request);
+            String response = viatorClient.getAttractions(acceptLang, request);
             log.info("Received attractions: {}", response);
             return response;
         } catch (Exception e) {
