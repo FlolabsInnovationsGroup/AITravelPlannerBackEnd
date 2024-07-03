@@ -1,5 +1,6 @@
 package com.springboot.FlomadAIplanner.ai.config;
 
+import com.fasterxml.jackson.annotation.JsonClassDescription;
 import com.springboot.FlomadAIplanner.ai.functions.AIFunction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -30,10 +31,10 @@ public class AIFunctionConfig {
         return aiFunctions.stream()
                 .map(aiFunction -> {
                     String beanName = classToBeanNameMap.get(aiFunction.getClass());
-                    Description description = aiFunction.getClass().getAnnotation(Description.class);
+                    String descriptionText = getDescriptionText(aiFunction.getClass());
                     return String.format("Bean name: %s, Description: %s",
                             beanName != null ? beanName : "Unnamed Bean",
-                            description != null ? description.value() : "No description");
+                            descriptionText != null ? descriptionText : "No description");
                 })
                 .collect(Collectors.toList());
     }
@@ -46,4 +47,18 @@ public class AIFunctionConfig {
                         (existing, replacement) -> existing // In case of conflicts, keep the existing mapping
                 ));
     }
+
+
+    private String getDescriptionText(Class<?> clazz) {
+        Description description = clazz.getAnnotation(Description.class);
+        JsonClassDescription jsonClassDescription = clazz.getAnnotation(JsonClassDescription.class);
+        if (description != null) {
+            return description.value();
+        } else if (jsonClassDescription != null) {
+            return jsonClassDescription.value();
+        } else {
+            return "No description";
+        }
+    }
+
 }
