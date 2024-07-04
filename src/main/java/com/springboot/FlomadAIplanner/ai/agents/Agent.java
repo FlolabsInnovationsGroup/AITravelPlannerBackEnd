@@ -1,28 +1,25 @@
 package com.springboot.FlomadAIplanner.ai.agents;
 
 import com.springboot.FlomadAIplanner.ai.agents.messageProcessing.MessageProcessingStrategy;
-import com.springboot.FlomadAIplanner.ai.config.AIConfig;
 import com.springboot.FlomadAIplanner.ai.dto.AIMessageDTO;
 import com.springboot.FlomadAIplanner.ai.factory.ChatClientFactory;
-import com.springboot.FlomadAIplanner.ai.agents.FunctionNameSuggestion;
-import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.ai.chat.memory.ChatMemory;
+import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.Resource;
-import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
 
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 public class Agent<T> {
 
     @Value("classpath:/templates/FunctionsSuggestionsPrompt.txt")
     protected Resource functionSuggestionsPrompt;
     protected final ChatClient chatClient;
-    protected final Map<String, String> functionsUsable;
+    protected final List<String> functionsUsable;
     protected final MessageProcessingStrategy<T> messageProcessingStrategy;
     protected final Resource prompt;
 
@@ -38,7 +35,7 @@ public class Agent<T> {
             ChatClientFactory chatClientFactory,
             Model model,
             Resource prompt,
-            Map<String, String> functions,
+            List<String> functions,
             MessageProcessingStrategy<T> messageProcessingStrategy
     ){
         this.chatClient = chatClientFactory.getClient(model.getModelName());
@@ -49,7 +46,7 @@ public class Agent<T> {
 
     public static class Builder<T> {
         private ChatClient chatClient;
-        private Map<String, String> functionsUsable;
+        private List<String> functionsUsable;
         private MessageProcessingStrategy<T> messageProcessingStrategy;
         private Resource prompt;
 
@@ -60,7 +57,8 @@ public class Agent<T> {
             return this;
         }
 
-        public Builder<T> setFunctions(Map<String, String> functionsUsable) {
+        public Builder<T> setFunctions(List<String> functionsUsable) {
+            log.info("Usable Functions: {}", functionsUsable);
             this.functionsUsable = functionsUsable;
             return this;
         }
@@ -86,15 +84,20 @@ public class Agent<T> {
 
     public List<FunctionNameSuggestion> getRequiredFunctions(String message) {
         return chatClient.prompt()
-                .user(u -> u.text(functionSuggestionsPrompt)
-                        .param("functionsList", FunctionAnnotationUtils.mapToString(functionsUsable))
-                        .param("message", message))
+                .user(u -> {
+                    log.info("Creating user prompt with params: Prompt={}, functionsList={}, message={}",
+                            functionSuggestionsPrompt, functionsUsable.toString(), message);
+                    u.text(functionSuggestionsPrompt)
+                            .param("functionsList", functionsUsable.toString())
+                            .param("message", message);
+                })
                 .call()
                 .entity(new ParameterizedTypeReference<>() {
                 });
     }
 
     protected String[] functionNames(List<FunctionNameSuggestion> functions) {
+        log.info("functions: {}", functions);
         return functions.stream()
                 .map(FunctionNameSuggestion::functionName)
                 .toArray(String[]::new);
@@ -105,12 +108,19 @@ public class Agent<T> {
         return functionNames(functions);
     }
 
+    public String[] getFunctions(List<FunctionNameSuggestion> functions) {
+        return functionNames(functions);
+    }
+
     public T processMessage(AIMessageDTO message) {
-        return messageProcessingStrategy.processMessage(message, this, this.prompt);
+        PromptTemplate promptTemplate = new PromptTemplate(this.prompt);
+        return messageProcessingStrategy.processMessage(message, this, promptTemplate);
     }
 
     public T processMessage(AIMessageDTO message, String prompt) {
-        return messageProcessingStrategy.processMessage(message, this, prompt);
+        PromptTemplate promptTemplate = new PromptTemplate(prompt);
+        return messageProcessingStrategy.processMessage(message, this, promptTemplate);
     }
+
 
 }

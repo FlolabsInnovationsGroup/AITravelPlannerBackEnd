@@ -2,15 +2,16 @@ package com.springboot.FlomadAIplanner.ai.config;
 
 import com.springboot.FlomadAIplanner.ai.agents.Agent;
 import com.springboot.FlomadAIplanner.ai.agents.FunctionAnnotationUtils;
+import com.springboot.FlomadAIplanner.ai.agents.messageProcessing.DefaultMessageProcessingStrategy;
 import com.springboot.FlomadAIplanner.ai.agents.messageProcessing.StreamMessageProcessingStrategy;
-import com.springboot.FlomadAIplanner.ai.functions.DistanceCalculatorFunction;
-import com.springboot.FlomadAIplanner.ai.functions.FlightSearchFunction;
+import com.springboot.FlomadAIplanner.ai.functions.*;
 import org.springframework.ai.autoconfigure.chat.client.ChatClientBuilderConfigurer;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.PromptChatMemoryAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.memory.InMemoryChatMemory;
 import org.springframework.ai.chat.model.ChatModel;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -18,17 +19,23 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import reactor.core.publisher.Flux;
 
+import java.util.ArrayList;
+import java.util.Map;
+
 @Configuration
 public class AgentConfig {
-
-    public static final String CURRENT_AGENT = "current";
-    public static final String HISTORY_AGENT = "history";
     @Value("classpath:/templates/DefaultPrompt.txt")
     private Resource promptResource;
     @Value("classpath:/templates/IntentExtractorSystemPrompt.txt")
-    private Resource IntentExtractorResource;
+    private Resource IntentExtractorSystem;
+    @Value("classpath:/templates/IntentExtractorAssistantPrompt.txt")
+    private Resource IntentExtractorAssistant;
     @Value("classpath:/templates/TestChatPrompt.txt")
     protected Resource chatPrompt;
+    @Autowired
+    private DefaultMessageProcessingStrategy defaultMessageProcessingStrategy;
+    @Autowired
+    private StreamMessageProcessingStrategy streamMessageProcessingStrategy;
 
     @Bean
     public ChatMemory currentMemory() {
@@ -39,30 +46,22 @@ public class AgentConfig {
         return new InMemoryChatMemory();
     }
 
-//    @Bean
-//    @Scope("prototype")
-//    @ConditionalOnMissingBean
-    public ChatClient.Builder chatClientBuilder(ChatClientBuilderConfigurer chatClientBuilderConfigurer,
-                                                @Qualifier("openAiChatModel") ChatModel chatModel) {
-        ChatClient.Builder builder = ChatClient.builder(chatModel);
-        return chatClientBuilderConfigurer.configure(builder);
-    }
 
     @Bean
-    public Agent<Flux<String>> IntentExtractor(@Qualifier("openAiChatModel") ChatModel chatModel, ChatMemory chatMemory) {
-        return new Agent.Builder<Flux<String>>().setChatClient(
+    public Agent<String> intentExtractor(@Qualifier("openAiChatModel") ChatModel chatModel, ChatMemory chatMemory) {
+        return new Agent.Builder<String>().setChatClient(
                         ChatClient.builder(chatModel)
-                                .defaultSystem(IntentExtractorResource)
+                                .defaultSystem(IntentExtractorSystem)
                                 .defaultAdvisors(new PromptChatMemoryAdvisor(chatMemory))
                                 .build()
                 ).setFunctions(
-                        FunctionAnnotationUtils.extract(
-                                DistanceCalculatorFunction.class,
-                                FlightSearchFunction.class
-                        )
-                ).setPrompt(chatPrompt)
+                    new ArrayList<>(FunctionAnnotationUtils.extract(
+                            CurrentTimeFunction.class,
+                            FlightSearchFunction.class
+                    ))
+                ).setPrompt(IntentExtractorAssistant)
                 .setMessageProcessingStrategy(
-                        new StreamMessageProcessingStrategy()
+                        defaultMessageProcessingStrategy
                 ).build();
     }
 
@@ -74,13 +73,13 @@ public class AgentConfig {
                                 .defaultAdvisors(new PromptChatMemoryAdvisor(currentMemory))
                                 .build()
                 ).setFunctions(
-                    FunctionAnnotationUtils.extract(
+                    new ArrayList<>(FunctionAnnotationUtils.extract(
                         DistanceCalculatorFunction.class,
                         FlightSearchFunction.class
-                    )
+                    ))
                 ).setPrompt(chatPrompt)
                 .setMessageProcessingStrategy(
-                        new StreamMessageProcessingStrategy()
+                        streamMessageProcessingStrategy
                 ).build();
     }
 
@@ -92,13 +91,13 @@ public class AgentConfig {
                                 .defaultAdvisors(new PromptChatMemoryAdvisor(historyMemory))
                                 .build()
                 ).setFunctions(
-                        FunctionAnnotationUtils.extract(
-                                DistanceCalculatorFunction.class,
-                                FlightSearchFunction.class
-                        )
+                    new ArrayList<>(FunctionAnnotationUtils.extract(
+                            DistanceCalculatorFunction.class,
+                            FlightSearchFunction.class
+                    ))
                 ).setPrompt(chatPrompt)
                 .setMessageProcessingStrategy(
-                        new StreamMessageProcessingStrategy()
+                        streamMessageProcessingStrategy
                 ).build();
     }
 
@@ -108,6 +107,16 @@ public class AgentConfig {
                 .defaultSystem(promptResource)
                 .defaultAdvisors(new PromptChatMemoryAdvisor(chatMemory))
                 .build();
+    }
+
+
+    //    @Bean
+//    @Scope("prototype")
+//    @ConditionalOnMissingBean
+    public ChatClient.Builder chatClientBuilder(ChatClientBuilderConfigurer chatClientBuilderConfigurer,
+                                                @Qualifier("openAiChatModel") ChatModel chatModel) {
+        ChatClient.Builder builder = ChatClient.builder(chatModel);
+        return chatClientBuilderConfigurer.configure(builder);
     }
 
 }

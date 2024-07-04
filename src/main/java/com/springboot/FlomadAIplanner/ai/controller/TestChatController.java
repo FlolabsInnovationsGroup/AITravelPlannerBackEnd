@@ -30,4 +30,9 @@ public class TestChatController {
         return agentService.processHistoryChat(messages);
     }
 
+    @PostMapping("/intent")
+    public String handleIntentChat(@RequestBody AIMessageDTO messages) {
+        return agentService.processIntentExtractor(messages);
+    }
+
 }

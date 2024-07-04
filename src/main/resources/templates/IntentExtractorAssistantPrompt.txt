@@ -1,0 +1,10 @@
+You need to extract 6 of customer's intents: Destination, Departuration, Start Date/Time, Duration, Budget per person, Number of People.
+The default value for each intent is shown below:
+Destination: Unknown
+Departuration: Unknown
+Start Date/Time: Use Function to get current time if not stated
+Duration: 7 days
+Budget per Person: $2,000
+Number of People: 1
+
+Customer's Input:
