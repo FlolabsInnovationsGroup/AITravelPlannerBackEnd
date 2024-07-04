@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @Description("Provides weather forecast for a given location and date.")
-public class WeatherForecastFunction implements AIFunction<WeatherForecastFunction.WeatherForecastRequest, WeatherForecastFunction.WeatherForecastResponse> {
+public class WeatherForecastFunctionMock implements AIFunction<WeatherForecastFunctionMock.WeatherForecastRequest, WeatherForecastFunctionMock.WeatherForecastResponse> {
 
     @Override
     public WeatherForecastResponse apply(WeatherForecastRequest request) {
