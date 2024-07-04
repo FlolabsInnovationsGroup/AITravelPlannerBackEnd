@@ -30,10 +30,10 @@ public class AIFunctionConfig {
         return aiFunctions.stream()
                 .map(aiFunction -> {
                     String beanName = classToBeanNameMap.get(aiFunction.getClass());
-                    Description description = aiFunction.getClass().getAnnotation(Description.class);
+                    String descriptionText = getDescriptionText(aiFunction.getClass());
                     return String.format("Bean name: %s, Description: %s",
                             beanName != null ? beanName : "Unnamed Bean",
-                            description != null ? description.value() : "No description");
+                            descriptionText);
                 })
                 .collect(Collectors.toList());
     }
@@ -46,4 +46,15 @@ public class AIFunctionConfig {
                         (existing, replacement) -> existing // In case of conflicts, keep the existing mapping
                 ));
     }
+
+
+    private String getDescriptionText(Class<?> clazz) {
+        Description description = clazz.getAnnotation(Description.class);
+        if (description != null) {
+            return description.value();
+        } else {
+            return "No description";
+        }
+    }
+
 }
