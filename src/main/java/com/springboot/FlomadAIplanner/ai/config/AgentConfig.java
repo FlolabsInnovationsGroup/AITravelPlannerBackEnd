@@ -59,7 +59,7 @@ public class AgentConfig {
                 ).setFunctions(
                     new ArrayList<>(FunctionAnnotationUtils.extract(
                             CurrentTimeFunction.class,
-                            FlightSearchFunction.class
+                            FlightSearchFunctionMock.class
                     ))
                 ).setPrompt(IntentExtractorAssistant)
                 .setMessageProcessingStrategy(
@@ -76,8 +76,8 @@ public class AgentConfig {
                                 .build()
                 ).setFunctions(
                     new ArrayList<>(FunctionAnnotationUtils.extract(
-                        DistanceCalculatorFunction.class,
-                        FlightSearchFunction.class
+                        DistanceCalculatorFunctionMock.class,
+                        FlightSearchFunctionMock.class
                     ))
                 ).setPrompt(chatPrompt)
                 .setMessageProcessingStrategy(
@@ -94,8 +94,8 @@ public class AgentConfig {
                                 .build()
                 ).setFunctions(
                     new ArrayList<>(FunctionAnnotationUtils.extract(
-                            DistanceCalculatorFunction.class,
-                            FlightSearchFunction.class
+                            DistanceCalculatorFunctionMock.class,
+                            FlightSearchFunctionMock.class
                     ))
                 ).setPrompt(chatPrompt)
                 .setMessageProcessingStrategy(
