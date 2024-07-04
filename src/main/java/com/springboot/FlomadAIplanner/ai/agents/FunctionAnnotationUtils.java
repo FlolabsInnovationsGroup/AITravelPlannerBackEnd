@@ -6,6 +6,12 @@ import org.springframework.context.annotation.Description;
 import java.util.*;
 
 public class FunctionAnnotationUtils {
+
+    /**
+     * For the provided classes, extract their name and descriptions and store them in a List of String
+     * @param classes Provided Classes
+     * @return List of String of Class Names and Descriptions
+     */
     public static List<String> extract(Class<?>... classes) {
 
         List<String> classDescriptions = new ArrayList<>();
@@ -27,6 +33,11 @@ public class FunctionAnnotationUtils {
         return classDescriptions;
     }
 
+    /**
+     * Convert the first Letter of a String to Lower Case
+     * @param str Input String
+     * @return Converted String
+     */
     public static String toCamelCase(String str) {
         if (str == null || str.isEmpty()) {
             return str;
@@ -34,6 +45,12 @@ public class FunctionAnnotationUtils {
         return str.substring(0, 1).toLowerCase() + str.substring(1);
     }
 
+
+    /**
+     * Convert a Map to String
+     * @param map
+     * @return String
+     */
     public static String mapToString(Map<String, ?> map) {
         StringBuilder stringBuilder = new StringBuilder();
 

@@ -3,9 +3,9 @@ package com.springboot.FlomadAIplanner.ai.config;
 import com.springboot.FlomadAIplanner.ai.agents.Agent;
 import com.springboot.FlomadAIplanner.ai.agents.FunctionAnnotationUtils;
 import com.springboot.FlomadAIplanner.ai.agents.messageProcessing.DefaultMessageProcessingStrategy;
+import com.springboot.FlomadAIplanner.ai.agents.messageProcessing.IntentExtractorProcessingStrategy;
 import com.springboot.FlomadAIplanner.ai.agents.messageProcessing.StreamMessageProcessingStrategy;
 import com.springboot.FlomadAIplanner.ai.functions.*;
-import org.springframework.ai.autoconfigure.chat.client.ChatClientBuilderConfigurer;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.PromptChatMemoryAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
@@ -36,6 +36,8 @@ public class AgentConfig {
     private DefaultMessageProcessingStrategy defaultMessageProcessingStrategy;
     @Autowired
     private StreamMessageProcessingStrategy streamMessageProcessingStrategy;
+    @Autowired
+    private IntentExtractorProcessingStrategy intentExtractorProcessingStrategy;
 
     @Bean
     public ChatMemory currentMemory() {
@@ -61,7 +63,7 @@ public class AgentConfig {
                     ))
                 ).setPrompt(IntentExtractorAssistant)
                 .setMessageProcessingStrategy(
-                        defaultMessageProcessingStrategy
+                        intentExtractorProcessingStrategy
                 ).build();
     }
 
@@ -99,24 +101,6 @@ public class AgentConfig {
                 .setMessageProcessingStrategy(
                         streamMessageProcessingStrategy
                 ).build();
-    }
-
-//    @Bean
-    public ChatClient geminiChatClient(@Qualifier("vertexAiGeminiChat") ChatModel chatModel, ChatMemory chatMemory) {
-        return ChatClient.builder(chatModel)
-                .defaultSystem(promptResource)
-                .defaultAdvisors(new PromptChatMemoryAdvisor(chatMemory))
-                .build();
-    }
-
-
-    //    @Bean
-//    @Scope("prototype")
-//    @ConditionalOnMissingBean
-    public ChatClient.Builder chatClientBuilder(ChatClientBuilderConfigurer chatClientBuilderConfigurer,
-                                                @Qualifier("openAiChatModel") ChatModel chatModel) {
-        ChatClient.Builder builder = ChatClient.builder(chatModel);
-        return chatClientBuilderConfigurer.configure(builder);
     }
 
 }

@@ -24,9 +24,7 @@ public class DefaultMessageProcessingStrategy implements MessageProcessingStrate
                                  PromptTemplate promptTemplate)
     {
         Prompt p = promptTemplate.create(Map.of("userInput", message.getMessage()));
-        log.info("Prompts: {}", p.getContents());
         List<FunctionNameSuggestion> requiredFunctions = agent.getRequiredFunctions(p.getContents());
-        log.info("requiredFunctions: {}", requiredFunctions);
 
         if (requiredFunctions.isEmpty()) {
             return agent.getChatClient().prompt()
@@ -34,13 +32,13 @@ public class DefaultMessageProcessingStrategy implements MessageProcessingStrate
                     .call()
                     .content();
         } else {
-            Map<String, Object> result =  agent.getChatClient().prompt()
+            return agent.getChatClient().prompt()
                     .messages(p.getInstructions())
                     .functions(agent.getFunctions(requiredFunctions))
                     .call()
-                    .entity(new ParameterizedTypeReference<Map<String, Object>>() {
-                    });
-            return FunctionAnnotationUtils.mapToString(result);
+                    .content();
         }
+
+
     }
 }

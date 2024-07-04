@@ -8,3 +8,4 @@ Budget per Person: $2,000
 Number of People: 1
 
 Customer's Input:
+{userInput}

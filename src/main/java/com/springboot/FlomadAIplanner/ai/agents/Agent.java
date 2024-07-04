@@ -13,6 +13,17 @@ import org.springframework.core.io.Resource;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Pack different functions of ChatClient:
+ * 1. ChatClient itself
+ *    - Model
+ *    - Memory
+ *    - System Prompt
+ * 2. Available Functions
+ * 3. Assistant Prompt
+ * 4. Message Processing Strategy
+ * @param <T> return type from Agent
+ */
 @Slf4j
 public class Agent<T> {
 
@@ -29,7 +40,6 @@ public class Agent<T> {
         this.messageProcessingStrategy = builder.messageProcessingStrategy;
         this.prompt = builder.prompt;
     }
-
 
     public Agent(
             ChatClientFactory chatClientFactory,
@@ -82,6 +92,11 @@ public class Agent<T> {
         return this.chatClient;
     }
 
+    /**
+     * Let Agent decide whether to use functions and which function to use
+     * @param message
+     * @return List of functions the Agent want to use
+     */
     public List<FunctionNameSuggestion> getRequiredFunctions(String message) {
         return chatClient.prompt()
                 .user(u -> {
@@ -96,6 +111,11 @@ public class Agent<T> {
                 });
     }
 
+    /**
+     * Convert List Functions to List of Function names
+     * @param functions List of Functions
+     * @return String List
+     */
     protected String[] functionNames(List<FunctionNameSuggestion> functions) {
         log.info("functions: {}", functions);
         return functions.stream()

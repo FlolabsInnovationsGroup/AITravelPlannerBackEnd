@@ -26,6 +26,7 @@ public class AgentService {
 
     public Flux<String> processHistoryChat(AIMessageDTO message) {
         // Use the historyAgent to process the chat messages
+
         return historyAgent.processMessage(message, "");
     }
 
