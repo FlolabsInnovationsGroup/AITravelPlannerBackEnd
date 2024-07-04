@@ -25,6 +25,8 @@ public class AgentConfig {
     public static final String HISTORY_AGENT = "history";
     @Value("classpath:/templates/DefaultPrompt.txt")
     private Resource promptResource;
+    @Value("classpath:/templates/IntentExtractorSystemPrompt.txt")
+    private Resource IntentExtractorResource;
     @Value("classpath:/templates/TestChatPrompt.txt")
     protected Resource chatPrompt;
 
@@ -46,6 +48,23 @@ public class AgentConfig {
         return chatClientBuilderConfigurer.configure(builder);
     }
 
+    @Bean
+    public Agent<Flux<String>> IntentExtractor(@Qualifier("openAiChatModel") ChatModel chatModel, ChatMemory chatMemory) {
+        return new Agent.Builder<Flux<String>>().setChatClient(
+                        ChatClient.builder(chatModel)
+                                .defaultSystem(IntentExtractorResource)
+                                .defaultAdvisors(new PromptChatMemoryAdvisor(chatMemory))
+                                .build()
+                ).setFunctions(
+                        FunctionAnnotationUtils.extract(
+                                DistanceCalculatorFunction.class,
+                                FlightSearchFunction.class
+                        )
+                ).setPrompt(chatPrompt)
+                .setMessageProcessingStrategy(
+                        new StreamMessageProcessingStrategy()
+                ).build();
+    }
 
     @Bean
     public Agent<Flux<String>> currentAgent(@Qualifier("openAiChatModel") ChatModel chatModel, ChatMemory currentMemory) {

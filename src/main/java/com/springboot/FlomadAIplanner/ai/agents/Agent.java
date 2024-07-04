@@ -105,6 +105,10 @@ public class Agent<T> {
         return functionNames(functions);
     }
 
+    public T processMessage(AIMessageDTO message) {
+        return messageProcessingStrategy.processMessage(message, this, this.prompt);
+    }
+
     public T processMessage(AIMessageDTO message, String prompt) {
         return messageProcessingStrategy.processMessage(message, this, prompt);
     }
