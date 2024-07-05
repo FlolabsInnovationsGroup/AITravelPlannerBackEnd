@@ -28,6 +28,12 @@ public class FreeCurrencyController {
         this.freeCurrencyService = freeCurrencyService;
     }
 
+    /**
+     *
+     * @param currencies currencies list of currency code separated by ","
+     * @return Supported currencies
+     * @throws FreeCurrencyException
+     */
     @GetMapping("/currencies")
     public ResponseEntity<JsonNode> getSupportCurrencies(@RequestParam @Nullable String currencies) throws FreeCurrencyException {
         log.info("Received currencies: {}", (Object) currencies);
@@ -38,6 +44,11 @@ public class FreeCurrencyController {
         return ResponseEntity.ok(response);
     }
 
+    /**
+     *
+     * @return usage of API and remaining attempts
+     * @throws FreeCurrencyException
+     */
     @GetMapping("/status")
     public ResponseEntity<JsonNode> getStatus() throws FreeCurrencyException {
         log.info("Performing Get FreeCurrency API Status");
@@ -48,6 +59,13 @@ public class FreeCurrencyController {
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * sample request parameters: /latest?base=EUR&currencies=USD,CAD,CNY,EUR
+     * @param base base currency, default USD
+     * @param currencies currencies list of currency code separated by ","
+     * @return Latest Currencies Exchange rate
+     * @throws FreeCurrencyException
+     */
     @GetMapping("/latest")
     public ResponseEntity<JsonNode> getLatestCurrency(@RequestParam @Nullable String base,
                                                      @RequestParam @Nullable String currencies) throws FreeCurrencyException {
@@ -59,15 +77,21 @@ public class FreeCurrencyController {
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * sample request parameters: /history?base=EUR&currencies=USD,CAD,CNY,EUR&date=2022-12-31
+     * @param date must be in format: 2021-12-31
+     * @param base base currency, default USD
+     * @param currencies currencies list of currency code separated by ","
+     * @return Json result
+     * @throws FreeCurrencyException
+     */
     @GetMapping("/history")
-    public ResponseEntity<JsonNode> getHistoricalCurrency(@RequestParam @NotNull Date date,
+    public ResponseEntity<JsonNode> getHistoricalCurrency(@RequestParam @NotNull String date,
                                                           @RequestParam @Nullable String base,
                                                           @RequestParam @Nullable String currencies) throws FreeCurrencyException {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String formattedDate = dateFormat.format(date);
-        log.info("Received date: {} currencies: {}, base currencies: {}", formattedDate, currencies, base);
+        log.info("Received date: {} currencies: {}, base currencies: {}", date, currencies, base);
 
-        JsonNode response = freeCurrencyService.getHistoricalCurrency(formattedDate, base, currencies);
+        JsonNode response = freeCurrencyService.getHistoricalCurrency(date, base, currencies);
 
         log.info("Received response from FreeCurrency API");
         return ResponseEntity.ok(response);
