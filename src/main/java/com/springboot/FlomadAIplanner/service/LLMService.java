@@ -1,19 +1,27 @@
 package com.springboot.FlomadAIplanner.service;
 
-import com.springboot.FlomadAIplanner.DTO.MessageDTO;
-import com.springboot.FlomadAIplanner.controller.ModelController;
-import lombok.extern.slf4j.Slf4j;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import javax.annotation.PostConstruct;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.*;
+import com.springboot.FlomadAIplanner.DTO.MessageDTO;
+import com.springboot.FlomadAIplanner.controller.ModelController;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
@@ -174,6 +182,16 @@ public class LLMService {
             // return restTemplate.postForObject("https://api.openai.com/v1/inference", prompt, String.class);
         }
         return null;
+    }
+
+    public String searchDestination(String temperature) throws IOException {
+        String temp; // Declare the variable 'temp'
+        String prompt = "Find me destination spots with " + temperature + " weather.";
+        
+        temp = this.openAIService.sendMessageToOpenAI(prompt); // Assign a value to 'temp'
+        log.info("Response from OpenAI: " + temp); // Log the response from OpenAI
+        return temp; // Return 'temp'
+        // return restTemplate.postForObject("https://api.openai.com/v1/inference", prompt, String.class);
     }
 
     private String getModelType(String modelId) {
