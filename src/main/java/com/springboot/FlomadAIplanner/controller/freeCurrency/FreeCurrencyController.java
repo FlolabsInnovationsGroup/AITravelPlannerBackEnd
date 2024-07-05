@@ -59,7 +59,7 @@ public class FreeCurrencyController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/historical")
+    @GetMapping("/history")
     public ResponseEntity<JsonNode> getHistoricalCurrency(@RequestParam @NotNull Date date,
                                                           @RequestParam @Nullable String base,
                                                           @RequestParam @Nullable String currencies) throws FreeCurrencyException {
