@@ -19,7 +19,7 @@ public interface AmadeusClient {
                                    @RequestParam(value = "nonStop", required = false) Boolean nonStop,
                                    @RequestParam(value = "viewBy", required = false) String viewBy);
 
-    @PostMapping(value = "/v1/shopping/flight-offers", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/v2/shopping/flight-offers", consumes = MediaType.APPLICATION_JSON_VALUE)
     JsonNode getFlightOffersPost(@RequestHeader("X-HTTP-Method-Override") String httpMethodOverride,
                                  @RequestBody FlightOffersPostRequest flightOffersRequest);
 

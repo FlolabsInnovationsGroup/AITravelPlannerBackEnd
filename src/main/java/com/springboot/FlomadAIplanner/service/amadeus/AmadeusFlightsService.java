@@ -1,7 +1,10 @@
 package com.springboot.FlomadAIplanner.service.amadeus;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.springboot.FlomadAIplanner.dto.amadeus.*;
+import com.springboot.FlomadAIplanner.dto.amadeus.FlightDestinationsRequest;
+import com.springboot.FlomadAIplanner.dto.amadeus.FlightOfferPricingRequest;
+import com.springboot.FlomadAIplanner.dto.amadeus.FlightOffersPostRequest;
+import com.springboot.FlomadAIplanner.dto.amadeus.FlightsAirportLocationsRequest;
 import com.springboot.FlomadAIplanner.exceptions.AmadeusAPIException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

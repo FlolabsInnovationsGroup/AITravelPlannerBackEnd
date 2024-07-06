@@ -19,10 +19,21 @@ public class AmadeusClientConfig {
     }
 
     @Bean("amadeusRequestInterceptor")
-    public RequestInterceptor requestInterceptor() throws AmadeusAPIException {
-        log.info("Using request interceptor for Amadeus API");
-        String authorizationHeader = "Bearer " + amadeusAuthService.getAccessToken();
-        return requestTemplate -> requestTemplate.header("Authorization", authorizationHeader);
+    public RequestInterceptor requestInterceptor() {
+        log.info("Initializing request interceptor for Amadeus API");
+
+        return requestTemplate -> {
+            // Fetch the access token dynamically for each request
+            String accessToken;
+            try {
+                accessToken = amadeusAuthService.getAccessToken();
+            } catch (AmadeusAPIException e) {
+                throw new RuntimeException(e);
+            }
+            String authorizationHeader = "Bearer " + accessToken;
+            requestTemplate.header("Authorization", authorizationHeader);
+            log.debug("Set Authorization header with dynamic access token");
+        };
     }
 
 }

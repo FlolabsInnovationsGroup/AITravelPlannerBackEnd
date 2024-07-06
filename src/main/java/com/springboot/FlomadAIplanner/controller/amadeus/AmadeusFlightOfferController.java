@@ -3,6 +3,7 @@ package com.springboot.FlomadAIplanner.controller.amadeus;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.springboot.FlomadAIplanner.dto.amadeus.FlightOfferPricingRequest;
 import com.springboot.FlomadAIplanner.dto.amadeus.FlightOffersPostRequest;
+import com.springboot.FlomadAIplanner.dto.amadeus.FlightsAirportLocationsRequest;
 import com.springboot.FlomadAIplanner.exceptions.AmadeusAPIException;
 import com.springboot.FlomadAIplanner.service.amadeus.AmadeusFlightsService;
 import jakarta.validation.Valid;
@@ -49,6 +50,16 @@ public class AmadeusFlightOfferController {
         log.info("Received offer: {}", offer);
 
         JsonNode response = amadeusFlightsService.getOfferPricing(offer);
+
+        log.info("Received response from Amadeus API");
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/airport-location")
+    public ResponseEntity<JsonNode> getAirportLocation(@RequestBody FlightsAirportLocationsRequest locationsRequest) throws AmadeusAPIException {
+        log.info("Received locations request: {}", locationsRequest);
+
+        JsonNode response = amadeusFlightsService.getAirportCode(locationsRequest);
 
         log.info("Received response from Amadeus API");
         return ResponseEntity.ok(response);
