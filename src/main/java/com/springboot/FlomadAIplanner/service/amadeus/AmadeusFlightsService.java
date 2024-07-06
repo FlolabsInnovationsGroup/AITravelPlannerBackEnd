@@ -11,22 +11,17 @@ import org.springframework.stereotype.Service;
 @Service
 public class AmadeusFlightsService {
 
-    private final AmadeusAuthService amadeusAuthService;
     private final AmadeusClient amadeusClient;
 
     @Autowired
-    public AmadeusFlightsService(AmadeusAuthService amadeusAuthService, AmadeusClient amadeusClient) {
-        this.amadeusAuthService = amadeusAuthService;
+    public AmadeusFlightsService(AmadeusClient amadeusClient) {
         this.amadeusClient = amadeusClient;
     }
 
     public JsonNode getFlightOffersPost(FlightOffersRequest flightOffersRequest) throws AmadeusAPIException {
         log.info("Getting flight offers with POST request");
-        String accessToken = amadeusAuthService.getAccessToken();
-
         try {
-            String authorizationHeader = "Bearer " + accessToken;
-            JsonNode response = amadeusClient.getFlightOffersPost(authorizationHeader, "GET", flightOffersRequest);
+            JsonNode response = amadeusClient.getFlightOffersPost("GET", flightOffersRequest);
             log.info("Received flight offers from Amadeus using POST request");
             return response;
         } catch (Exception e) {
@@ -37,11 +32,8 @@ public class AmadeusFlightsService {
 
     public JsonNode getFlightOffers(String originLocationCode, String destinationLocationCode, String departureDate, String returnDate, int adults, int max) throws AmadeusAPIException {
         log.info("Getting flight offers from {} to {} for {} adults", originLocationCode, destinationLocationCode, adults);
-        String accessToken = amadeusAuthService.getAccessToken();
-
         try {
-            String authorizationHeader = "Bearer " + accessToken;
-            JsonNode response = amadeusClient.getFlightOffers(authorizationHeader, originLocationCode, destinationLocationCode, departureDate, returnDate, adults, max);
+            JsonNode response = amadeusClient.getFlightOffers(originLocationCode, destinationLocationCode, departureDate, returnDate, adults, max);
             log.info("Received flight offers from Amadeus");
             return response;
         } catch (Exception e) {
@@ -52,11 +44,8 @@ public class AmadeusFlightsService {
 
     public JsonNode getFlightDestinations(String origin, String maxPrice) throws AmadeusAPIException {
         log.info("Getting flight destinations from origin: {} with max price: {}", origin, maxPrice);
-        String accessToken = amadeusAuthService.getAccessToken();
-
         try {
-            String authorizationHeader = "Bearer " + accessToken;
-            JsonNode response = amadeusClient.getFlightDestinations(authorizationHeader, origin, maxPrice);
+            JsonNode response = amadeusClient.getFlightDestinations(origin, maxPrice);
             log.info("Received response from Amadeus: {}", response);
             return response;
         } catch (Exception e) {
@@ -67,11 +56,8 @@ public class AmadeusFlightsService {
 
     public JsonNode getOfferPricing(String offer) throws AmadeusAPIException {
         log.info("Verifying flight offer pricing");
-        String accessToken = amadeusAuthService.getAccessToken();
-
         try {
-            String authorizationHeader = "Bearer " + accessToken;
-            JsonNode response = amadeusClient.getOfferPricing(authorizationHeader, "GET", offer);
+            JsonNode response = amadeusClient.getOfferPricing("GET", offer);
             log.info("Received response from Amadeus for flight offer pricing");
             return response;
         } catch (Exception e) {
@@ -82,11 +68,8 @@ public class AmadeusFlightsService {
 
     public JsonNode getAirportCode(String cityName) throws AmadeusAPIException {
         log.info("Getting airport code for city: {}", cityName);
-        String accessToken = amadeusAuthService.getAccessToken();
-
         try {
-            String authorizationHeader = "Bearer " + accessToken;
-            JsonNode response = amadeusClient.getLocations(authorizationHeader, "AIRPORT", cityName, null, null, null);
+            JsonNode response = amadeusClient.getLocations("AIRPORT", cityName, null, null, null);
             log.info("Received response from Amadeus: {}", response);
             return response;
         } catch (Exception e) {
