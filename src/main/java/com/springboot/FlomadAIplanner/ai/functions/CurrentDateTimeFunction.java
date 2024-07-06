@@ -16,10 +16,11 @@ import java.time.format.DateTimeFormatter;
 
 @Slf4j
 @Component
-@Description("Retrieves the current date and time. " +
-        "Use this function to get the current date and time in a specified format. " +
-        "This function is useful for getting context to AI model about the current date and time in the real world. " +
-        "Should be called before any other function that requires the current date and time.")
+@Description("""
+        Retrieves the current date and time.
+        Use this function to get the current date and time in a specified format.
+        This function is useful for getting context to AI model about the current date and time in the real world.
+        Should be called before any other function that requires the current date and time.""")
 public class CurrentDateTimeFunction implements AIFunction<CurrentDateTimeFunction.CurrentDateTimeRequest, JsonNode> {
 
     @Override

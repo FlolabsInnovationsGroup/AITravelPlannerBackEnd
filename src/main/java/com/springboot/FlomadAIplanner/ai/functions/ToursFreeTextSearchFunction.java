@@ -18,15 +18,17 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-@Description("Use this function to perform a free text search for tours to the required destinations (countries, cities, or famous places). " +
-        "Searching for Viator PRODUCTS, ATTRACTIONS, and DESTINATIONS. " +
-        "Use this function to search for various activities, tours, and experiences available." +
-        "Mostly could be called to find out general information about a tours (payed activities) " +
-        "or famous places available in the desired destination." +
-        "DESTINATION could be a country, city, town, etc." +
-        "ATTRACTION could be a famous place, monument, museum, etc." +
-        "PRODUCT could be a tour, activity, experience, etc." +
-        "P.S. Use CurrentDateTimeFunction before this function to get the current date and time in the real world.")
+@Description("""
+        Use this function to perform a free text search for TOURS to the required destinations (countries, cities, famous places, etc.).
+        Searching for Viator PRODUCTS, ATTRACTIONS, and DESTINATIONS.
+        Use this function to search for various activities, tours, and experiences available.
+        Mostly could be called to find out general information about a tours (payed activities)\s
+        or famous places available in the desired destination.
+        DESTINATION could be a country, city, town, etc.
+        ATTRACTION could be a famous place, monument, museum, etc.
+        PRODUCT could be a tour, activity, experience, etc.
+        'productUrl' - is actually the link to the tour purchase and description, media.
+        P.S. Use CurrentDateTimeFunction before this function to get the current date and time in the real world.""")
 public class ToursFreeTextSearchFunction implements AIFunction<ToursFreeTextSearchFunction.FreeTextSearchRequestWrapper, JsonNode> {
 
     private final ViatorAuxiliaryService viatorAuxiliaryService;
@@ -52,6 +54,7 @@ public class ToursFreeTextSearchFunction implements AIFunction<ToursFreeTextSear
     @NoArgsConstructor
     @AllArgsConstructor
     public static class FreeTextSearchRequestWrapper {
+
         @NotBlank
         @JsonPropertyDescription("Required. Specifies the language into which the natural-language fields in the response will be translated if needed. Example: en-US. By default use en-US")
         private String acceptLanguage;
