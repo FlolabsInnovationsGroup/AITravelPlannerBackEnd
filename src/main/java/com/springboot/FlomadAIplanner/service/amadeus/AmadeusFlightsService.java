@@ -9,13 +9,13 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-public class AmadeusShoppingService {
+public class AmadeusFlightsService {
 
     private final AmadeusAuthService amadeusAuthService;
     private final AmadeusClient amadeusClient;
 
     @Autowired
-    public AmadeusShoppingService(AmadeusAuthService amadeusAuthService, AmadeusClient amadeusClient) {
+    public AmadeusFlightsService(AmadeusAuthService amadeusAuthService, AmadeusClient amadeusClient) {
         this.amadeusAuthService = amadeusAuthService;
         this.amadeusClient = amadeusClient;
     }
@@ -77,6 +77,21 @@ public class AmadeusShoppingService {
         } catch (Exception e) {
             log.error("Error verifying flight offer pricing", e);
             throw new AmadeusAPIException("Error verifying flight offer pricing", e);
+        }
+    }
+
+    public JsonNode getAirportCode(String cityName) throws AmadeusAPIException {
+        log.info("Getting airport code for city: {}", cityName);
+        String accessToken = amadeusAuthService.getAccessToken();
+
+        try {
+            String authorizationHeader = "Bearer " + accessToken;
+            JsonNode response = amadeusClient.getLocations(authorizationHeader, "AIRPORT", cityName, null, null, null);
+            log.info("Received response from Amadeus: {}", response);
+            return response;
+        } catch (Exception e) {
+            log.error("Error getting airport code", e);
+            throw new AmadeusAPIException("Error getting airport code", e);
         }
     }
 
