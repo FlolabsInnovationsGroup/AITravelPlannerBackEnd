@@ -126,13 +126,14 @@ public class PlaceSuggestionFunction implements AIFunction<PlaceSuggestionFuncti
     }
 
     private String generateMapsLink(String destination, List<String> places) {
-        String query = Stream.concat(
-                        Stream.of(destination),
-                        places.stream()
-                ).map(this::encodeURIComponent)
-                .collect(Collectors.joining("|"));
+        String waypoints = places.stream()
+                        .map(this::encodeURIComponent)
+                        .collect(Collectors.joining("|"));
+       
+        String query = "origin=" + encodeURIComponent(destination) +  "&destination=" + encodeURIComponent(destination) + "&waypoints=" + waypoints;
 
-        return baseUrl + query.replaceAll("%2C", ",");
+
+        return baseUrl + "?" + query;
     }
 
     private String encodeURIComponent(String value) {

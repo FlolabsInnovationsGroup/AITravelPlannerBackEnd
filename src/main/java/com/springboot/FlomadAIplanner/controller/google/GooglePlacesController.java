@@ -10,10 +10,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * REST controller for handling Google Places API requests.
+ */
 @RestController
 @RequestMapping("/api/places")
 public class GooglePlacesController {
 
+    /**
+     * Endpoint to search for nearby places.
+     * @param nearbyPlacesRequest The request object containing search parameters.
+     * @return JSON response with search results.
+     * @throws GoogleAPIException If an error occurs while calling the Google Places API.
+     */
     @Autowired
     private GooglePlacesService googlePlacesService;
 

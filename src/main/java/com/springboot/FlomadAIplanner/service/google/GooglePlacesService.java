@@ -8,6 +8,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service class for handling Google Places API interactions.
+ */
 @Slf4j
 @Service
 public class GooglePlacesService {
@@ -23,6 +26,13 @@ public class GooglePlacesService {
     public GooglePlacesService(GooglePlacesClient googlePlacesClient) {
         this.googlePlacesClient = googlePlacesClient;
     }
+
+    /**
+     * Method to search for nearby places.
+     * @param request The request object containing search parameters.
+     * @return JSON response with search results.
+     * @throws GoogleAPIException If an error occurs while calling the Google Places API.
+     */
 
     public JsonNode searchNearbyPlaces(NearbyPlacesRequest request) throws GoogleAPIException {
         log.info("Searching Google nearby places with request: {}", request);

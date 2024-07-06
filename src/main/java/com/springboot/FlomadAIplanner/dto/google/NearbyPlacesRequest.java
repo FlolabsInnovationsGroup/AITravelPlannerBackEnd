@@ -7,6 +7,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * DTO for Nearby Places Request.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -42,7 +45,9 @@ public class NearbyPlacesRequest {
             Additional types for Place Autocomplete: 'administrative_area_level_3', 'administrative_area_level_4', 'administrative_area_level_5', 'administrative_area_level_6', 'administrative_area_level_7', 'archipelago', 'colloquial_area', 'continent', 'establishment', 'floor', 'food', 'general_contractor', 'geocode', 'health', 'intersection', 'landmark', 'natural_feature', 'neighborhood', 'place_of_worship', 'plus_code', 'point_of_interest', 'political', 'post_box', 'postal_code_prefix', 'postal_code_suffix', 'postal_town', 'premise', 'room', 'route', 'street_address', 'street_number', 'sublocality', 'sublocality_level_1', 'sublocality_level_2', 'sublocality_level_3', 'sublocality_level_4', 'sublocality_level_5', 'subpremise', 'town_square'.""")
     private String[] includedTypes;
 
-
+    /**
+     * Nested class for defining the location restriction as a circle.
+     */
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
@@ -51,6 +56,12 @@ public class NearbyPlacesRequest {
         @JsonPropertyDescription("REQUIRED. Defines the search area as a circle.")
         private Circle circle;
 
+        /**
+         * Nested class for defining the circle.
+         * Th Circle defines a circular area for a nearby place request.
+         * It allows you to specify the center coordinates (latitude and longitude)
+         * and radius to restrict search results to locations within that geographic range.
+         */
         @Data
         @NoArgsConstructor
         @AllArgsConstructor
@@ -63,6 +74,10 @@ public class NearbyPlacesRequest {
             @JsonPropertyDescription("REQUIRED. Radius must be in [0, 50000] inclusively. Radius of the search area circle in meters.")
             private double radius;
 
+                         
+             /**
+             * Nested class for defining the center of the circle.
+             */
             @Data
             @NoArgsConstructor
             @AllArgsConstructor
