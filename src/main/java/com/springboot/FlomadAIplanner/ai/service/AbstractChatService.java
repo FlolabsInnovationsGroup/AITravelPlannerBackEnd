@@ -12,6 +12,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvisor.CHAT_MEMORY_RETRIEVE_SIZE_KEY;
+
 @Slf4j
 public abstract class AbstractChatService {
 
@@ -47,6 +49,8 @@ public abstract class AbstractChatService {
                 .user(u -> u.text(functionSuggestionsPrompt)
                         .param("functionsList", aiFunctionDescriptions.toString())
                         .param("message", message))
+                .advisors(a -> a
+                        .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 0))
                 .call()
                 .entity(new ParameterizedTypeReference<>() {
                 });
