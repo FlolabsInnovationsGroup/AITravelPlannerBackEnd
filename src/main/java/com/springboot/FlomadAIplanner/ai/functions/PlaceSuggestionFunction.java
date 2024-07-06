@@ -25,10 +25,7 @@ import org.springframework.stereotype.Component;
         This function is useful for providing place suggestions to the user based on their location and preferences.
         Should be called after the CurrentLocationFunction to get the user's current location.
         P.S. If you have the accurate location details from the chat history,
-        you can directly call this function to get place suggestions.
-                
-        The googleMapsAllPlacesDisplayLink field MUST NOT be changed in any way.
-        MUST be returned to the user in the exact same view, as it is exists in this field.""")
+        you can directly call this function to get place suggestions.""")
 //@Description("When user message contains word 'PLACES' call this function only.")
 public class PlaceSuggestionFunction implements AIFunction<PlaceSuggestionFunction.NearbyPlacesRequestWrapper, JsonNode> {
     private final GooglePlacesService googlePlacesService;
