@@ -1,8 +1,9 @@
-package com.springboot.FlomadAIplanner.ai.functions;
+package com.springboot.FlomadAIplanner.ai.functions.freeCurrencyApi;
 
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.springboot.FlomadAIplanner.ai.functions.AIFunction;
 import com.springboot.FlomadAIplanner.service.freeCurrency.FreeCurrencyService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -20,7 +21,7 @@ import org.springframework.stereotype.Component;
         "It is essential to call this function before using any other currency conversion functions to " +
         "ensure that the desired currencies are supported. " +
         "If any of the currencies are not supported, do not proceed with other currency conversion functions.")
-public class SupportCurrencyFunction implements AIFunction<SupportCurrencyFunction.SupportCurrencyRequest, JsonNode>{
+public class SupportCurrencyFunction implements AIFunction<SupportCurrencyFunction.SupportCurrencyRequest, JsonNode> {
 
     private final FreeCurrencyService freeCurrencyService;
 

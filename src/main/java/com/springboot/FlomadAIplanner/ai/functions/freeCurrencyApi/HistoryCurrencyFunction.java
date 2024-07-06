@@ -1,8 +1,9 @@
-package com.springboot.FlomadAIplanner.ai.functions;
+package com.springboot.FlomadAIplanner.ai.functions.freeCurrencyApi;
 
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.springboot.FlomadAIplanner.ai.functions.AIFunction;
 import com.springboot.FlomadAIplanner.service.freeCurrency.FreeCurrencyService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,26 +16,26 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-@Description("Retrieves the latest currencies exchange rate conversion for base currency against currencies list" +
-        "Use this function to retrieve the latest currencies exchange rate conversion. " +
-        "Use this function whenever customer asks about currency exchange. " +
+@Description("Retrieves the historical currencies exchange rate conversion for base currency against currencies list" +
+        "Use this function to retrieve the historical currencies exchange rate conversion on a certain date. " +
+        "Use this function whenever customer asks about currency exchange on a specific date. " +
         "If the base currency is not provided in currencies list, you should add base currency into currencies list.")
-public class LatestCurrencyFunction implements AIFunction<LatestCurrencyFunction.LatestCurrencyRequest, JsonNode>{
+public class HistoryCurrencyFunction implements AIFunction<HistoryCurrencyFunction.HistoryCurrencyRequest, JsonNode> {
 
     private final FreeCurrencyService freeCurrencyService;
 
     @Autowired
-    public LatestCurrencyFunction(FreeCurrencyService freeCurrencyService) {
+    public HistoryCurrencyFunction(FreeCurrencyService freeCurrencyService) {
         this.freeCurrencyService = freeCurrencyService;
     }
 
     @Override
-    public JsonNode apply(LatestCurrencyFunction.LatestCurrencyRequest request) {
-        log.info("Performing Get Latest Currency Request");
+    public JsonNode apply(HistoryCurrencyFunction.HistoryCurrencyRequest request) {
+        log.info("Performing Get History Currency Request");
         try {
-            return freeCurrencyService.getLatestCurrency(request.baseCurrency, request.currencies);
+            return freeCurrencyService.getHistoricalCurrency(request.date, request.baseCurrency, request.currencies);
         } catch (Exception e) {
-            log.error("Error Getting Latest Currency Request", e);
+            log.error("Error Getting History Currency Request", e);
             return JsonNodeFactory.instance.objectNode().put("error", e.getMessage());
         }
     }
@@ -42,7 +43,11 @@ public class LatestCurrencyFunction implements AIFunction<LatestCurrencyFunction
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class LatestCurrencyRequest {
+    public static class HistoryCurrencyRequest {
+
+        @JsonPropertyDescription("Required. Provides the date to retrieve historical rates from. " +
+                "The format must be yyyy-mm-dd, for example: 2021-12-31.")
+        private String date;
 
         @JsonPropertyDescription("Optional. By default, use USD as base currency. " +
                 "Provides a base currency with which to search for exchange rates.")

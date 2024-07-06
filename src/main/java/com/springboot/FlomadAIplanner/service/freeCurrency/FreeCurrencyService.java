@@ -2,14 +2,9 @@ package com.springboot.FlomadAIplanner.service.freeCurrency;
 
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.api.client.json.Json;
 import com.springboot.FlomadAIplanner.exceptions.FreeCurrencyException;
-import com.springboot.FlomadAIplanner.exceptions.ViatorAPIException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import java.text.SimpleDateFormat;
-
-import java.util.Date;
 
 @Slf4j
 @Service
@@ -21,6 +16,13 @@ public class FreeCurrencyService {
         this.freeCurrencyClient = freeCurrencyClient;
     }
 
+    /**
+     * Get supported currencies from FreeCurrencyClient. If currencies is null, return all supported currencies.
+     * Else, return the supported currencies in the parameter.
+     * @param currencies a list of currency code separated by ",", default select all currencies.
+     * @return JsonNode type result.
+     * @throws FreeCurrencyException
+     */
     public JsonNode getSupportedCurrencies(String currencies) throws FreeCurrencyException {
         try {
             log.info("Search for Supported Currencies");
@@ -38,6 +40,11 @@ public class FreeCurrencyService {
         }
     }
 
+    /**
+     * Get status of usage of the FreeCurrency API, there is a limit of 5000 requests/months.
+     * @return status of usage in JsonNode Type
+     * @throws FreeCurrencyException
+     */
     public JsonNode getStatus() throws FreeCurrencyException {
         try {
             log.info("Getting Free Currencies Status");
@@ -50,6 +57,13 @@ public class FreeCurrencyService {
         }
     }
 
+    /**
+     * Get latest currencies exchange rate against base currency.
+     * @param baseCurrency default USD
+     * @param currencies a list of currency code separated by ",", default select all currencies.
+     * @return JsonNode type result. Do not contain baseCurrency if it is not in currencies.
+     * @throws FreeCurrencyException
+     */
     public JsonNode getLatestCurrency(String baseCurrency, String currencies) throws FreeCurrencyException {
         try {
             log.info("Search for Latest Currencies:{} with Base Currency:{}", currencies, baseCurrency);
@@ -71,6 +85,14 @@ public class FreeCurrencyService {
         }
     }
 
+    /**
+     * Get historical currencies exchange rate against base currency on a certain date.
+     * @param date Required. must in format yyyy-mm-dd, for example: 2021-12-31
+     * @param baseCurrency default USD
+     * @param currencies a list of currency code separated by ",", default select all currencies.
+     * @return JsonNode type result. Do not contain baseCurrency if it is not in currencies.
+     * @throws FreeCurrencyException
+     */
     public JsonNode getHistoricalCurrency(String date, String baseCurrency, String currencies) throws FreeCurrencyException {
         try {
             log.info("Search for Historical Currencies:{} with Base Currency:{}", currencies, baseCurrency);
@@ -92,8 +114,4 @@ public class FreeCurrencyService {
         }
     }
 
-//    public static void main(String[] args) {
-//        String[] temp = {};
-//        System.out.println(temp.length);
-//    }
 }

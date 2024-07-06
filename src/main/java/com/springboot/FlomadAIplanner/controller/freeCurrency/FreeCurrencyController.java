@@ -29,7 +29,7 @@ public class FreeCurrencyController {
     }
 
     /**
-     *
+     * sample request parameters: /currencies?currencies=USD,CAD,CNY,EUR
      * @param currencies currencies list of currency code separated by ","
      * @return Supported currencies
      * @throws FreeCurrencyException
@@ -45,7 +45,7 @@ public class FreeCurrencyController {
     }
 
     /**
-     *
+     * sample request parameters: /status
      * @return usage of API and remaining attempts
      * @throws FreeCurrencyException
      */
@@ -60,9 +60,9 @@ public class FreeCurrencyController {
     }
 
     /**
-     * sample request parameters: /latest?base=EUR&currencies=USD,CAD,CNY,EUR
+     * sample request parameters: /latest?base=EUR&currencies=USD,CAD,CNY,EUR.
      * @param base base currency, default USD
-     * @param currencies currencies list of currency code separated by ","
+     * @param currencies currencies list of currency code separated by ",", default all currencies
      * @return Latest Currencies Exchange rate
      * @throws FreeCurrencyException
      */
@@ -78,10 +78,10 @@ public class FreeCurrencyController {
     }
 
     /**
-     * sample request parameters: /history?base=EUR&currencies=USD,CAD,CNY,EUR&date=2022-12-31
+     * sample request parameters: /history?base=EUR&currencies=USD,CAD,CNY,EUR&date=2022-12-31.
      * @param date must be in format: 2021-12-31
      * @param base base currency, default USD
-     * @param currencies currencies list of currency code separated by ","
+     * @param currencies currencies list of currency code separated by ",", default all currencies
      * @return Json result
      * @throws FreeCurrencyException
      */
