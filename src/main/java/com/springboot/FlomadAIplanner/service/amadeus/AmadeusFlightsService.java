@@ -1,7 +1,7 @@
 package com.springboot.FlomadAIplanner.service.amadeus;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.springboot.FlomadAIplanner.dto.amadeus.FlightOffersRequest;
+import com.springboot.FlomadAIplanner.dto.amadeus.*;
 import com.springboot.FlomadAIplanner.exceptions.AmadeusAPIException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +18,10 @@ public class AmadeusFlightsService {
         this.amadeusClient = amadeusClient;
     }
 
-    public JsonNode getFlightOffersPost(FlightOffersRequest flightOffersRequest) throws AmadeusAPIException {
+    public JsonNode getFlightOffersPost(FlightOffersPostRequest flightOffersPostRequest) throws AmadeusAPIException {
         log.info("Getting flight offers with POST request");
         try {
-            JsonNode response = amadeusClient.getFlightOffersPost("GET", flightOffersRequest);
+            JsonNode response = amadeusClient.getFlightOffersPost("GET", flightOffersPostRequest);
             log.info("Received flight offers from Amadeus using POST request");
             return response;
         } catch (Exception e) {
@@ -30,22 +30,18 @@ public class AmadeusFlightsService {
         }
     }
 
-    public JsonNode getFlightOffers(String originLocationCode, String destinationLocationCode, String departureDate, String returnDate, int adults, int max) throws AmadeusAPIException {
-        log.info("Getting flight offers from {} to {} for {} adults", originLocationCode, destinationLocationCode, adults);
+    public JsonNode getFlightDestinations(FlightDestinationsRequest request) throws AmadeusAPIException {
+        log.info("Getting flight destinations from origin: {} with max price: {}", request.getOrigin(), request.getMaxPrice());
         try {
-            JsonNode response = amadeusClient.getFlightOffers(originLocationCode, destinationLocationCode, departureDate, returnDate, adults, max);
-            log.info("Received flight offers from Amadeus");
-            return response;
-        } catch (Exception e) {
-            log.error("Error getting flight offers", e);
-            throw new AmadeusAPIException("Error getting flight offers", e);
-        }
-    }
-
-    public JsonNode getFlightDestinations(String origin, String maxPrice) throws AmadeusAPIException {
-        log.info("Getting flight destinations from origin: {} with max price: {}", origin, maxPrice);
-        try {
-            JsonNode response = amadeusClient.getFlightDestinations(origin, maxPrice);
+            JsonNode response = amadeusClient.getFlightDestinations(
+                    request.getOrigin(),
+                    request.getMaxPrice(),
+                    request.getDepartureDate(),
+                    request.getOneWay(),
+                    request.getDuration(),
+                    request.getNonStop(),
+                    request.getViewBy()
+            );
             log.info("Received response from Amadeus: {}", response);
             return response;
         } catch (Exception e) {
@@ -54,10 +50,10 @@ public class AmadeusFlightsService {
         }
     }
 
-    public JsonNode getOfferPricing(String offer) throws AmadeusAPIException {
+    public JsonNode getOfferPricing(FlightOfferPricingRequest request) throws AmadeusAPIException {
         log.info("Verifying flight offer pricing");
         try {
-            JsonNode response = amadeusClient.getOfferPricing("GET", offer);
+            JsonNode response = amadeusClient.getOfferPricing("GET", request.getOffer());
             log.info("Received response from Amadeus for flight offer pricing");
             return response;
         } catch (Exception e) {
@@ -66,10 +62,18 @@ public class AmadeusFlightsService {
         }
     }
 
-    public JsonNode getAirportCode(String cityName) throws AmadeusAPIException {
-        log.info("Getting airport code for city: {}", cityName);
+    public JsonNode getAirportCode(FlightsAirportLocationsRequest request) throws AmadeusAPIException {
+        log.info("Getting airport code for city: {}", request.getKeyword());
         try {
-            JsonNode response = amadeusClient.getLocations("AIRPORT", cityName, null, null, null);
+            JsonNode response = amadeusClient.getLocations(
+                    request.getSubType(),
+                    request.getKeyword(),
+                    request.getCountryCode(),
+                    request.getPageLimit(),
+                    request.getPageOffset(),
+                    request.getSort(),
+                    request.getView()
+            );
             log.info("Received response from Amadeus: {}", response);
             return response;
         } catch (Exception e) {
@@ -77,5 +81,4 @@ public class AmadeusFlightsService {
             throw new AmadeusAPIException("Error getting airport code", e);
         }
     }
-
 }
