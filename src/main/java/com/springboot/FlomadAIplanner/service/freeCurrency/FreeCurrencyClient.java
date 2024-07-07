@@ -7,7 +7,8 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name = "freeCurrencyClient", url = "${freeCurrency.api.baseurl}", configuration = FreeCurrencyConfig.class)
+@FeignClient(name = "freeCurrencyClient", url = "${freeCurrency.api.baseurl}",
+        configuration = FreeCurrencyConfig.class)
 public interface FreeCurrencyClient {
 
     /**
@@ -22,7 +23,7 @@ public interface FreeCurrencyClient {
     /**
      * Implementation of the GET method to get supported currencies
      * with:
-     *      parameter currencies: a list of currency code separated by ",".
+     * parameter currencies: a list of currency code separated by ",".
      *
      * @description <a href="https://freecurrencyapi.com/docs/currencies"/>
      */
@@ -40,8 +41,8 @@ public interface FreeCurrencyClient {
     /**
      * Implementation of the GET method to get the latest currencies exchange rate
      * with:
-     *      parameter base_currency: a currency with which to search for exchange rates.
-     *      parameter currencies: a list of currency code separated by ",".
+     * parameter base_currency: a currency with which to search for exchange rates.
+     * parameter currencies: a list of currency code separated by ",".
      *
      * @description <a href="https://freecurrencyapi.com/docs/latest"/>
      */
@@ -52,7 +53,7 @@ public interface FreeCurrencyClient {
     /**
      * Implementation of the GET method to get the latest currencies exchange rate
      * with:
-     *      parameter base_currency: a currency with which to search for exchange rates.
+     * parameter base_currency: a currency with which to search for exchange rates.
      *
      * @description <a href="https://freecurrencyapi.com/docs/latest"/>
      */
@@ -62,7 +63,7 @@ public interface FreeCurrencyClient {
     /**
      * Implementation of the GET method to get the latest currencies exchange rate
      * with:
-     *      parameter currencies: a list of currency code separated by ",".
+     * parameter currencies: a list of currency code separated by ",".
      *
      * @description <a href="https://freecurrencyapi.com/docs/latest"/>
      */
@@ -81,9 +82,9 @@ public interface FreeCurrencyClient {
     /**
      * Implementation of the GET method to get the historical currencies exchange rate on a date
      * with:
-     *      parameter date: must have and in format yyyy-mm-dd.
-     *      parameter base_currency: a currency with which to search for exchange rates.
-     *      parameter currencies: a list of currency code separated by ",".
+     * parameter date: must have and in format yyyy-mm-dd.
+     * parameter base_currency: a currency with which to search for exchange rates.
+     * parameter currencies: a list of currency code separated by ",".
      *
      * @description <a href="https://freecurrencyapi.com/docs/historical"/>
      */
@@ -95,8 +96,8 @@ public interface FreeCurrencyClient {
     /**
      * Implementation of the GET method to get the historical currencies exchange rate on a date
      * with:
-     *      parameter date: must have and in format yyyy-mm-dd.
-     *      parameter base_currency: a currency with which to search for exchange rates.
+     * parameter date: must have and in format yyyy-mm-dd.
+     * parameter base_currency: a currency with which to search for exchange rates.
      *
      * @description <a href="https://freecurrencyapi.com/docs/historical"/>
      */
@@ -107,7 +108,7 @@ public interface FreeCurrencyClient {
     /**
      * Implementation of the GET method to get the historical currencies exchange rate on a date
      * with:
-     *      parameter date: must have and in format yyyy-mm-dd.
+     * parameter date: must have and in format yyyy-mm-dd.
      *
      * @description <a href="https://freecurrencyapi.com/docs/historical"/>
      */
@@ -117,8 +118,8 @@ public interface FreeCurrencyClient {
     /**
      * Implementation of the GET method to get the historical currencies exchange rate on a date
      * with:
-     *      parameter date: must have and in format yyyy-mm-dd.
-     *      parameter currencies: a list of currency code separated by ",".
+     * parameter date: must have and in format yyyy-mm-dd.
+     * parameter currencies: a list of currency code separated by ",".
      *
      * @description <a href="https://freecurrencyapi.com/docs/historical"/>
      */

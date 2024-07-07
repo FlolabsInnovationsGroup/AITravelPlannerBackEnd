@@ -74,8 +74,8 @@ public class NearbyPlacesRequest {
             @JsonPropertyDescription("REQUIRED. Radius must be in [0, 50000] inclusively. Radius of the search area circle in meters.")
             private double radius;
 
-                         
-             /**
+
+            /**
              * Nested class for defining the center of the circle.
              */
             @Data

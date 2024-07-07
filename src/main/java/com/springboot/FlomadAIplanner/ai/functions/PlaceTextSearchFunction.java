@@ -13,10 +13,10 @@ import org.springframework.stereotype.Component;
 
 /**
  * Provides place information based on a text query using the Google Places API.
- *
+ * <p>
  * This function helps retrieve detailed information about a place by performing a text search
  * on the Google Places API. It's designed to be used within the Flomad AI planner application.
- *
+ * <p>
  * **Important Note:** This function is crucial for obtaining the exact longitude and latitude of a
  * place before using the `PlaceSuggestionFunction`. The exact location coordinates are necessary for
  * accurate place suggestions. Additionally, this function retrieves the Google Maps URL for the

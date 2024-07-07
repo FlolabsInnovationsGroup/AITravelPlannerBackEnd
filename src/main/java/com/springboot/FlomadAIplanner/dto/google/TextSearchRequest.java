@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class TextSearchRequest {
 
     @NotBlank
-    @JsonPropertyDescription("REQUIRED. The exact place name used to search for the more detailed information about the location of the required place. Example: 'Spicy Vegetarian Food in Sydney, Australia' or 'Time Square, New York'.")
+    @JsonPropertyDescription("REQUIRED. The exact place name used to search for the more detailed information about the location of the required place. Example: 'Eiffel Tower, Paris'.")
     private String textQuery;
 
 }

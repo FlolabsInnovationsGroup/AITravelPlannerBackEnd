@@ -18,7 +18,7 @@ public class ChatCallService extends AbstractChatService {
 
     public String processMessage(AIMessageDTO message) {
         log.info("Processing message: {}", message.getMessage());
-        
+
         List<FunctionNameSuggestion> requiredFunctions = getRequiredFunctions(message.getMessage());
 
         if (requiredFunctions.isEmpty()) {
