@@ -17,10 +17,8 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @Description("Retrieves supported currencies available for exchange rate conversion. " +
-        "Use this function to retrieve all supported currencies available for exchange rate conversion. " +
-        "It is essential to call this function before using latestCurrencyFunction and historyCurrencyFunction to " +
-        "ensure that the desired currencies are supported. " +
-        "If any of the currencies are not supported, do not proceed with latestCurrencyFunction and historyCurrencyFunction.")
+        "Use this function to retrieve selected supported currencies available for exchange rate conversion. " +
+        "It is essential to call this function when people ask what currencies are available for exchange. ")
 public class SupportCurrencyFunction implements AIFunction<SupportCurrencyFunction.SupportCurrencyRequest, JsonNode> {
 
     private final FreeCurrencyService freeCurrencyService;
