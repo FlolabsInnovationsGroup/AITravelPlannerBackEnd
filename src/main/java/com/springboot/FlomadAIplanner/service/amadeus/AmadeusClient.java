@@ -7,6 +7,9 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
+
 @FeignClient(name = "amadeusClient", url = "${amadeus.api.baseurl}",
         configuration = AmadeusClientConfig.class)
 public interface AmadeusClient {
@@ -39,4 +42,34 @@ public interface AmadeusClient {
 
     @GetMapping("/v1/reference-data/locations/{locationId}")
     JsonNode getLocationById(@PathVariable("locationId") String locationId);
+
+//    -------------------Hotels Search-------------------Hotels Search---------------------Hotels Search---------------------
+
+    @GetMapping("/v1/reference-data/locations/hotels/by-geocode")
+    JsonNode searchHotelsByGeocode(@RequestParam("latitude") Double latitude,
+                                   @RequestParam("longitude") Double longitude,
+                                   @RequestParam(value = "radius", required = false) Integer radius,
+                                   @RequestParam(value = "radiusUnit", required = false) String radiusUnit,
+                                   @RequestParam(value = "chainCodes", required = false) List<String> chainCodes,
+                                   @RequestParam(value = "amenities", required = false) List<String> amenities,
+                                   @RequestParam(value = "ratings", required = false) List<Integer> ratings,
+                                   @RequestParam(value = "hotelSource", required = false) String hotelSource);
+
+    @GetMapping("/v3/shopping/hotel-offers")
+    JsonNode getMultiHotelOffers(
+            @RequestParam("hotelIds") String hotelIds,
+            @RequestParam(value = "adults", required = false, defaultValue = "1") Integer adults,
+            @RequestParam(value = "checkInDate", required = false) String checkInDate,
+            @RequestParam(value = "checkOutDate", required = false) String checkOutDate,
+            @RequestParam(value = "countryOfResidence", required = false) String countryOfResidence,
+            @RequestParam(value = "roomQuantity", required = false, defaultValue = "1") Integer roomQuantity,
+            @RequestParam(value = "priceRange", required = false) String priceRange,
+            @RequestParam(value = "currency", required = false) String currency,
+            @RequestParam(value = "paymentPolicy", required = false, defaultValue = "NONE") String paymentPolicy,
+            @RequestParam(value = "boardType", required = false) String boardType,
+            @RequestParam(value = "includeClosed", required = false) Boolean includeClosed,
+            @RequestParam(value = "bestRateOnly", required = false, defaultValue = "true") Boolean bestRateOnly,
+            @RequestParam(value = "lang", required = false) String lang
+    );
+
 }

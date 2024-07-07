@@ -20,7 +20,7 @@ import java.time.format.DateTimeFormatter;
         Retrieves the current date and time.
         Use this function to get the current date and time in a specified format.
         This function is useful for getting context to AI model about the current date and time in the real world.
-        Should be called before any other function that requires the current date and time.""")
+        MUST be called BEFORE any other function that requires date and time parameter.""")
 public class CurrentDateTimeFunction implements AIFunction<CurrentDateTimeFunction.CurrentDateTimeRequest, JsonNode> {
 
     @Override
