@@ -29,6 +29,7 @@ public class GooglePlacesService {
 
     /**
      * Method to search for nearby places.
+     *
      * @param request The request object containing search parameters.
      * @return JSON response with search results.
      * @throws GoogleAPIException If an error occurs while calling the Google Places API.

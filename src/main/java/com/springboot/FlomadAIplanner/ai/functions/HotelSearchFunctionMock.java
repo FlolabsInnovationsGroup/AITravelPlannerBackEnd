@@ -1,6 +1,5 @@
 package com.springboot.FlomadAIplanner.ai.functions;
 
-import com.fasterxml.jackson.annotation.JsonClassDescription;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Description;

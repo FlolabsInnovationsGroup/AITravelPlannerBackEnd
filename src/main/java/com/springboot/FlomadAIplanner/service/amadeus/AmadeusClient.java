@@ -7,7 +7,8 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-@FeignClient(name = "amadeusClient", url = "${amadeus.api.baseurl}", configuration = AmadeusClientConfig.class)
+@FeignClient(name = "amadeusClient", url = "${amadeus.api.baseurl}",
+        configuration = AmadeusClientConfig.class)
 public interface AmadeusClient {
 
     @GetMapping("/v1/shopping/flight-destinations")
