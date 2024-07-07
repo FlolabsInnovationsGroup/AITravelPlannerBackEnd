@@ -10,7 +10,7 @@ public class FreeCurrencyConfig {
     @Value("${freeCurrency.api.key}")
     private String apiKey;
 
-    @Bean
+    @Bean("freeCurrencyRequestInterceptor")
     public RequestInterceptor requestInterceptor() {
         return requestTemplate -> requestTemplate.header("apikey", apiKey);
     }
