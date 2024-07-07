@@ -26,7 +26,6 @@ import org.springframework.stereotype.Component;
         Should be called after the CurrentLocationFunction to get the user's current location.
         P.S. If you have the accurate location details from the chat history,
         you can directly call this function to get place suggestions.""")
-//@Description("When user message contains word 'PLACES' call this function only.")
 public class PlaceSuggestionFunction implements AIFunction<PlaceSuggestionFunction.NearbyPlacesRequestWrapper, JsonNode> {
     private final GooglePlacesService googlePlacesService;
 

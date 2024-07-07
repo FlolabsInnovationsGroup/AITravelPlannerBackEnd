@@ -26,11 +26,13 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @Description("""
-        Provides place information based on a text query.
-        Use this function to get detailed information about a place based on a text search.
-        Before calling the "PlaceSuggestionFunction', use "PlaceTextSearchFunction" to
-        obtain the exact location (longitude and latitude) and obtain
-        the Google Maps URL for a place.""")
+         Provides place information based on a text query.
+         Use this function to get detailed information about a place based on a text search.
+         Before calling the "PlaceSuggestionFunction', use "PlaceTextSearchFunction" to
+         obtain the exact location (longitude and latitude) and obtain
+         the Google Maps URL for a place.
+         
+        Do not change or edit in any way the URL of the Google Maps link provided by this function.""")
 public class PlaceTextSearchFunction implements AIFunction<TextSearchRequest, JsonNode> {
 
     private final GooglePlacesService googlePlacesService;
