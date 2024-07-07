@@ -19,15 +19,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/places")
 public class GooglePlacesController {
 
+    @Autowired
+    private GooglePlacesService googlePlacesService;
+
     /**
      * Endpoint to search for nearby places.
+     *
      * @param nearbyPlacesRequest The request object containing search parameters.
      * @return JSON response with search results.
      * @throws GoogleAPIException If an error occurs while calling the Google Places API.
      */
-    @Autowired
-    private GooglePlacesService googlePlacesService;
-
     @PostMapping("/search")
     public JsonNode searchNearbyPlaces(@RequestBody NearbyPlacesRequest nearbyPlacesRequest) throws GoogleAPIException {
         log.info("Searching for nearby places using Google API with request:{}", nearbyPlacesRequest);
