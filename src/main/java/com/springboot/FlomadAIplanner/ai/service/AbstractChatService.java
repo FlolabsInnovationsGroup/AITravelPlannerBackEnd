@@ -23,6 +23,8 @@ public abstract class AbstractChatService {
     protected Resource functionSuggestionsPrompt;
     @Value("classpath:/templates/SingleQuestionPrompt.txt")
     protected Resource singleQuestionPrompt;
+    @Value("classpath:/templates/promptAndFunctionSuggestionsPrompt.txt")
+    protected Resource promptAndFunctionSuggestionsPrompt;
     @Value("classpath:/templates/WithFunctionsQuestionPrompt.txt")
     protected Resource withFunctionsQuestionPrompt;
 
@@ -46,13 +48,14 @@ public abstract class AbstractChatService {
     protected List<FunctionNameSuggestion> getRequiredFunctions(String message) {
         log.debug("Getting required functions for message: {}", message);
         List<FunctionNameSuggestion> functions = getChatClient().prompt()
+                .system(promptAndFunctionSuggestionsPrompt) 
                 .user(u -> u.text(functionSuggestionsPrompt)
                         .param("functionsList", aiFunctionDescriptions.toString())
                         .param("message", message))
                 .advisors(a -> a
                         .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 0))
                 .call()
-                .entity(new ParameterizedTypeReference<>() {
+                .entity(new ParameterizedTypeReference<List<FunctionNameSuggestion>>() {
                 });
         log.debug("Required functions found: {}", functions);
         return functions;
@@ -61,7 +64,7 @@ public abstract class AbstractChatService {
     protected String[] functionNames(List<FunctionNameSuggestion> functions) {
         log.debug("Extracting function names from functions: {}", functions);
         String[] functionNames = functions.stream()
-                .map(FunctionNameSuggestion::functionName)
+                .map(FunctionNameSuggestion::getFunctionNames)
                 .toArray(String[]::new);
         log.debug("Extracted function names: {}", Arrays.toString(functionNames));
         return functionNames;

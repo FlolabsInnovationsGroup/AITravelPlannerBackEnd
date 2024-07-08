@@ -1,0 +1,8 @@
+{
+  "prompt": "Based on the user message, suggest the appropriate system prompt and functions to use for processing the message in the best possible way.",
+  "parameters": {
+    "availableModelInstructionsList": "{{availableModelInstructionsList}}",
+    "functionsList": "{{functionsList}}",
+    "message": "{{message}}"
+  }
+}
