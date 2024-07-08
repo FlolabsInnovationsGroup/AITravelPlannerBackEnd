@@ -1,10 +1,18 @@
 package com.springboot.FlomadAIplanner.ai.service;
 
+import org.springframework.context.annotation.Description;
+import org.springframework.stereotype.Component;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 /**
- * Represents a suggestion for a function or action.
+ * FunctionNameSuggestion represents a suggestion for a function name.
+ * It includes the name and description of the function.
  */
+@Slf4j
+@Component
+@Description("Represents a suggestion for a function name, including the function's name and description.")
 public class FunctionNameSuggestion {
     private String functionNames;  
     private String description;

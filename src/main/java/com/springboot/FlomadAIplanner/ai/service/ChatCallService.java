@@ -12,12 +12,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
+/**
+ * ChatCallService extends AbstractChatService to provide specific functionality for processing chat messages.
+ * This service analyzes the message content to determine required functions and processes the message accordingly.
+ */
 @Slf4j
 @Service
 public class ChatCallService extends AbstractChatService {
 
     private final Map<String, FunctionNameSuggestion> keywordToFunctionMap;
 
+    /**
+     * Constructor for ChatCallService.
+     * 
+     * @param chatClientFactory Factory for creating chat clients
+     * @param aiFunctionDescriptions List of available AI function descriptions
+     */
     public ChatCallService(ChatClientFactory chatClientFactory, List<String> aiFunctionDescriptions) {
         super(chatClientFactory, aiFunctionDescriptions);
         log.info("ChatCallService initialized with AI function descriptions: {}", aiFunctionDescriptions);
@@ -26,6 +36,12 @@ public class ChatCallService extends AbstractChatService {
         initializeKeywordToFunctionMap();
     }
 
+    /**
+     * Processes a message and determines the appropriate response.
+     * 
+     * @param message The user message DTO
+     * @return The response content
+     */
     public String processMessage(AIMessageDTO message) {
         log.info("Processing message: {}", message.getMessage());
         ChatClientSuggestedProperties properties = getChatClientPropertiesSuggestion(message.getMessage());
@@ -39,6 +55,12 @@ public class ChatCallService extends AbstractChatService {
         }
     }    
 
+    /**
+     * Asks a question to the chat client without any additional functions.
+     * 
+     * @param message The user message DTO
+     * @return The response content
+     */
     private String askQuestion(AIMessageDTO message) {
         log.debug("Asking question without functions for message: {}", message.getMessage());
         return getChatClient().prompt()
@@ -48,6 +70,14 @@ public class ChatCallService extends AbstractChatService {
                 .content();
     }
 
+    /**
+     * Asks a question to the chat client with additional functions.
+     * 
+     * @param systemPrompt The system prompt
+     * @param message The user message DTO
+     * @param functions List of required functions
+     * @return The response content
+     */
     private String askQuestionWithFunctions(String systemPrompt, AIMessageDTO message, List<FunctionNameSuggestion> functions) {
         log.debug("Asking question with functions for message: {}, functions: {}", message.getMessage(), functions);
         return getChatClient().prompt()
@@ -58,7 +88,9 @@ public class ChatCallService extends AbstractChatService {
                 .content();
     }
 
-    // Initialize the keyword to function map with your functions
+    /**
+     * Initializes the keyword to function map with predefined functions.
+     */
     private void initializeKeywordToFunctionMap() {
         keywordToFunctionMap.put("history currency", new FunctionNameSuggestion("HistoryCurrencyFunction", "Retrieve historical currency data"));
         keywordToFunctionMap.put("latest currency", new FunctionNameSuggestion("LatestCurrencyFunction",  "Retrieve latest currency data"));
@@ -75,11 +107,18 @@ public class ChatCallService extends AbstractChatService {
         keywordToFunctionMap.put("weather forecast", new FunctionNameSuggestion("WeatherForecastFunctionMock", "Get weather forecast"));
     }
 
+    /**
+     * Suggests properties for the chat client based on the message content.
+     * 
+     * @param message The user message
+     * @return Suggested properties for the chat client
+     */
     private ChatClientSuggestedProperties getChatClientPropertiesSuggestion(String message) {
         List<FunctionNameSuggestion> requiredFunctions = new ArrayList<>();
         String systemPrompt = "systemPrompt.";
 
-        // Analyze the message to determine required functions
+    //Analyze the message to determine required functions
+
         for (Map.Entry<String, FunctionNameSuggestion> entry : keywordToFunctionMap.entrySet()) {
             if (message.toLowerCase().contains(entry.getKey())) {
                 requiredFunctions.add(entry.getValue());

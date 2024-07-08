@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * Data Transfer Object for suggested properties from the chat client.
+ * It includes the system prompt and a list of required functions.
  */
 @Data
 @NoArgsConstructor

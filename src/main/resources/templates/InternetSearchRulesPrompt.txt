@@ -1,0 +1,6 @@
+{
+  "prompt": "Provide instructions for performing an internet search based on the user's message.",
+  "parameters": {
+    "message": "{{message}}"
+  }
+}
