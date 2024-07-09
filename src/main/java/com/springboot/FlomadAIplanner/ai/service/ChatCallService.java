@@ -2,8 +2,7 @@ package com.springboot.FlomadAIplanner.ai.service;
 
 import com.springboot.FlomadAIplanner.ai.dto.AIMessageDTO;
 import com.springboot.FlomadAIplanner.ai.factory.ChatClientFactory;
-import com.springboot.FlomadAIplanner.dto.ChatClientSuggestedProperties;
-import com.springboot.FlomadAIplanner.ai.service.FunctionNameSuggestion;
+import com.springboot.FlomadAIplanner.ai.service.ChatClientSuggestedProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +19,7 @@ import java.util.HashMap;
 @Service
 public class ChatCallService extends AbstractChatService {
 
-    private final Map<String, FunctionNameSuggestion> keywordToFunctionMap;
+    private final Map<String, ChatClientSuggestedProperties> keywordToFunctionMap;
 
     /**
      * Constructor for ChatCallService.
@@ -28,8 +27,8 @@ public class ChatCallService extends AbstractChatService {
      * @param chatClientFactory Factory for creating chat clients
      * @param aiFunctionDescriptions List of available AI function descriptions
      */
-    public ChatCallService(ChatClientFactory chatClientFactory, List<String> aiFunctionDescriptions) {
-        super(chatClientFactory, aiFunctionDescriptions);
+    public ChatCallService(ChatClientFactory chatClientFactory, List<String> aiFunctionDescriptions, Map<String, String> promptsList) {
+        super(chatClientFactory, aiFunctionDescriptions, promptsList);
         log.info("ChatCallService initialized with AI function descriptions: {}", aiFunctionDescriptions);
     
         keywordToFunctionMap = new HashMap<>();
@@ -46,12 +45,12 @@ public class ChatCallService extends AbstractChatService {
         log.info("Processing message: {}", message.getMessage());
         ChatClientSuggestedProperties properties = getChatClientPropertiesSuggestion(message.getMessage());
     
-        if (properties.getRequiredFunctions().isEmpty()) {
+        if (properties.getFunctionNames().isEmpty()) {
             log.info("No required functions found, asking question without functions.");
             return askQuestion(message);
         } else {
-            log.info("Required functions found, asking question with functions: {}", properties.getRequiredFunctions());
-            return askQuestionWithFunctions(properties.getSystemPrompt(), message, properties.getRequiredFunctions());
+            log.info("Required functions found, asking question with functions: {}", properties.getFunctionNames());
+            return askQuestionWithFunctions(properties.getSystemPrompt(), message, properties.getFunctionNames());
         }
     }    
 
@@ -64,7 +63,7 @@ public class ChatCallService extends AbstractChatService {
     private String askQuestion(AIMessageDTO message) {
         log.debug("Asking question without functions for message: {}", message.getMessage());
         return getChatClient().prompt()
-                .system(singleQuestionPrompt)
+                .system(promptsList.get("SingleQuestionPrompt.txt"))
                 .user(message.getMessage())
                 .call()
                 .content();
@@ -78,12 +77,12 @@ public class ChatCallService extends AbstractChatService {
      * @param functions List of required functions
      * @return The response content
      */
-    private String askQuestionWithFunctions(String systemPrompt, AIMessageDTO message, List<FunctionNameSuggestion> functions) {
-        log.debug("Asking question with functions for message: {}, functions: {}", message.getMessage(), functions);
+    private String askQuestionWithFunctions(String systemPrompt, AIMessageDTO message, List<String> functionNames) {
+        log.debug("Asking question with functions for message: {}, functions: {}", message.getMessage(), functionNames);
         return getChatClient().prompt()
                 .system(systemPrompt)
                 .user(message.getMessage())
-                .functions(functionNames(functions))
+                .functions(functionNames.toArray(new String[0]))
                 .call()
                 .content();
     }
@@ -92,19 +91,19 @@ public class ChatCallService extends AbstractChatService {
      * Initializes the keyword to function map with predefined functions.
      */
     private void initializeKeywordToFunctionMap() {
-        keywordToFunctionMap.put("history currency", new FunctionNameSuggestion("HistoryCurrencyFunction", "Retrieve historical currency data"));
-        keywordToFunctionMap.put("latest currency", new FunctionNameSuggestion("LatestCurrencyFunction",  "Retrieve latest currency data"));
-        keywordToFunctionMap.put("support currency", new FunctionNameSuggestion("SupportCurrencyFunction", "Support currency operations"));
-        keywordToFunctionMap.put("ai function", new FunctionNameSuggestion("AIFunction", "Perform AI operations"));
-        keywordToFunctionMap.put("current date time", new FunctionNameSuggestion("CurrentDateTimeFunction", "Get current date and time"));
-        keywordToFunctionMap.put("distance calculator", new FunctionNameSuggestion("DistanceCalculatorFunction", "Calculate distance between locations"));
-        keywordToFunctionMap.put("flight search", new FunctionNameSuggestion("FlightSearchMockFunction", "Search for flights"));
-        keywordToFunctionMap.put("hotel offers search", new FunctionNameSuggestion("HotelOffersSearchFunction", "Search for hotel offers"));
-        keywordToFunctionMap.put("hotel search location", new FunctionNameSuggestion("HotelSearchByLocationFunction", "Search for hotels by location"));
-        keywordToFunctionMap.put("place suggestion", new FunctionNameSuggestion("PlaceSuggestionFunction","Suggest places to visit"));
-        keywordToFunctionMap.put("place text search", new FunctionNameSuggestion("PlaceTextSearchFunction", "Search for places by text"));
-        keywordToFunctionMap.put("tours free text search", new FunctionNameSuggestion("ToursFreeTextSearchFunction", "Search for tours by free text"));
-        keywordToFunctionMap.put("weather forecast", new FunctionNameSuggestion("WeatherForecastFunctionMock", "Get weather forecast"));
+        keywordToFunctionMap.put("history currency", new ChatClientSuggestedProperties(List.of("HistoryCurrencyFunction"), "Retrieve historical currency data"));
+        keywordToFunctionMap.put("latest currency", new ChatClientSuggestedProperties(List.of("LatestCurrencyFunction"), "Retrieve latest currency data"));
+        keywordToFunctionMap.put("support currency", new ChatClientSuggestedProperties(List.of("SupportCurrencyFunction"), "Support currency operations"));
+        keywordToFunctionMap.put("ai function", new ChatClientSuggestedProperties(List.of("AIFunction"), "Perform AI operations"));
+        keywordToFunctionMap.put("current date time", new ChatClientSuggestedProperties(List.of("CurrentDateTimeFunction"), "Get current date and time"));
+        keywordToFunctionMap.put("distance calculator", new ChatClientSuggestedProperties(List.of("DistanceCalculatorFunction"), "Calculate distance between locations"));
+        keywordToFunctionMap.put("flight search", new ChatClientSuggestedProperties(List.of("FlightSearchMockFunction"), "Search for flights"));
+        keywordToFunctionMap.put("hotel offers search", new ChatClientSuggestedProperties(List.of("HotelOffersSearchFunction"), "Search for hotel offers"));
+        keywordToFunctionMap.put("hotel search location", new ChatClientSuggestedProperties(List.of("HotelSearchByLocationFunction"), "Search for hotels by location"));
+        keywordToFunctionMap.put("place suggestion", new ChatClientSuggestedProperties(List.of("PlaceSuggestionFunction"), "Suggest places to visit"));
+        keywordToFunctionMap.put("place text search", new ChatClientSuggestedProperties(List.of("PlaceTextSearchFunction"), "Search for places by text"));
+        keywordToFunctionMap.put("tours free text search", new ChatClientSuggestedProperties(List.of("ToursFreeTextSearchFunction"), "Search for tours by free text"));
+        keywordToFunctionMap.put("weather forecast", new ChatClientSuggestedProperties(List.of("WeatherForecastFunctionMock"), "Get weather forecast"));
     }
 
     /**
@@ -114,14 +113,14 @@ public class ChatCallService extends AbstractChatService {
      * @return Suggested properties for the chat client
      */
     private ChatClientSuggestedProperties getChatClientPropertiesSuggestion(String message) {
-        List<FunctionNameSuggestion> requiredFunctions = new ArrayList<>();
+        List<String> requiredFunctions = new ArrayList<>();
         String systemPrompt = "systemPrompt.";
 
     //Analyze the message to determine required functions
 
-        for (Map.Entry<String, FunctionNameSuggestion> entry : keywordToFunctionMap.entrySet()) {
+        for (Map.Entry<String, ChatClientSuggestedProperties> entry : keywordToFunctionMap.entrySet()) {
             if (message.toLowerCase().contains(entry.getKey())) {
-                requiredFunctions.add(entry.getValue());
+                requiredFunctions.addAll(entry.getValue().getFunctionNames());
             }
         }
 
@@ -134,6 +133,10 @@ public class ChatCallService extends AbstractChatService {
             systemPrompt = "I'm here to assist you with your queries.";
         }
 
-        return new ChatClientSuggestedProperties(systemPrompt, requiredFunctions);
+        ChatClientSuggestedProperties properties = new ChatClientSuggestedProperties();
+        properties.setFunctionNames(requiredFunctions);
+        properties.setSystemPrompt(systemPrompt);
+
+        return properties;
     }
 }

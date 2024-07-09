@@ -11,6 +11,7 @@ import org.springframework.core.io.Resource;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvisor.CHAT_MEMORY_RETRIEVE_SIZE_KEY;
 
@@ -27,31 +28,20 @@ public abstract class AbstractChatService {
     // List of AI function descriptions available for use
     protected final List<String> aiFunctionDescriptions;
 
-    // Prompts stored as resources
-    @Value("classpath:/templates/FunctionsSuggestionsPrompt.txt")
-    protected Resource functionSuggestionsPrompt;
-    @Value("classpath:/templates/SingleQuestionPrompt.txt")
-    protected Resource singleQuestionPrompt;
-    @Value("classpath:/templates/promptAndFunctionSuggestionsPrompt.txt")
-    protected Resource promptAndFunctionSuggestionsPrompt;
-    @Value("classpath:/templates/WithFunctionsQuestionPrompt.txt")
-    protected Resource withFunctionsQuestionPrompt;
-    @Value("classpath:/templates/DefaultRulesPrompt.txt")
-    protected Resource defaultRulesPrompt;
-    @Value("classpath:/templates/InternetSearchRulesPrompt.txt")
-    protected Resource internetSearchRulesPrompt;
-    @Value("classpath:/templates/FallbackPrompt.txt")
-    protected Resource fallbackPrompt;
+    // Prompts stored as a map
+    protected final Map<String, String> promptsList;
 
     /**
      * Constructor for AbstractChatService.
      * 
      * @param chatClientFactory Factory for creating chat clients
      * @param aiFunctionDescriptions List of available AI function descriptions
+     * @param promptsList Map of prompt file names and their content
      */
-    public AbstractChatService(ChatClientFactory chatClientFactory, List<String> aiFunctionDescriptions) {
+    public AbstractChatService(ChatClientFactory chatClientFactory, List<String> aiFunctionDescriptions, Map<String, String> promptsList) {
         this.chatClientFactory = chatClientFactory;
         this.aiFunctionDescriptions = Collections.unmodifiableList(aiFunctionDescriptions);
+        this.promptsList = promptsList;
         log.info("Chat service initialized with AI function descriptions: {}", aiFunctionDescriptions);
     }
 
@@ -80,41 +70,19 @@ public abstract class AbstractChatService {
      * Retrieves the required functions based on the given message.
      * 
      * @param message The user message
-     * @return A list of function name suggestions
+     * @return ChatClientSuggestedProperties
      */
-    protected List<FunctionNameSuggestion> getRequiredFunctions(String message) {
+    protected ChatClientSuggestedProperties getRequiredFunctions(String message) {
         log.debug("Getting required functions for message: {}", message);
-        List<FunctionNameSuggestion> functions = getChatClient().prompt()
-                .system(promptAndFunctionSuggestionsPrompt) 
-                .user(u -> u.text(functionSuggestionsPrompt)
+        ChatClientSuggestedProperties functions = getChatClient().prompt()
+                .user(u -> u.text(promptsList.get("promptAndFunctionSuggestionsPrompt.txt"))
+                        .param("promptsList", promptsList.toString())
                         .param("functionsList", aiFunctionDescriptions.toString())
                         .param("message", message))
-                .advisors(a -> a
-                        .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 0))
+                .advisors(a -> a.param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 0))
                 .call()
-                .entity(new ParameterizedTypeReference<List<FunctionNameSuggestion>>() {
-                });
-                
-        if (functions.isEmpty()) {
-            log.debug("No specific functions found, applying default rules.");
-            functions = getChatClient().prompt()
-                    .system(defaultRulesPrompt)
-                    .user(message)
-                    .call()
-                    .entity(new ParameterizedTypeReference<List<FunctionNameSuggestion>>() {
-                    });
-        
-            if (functions.isEmpty()) {
-                log.debug("No default rules found, applying fallback response.");
-                functions = getChatClient().prompt()
-                        .system(fallbackPrompt)
-                        .user(message)
-                        .call()
-                        .entity(new ParameterizedTypeReference<List<FunctionNameSuggestion>>() {
-                        });
-            }
-        }
-        
+                .entity(ChatClientSuggestedProperties.class);
+
         log.debug("Required functions found: {}", functions);
         return functions;
     }
@@ -125,10 +93,11 @@ public abstract class AbstractChatService {
      * @param functions List of function name suggestions
      * @return An array of function names
      */
-    protected String[] functionNames(List<FunctionNameSuggestion> functions) {
+    protected String[] functionNames(List<ChatClientSuggestedProperties> functions) {
         log.debug("Extracting function names from functions: {}", functions);
         String[] functionNames = functions.stream()
-                .map(FunctionNameSuggestion::getFunctionNames)
+                .map(ChatClientSuggestedProperties::getFunctionNames)
+                .flatMap(List::stream)
                 .toArray(String[]::new);
         log.debug("Extracted function names: {}", Arrays.toString(functionNames));
         return functionNames;

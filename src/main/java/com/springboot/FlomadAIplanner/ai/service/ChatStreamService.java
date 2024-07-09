@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * ChatStreamService processes messages in a streaming manner.
@@ -21,8 +22,8 @@ public class ChatStreamService extends AbstractChatService {
      * @param chatClientFactory      the factory to create ChatClient instances
      * @param aiFunctionDescriptions the list of AI function descriptions
      */
-    public ChatStreamService(ChatClientFactory chatClientFactory, List<String> aiFunctionDescriptions) {
-        super(chatClientFactory, aiFunctionDescriptions);
+    public ChatStreamService(ChatClientFactory chatClientFactory, List<String> aiFunctionDescriptions, Map<String, String> promptsList) {
+        super(chatClientFactory, aiFunctionDescriptions, promptsList);
         log.info("ChatCallService initialized with AI function descriptions: {}", aiFunctionDescriptions);
     }
 
@@ -35,14 +36,14 @@ public class ChatStreamService extends AbstractChatService {
     public String processMessage(AIMessageDTO message) {
         log.info("Processing message: {}", message.getMessage());
 
-        List<FunctionNameSuggestion> requiredFunctions = getRequiredFunctions(message.getMessage());
+        ChatClientSuggestedProperties properties = getRequiredFunctions(message.getMessage());
 
-        if (requiredFunctions.isEmpty()) {
+        if (properties.getFunctionNames().isEmpty()) {
             log.info("No required functions found, asking question without functions.");
             return askQuestion(message);
         } else {
-            log.info("Required functions found, asking question with functions: {}", requiredFunctions);
-            return askQuestionWithFunctions(message, requiredFunctions);
+            log.info("Required functions found, asking question with functions: {}", properties.getFunctionNames());
+            return askQuestionWithFunctions(properties.getSystemPrompt(), message, properties.getFunctionNames());
         }
     }
 
@@ -55,7 +56,7 @@ public class ChatStreamService extends AbstractChatService {
     private String askQuestion(AIMessageDTO message) {
         log.debug("Asking question without functions for message: {}", message.getMessage());
         return getChatClient().prompt()
-                .system(singleQuestionPrompt)
+                .system(promptsList.get("singleQuestionPrompt.txt"))
                 .user(message.getMessage())
                 .call()
                 .content();
@@ -68,12 +69,12 @@ public class ChatStreamService extends AbstractChatService {
      * @param functions the list of required functions
      * @return the response from the AI model
      */
-    private String askQuestionWithFunctions(AIMessageDTO message, List<FunctionNameSuggestion> functions) {
-        log.debug("Asking question with functions for message: {}, functions: {}", message.getMessage(), functions);
+    private String askQuestionWithFunctions(String systemPrompt, AIMessageDTO message, List<String> functionNames) {
+        log.debug("Asking question with functions for message: {}, functions: {}", message.getMessage(), functionNames);
         return getChatClient().prompt()
-                .system(withFunctionsQuestionPrompt)
+                .system(systemPrompt)
                 .user(message.getMessage())
-                .functions(functionNames(functions))
+                .functions(functionNames.toArray(new String[0]))
                 .call()
                 .content();
     }
