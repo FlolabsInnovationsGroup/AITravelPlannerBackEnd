@@ -26,7 +26,7 @@ public class MessageController {
     @PostMapping
     public ResponseEntity<Message> createMessage(@RequestBody MessageDTO dto) {
         log.info("Creating new message: {}", dto);
-        Message newMessage = service.saveMessage(dto.getId(), dto.getMessage(), dto.getTimestamp(), dto.getSpeaker());
+        Message newMessage = service.saveMessage(dto.getId(), dto.getMessage(), dto.getCreatedAt(), dto.getSpeaker());
         log.info("Message created");
         return ResponseEntity.ok(newMessage);
     }

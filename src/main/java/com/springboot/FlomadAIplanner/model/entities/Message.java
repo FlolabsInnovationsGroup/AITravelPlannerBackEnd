@@ -1,23 +1,20 @@
 package com.springboot.FlomadAIplanner.model.entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-
-/**
- * @class
- * @description This is an entity, a reflection of the database, provide a straight forward way to operate the database
- */
-@Data
 @Entity
 @Table(name = "message")
-public class Message {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "message_id")
-    private int messageId;
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
+public class Message extends Model {
 
     @Column(name = "session_id", nullable = false)
     private String sessionId;
@@ -25,14 +22,11 @@ public class Message {
     @Column(name = "content")
     private String content;
 
-    @Column(name = "timestamp", nullable = false)
-    private LocalDateTime timestamp;
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "speaker", nullable = false)
     private Speaker speaker;
-
-    public Message() {
-    }
 
 }

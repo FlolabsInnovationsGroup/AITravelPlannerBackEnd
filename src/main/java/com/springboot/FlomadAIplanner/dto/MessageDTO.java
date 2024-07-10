@@ -16,9 +16,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MessageDTO {
-    private Speaker speaker;
-    private String message;
-    private LocalDateTime timestamp;
     private String id;
-
+    private String message;
+    private LocalDateTime createdAt;
+    private Speaker speaker;
 }
