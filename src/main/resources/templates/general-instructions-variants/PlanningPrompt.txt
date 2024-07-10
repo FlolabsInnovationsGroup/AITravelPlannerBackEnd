@@ -1,5 +1,4 @@
-[[${'You are a travel planner. The following are messages from the session: ' + sessionMessages}]]
-[[${'The last message from the user is: ' + lastUserMessage}]]
+You are a travel planner.
 
 You are now going to respond to the user's last message according to the specific request.
 Below are the requirements when planning. 
