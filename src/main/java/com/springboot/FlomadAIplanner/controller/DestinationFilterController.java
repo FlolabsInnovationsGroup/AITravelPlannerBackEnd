@@ -33,8 +33,7 @@ public class DestinationFilterController {
 
 
     @GetMapping("/destination_filter")
-    public String getDestination(@RequestParam String temperature) throws IOException {
-        log.info("Retrieving temperature: {}", temperature);
-        return llmService.searchDestination(temperature);
+    public String getDestination(@RequestParam String prompt) throws IOException {
+        return llmService.searchDestination(prompt);
     }
 }

@@ -184,9 +184,9 @@ public class LLMService {
         return null;
     }
 
-    public String searchDestination(String temperature) throws IOException {
+    public String searchDestination(String prompt) throws IOException {
         String temp; // Declare the variable 'temp'
-        String prompt = "Find me destination spots with " + temperature + " weather.";
+        
         
         temp = this.openAIService.sendMessageToOpenAI(prompt); // Assign a value to 'temp'
         log.info("Response from OpenAI: " + temp); // Log the response from OpenAI
