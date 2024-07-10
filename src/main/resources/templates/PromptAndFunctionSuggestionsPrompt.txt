@@ -1,0 +1,14 @@
+LLMSystemInstructions: Based on the user message, suggest the appropriate system prompt and functions to use for processing the message in the best possible way.,
+  parameters:
+    - promptsList: "{promptsList}", // comment: it is going to be a MAP<String, String>
+    where the key is a filename and the value is the content of the file.
+    File content will be surrounded by open '[[[' and close ']]]' delimiters.
+    - functionsList: "{functionsList}",
+    - userMessage: "{message}"
+
+Return entity should be in the form of JSON:
+    List<String> functionNames - the list of required Functions' beanNames
+    potentially useful for current userMassage processing (could be several)
+    String systemPrompt - should be a complete text of the system prompt
+     to be used as an instructions for use message processing (in combination with the suggested functionsList)
+     (not the filename, but the content of the file)

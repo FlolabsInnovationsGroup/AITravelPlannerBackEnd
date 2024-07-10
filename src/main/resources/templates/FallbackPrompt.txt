@@ -1,6 +1,0 @@
-{
-  "prompt": "Fallback response when no specific or default functions are found.",
-  "parameters": {
-    "message": "{{message}}"
-  }
-}

@@ -1,6 +1,0 @@
-{
-  "prompt": "Based on the user message, apply the default rules to determine the appropriate functions.",
-  "parameters": {
-    "message": "{{message}}"
-  }
-}

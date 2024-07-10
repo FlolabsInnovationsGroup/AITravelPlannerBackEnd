@@ -1,9 +1,11 @@
 package com.springboot.FlomadAIplanner.ai.service;
 
 import com.springboot.FlomadAIplanner.ai.dto.AIMessageDTO;
+import com.springboot.FlomadAIplanner.ai.dto.ChatClientSuggestedProperties;
 import com.springboot.FlomadAIplanner.ai.factory.ChatClientFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
 import java.util.Map;
@@ -16,7 +18,7 @@ import java.util.Map;
 @Service
 public class ChatStreamService extends AbstractChatService {
 
-     /**
+    /**
      * Constructs a new ChatStreamService.
      *
      * @param chatClientFactory      the factory to create ChatClient instances
@@ -28,54 +30,37 @@ public class ChatStreamService extends AbstractChatService {
     }
 
     /**
-     * Processes the incoming message by determining required functions and querying the AI model.
+     * Processes a message and determines the appropriate response.
      *
-     * @param message the incoming message DTO
-     * @return the response from the AI model
+     * @param message The user message DTO
+     * @return The response content
      */
-    public String processMessage(AIMessageDTO message) {
+    public Flux<String> processMessage(AIMessageDTO message) {
         log.info("Processing message: {}", message.getMessage());
+        ChatClientSuggestedProperties properties = getSuggestedChatClientProperties(message.getMessage());
 
-        ChatClientSuggestedProperties properties = getRequiredFunctions(message.getMessage());
-
-        if (properties.getFunctionNames().isEmpty()) {
-            log.info("No required functions found, asking question without functions.");
-            return askQuestion(message);
-        } else {
-            log.info("Required functions found, asking question with functions: {}", properties.getFunctionNames());
-            return askQuestionWithFunctions(properties.getSystemPrompt(), message, properties.getFunctionNames());
-        }
+        return askQuestionWithParameters(properties, message);
     }
 
     /**
-     * Asks a question to the AI model without specifying any functions.
+     * Retrieves the suggested chat client properties based on the message content.
      *
-     * @param message the incoming message DTO
-     * @return the response from the AI model
+     * @param clientProperties The chat client suggested properties
+     * @param message          The user message
+     * @return processed response for user from LLM
      */
-    private String askQuestion(AIMessageDTO message) {
-        log.debug("Asking question without functions for message: {}", message.getMessage());
-        return getChatClient().prompt()
-                .system(promptsList.get("singleQuestionPrompt.txt"))
-                .user(message.getMessage())
-                .call()
-                .content();
-    }
-    
-    /**
-     * Asks a question to the AI model specifying the required functions.
-     *
-     * @param message   the incoming message DTO
-     * @param functions the list of required functions
-     * @return the response from the AI model
-     */
-    private String askQuestionWithFunctions(String systemPrompt, AIMessageDTO message, List<String> functionNames) {
-        log.debug("Asking question with functions for message: {}, functions: {}", message.getMessage(), functionNames);
+    private Flux<String> askQuestionWithParameters(ChatClientSuggestedProperties clientProperties, AIMessageDTO message) {
+        List<String> functions = clientProperties.getFunctionNames();
+        String systemPrompt = clientProperties.getSystemPrompt();
+
+        log.debug("Asking question with parameters for message: {}, functions: {}", message.getMessage(), functions);
+
         return getChatClient().prompt()
                 .system(systemPrompt)
                 .user(message.getMessage())
-                .functions(functionNames.toArray(new String[0]))
-                .call()
+                .functions(functions.toArray(new String[0]))
+                .stream()
                 .content();
     }
+
 }

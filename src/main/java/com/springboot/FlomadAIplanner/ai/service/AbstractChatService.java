@@ -1,14 +1,14 @@
 package com.springboot.FlomadAIplanner.ai.service;
 
 import com.springboot.FlomadAIplanner.ai.config.AIConfig;
+import com.springboot.FlomadAIplanner.ai.dto.ChatClientSuggestedProperties;
 import com.springboot.FlomadAIplanner.ai.factory.ChatClientFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.Resource;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +22,9 @@ import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvis
 @Slf4j
 public abstract class AbstractChatService {
 
+    @Value("classpath:/templates/PromptAndFunctionSuggestionsPrompt.txt")
+    protected Resource promptAndFunctionSuggestionsPrompt;
+
     // Factory for creating chat client instances
     protected final ChatClientFactory chatClientFactory;
 
@@ -33,12 +36,13 @@ public abstract class AbstractChatService {
 
     /**
      * Constructor for AbstractChatService.
-     * 
-     * @param chatClientFactory Factory for creating chat clients
+     *
+     * @param chatClientFactory      Factory for creating chat clients
      * @param aiFunctionDescriptions List of available AI function descriptions
-     * @param promptsList Map of prompt file names and their content
+     * @param promptsList            Map of prompt file names and their content
      */
-    public AbstractChatService(ChatClientFactory chatClientFactory, List<String> aiFunctionDescriptions, Map<String, String> promptsList) {
+    public AbstractChatService(ChatClientFactory chatClientFactory, List<String> aiFunctionDescriptions,
+                               @Qualifier("templatePrompts") Map<String, String> promptsList) {
         this.chatClientFactory = chatClientFactory;
         this.aiFunctionDescriptions = Collections.unmodifiableList(aiFunctionDescriptions);
         this.promptsList = promptsList;
@@ -47,7 +51,7 @@ public abstract class AbstractChatService {
 
     /**
      * Retrieves the appropriate ChatClient based on the required AI model.
-     * 
+     *
      * @return An instance of ChatClient
      */
     protected ChatClient getChatClient() {
@@ -57,7 +61,7 @@ public abstract class AbstractChatService {
 
     /**
      * Determines the required AI model for the chat client.
-     * 
+     *
      * @return The name of the required AI model
      */
     private String getRequiredAIModel() {
@@ -68,14 +72,15 @@ public abstract class AbstractChatService {
 
     /**
      * Retrieves the required functions based on the given message.
-     * 
+     *
      * @param message The user message
      * @return ChatClientSuggestedProperties
      */
-    protected ChatClientSuggestedProperties getRequiredFunctions(String message) {
-        log.debug("Getting required functions for message: {}", message);
-        ChatClientSuggestedProperties functions = getChatClient().prompt()
-                .user(u -> u.text(promptsList.get("promptAndFunctionSuggestionsPrompt.txt"))
+    protected ChatClientSuggestedProperties getSuggestedChatClientProperties(String message) {
+        log.debug("Getting required properties for message: {}", message);
+
+        ChatClientSuggestedProperties properties = getChatClient().prompt()
+                .user(u -> u.text(promptAndFunctionSuggestionsPrompt)
                         .param("promptsList", promptsList.toString())
                         .param("functionsList", aiFunctionDescriptions.toString())
                         .param("message", message))
@@ -83,23 +88,11 @@ public abstract class AbstractChatService {
                 .call()
                 .entity(ChatClientSuggestedProperties.class);
 
-        log.debug("Required functions found: {}", functions);
-        return functions;
+        log.info("""
+                Required properties received from AI suggestion:
+                Chosen prompt: {};
+                Chosen functions: {}""", properties.getSystemPrompt(), properties.getFunctionNames());
+        return properties;
     }
 
-    /**
-     * Extracts function names from a list of function name suggestions.
-     * 
-     * @param functions List of function name suggestions
-     * @return An array of function names
-     */
-    protected String[] functionNames(List<ChatClientSuggestedProperties> functions) {
-        log.debug("Extracting function names from functions: {}", functions);
-        String[] functionNames = functions.stream()
-                .map(ChatClientSuggestedProperties::getFunctionNames)
-                .flatMap(List::stream)
-                .toArray(String[]::new);
-        log.debug("Extracted function names: {}", Arrays.toString(functionNames));
-        return functionNames;
-    }
 }
