@@ -1,56 +1,60 @@
 package com.springboot.FlomadAIplanner.ai.functions;
 
+import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.springboot.FlomadAIplanner.dto.google.TextSearchRequest;
 import com.springboot.FlomadAIplanner.exceptions.GoogleAPIException;
-import com.springboot.FlomadAIplanner.service.google.GooglePlacesService;
+import com.springboot.FlomadAIplanner.service.google.GooglePlacesServiceAsync;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Description;
 import org.springframework.stereotype.Component;
 
-/**
- * Provides place information based on a text query using the Google Places API.
- * <p>
- * This function helps retrieve detailed information about a place by performing a text search
- * on the Google Places API. It's designed to be used within the Flomad AI planner application.
- * <p>
- * **Important Note:** This function is crucial for obtaining the exact longitude and latitude of a
- * place before using the `PlaceSuggestionFunction`. The exact location coordinates are necessary for
- * accurate place suggestions. Additionally, this function retrieves the Google Maps URL for the
- * searched place.
- */
+import java.util.List;
 
 @Slf4j
 @Component
 @Description("""
-         Provides place information based on a text query.
-         Use this function to get detailed information about a place based on a text search.
-         Before calling the "PlaceSuggestionFunction', use "PlaceTextSearchFunction" to
-         obtain the exact location (longitude and latitude) and obtain
-         the Google Maps URL for a place.
-         
-        Do not change or edit in any way the URL of the Google Maps link provided by this function.""")
-public class PlaceTextSearchFunction implements AIFunction<TextSearchRequest, JsonNode> {
+        Provides place information based on a list of text queries.
+        Use this function to get detailed information about one or multiple - [1,∞) places based on text searches.
+        This function processes a batch of place names, making it efficient for bulk queries.
+        It is especially useful before calling the "PlaceSuggestionFunction" to obtain the exact locations (longitude and latitude) and
+        Google Maps URLs for the searched places.
+                 
+        Do not change or edit in any way the URLs of the Google Maps links provided by this function.
+        """)
+public class PlaceTextSearchFunction implements AIFunction<PlaceTextSearchFunction.TextSearchRequestsWrapper, JsonNode> {
 
-    private final GooglePlacesService googlePlacesService;
+    private final GooglePlacesServiceAsync googlePlacesService;
 
     @Autowired
-    public PlaceTextSearchFunction(GooglePlacesService googlePlacesService) {
+    public PlaceTextSearchFunction(GooglePlacesServiceAsync googlePlacesService) {
         this.googlePlacesService = googlePlacesService;
     }
 
     @Valid
     @Override
-    public JsonNode apply(TextSearchRequest request) {
-        log.info("Performing text search with query: {}", request.getTextQuery());
+    public JsonNode apply(TextSearchRequestsWrapper requestsWrapper) {
+        log.info("Performing text search with query: {}", requestsWrapper.getRequests());
         try {
-            return googlePlacesService.textSearchPlaces(request);
+            return googlePlacesService.bulkTextSearchPlaces(requestsWrapper.getRequests());
         } catch (GoogleAPIException e) {
             log.error("Error performing text search", e);
             return JsonNodeFactory.instance.objectNode().put("error", e.getMessage());
         }
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TextSearchRequestsWrapper {
+
+        @JsonPropertyDescription("List of text search requests.")
+        private List<TextSearchRequest> requests;
     }
 }
