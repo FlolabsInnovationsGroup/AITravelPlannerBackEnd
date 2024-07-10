@@ -1,6 +1,9 @@
 package com.springboot.FlomadAIplanner.service.viator;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.springboot.FlomadAIplanner.dto.viator.BulkFreeTextSearchRequest;
 import com.springboot.FlomadAIplanner.dto.viator.FreeTextSearchRequest;
 import com.springboot.FlomadAIplanner.exceptions.ViatorAPIException;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +21,7 @@ public class ViatorAuxiliaryService {
         this.viatorClient = viatorClient;
     }
 
+    @SuppressWarnings("unused")
     public JsonNode searchFreeText(String acceptLang, FreeTextSearchRequest request) throws ViatorAPIException {
         log.info("Searching free text with term: {}", request.getSearchTerm());
         try {
@@ -29,5 +33,35 @@ public class ViatorAuxiliaryService {
             log.error("Error performing free text search", e);
             throw new ViatorAPIException("Error performing free text search", e);
         }
+    }
+
+    @SuppressWarnings("unused")
+    public JsonNode bulkSearchFreeText(String acceptLang, BulkFreeTextSearchRequest request) throws ViatorAPIException {
+        log.info("Performing bulk text searches for multiple queries.");
+
+        ArrayNode results = JsonNodeFactory.instance.arrayNode();
+        try {
+            FreeTextSearchRequest freeTextSearchRequest = buildFreeTextSearchRequest(request);
+            for (String searchTerm : request.getSearchTerms()) {
+                freeTextSearchRequest.setSearchTerm(searchTerm);
+                log.info("Performing free text search with term: {}", freeTextSearchRequest.getSearchTerm());
+                JsonNode response = viatorClient.searchFreeText("application/json;version=2.0", acceptLang, freeTextSearchRequest);
+                log.info("Received search results: {}", response);
+                results.add(response);
+            }
+            return results;
+        } catch (Exception e) {
+            log.error("Error performing free text search", e);
+            throw new ViatorAPIException("Error performing free text search", e);
+        }
+    }
+
+    private FreeTextSearchRequest buildFreeTextSearchRequest(BulkFreeTextSearchRequest bulkRequest) {
+        return FreeTextSearchRequest.builder()
+                .productFiltering(bulkRequest.getProductFiltering())
+                .productSorting(bulkRequest.getProductSorting())
+                .searchTypes(bulkRequest.getSearchTypes())
+                .currency(bulkRequest.getCurrency())
+                .build();
     }
 }
