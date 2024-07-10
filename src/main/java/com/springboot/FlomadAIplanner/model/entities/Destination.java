@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.io.Serial;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -15,6 +17,9 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "destinations")
 public class Destination extends Model {
+    @Serial
+    private static final long serialVersionUID = -8153912516789493415L;
+
 
     @Column(name = "sortOrder")
     private Integer sortOrder;
