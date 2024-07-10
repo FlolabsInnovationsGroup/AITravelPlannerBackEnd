@@ -1,49 +1,45 @@
 package com.springboot.FlomadAIplanner.model.entities.login;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
-
-
 
 @Entity
 @Table(name = "users")
+@Data
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
+    @EqualsAndHashCode.Include
+    @Column(nullable = false, unique = true)
     private String username;
 
+    @Column(nullable = false)
     private String password;
 
-    // Getters and Setters
-    public Long getId() {
-        return id;
-    }
+    @Column(nullable = false)
+    private Boolean isEmailVerified = false;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    @Column(nullable = false)
+    private Boolean is_verfied = false;
 
-    public String getUsername() {
-        return username;
-    }
+    @Column(nullable = false, unique = true)
+    private String email;
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+    @Column(nullable = false)
+    private Boolean enabled = false;
 
-    public String getPassword() {
-        return password;
-    }
+    private String verificationToken;
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
 }

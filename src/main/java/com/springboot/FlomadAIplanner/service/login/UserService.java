@@ -1,15 +1,16 @@
 package com.springboot.FlomadAIplanner.service.login;
 
+import com.google.api.client.util.Value;
+import com.springboot.FlomadAIplanner.model.entities.login.User;
+import com.springboot.FlomadAIplanner.model.repository.login.UserRepository;
+import com.springboot.FlomadAIplanner.service.login.EmailService;
+
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import com.springboot.FlomadAIplanner.model.entities.login.User;
-import com.springboot.FlomadAIplanner.model.repository.login.UserRepository;
-import com.springboot.FlomadAIplanner.util.JwtUtil;
-
-import java.util.Optional;
 
 @Service
 public class UserService {
@@ -18,37 +19,32 @@ public class UserService {
     private UserRepository userRepository;
 
     @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+    private EmailService emailService;
 
     @Autowired
-    private JwtUtil jwtUtil;
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public User signUp(User user) {
-        // Check if username is already taken
-        Optional<User> existingUser = userRepository.findByUsername(user.getUsername());
-        if (existingUser.isPresent()) {
-            throw new RuntimeException("Username already exists");
-        }
+    @Value("${verification.url}")
+    private String verificationUrl;
 
-        // Encrypt password
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+    public void registerUser(User user) {
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        user.setVerificationToken(UUID.randomUUID().toString());
+        user.setEnabled(false);
+        userRepository.save(user);
 
-        // Save user
-        return userRepository.save(user);
+        String verificationLink = verificationUrl + "?token=" + user.getVerificationToken();
+        emailService.sendSimpleMessage(user.getEmail(), "Email Verification", "Please click on the link to verify your email: " + verificationLink);
     }
 
-    public String signIn(String username, String password) {
-        // Find user by username
-        Optional<User> userOptional = userRepository.findByUsername(username);
-        User user = userOptional.orElseThrow(() -> new RuntimeException("User not found"));
+    public User findByVerificationToken(String token) {
+        return userRepository.findByVerificationToken(token);
+    }
 
-        // Validate password
-        if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new RuntimeException("Invalid password");
-        }
-
-        // Generate JWT token
-        return jwtUtil.generateToken(username);
+    public void verifyUser(User user) {
+        user.setEnabled(true);
+        user.setVerificationToken(null);
+        userRepository.save(user);
     }
 
     public UserDetails loadUserByUsername(String username) {

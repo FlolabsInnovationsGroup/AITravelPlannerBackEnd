@@ -1,13 +1,9 @@
 package com.springboot.FlomadAIplanner.model.repository.login;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-
 import com.springboot.FlomadAIplanner.model.entities.login.User;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Optional;
-
-@Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    Optional<User> findByUsername(String username);
+    User findByUsername(String username);
+    User findByVerificationToken(String verificationToken);
 }

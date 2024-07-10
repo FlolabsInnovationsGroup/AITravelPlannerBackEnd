@@ -5,10 +5,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.http.HttpMethod;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
+
     @SuppressWarnings("removal")
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -17,10 +19,11 @@ public class WebSecurityConfig {
             .authorizeHttpRequests(authz -> authz
                 // Permit access without authentication to specific endpoints
                 .requestMatchers("/api/v1/places/nearby").permitAll()
-                .requestMatchers("/planTrip").permitAll() // Allow access to /planTrip without authentication
-                .requestMatchers("/flight-offers").permitAll() // Allow anonymous access to /flight-offers
-                .requestMatchers("/login").permitAll() // Allow access to /login without authentication
-                .requestMatchers("/error").permitAll() // Allow access to /error without authentication
+                .requestMatchers("/planTrip").permitAll()
+                .requestMatchers("/flight-offers").permitAll()
+                .requestMatchers(HttpMethod.GET, "/login", "/signup", "/verify").permitAll()
+                .requestMatchers(HttpMethod.POST, "/login", "/signup", "/verify").permitAll()
+                .requestMatchers("/error").permitAll()
                 .requestMatchers("/convert").permitAll()
                 .anyRequest().authenticated() // All other requests need authentication
             )

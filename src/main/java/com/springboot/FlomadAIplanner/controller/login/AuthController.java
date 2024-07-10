@@ -5,31 +5,41 @@ import com.springboot.FlomadAIplanner.service.login.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
+import java.util.HashMap;
+import java.util.Map;
 
-@RestController
 @RequestMapping("/api/auth")
+@RestController
 public class AuthController {
-    
+
     @Autowired
     private UserService userService;
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signUp(@RequestBody User user) {
+    public ResponseEntity<Map<String, String>> signUp(@RequestBody User user) {
         try {
-            User newUser = userService.signUp(user);
-            return ResponseEntity.ok(newUser);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            userService.registerUser(user);
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "User registered successfully. Please check your email for verification instructions.");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Registration failed: " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
     }
 
-    @PostMapping("/signin")
-    public ResponseEntity<?> signIn(@RequestParam String username, @RequestParam String password) {
-        try {
-            String token = userService.signIn(username, password);
-            return ResponseEntity.ok(token);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+    @GetMapping("/verify")
+    public ResponseEntity<Map<String, String>> verifyUser(@RequestParam("token") String token) {
+        Map<String, String> response = new HashMap<>();
+        User user = userService.findByVerificationToken(token);
+        if (user == null) {
+            response.put("message", "Invalid verification token.");
+            return ResponseEntity.badRequest().body(response);
         }
+        userService.verifyUser(user);
+        response.put("message", "Email verified successfully.");
+        return ResponseEntity.ok(response);
     }
 }
