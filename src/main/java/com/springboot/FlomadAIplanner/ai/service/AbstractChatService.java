@@ -22,17 +22,14 @@ import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvis
 @Slf4j
 public abstract class AbstractChatService {
 
-    @Value("classpath:/templates/PromptAndFunctionSuggestionsPrompt.txt")
-    protected Resource promptAndFunctionSuggestionsPrompt;
-
     // Factory for creating chat client instances
     protected final ChatClientFactory chatClientFactory;
-
     // List of AI function descriptions available for use
     protected final List<String> aiFunctionDescriptions;
-
     // Prompts stored as a map
     protected final Map<String, String> promptsList;
+    @Value("classpath:/templates/PromptAndFunctionSuggestionsPrompt.txt")
+    protected Resource promptAndFunctionSuggestionsPrompt;
 
     /**
      * Constructor for AbstractChatService.
@@ -88,10 +85,16 @@ public abstract class AbstractChatService {
                 .call()
                 .entity(ChatClientSuggestedProperties.class);
 
+        log.info("promptKey: {}", properties.getSystemPrompt());
+
+        // setting the suggested prompt content
+        String suggestedPrompt = promptsList.get(properties.getSystemPrompt());
+        properties.setSystemPrompt(suggestedPrompt);
+
         log.info("""
                 Required properties received from AI suggestion:
                 Chosen prompt: {};
-                Chosen functions: {}""", properties.getSystemPrompt(), properties.getFunctionNames());
+                Chosen functions: {}""", suggestedPrompt, properties.getFunctionNames());
         return properties;
     }
 
