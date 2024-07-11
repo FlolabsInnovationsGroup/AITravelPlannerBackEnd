@@ -10,6 +10,8 @@ import reactor.core.publisher.Flux;
 import java.util.List;
 import java.util.Map;
 
+import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvisor.CHAT_MEMORY_CONVERSATION_ID_KEY;
+
 /**
  * ChatStreamService processes messages in a streaming manner.
  * It extends AbstractChatService to leverage common chat-related functionalities.
@@ -30,34 +32,35 @@ public class ChatStreamService extends AbstractChatService {
     }
 
     /**
-     * Processes a message and determines the appropriate response.
+     * Processes a aiMessage and determines the appropriate response.
      *
-     * @param message The user message DTO
+     * @param aiMessage The user aiMessage DTO
      * @return The response content
      */
-    public Flux<String> processMessage(AIMessageDTO message) {
-        log.info("Processing message: {}", message.getMessage());
-        ChatClientSuggestedProperties properties = getSuggestedChatClientProperties(message.getMessage());
+    public Flux<String> processMessage(AIMessageDTO aiMessage) {
+        log.info("Processing aiMessage: {}", aiMessage.getMessage());
+        ChatClientSuggestedProperties properties = getSuggestedChatClientProperties(aiMessage.getMessage());
 
-        return askQuestionWithParameters(properties, message);
+        return askQuestionWithParameters(properties, aiMessage);
     }
 
     /**
-     * Retrieves the suggested chat client properties based on the message content.
+     * Retrieves the suggested chat client properties based on the aiMessage content.
      *
      * @param clientProperties The chat client suggested properties
-     * @param message          The user message
+     * @param aiMessage        The user aiMessage
      * @return processed response for user from LLM
      */
-    private Flux<String> askQuestionWithParameters(ChatClientSuggestedProperties clientProperties, AIMessageDTO message) {
+    private Flux<String> askQuestionWithParameters(ChatClientSuggestedProperties clientProperties, AIMessageDTO aiMessage) {
         List<String> functions = clientProperties.getFunctionNames();
         String systemPrompt = clientProperties.getSystemPrompt();
 
-        log.debug("Asking question with parameters for message: {}, functions: {}", message.getMessage(), functions);
+        log.debug("Asking question with parameters for aiMessage: {}, functions: {}", aiMessage.getMessage(), functions);
 
         return getChatClient().prompt()
                 .system(systemPrompt)
-                .user(message.getMessage())
+                .user(aiMessage.getMessage())
+                .advisors(a -> a.param(CHAT_MEMORY_CONVERSATION_ID_KEY, aiMessage.getSessionId()))
                 .functions(functions.toArray(new String[0]))
                 .stream()
                 .content();

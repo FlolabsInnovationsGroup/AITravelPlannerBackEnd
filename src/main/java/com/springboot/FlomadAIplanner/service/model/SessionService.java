@@ -30,8 +30,8 @@ public class SessionService {
         log.info("Finding entity for user: {}", userId);
         return sessionRepository.findByUserId(userId)
                 .stream()
-                .sorted(Comparator.comparing(Session::getTimestamp).reversed())
-                .map(session -> new SessionDTO(session.getSessionId(), session.getUserId(), session.getTitle(), session.getTimestamp()))
+                .sorted(Comparator.comparing(Session::getCreatedAt).reversed())
+                .map(session -> new SessionDTO(session.getId(), session.getUserId(), session.getTitle(), session.getCreatedAt()))
                 .collect(Collectors.toList());
     }
 
@@ -42,10 +42,10 @@ public class SessionService {
 
     public Session updateSession(String sessionId, String userId, String title, LocalDateTime timestamp) {
         log.info("Updating entity: {}", sessionId);
-        Session session = sessionRepository.findBySessionIdAndUserId(sessionId, userId);
+        Session session = sessionRepository.findByIdAndUserId(sessionId, userId);
         if (session != null) {
             session.setTitle(title);
-            session.setTimestamp(timestamp);
+            session.setCreatedAt(timestamp);
             return sessionRepository.save(session);
         } else {
             log.error("Entity not found");
@@ -55,7 +55,7 @@ public class SessionService {
 
     public Session updateSessionTitle(String sessionId, String userId, String title) {
         log.info("Updating entity: {}", sessionId);
-        Session session = sessionRepository.findBySessionIdAndUserId(sessionId, userId);
+        Session session = sessionRepository.findByIdAndUserId(sessionId, userId);
         if (session != null) {
             session.setTitle(title);
             return sessionRepository.save(session);

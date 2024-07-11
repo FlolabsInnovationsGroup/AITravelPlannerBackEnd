@@ -17,4 +17,4 @@ Your response should be like the following format:
     Day2:
         ...
 
-    "Your human-like response to the user's message"
+    Your human-like response to the user's message

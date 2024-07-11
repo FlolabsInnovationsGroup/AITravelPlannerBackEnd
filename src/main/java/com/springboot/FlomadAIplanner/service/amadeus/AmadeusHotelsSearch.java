@@ -47,7 +47,7 @@ public class AmadeusHotelsSearch {
                     request.getRatings(),
                     request.getHotelSource()
             );
-            log.info("Received hotel search response from Amadeus: {}", response);
+            log.info("Received hotel search response from Amadeus");
             return response;
         } catch (Exception e) {
             log.error("Error searching for hotels by geocode", e);

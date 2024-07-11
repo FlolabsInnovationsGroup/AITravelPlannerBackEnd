@@ -39,7 +39,7 @@ public class HotelsSearchByLocationFunction implements AIFunction<HotelsSearchBy
         log.info("Searching hotels by geocode at latitude: {}, longitude: {}", requestWrapper.getRequest().getLatitude(), requestWrapper.getRequest().getLongitude());
         try {
             JsonNode response = amadeusHotelsSearch.searchHotelsByGeocode(requestWrapper.getRequest());
-            log.info("Received hotel search response from Amadeus: {}", response);
+            log.info("Received hotel search response from Amadeus");
             return response;
         } catch (AmadeusAPIException e) {
             log.error("Error searching for hotels by geocode", e);
