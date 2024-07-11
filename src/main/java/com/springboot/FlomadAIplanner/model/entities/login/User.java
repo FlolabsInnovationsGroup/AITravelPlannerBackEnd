@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 
+import java.util.UUID;
 @Entity
 @Table(name = "users")
 @Data
@@ -21,25 +22,67 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
     @EqualsAndHashCode.Include
-    @Column(nullable = false, unique = true)
     private String username;
 
-    @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
-    private Boolean isEmailVerified = false;
-
-    @Column(nullable = false)
-    private Boolean is_verfied = false;
-
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private String email;
 
     @Column(nullable = false)
-    private Boolean enabled = false;
+    private boolean isVerified = false;
 
+    @Column(nullable = false)
     private String verificationToken;
 
+    @Column(nullable = false)
+    private boolean enabled = false;
+
+    @PrePersist
+    private void prePersist() {
+        this.verificationToken = UUID.randomUUID().toString();
+        this.isVerified = false;
+        this.enabled = false;
+    }
+
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private Boolean isEmailVerified = false;
+
+    // Getter and setter for isVerified
+    public boolean isVerified() {
+        return isVerified;
+    }
+
+    public void setIsVerified(boolean isVerified) {
+        this.isVerified = isVerified;
+    }
+
+    // Getter and setter for isEmailVerified
+    public Boolean getIsEmailVerified() {
+        return isEmailVerified;
+    }
+
+    public void setIsEmailVerified(Boolean isEmailVerified) {
+        this.isEmailVerified = isEmailVerified;
+    }
+
+    // Getter and setter for verificationToken
+    public String getVerificationToken() {
+        return verificationToken;
+    }
+
+    public void setVerificationToken(String verificationToken) {
+        this.verificationToken = verificationToken;
+    }
+
+    // Getter and setter for enabled
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
 }
