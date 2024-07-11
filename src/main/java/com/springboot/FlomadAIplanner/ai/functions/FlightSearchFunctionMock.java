@@ -9,7 +9,7 @@ import java.util.List;
 
 @Slf4j
 @Component
-@Description("Searches for available flights based on the provided criteria.")
+@Description("Do not use in production! Mock implementation of the flight search function.")
 public class FlightSearchFunctionMock implements AIFunction<FlightSearchFunctionMock.FlightSearchRequest, FlightSearchFunctionMock.FlightSearchResponse> {
 
     @Override

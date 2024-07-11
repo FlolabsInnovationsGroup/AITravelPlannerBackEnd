@@ -40,7 +40,7 @@ public class ChatCallService extends AbstractChatService {
     }
 
     private String askQuestionWithFunctions(AIMessageDTO message, List<FunctionNameSuggestion> functions) {
-        log.debug("Asking question with functions for message: {}, functions: {}", message.getMessage(), functions);
+        log.debug("Asking question with functions for message: {}, functions: {}.", message.getMessage(), functions);
         return getChatClient().prompt()
                 .system(withFunctionsQuestionPrompt)
                 .user(message.getMessage())
