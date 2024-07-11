@@ -1,11 +1,12 @@
 package com.springboot.FlomadAIplanner.dto;
 
-import com.springboot.FlomadAIplanner.model.entities.Speaker;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.ai.chat.messages.MessageType;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 
 /**
@@ -17,7 +18,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class MessageDTO {
     private String id;
-    private String message;
+    private String sessionId;
+    private String content;
     private LocalDateTime createdAt;
-    private Speaker speaker;
+    private MessageType messageType;
+    private Map<String, String> metadata;
 }

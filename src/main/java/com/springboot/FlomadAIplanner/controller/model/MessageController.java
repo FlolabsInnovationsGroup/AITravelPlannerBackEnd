@@ -1,10 +1,10 @@
 package com.springboot.FlomadAIplanner.controller.model;
 
+import com.springboot.FlomadAIplanner.converter.Converter;
 import com.springboot.FlomadAIplanner.dto.MessageDTO;
 import com.springboot.FlomadAIplanner.model.entities.Message;
 import com.springboot.FlomadAIplanner.service.model.MessageService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,22 +20,34 @@ import java.util.List;
 @RestController
 @RequestMapping("/messagesPersistence")
 public class MessageController {
-    @Autowired
-    private MessageService service;
+    private final MessageService service;
+    private final Converter<Message, MessageDTO> messageToDTOConverter;
+    private final Converter<MessageDTO, Message> messageFromDTOConverter;
+
+    public MessageController(MessageService service, Converter<Message, MessageDTO> messageToDTOConverter, Converter<MessageDTO, Message> messageFromDTOConverter) {
+        this.service = service;
+        this.messageToDTOConverter = messageToDTOConverter;
+        this.messageFromDTOConverter = messageFromDTOConverter;
+    }
 
     @PostMapping
     public ResponseEntity<Message> createMessage(@RequestBody MessageDTO dto) {
         log.info("Creating new message: {}", dto);
-        Message newMessage = service.saveMessage(dto.getId(), dto.getMessage(), dto.getCreatedAt(), dto.getSpeaker());
+        Message message = messageFromDTOConverter.convert(dto);
+        Message newMessage = service.save(message);
         log.info("Message created");
         return ResponseEntity.ok(newMessage);
     }
 
     @GetMapping("/getSessionMessages")
-    public ResponseEntity<List<Message>> getSessionMessages(@RequestParam String sessionId) {
+    public ResponseEntity<List<MessageDTO>> getSessionMessages(@RequestParam String sessionId) {
         log.info("Retrieving messages for session: {}", sessionId);
         List<Message> messages = service.getMessagesBySessionId(sessionId);
+
+        List<MessageDTO> dtos = messages.stream()
+                .map(messageToDTOConverter::convert)
+                .toList();
         log.info("Messages retrieved");
-        return ResponseEntity.ok(messages);
+        return ResponseEntity.ok(dtos);
     }
 }

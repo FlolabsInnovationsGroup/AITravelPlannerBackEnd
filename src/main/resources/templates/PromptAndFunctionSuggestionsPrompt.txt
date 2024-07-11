@@ -9,6 +9,5 @@ LLMSystemInstructions: Based on the user message, suggest the appropriate system
 Return entity should be in the form of JSON:
     List<String> functionNames - the list of required Functions' beanNames
     potentially useful for current userMassage processing (could be several)
-    String systemPrompt - should be a key from the 'promptsList' Map (filename) of the chosen system prompt
-     to be used as an instructions for use message processing (in combination with the suggested functionsList)
-     (not the filename, but the content of the file)
+    String systemPrompt - MUST be a KEY of the required prompt content from the 'promptsList' Map (filename of the chosen system prompt)
+    to be used as an instructions for use message processing (in combination with the suggested functionsList)

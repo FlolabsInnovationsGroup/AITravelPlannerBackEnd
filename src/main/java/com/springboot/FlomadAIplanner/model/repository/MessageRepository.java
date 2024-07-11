@@ -14,4 +14,8 @@ import java.util.List;
 @Repository
 public interface MessageRepository extends JpaRepository<Message, String> {
     List<Message> findBySessionIdOrderByCreatedAtAsc(String sessionId);
+
+    List<Message> findAllBySessionIdOrderByCreatedAtAsc(String sessionId);
+
+    void deleteBySessionId(String sessionId);
 }

@@ -1,12 +1,10 @@
 package com.springboot.FlomadAIplanner.service.model;
 
 import com.springboot.FlomadAIplanner.model.entities.Message;
-import com.springboot.FlomadAIplanner.model.entities.Speaker;
 import com.springboot.FlomadAIplanner.model.repository.MessageRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -24,19 +22,31 @@ public class MessageService {
         this.repository = repository;
     }
 
-    public Message saveMessage(String sessionId, String message, LocalDateTime timestamp, Speaker speaker) {
-        log.info("Saving entity: {}, {}, {}", message, timestamp, speaker);
-        Message messages = new Message();
-        messages.setSpeaker(speaker);
-        messages.setContent(message);
-        messages.setCreatedAt(timestamp);
-        messages.setSessionId(sessionId);
+    public Message save(Message message) {
+        log.info("Saving entity: {}, message: {} sessionId: {}",
+                Message.class, message.getContent().substring(0, 20).concat("..."), message.getSessionId());
 
-        return repository.save(messages);
+        return repository.save(message);
+    }
+
+    public void saveAll(List<Message> messages) {
+        log.info("Saving entities: {}", messages.size());
+        repository.saveAll(messages);
     }
 
     public List<Message> getMessagesBySessionId(String sessionId) {
         log.info("Finding entity for session: {}", sessionId);
         return repository.findBySessionIdOrderByCreatedAtAsc(sessionId);
     }
+
+    public List<Message> findAllBySessionId(String sessionId) {
+        log.info("Finding entity for session: {}", sessionId);
+        return repository.findAllBySessionIdOrderByCreatedAtAsc(sessionId);
+    }
+
+    public void deleteBySessionId(String sessionId) {
+        log.info("Deleting entity for session: {}", sessionId);
+        repository.deleteBySessionId(sessionId);
+    }
+
 }
