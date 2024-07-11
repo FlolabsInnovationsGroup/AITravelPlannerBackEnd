@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
         Use this function to perform a free text search for TOURS to the required destinations (countries, cities, famous places, etc.).
         Searching for Viator PRODUCTS, ATTRACTIONS, and DESTINATIONS.
         Use this function every time if you need to search for various activities, tours, and experiences available for each different place required, in case needed to do so.
+        Recommended to use for search for tours in all required places in one call. SearchTerms - [1,∞)
         Mostly could be called to find out general information about a tours (payed activities)\s
         or famous places available in the desired destination.
         DESTINATION could be a country, city, town, etc.

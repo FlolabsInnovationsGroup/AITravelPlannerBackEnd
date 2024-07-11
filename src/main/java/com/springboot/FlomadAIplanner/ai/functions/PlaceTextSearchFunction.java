@@ -22,6 +22,7 @@ import java.util.List;
 @Description("""
         Provides place information based on a list of text queries.
         Use this function to get detailed information about one or multiple - [1,∞) places based on text searches.
+        Recommended to use for search for all required places in one call.
         This function processes a batch of place names, making it efficient for bulk queries.
         It is especially useful before calling the "PlaceSuggestionFunction" to obtain the exact locations (longitude and latitude) and
         Google Maps URLs for the searched places.
@@ -54,7 +55,7 @@ public class PlaceTextSearchFunction implements AIFunction<PlaceTextSearchFuncti
     @AllArgsConstructor
     public static class TextSearchRequestsWrapper {
 
-        @JsonPropertyDescription("List of text search requests.")
+        @JsonPropertyDescription("List of text search requests. Recommended to use for search for all required places in one call.")
         private List<TextSearchRequest> requests;
     }
 }
