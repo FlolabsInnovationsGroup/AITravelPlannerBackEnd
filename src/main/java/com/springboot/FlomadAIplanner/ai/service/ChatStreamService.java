@@ -1,52 +1,66 @@
 package com.springboot.FlomadAIplanner.ai.service;
 
 import com.springboot.FlomadAIplanner.ai.dto.AIMessageDTO;
+import com.springboot.FlomadAIplanner.ai.dto.ChatClientSuggestedProperties;
 import com.springboot.FlomadAIplanner.ai.factory.ChatClientFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
 import java.util.List;
+import java.util.Map;
 
+/**
+ * ChatStreamService processes messages in a streaming manner.
+ * It extends AbstractChatService to leverage common chat-related functionalities.
+ */
 @Slf4j
 @Service
 public class ChatStreamService extends AbstractChatService {
 
-    public ChatStreamService(ChatClientFactory chatClientFactory, List<String> aiFunctionDescriptions) {
-        super(chatClientFactory, aiFunctionDescriptions);
-        log.info("ChatStreamService initialized with AI function descriptions: {}", aiFunctionDescriptions);
+    /**
+     * Constructs a new ChatStreamService.
+     *
+     * @param chatClientFactory      the factory to create ChatClient instances
+     * @param aiFunctionDescriptions the list of AI function descriptions
+     */
+    public ChatStreamService(ChatClientFactory chatClientFactory, List<String> aiFunctionDescriptions, Map<String, String> promptsList) {
+        super(chatClientFactory, aiFunctionDescriptions, promptsList);
+        log.info("ChatCallService initialized with AI function descriptions: {}", aiFunctionDescriptions);
     }
 
+    /**
+     * Processes a message and determines the appropriate response.
+     *
+     * @param message The user message DTO
+     * @return The response content
+     */
     public Flux<String> processMessage(AIMessageDTO message) {
         log.info("Processing message: {}", message.getMessage());
+        ChatClientSuggestedProperties properties = getSuggestedChatClientProperties(message.getMessage());
 
-        List<FunctionNameSuggestion> requiredFunctions = getRequiredFunctions(message.getMessage());
-
-        if (requiredFunctions.isEmpty()) {
-            log.info("No required functions found, asking question without functions.");
-            return askQuestion(message);
-        } else {
-            log.info("Required functions found, asking question with functions: {}", requiredFunctions);
-            return askQuestionWithFunctions(message, requiredFunctions);
-        }
+        return askQuestionWithParameters(properties, message);
     }
 
-    private Flux<String> askQuestion(AIMessageDTO message) {
-        log.debug("Asking question without functions for message: {}", message.getMessage());
+    /**
+     * Retrieves the suggested chat client properties based on the message content.
+     *
+     * @param clientProperties The chat client suggested properties
+     * @param message          The user message
+     * @return processed response for user from LLM
+     */
+    private Flux<String> askQuestionWithParameters(ChatClientSuggestedProperties clientProperties, AIMessageDTO message) {
+        List<String> functions = clientProperties.getFunctionNames();
+        String systemPrompt = clientProperties.getSystemPrompt();
+
+        log.debug("Asking question with parameters for message: {}, functions: {}", message.getMessage(), functions);
+
         return getChatClient().prompt()
-                .system(singleQuestionPrompt)
+                .system(systemPrompt)
                 .user(message.getMessage())
+                .functions(functions.toArray(new String[0]))
                 .stream()
                 .content();
     }
 
-    private Flux<String> askQuestionWithFunctions(AIMessageDTO message, List<FunctionNameSuggestion> functions) {
-        log.debug("Asking question with functions for message: {}, functions: {}", message.getMessage(), functions);
-        return getChatClient().prompt()
-                .system(withFunctionsQuestionPrompt)
-                .user(message.getMessage())
-                .functions(functionNames(functions))
-                .stream()
-                .content();
-    }
 }
