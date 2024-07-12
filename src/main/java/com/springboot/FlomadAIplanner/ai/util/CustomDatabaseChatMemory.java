@@ -31,7 +31,7 @@ public class CustomDatabaseChatMemory implements ChatMemory {
         List<Message> newMessages = new ArrayList<>();
         for (org.springframework.ai.chat.messages.Message message : messages) {
             log.info("Adding message: \"{}\",  to conversation: {}",
-                    message.getContent().substring(0, 20).concat("..."), conversationId);
+                    StringUtils.safeSubstring(message.getContent(), 50), conversationId);
 
             Message entity = this.messageConverter.convert(message);
             entity.setCreatedAt(LocalDateTime.now());

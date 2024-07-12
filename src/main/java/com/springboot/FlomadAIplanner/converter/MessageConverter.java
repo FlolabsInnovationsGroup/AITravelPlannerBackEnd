@@ -1,5 +1,6 @@
 package com.springboot.FlomadAIplanner.converter;
 
+import com.springboot.FlomadAIplanner.ai.util.StringUtils;
 import com.springboot.FlomadAIplanner.dto.MessageDTO;
 import com.springboot.FlomadAIplanner.model.entities.Message;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +19,7 @@ public class MessageConverter implements Converter<Message, MessageDTO> {
             log.info("Source message is 'null'");
             return null;
         }
-        log.info("Converting message to DTO: {}", source.getContent().substring(0, 20).concat("..."));
+        log.info("Converting message to DTO: {}", StringUtils.safeSubstring(source.getContent(), 50));
 
         Map<String, String> metadata = null;
         if (source.getMetadata() != null) {
