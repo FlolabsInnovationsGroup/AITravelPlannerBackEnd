@@ -31,7 +31,7 @@ public class User {
     @Column(unique = true)
     private String email;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name="is_verified")
     private boolean isVerified = false;
 
     @Column(nullable = false)
