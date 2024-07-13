@@ -31,6 +31,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Collections;
 
 
+@SuppressWarnings("unused")
 public class WbhookFlightJumpPage implements HttpFunction {
   private static final Logger logger = Logger.getLogger(WbhookFlightJumpPage.class.getName());
   public void service(final HttpRequest request, final HttpResponse response) throws Exception {

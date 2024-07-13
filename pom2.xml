@@ -33,6 +33,12 @@
             <artifactId>jackson-databind</artifactId>
             <version>2.12.3</version>
         </dependency>
+        // Jython Dependency 
+        <dependency>
+            <groupId>org.apache.submarine</groupId>
+            <artifactId>submarine-python-interpreter</artifactId>
+            <version>0.4.0</version>
+        </dependency>
 	</dependencies>    
     
 	// End of Conversational AI Dependencies Component

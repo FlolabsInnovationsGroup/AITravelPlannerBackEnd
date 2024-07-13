@@ -22,6 +22,7 @@ import com.springboot.FlomadAIplanner.service.ConversationService;
  * @class
  * @description This is a controller that allows you to talk to Gemini API
  */
+@SuppressWarnings("unused")
 //////////////////////////////////////////
 // @CrossOrigin(origins = "http://localhost:4200")
 @RestController

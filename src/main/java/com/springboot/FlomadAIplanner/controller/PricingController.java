@@ -19,6 +19,7 @@ import com.springboot.FlomadAIplanner.service.AmadeusAuthService;
  * @class
  * @description This is a controller that checking whether the price of flights you fetched have changed. 
  */
+@SuppressWarnings("unused")
 //////////////////////////////////////////
 @RestController
 public class PricingController {

@@ -44,6 +44,7 @@ import java.util.logging.Logger;
 @RestController
 public class WebhookController {
     private final WebhookFlightJumpPageService service;
+    @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(WebhookController.class.getName());
 
     public WebhookController(WebhookFlightJumpPageService service) {
