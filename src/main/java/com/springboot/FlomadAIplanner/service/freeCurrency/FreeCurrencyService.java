@@ -2,7 +2,10 @@ package com.springboot.FlomadAIplanner.service.freeCurrency;
 
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.springboot.FlomadAIplanner.exceptions.FreeCurrencyException;
+import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +37,19 @@ public class FreeCurrencyService {
             }
             log.info("Received Response: {}", response);
             return response;
+        } catch (FeignException e) {
+            if (e.status() == 422 && e.getMessage().contains("The selected currencies is invalid.")) {
+                ObjectNode errorNode = JsonNodeFactory.instance.objectNode();
+                ObjectNode errorsNode = errorNode.putObject("errors");
+                errorsNode.put("message", "Validation error")
+                        .put("currencies", "The selected currencies is invalid.")
+                        .put("code", currencies);
+                log.info("Invalid Currency: {}", errorNode);
+                return errorNode;
+            } else {
+                log.error("Error performing free text search", e);
+                throw new FreeCurrencyException("Error performing search Supported Currencies", e);
+            }
         } catch (Exception e) {
             log.error("Error performing free text search", e);
             throw new FreeCurrencyException("Error performing search Supported Currencies", e);

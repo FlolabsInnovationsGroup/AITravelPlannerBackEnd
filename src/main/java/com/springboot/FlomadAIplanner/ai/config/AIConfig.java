@@ -4,7 +4,6 @@ import org.springframework.ai.autoconfigure.chat.client.ChatClientBuilderConfigu
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.PromptChatMemoryAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
-import org.springframework.ai.chat.memory.InMemoryChatMemory;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,11 +24,6 @@ public class AIConfig {
     private Resource promptResource;
 
     @Bean
-    public ChatMemory chatMemory() {
-        return new InMemoryChatMemory();
-    }
-
-    @Bean
     @Scope("prototype")
     @ConditionalOnMissingBean
     public ChatClient.Builder chatClientBuilder(ChatClientBuilderConfigurer chatClientBuilderConfigurer,
@@ -40,7 +34,8 @@ public class AIConfig {
 
 
     @Bean
-    public ChatClient openAiChatClient(@Qualifier("openAiChatModel") ChatModel chatModel, ChatMemory chatMemory) {
+    public ChatClient openAiChatClient(@Qualifier("openAiChatModel") ChatModel chatModel,
+                                       @Qualifier("customDatabaseChatMemory") ChatMemory chatMemory) {
         return ChatClient.builder(chatModel)
                 .defaultSystem(promptResource)
                 .defaultAdvisors(new PromptChatMemoryAdvisor(chatMemory))
@@ -48,7 +43,8 @@ public class AIConfig {
     }
 
     @Bean
-    public ChatClient geminiChatClient(@Qualifier("vertexAiGeminiChat") ChatModel chatModel, ChatMemory chatMemory) {
+    public ChatClient geminiChatClient(@Qualifier("vertexAiGeminiChat") ChatModel chatModel,
+                                       @Qualifier("customDatabaseChatMemory") ChatMemory chatMemory) {
         return ChatClient.builder(chatModel)
                 .defaultSystem(promptResource)
                 .defaultAdvisors(new PromptChatMemoryAdvisor(chatMemory))

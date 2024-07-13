@@ -25,7 +25,6 @@ public class SessionController {
     }
 
     /**
-     * @method
      * @description get all the id of all sessions under a given user
      */
     @GetMapping("/users/{userId}/sessions")
@@ -35,13 +34,12 @@ public class SessionController {
     }
 
     /**
-     * @method
      * @description add a new line in the session table
      */
     @PostMapping("/add_session")
     public ResponseEntity<Session> addSession(@RequestBody Session session) {
         log.info("Creating new session: {}", session);
-        if (session.getSessionId() == null || session.getSessionId().isEmpty()) {
+        if (session.getId() == null || session.getId().isEmpty()) {
             log.error("Session ID is not provided.");
             throw new RuntimeException("Session ID is not provided.");
         }

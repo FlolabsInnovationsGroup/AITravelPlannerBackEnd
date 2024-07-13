@@ -1,51 +1,68 @@
 package com.springboot.FlomadAIplanner.ai.service;
 
 import com.springboot.FlomadAIplanner.ai.dto.AIMessageDTO;
+import com.springboot.FlomadAIplanner.ai.dto.ChatClientSuggestedProperties;
 import com.springboot.FlomadAIplanner.ai.factory.ChatClientFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
+import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvisor.CHAT_MEMORY_CONVERSATION_ID_KEY;
+
+/**
+ * ChatCallService extends AbstractChatService to provide specific functionality for processing chat messages.
+ * This service analyzes the message content to determine required functions and processes the message accordingly.
+ */
 @Slf4j
 @Service
 public class ChatCallService extends AbstractChatService {
 
-    public ChatCallService(ChatClientFactory chatClientFactory, List<String> aiFunctionDescriptions) {
-        super(chatClientFactory, aiFunctionDescriptions);
+    /**
+     * Constructor for ChatCallService.
+     *
+     * @param chatClientFactory      Factory for creating chat clients
+     * @param aiFunctionDescriptions List of available AI function descriptions
+     */
+    public ChatCallService(ChatClientFactory chatClientFactory, List<String> aiFunctionDescriptions, Map<String, String> promptsList) {
+        super(chatClientFactory, aiFunctionDescriptions, promptsList);
         log.info("ChatCallService initialized with AI function descriptions: {}", aiFunctionDescriptions);
     }
 
-    public String processMessage(AIMessageDTO message) {
-        log.info("Processing message: {}", message.getMessage());
+    /**
+     * Processes a aiMessage and determines the appropriate response.
+     *
+     * @param aiMessage The user aiMessage DTO
+     * @return The response content
+     */
+    public String processMessage(AIMessageDTO aiMessage) {
+        log.info("Processing aiMessage: {}; sessionId: {}", aiMessage.getMessage(), aiMessage.getSessionId());
+        ChatClientSuggestedProperties properties = getSuggestedChatClientProperties(aiMessage.getMessage());
 
-        List<FunctionNameSuggestion> requiredFunctions = getRequiredFunctions(message.getMessage());
-
-        if (requiredFunctions.isEmpty()) {
-            log.info("No required functions found, asking question without functions.");
-            return askQuestion(message);
-        } else {
-            log.info("Required functions found, asking question with functions: {}", requiredFunctions);
-            return askQuestionWithFunctions(message, requiredFunctions);
-        }
+        return askQuestionWithParameters(properties, aiMessage);
     }
 
-    private String askQuestion(AIMessageDTO message) {
-        log.debug("Asking question without functions for message: {}", message.getMessage());
+    /**
+     * Retrieves the suggested chat client properties based on the aiMessage content.
+     *
+     * @param clientProperties The chat client suggested properties
+     * @param aiMessage        The user aiMessage
+     * @return processed response for user from LLM
+     */
+    private String askQuestionWithParameters(ChatClientSuggestedProperties clientProperties, AIMessageDTO aiMessage) {
+        List<String> functions = clientProperties.getFunctionNames();
+        String systemPrompt = clientProperties.getSystemPrompt();
+
+        log.debug("Asking question with parameters for aiMessage: {}, functions: {}", aiMessage.getMessage(), functions);
+
         return getChatClient().prompt()
-                .system(singleQuestionPrompt)
-                .user(message.getMessage())
+                .system(systemPrompt)
+                .user(aiMessage.getMessage())
+                .advisors(a -> a.param(CHAT_MEMORY_CONVERSATION_ID_KEY, aiMessage.getSessionId()))
+                .functions(functions.toArray(new String[0]))
                 .call()
                 .content();
     }
 
-    private String askQuestionWithFunctions(AIMessageDTO message, List<FunctionNameSuggestion> functions) {
-        log.debug("Asking question with functions for message: {}, functions: {}", message.getMessage(), functions);
-        return getChatClient().prompt()
-                .system(withFunctionsQuestionPrompt)
-                .user(message.getMessage())
-                .functions(functionNames(functions))
-                .call()
-                .content();
-    }
 }
