@@ -2,20 +2,30 @@ package com.springboot.FlomadAIplanner.model.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
+import java.io.Serial;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
 @Entity
 @Table(name = "destinations")
-public class Destination {
+public class Destination extends Model {
+    @Serial
+    private static final long serialVersionUID = -8153912516789493415L;
 
-    @Id
+
     @Column(name = "sortOrder")
     private Integer sortOrder;
 
     @Column(name = "destinationId")
+    @EqualsAndHashCode.Include
     private Integer destinationId;
 
     @Column(name = "destinationName")
@@ -34,15 +44,18 @@ public class Destination {
     private String lookupId;
 
     @Column(name = "parentId")
+    @EqualsAndHashCode.Include
     private Integer parentId;
 
     @Column(name = "timeZone")
     private String timeZone;
 
     @Column(name = "iataCode")
+    @EqualsAndHashCode.Include
     private String iataCode;
 
     @Column(name = "destinationType")
+    @EqualsAndHashCode.Include
     private String destinationType;
 
     @Column(name = "latitude")

@@ -31,9 +31,4 @@ public class ChatController {
         return chatStreamService.processMessage(message);
     }
 
-//    @PostMapping("/planTrip")
-//    public TripPlanDTO planTrip(@RequestBody String message) {
-//        return chatClientService.planTrip(message);
-//    }
-
 }

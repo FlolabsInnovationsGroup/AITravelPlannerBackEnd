@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.springboot.FlomadAIplanner.ai.functions.AIFunction;
 import com.springboot.FlomadAIplanner.service.freeCurrency.FreeCurrencyService;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,10 +16,8 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @Description("Retrieves supported currencies available for exchange rate conversion. " +
-        "Use this function to retrieve all supported currencies available for exchange rate conversion. " +
-        "It is essential to call this function before using any other currency conversion functions to " +
-        "ensure that the desired currencies are supported. " +
-        "If any of the currencies are not supported, do not proceed with other currency conversion functions.")
+        "Use this function to retrieve selected supported currencies available for exchange rate conversion. " +
+        "It is essential to call this function when people ask what currencies are available for exchange. ")
 public class SupportCurrencyFunction implements AIFunction<SupportCurrencyFunction.SupportCurrencyRequest, JsonNode> {
 
     private final FreeCurrencyService freeCurrencyService;
@@ -31,7 +28,6 @@ public class SupportCurrencyFunction implements AIFunction<SupportCurrencyFuncti
     }
 
     @Override
-    @Valid
     public JsonNode apply(SupportCurrencyRequest request) {
         log.info("Performing Get Supported Currency Request");
         try {

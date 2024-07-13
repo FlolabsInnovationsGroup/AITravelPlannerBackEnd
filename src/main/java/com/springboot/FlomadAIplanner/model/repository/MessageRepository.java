@@ -12,6 +12,10 @@ import java.util.List;
  * name and infer the intent of coder. This is an interface with the database.
  */
 @Repository
-public interface MessageRepository extends JpaRepository<Message, Integer> {
-    List<Message> findBySessionIdOrderByTimestampAsc(String session_id);
+public interface MessageRepository extends JpaRepository<Message, String> {
+    List<Message> findBySessionIdOrderByCreatedAtAsc(String sessionId);
+
+    List<Message> findAllBySessionIdOrderByCreatedAtAsc(String sessionId);
+
+    void deleteBySessionId(String sessionId);
 }

@@ -2,6 +2,7 @@ package com.springboot.FlomadAIplanner.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
@@ -14,8 +15,10 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class SessionDTO {
-    private String sessionId;
+    @EqualsAndHashCode.Include
+    private String id;
     private String userId;
     private String title;
     private LocalDateTime timestamp;

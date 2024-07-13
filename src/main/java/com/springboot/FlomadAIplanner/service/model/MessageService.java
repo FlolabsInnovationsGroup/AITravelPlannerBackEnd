@@ -1,13 +1,11 @@
 package com.springboot.FlomadAIplanner.service.model;
 
+import com.springboot.FlomadAIplanner.ai.util.StringUtils;
 import com.springboot.FlomadAIplanner.model.entities.Message;
-import com.springboot.FlomadAIplanner.model.entities.Speaker;
 import com.springboot.FlomadAIplanner.model.repository.MessageRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -19,22 +17,37 @@ import java.util.List;
 @Slf4j
 @Service
 public class MessageService {
-    @Autowired
-    private MessageRepository repository;
+    private final MessageRepository repository;
 
-    public Message saveMessage(String id, String message, LocalDateTime timestamp, Speaker speaker) {
-        log.info("Saving entity: {}, {}, {}, {}", message, id, timestamp, speaker);
-        Message messages = new Message();
-        messages.setSpeaker(speaker);
-        messages.setContent(message);
-        messages.setTimestamp(timestamp);
-        messages.setSessionId(id);
+    public MessageService(MessageRepository repository) {
+        this.repository = repository;
+    }
 
-        return repository.save(messages);
+    public Message save(Message message) {
+        log.info("Saving entity: {}, message: {} sessionId: {}",
+                Message.class, StringUtils.safeSubstring(message.getContent(), 50), message.getSessionId());
+
+        return repository.save(message);
+    }
+
+    public void saveAll(List<Message> messages) {
+        log.info("Saving entities: {}", messages.size());
+        repository.saveAll(messages);
     }
 
     public List<Message> getMessagesBySessionId(String sessionId) {
         log.info("Finding entity for session: {}", sessionId);
-        return repository.findBySessionIdOrderByTimestampAsc(sessionId);
+        return repository.findBySessionIdOrderByCreatedAtAsc(sessionId);
     }
+
+    public List<Message> findAllBySessionId(String sessionId) {
+        log.info("Finding entity for session: {}", sessionId);
+        return repository.findAllBySessionIdOrderByCreatedAtAsc(sessionId);
+    }
+
+    public void deleteBySessionId(String sessionId) {
+        log.info("Deleting entity for session: {}", sessionId);
+        repository.deleteBySessionId(sessionId);
+    }
+
 }
