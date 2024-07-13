@@ -1,7 +1,6 @@
 package com.springboot.FlomadAIplanner.controller;
 import java.util.Collections;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,6 +19,7 @@ import java.util.Collections;
  * @class
  * @description This is a controller that fetch flight information from Amadeus API
  */
+@SuppressWarnings("unused")
 //////////////////////////////////////////
 @RestController
 public class FlightOfferController {        
@@ -31,7 +31,6 @@ public class FlightOfferController {
 
     private final AmadeusAuthService amadeusAuthService;
 
-    @Autowired
     public FlightOfferController(AmadeusAuthService amadeusAuthService) {
         this.amadeusAuthService = amadeusAuthService;
     }
@@ -57,13 +56,15 @@ public class FlightOfferController {
         headers.setBearerAuth(accessToken);
 
         HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-        String url = "https://test.api.amadeus.com/v2/shopping/flight-offers" +
-                     "?originLocationCode={originLocationCode}" +
-                     "&destinationLocationCode={destinationLocationCode}" +
-                     "&departureDate={departureDate}" +
-                     "&returnDate={returnDate}" +
-                     "&adults={adults}" +
-                     "&max={max}";
+        String url = """
+                     https://test.api.amadeus.com/v2/shopping/flight-offers\
+                     ?originLocationCode={originLocationCode}\
+                     &destinationLocationCode={destinationLocationCode}\
+                     &departureDate={departureDate}\
+                     &returnDate={returnDate}\
+                     &adults={adults}\
+                     &max={max}\
+                     """;
 
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class,
                 originLocationCode, destinationLocationCode, departureDate, returnDate, adults, max);

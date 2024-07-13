@@ -30,7 +30,6 @@ public class PricingController {
 
     private final AmadeusAuthService amadeusAuthService;
 
-    @Autowired
     public PricingController(AmadeusAuthService amadeusAuthService) {
         this.amadeusAuthService = amadeusAuthService;
     }

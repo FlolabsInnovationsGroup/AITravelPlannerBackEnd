@@ -4,14 +4,12 @@ import org.thymeleaf.context.Context;
 
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ThymeleafService {
     private final TemplateEngine templateEngine;
 
-    @Autowired
     public ThymeleafService(TemplateEngine templateEngine) {
         this.templateEngine = templateEngine;
     }

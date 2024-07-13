@@ -313,13 +313,15 @@ public class WbhookFlightJumpPage implements HttpFunction {
         headers.setBearerAuth("your_access_token_here"); // 这里你需要正确设置访问令牌
 
         HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-        String url = "https://test.api.amadeus.com/v2/shopping/flight-offers" +
-                    "?originLocationCode={origin}" +
-                    "&destinationLocationCode={destination}" +
-                    "&departureDate={departureDate}" +
-                    "&returnDate={returnDate}" +
-                    "&adults={adults}" +
-                    "&max={max}";
+        String url = """
+                    https://test.api.amadeus.com/v2/shopping/flight-offers\
+                    ?originLocationCode={origin}\
+                    &destinationLocationCode={destination}\
+                    &departureDate={departureDate}\
+                    &returnDate={returnDate}\
+                    &adults={adults}\
+                    &max={max}\
+                    """;
 
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class,
                 origin, destination, departureDate, returnDate, adults, max);

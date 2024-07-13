@@ -4,7 +4,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.JsonNode;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpHeaders;
@@ -17,7 +16,6 @@ public class ReferenceDataService {
 
     private AmadeusAuthService amadeusAuthService = null;
 
-    @Autowired
     public ReferenceDataService(AmadeusAuthService amadeusAuthService) {
         this.amadeusAuthService = amadeusAuthService;
     }

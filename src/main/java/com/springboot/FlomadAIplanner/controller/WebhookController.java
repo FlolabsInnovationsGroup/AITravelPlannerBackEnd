@@ -46,7 +46,6 @@ public class WebhookController {
     private final WebhookFlightJumpPageService service;
     private static final Logger logger = Logger.getLogger(WebhookController.class.getName());
 
-    @Autowired
     public WebhookController(WebhookFlightJumpPageService service) {
         this.service = service;
     }
