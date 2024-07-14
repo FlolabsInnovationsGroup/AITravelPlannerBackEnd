@@ -1,6 +1,5 @@
 package com.springboot.FlomadAIplanner.service.login;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -10,11 +9,13 @@ import java.util.concurrent.ExecutorService;
 @Service
 public class EmailService {
 
-    @Autowired
-    private JavaMailSender emailSender;
+    private final JavaMailSender emailSender;
+    private final ExecutorService executorService;
 
-    @Autowired
-    private ExecutorService executorService;
+    public EmailService(JavaMailSender emailSender, ExecutorService executorService) {
+        this.emailSender = emailSender;
+        this.executorService = executorService;
+    }
 
     public void sendSimpleMessage(String to, String subject, String text) {
         executorService.submit(() -> {
