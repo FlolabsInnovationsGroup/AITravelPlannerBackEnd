@@ -114,47 +114,33 @@
             <scope>provided</scope>
         </dependency>
         <!-- ======== GOOGLE =========================== -->
-
-        <!-- Google's Text to Speech Dependency-->
-        <dependency>
-            <groupId>com.google.cloud</groupId>
-            <artifactId>google-cloud-texttospeech</artifactId>
-            <version>2.4.0</version>
-        </dependency>
-
         <dependency>
             <groupId>com.google.api-client</groupId>
             <artifactId>google-api-client</artifactId>
             <version>2.0.0</version>
         </dependency>
-
         <dependency>
             <groupId>com.google.cloud</groupId>
             <artifactId>google-cloud-dialogflow-cx</artifactId>
             <version>0.51.0</version>
         </dependency>
-
         <dependency>
             <groupId>com.google.cloud.functions</groupId>
             <artifactId>functions-framework-api</artifactId>
             <version>1.0.4</version>
         </dependency>
-
         <dependency>
             <groupId>com.google.protobuf</groupId>
             <artifactId>protobuf-java-util</artifactId>
             <version>3.19.1</version>
         </dependency>
-
         <!-- ======== MYSQL =========================== -->
-
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <scope>runtime</scope>
             <version>8.0.28</version>
         </dependency>
-
         <!-- ======== jjwt dependencies =========================== -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
