@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.PromptChatMemoryAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
@@ -25,8 +26,7 @@ public class GlobalExceptionHandler {
 
     private final ChatClient chatClient;
 
-
-    public GlobalExceptionHandler(ChatClient.Builder builder, ChatMemory chatMemory,
+    public GlobalExceptionHandler(ChatClient.Builder builder, @Qualifier("exceptionHandlingMemory") ChatMemory chatMemory,
                                   @Value("classpath:/templates/ExceptionHandlingPrompt.txt") Resource promptResource) {
         this.chatClient = builder
                 .defaultSystem(promptResource)

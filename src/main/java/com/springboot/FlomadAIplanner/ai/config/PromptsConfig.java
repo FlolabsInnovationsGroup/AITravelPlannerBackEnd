@@ -19,6 +19,13 @@ public class PromptsConfig {
     private static final String OPEN_DELIMITER = "[[[";
     private static final String CLOSE_DELIMITER = "]]]";
 
+    /**
+     * This method reads the content of the files in the templates folder and returns a map of the file name and the content.
+     * The content is wrapped in delimiters to be used in the chat client.
+     *
+     * @return a map of the file name and the content
+     * @throws IOException if an I/O error occurs
+     */
     @Bean(name = "templatePrompts")
     public Map<String, String> prompts() throws IOException {
         Map<String, String> prompts = new HashMap<>();

@@ -1,9 +1,11 @@
 package com.springboot.FlomadAIplanner.ai.config;
 
+import com.springboot.FlomadAIplanner.ai.config.cnst.AIModel;
 import org.springframework.ai.autoconfigure.chat.client.ChatClientBuilderConfigurer;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.PromptChatMemoryAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
+import org.springframework.ai.chat.memory.InMemoryChatMemory;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,12 +18,16 @@ import org.springframework.core.io.Resource;
 import java.util.Map;
 
 @Configuration
-public class AIConfig {
+public class ChatClientConfig {
 
-    public static final String OPENAI_MODEL = "openai";
-    public static final String GEMINI_MODEL = "gemini";
     @Value("classpath:/templates/DefaultPrompt.txt")
     private Resource promptResource;
+
+    @Bean
+    @Qualifier("exceptionHandlingMemory")
+    public ChatMemory exceptionHandlingMemory() {
+        return new InMemoryChatMemory();
+    }
 
     @Bean
     @Scope("prototype")
@@ -53,12 +59,12 @@ public class AIConfig {
 
     @Bean
     @Qualifier("chatClients")
-    public Map<String, ChatClient> chatClients(
+    public Map<AIModel, ChatClient> chatClients(
             @Qualifier("openAiChatClient") ChatClient openAiChatClient,
             @Qualifier("geminiChatClient") ChatClient geminiChatClient) {
         return Map.of(
-                OPENAI_MODEL, openAiChatClient,
-                GEMINI_MODEL, geminiChatClient
+                AIModel.OPENAI_MODEL, openAiChatClient,
+                AIModel.GEMINI_MODEL, geminiChatClient
         );
     }
 

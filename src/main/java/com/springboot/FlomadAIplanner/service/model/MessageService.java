@@ -1,9 +1,9 @@
 package com.springboot.FlomadAIplanner.service.model;
 
-import com.springboot.FlomadAIplanner.ai.util.StringUtils;
 import com.springboot.FlomadAIplanner.model.entities.Message;
 import com.springboot.FlomadAIplanner.model.repository.MessageRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,8 +24,7 @@ public class MessageService {
     }
 
     public Message save(Message message) {
-        log.info("Saving entity: {}, message: {} sessionId: {}",
-                Message.class, StringUtils.safeSubstring(message.getContent(), 50), message.getSessionId());
+        log.info("Saving entity: {}, message: {} sessionId: {}", Message.class, StringUtils.substring(message.getContent(), 0, 50), message.getSessionId());
 
         return repository.save(message);
     }

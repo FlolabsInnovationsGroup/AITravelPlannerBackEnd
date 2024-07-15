@@ -4,6 +4,7 @@ import com.springboot.FlomadAIplanner.converter.Converter;
 import com.springboot.FlomadAIplanner.model.entities.Message;
 import com.springboot.FlomadAIplanner.service.model.MessageService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.stereotype.Component;
 
@@ -31,7 +32,7 @@ public class CustomDatabaseChatMemory implements ChatMemory {
         List<Message> newMessages = new ArrayList<>();
         for (org.springframework.ai.chat.messages.Message message : messages) {
             log.info("Adding message: \"{}\",  to conversation: {}",
-                    StringUtils.safeSubstring(message.getContent(), 50), conversationId);
+                    StringUtils.substring(message.getContent(), 0, 50), conversationId);
 
             Message entity = this.messageConverter.convert(message);
             entity.setCreatedAt(LocalDateTime.now());

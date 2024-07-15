@@ -1,8 +1,8 @@
 package com.springboot.FlomadAIplanner.converter;
 
-import com.springboot.FlomadAIplanner.ai.util.StringUtils;
 import com.springboot.FlomadAIplanner.model.entities.Message;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -15,7 +15,7 @@ public class ChatMemoryMessageConverter implements Converter<org.springframework
             log.info("Source message is 'null'");
             return null;
         }
-        log.info("Converting message to entity: {}", StringUtils.safeSubstring(source.getContent(), 50));
+        log.info("Converting message to entity: {}", StringUtils.substring(source.getContent(), 0, 50));
 
         return Message.builder()
                 .content(source.getContent())

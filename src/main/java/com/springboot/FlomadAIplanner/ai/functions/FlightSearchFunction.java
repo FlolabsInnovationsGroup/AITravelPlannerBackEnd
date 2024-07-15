@@ -1,17 +1,15 @@
 package com.springboot.FlomadAIplanner.ai.functions;
 
 
-import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Description;
-import org.springframework.stereotype.Component;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.springboot.FlomadAIplanner.dto.amadeus.FlightOffersPostRequest;
 import com.springboot.FlomadAIplanner.service.amadeus.AmadeusFlightsService;
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Description;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,12 +17,12 @@ import java.util.List;
 @Slf4j
 @Component
 @Description("""
-    Searches for available flights based on the provided criteria. 
-    When you are using this function, make sure to provide IATA codes for the origin and destination airports.
-    The customer may provide the city name, but you need to convert it to the IATA code before calling this function.
-    If the customer just provided the departure time, It will be considered as a one-way trip.
-    If the customer provided the return date, It will be considered as a round trip.
-    """)
+        Searches for available flights based on the provided criteria.
+        When you are using this function, make sure to provide IATA codes for the origin and destination airports.
+        The customer may provide the city name, but you need to convert it to the IATA code before calling this function.
+        If the customer just provided the departure time, It will be considered as a one-way trip.
+        If the customer provided the return date, It will be considered as a round trip.
+        """)
 public class FlightSearchFunction implements AIFunction<FlightSearchFunction.FlightSearchRequest, FlightSearchFunction.FlightSearchResponse> {
 
     private final AmadeusFlightsService amadeusFlightsService;
@@ -33,7 +31,7 @@ public class FlightSearchFunction implements AIFunction<FlightSearchFunction.Fli
 
 
     @Autowired
-    public FlightSearchFunction(AmadeusFlightsService amadeusFlightsService,ObjectMapper objectMapper) {
+    public FlightSearchFunction(AmadeusFlightsService amadeusFlightsService, ObjectMapper objectMapper) {
         this.amadeusFlightsService = amadeusFlightsService;
         this.objectMapper = objectMapper;
     }
@@ -98,12 +96,12 @@ public class FlightSearchFunction implements AIFunction<FlightSearchFunction.Fli
 
     private FlightOffersPostRequest createFlightOffersPostRequest(String origin, String destination, String date) {
         return new FlightOffersPostRequest(
-            "USD",
-            List.of(new FlightOffersPostRequest.OriginDestination("1", origin, destination,
-                    new FlightOffersPostRequest.OriginDestination.DateTimeRange(date, null))),
-            List.of(new FlightOffersPostRequest.Traveler("1", "ADULT")),
-            List.of("GDS"),
-            new FlightOffersPostRequest.SearchCriteria(1, null)
+                "USD",
+                List.of(new FlightOffersPostRequest.OriginDestination("1", origin, destination,
+                        new FlightOffersPostRequest.OriginDestination.DateTimeRange(date, null))),
+                List.of(new FlightOffersPostRequest.Traveler("1", "ADULT")),
+                List.of("GDS"),
+                new FlightOffersPostRequest.SearchCriteria(1, null)
         );
     }
 
@@ -115,7 +113,7 @@ public class FlightSearchFunction implements AIFunction<FlightSearchFunction.Fli
             log.error("Error converting JsonNode to String", e);
         }
     }
-    
+
     @Data
     public static class FlightSearchRequest {
         private String origin;

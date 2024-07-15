@@ -1,10 +1,9 @@
 package com.springboot.FlomadAIplanner.ai.service;
 
-import com.springboot.FlomadAIplanner.ai.config.AIConfig;
-import com.springboot.FlomadAIplanner.ai.dto.ChatClientSuggestedProperties;
-import com.springboot.FlomadAIplanner.ai.factory.ChatClientFactory;
+import com.springboot.FlomadAIplanner.ai.agents.TextTextAgentImpl;
+import com.springboot.FlomadAIplanner.ai.config.cnst.AIModel;
+import com.springboot.FlomadAIplanner.ai.factory.AgentFactory;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -12,8 +11,6 @@ import org.springframework.core.io.Resource;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
-import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvisor.CHAT_MEMORY_RETRIEVE_SIZE_KEY;
 
 /**
  * AbstractChatService serves as a base class for chat services, providing common functionality
@@ -23,7 +20,7 @@ import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvis
 public abstract class AbstractChatService {
 
     // Factory for creating chat client instances
-    protected final ChatClientFactory chatClientFactory;
+    protected final AgentFactory agentFactory;
     // List of AI function descriptions available for use
     protected final List<String> aiFunctionDescriptions;
     // Prompts stored as a map
@@ -34,13 +31,13 @@ public abstract class AbstractChatService {
     /**
      * Constructor for AbstractChatService.
      *
-     * @param chatClientFactory      Factory for creating chat clients
+     * @param agentFactory           Factory for creating chat clients
      * @param aiFunctionDescriptions List of available AI function descriptions
      * @param promptsList            Map of prompt file names and their content
      */
-    public AbstractChatService(ChatClientFactory chatClientFactory, List<String> aiFunctionDescriptions,
+    public AbstractChatService(AgentFactory agentFactory, List<String> aiFunctionDescriptions,
                                @Qualifier("templatePrompts") Map<String, String> promptsList) {
-        this.chatClientFactory = chatClientFactory;
+        this.agentFactory = agentFactory;
         this.aiFunctionDescriptions = Collections.unmodifiableList(aiFunctionDescriptions);
         this.promptsList = promptsList;
         log.info("Chat service initialized with AI function descriptions: {}", aiFunctionDescriptions);
@@ -51,9 +48,9 @@ public abstract class AbstractChatService {
      *
      * @return An instance of ChatClient
      */
-    protected ChatClient getChatClient() {
+    protected TextTextAgentImpl<?, ?> getChatAgent() {
         log.debug("Getting chat client with required AI model.");
-        return chatClientFactory.getClient(getRequiredAIModel());
+        return agentFactory.getAgent(getRequiredAIModel());
     }
 
     /**
@@ -61,41 +58,10 @@ public abstract class AbstractChatService {
      *
      * @return The name of the required AI model
      */
-    private String getRequiredAIModel() {
-        String model = AIConfig.OPENAI_MODEL;  // Consider injecting this dependency
+    private AIModel getRequiredAIModel() {
+        AIModel model = AIModel.OPENAI_MODEL;  // Consider injecting this dependency
         log.debug("Using AI model: {}", model);
         return model;
-    }
-
-    /**
-     * Retrieves the required functions based on the given message.
-     *
-     * @param message The user message
-     * @return ChatClientSuggestedProperties
-     */
-    protected ChatClientSuggestedProperties getSuggestedChatClientProperties(String message) {
-        log.debug("Getting required properties for message: {}", message);
-
-        ChatClientSuggestedProperties properties = getChatClient().prompt()
-                .user(u -> u.text(promptAndFunctionSuggestionsPrompt)
-                        .param("promptsList", promptsList.toString())
-                        .param("functionsList", aiFunctionDescriptions.toString())
-                        .param("message", message))
-                .advisors(a -> a.param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 0))
-                .call()
-                .entity(ChatClientSuggestedProperties.class);
-
-        log.info("promptKey: {}", properties.getSystemPrompt());
-
-        // setting the suggested prompt content
-        String suggestedPrompt = promptsList.get(properties.getSystemPrompt());
-        properties.setSystemPrompt(suggestedPrompt);
-
-        log.info("""
-                Required properties received from AI suggestion:
-                Chosen prompt: {};
-                Chosen functions: {}""", suggestedPrompt, properties.getFunctionNames());
-        return properties;
     }
 
 }
