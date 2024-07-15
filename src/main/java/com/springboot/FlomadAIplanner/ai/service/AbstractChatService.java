@@ -1,6 +1,6 @@
 package com.springboot.FlomadAIplanner.ai.service;
 
-import com.springboot.FlomadAIplanner.ai.agents.TextTextAgentImpl;
+import com.springboot.FlomadAIplanner.ai.agents.text.TextAgentImpl;
 import com.springboot.FlomadAIplanner.ai.config.cnst.AIModel;
 import com.springboot.FlomadAIplanner.ai.factory.AgentFactory;
 import lombok.extern.slf4j.Slf4j;
@@ -48,7 +48,7 @@ public abstract class AbstractChatService {
      *
      * @return An instance of ChatClient
      */
-    protected TextTextAgentImpl<?, ?> getChatAgent() {
+    protected TextAgentImpl<?, ?> getChatAgent() {
         log.debug("Getting chat client with required AI model.");
         return agentFactory.getAgent(getRequiredAIModel());
     }

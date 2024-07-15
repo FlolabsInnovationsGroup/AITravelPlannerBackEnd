@@ -1,4 +1,4 @@
-package com.springboot.FlomadAIplanner.ai.agents;
+package com.springboot.FlomadAIplanner.ai.agents.text;
 
 import com.springboot.FlomadAIplanner.ai.agents.messageProcessing.MessageProcessingStrategy;
 import com.springboot.FlomadAIplanner.ai.dto.ChatClientSuggestedProperties;

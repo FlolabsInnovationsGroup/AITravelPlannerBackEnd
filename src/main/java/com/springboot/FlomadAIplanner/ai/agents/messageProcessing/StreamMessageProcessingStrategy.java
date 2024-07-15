@@ -1,6 +1,6 @@
 package com.springboot.FlomadAIplanner.ai.agents.messageProcessing;
 
-import com.springboot.FlomadAIplanner.ai.agents.TextTextAgentImpl;
+import com.springboot.FlomadAIplanner.ai.agents.text.TextAgentImpl;
 import com.springboot.FlomadAIplanner.ai.dto.AIMessageDTO;
 import com.springboot.FlomadAIplanner.ai.dto.MessageProcessingStrategyDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +21,7 @@ public class StreamMessageProcessingStrategy implements MessageProcessingStrateg
         log.debug("Processing message: {}", messageProcessingStrategyDTO.getAiMessage().getMessage());
 
         AIMessageDTO aiMessage = messageProcessingStrategyDTO.getAiMessage();
-        TextTextAgentImpl<?, ?> agent = messageProcessingStrategyDTO.getAgent();
+        TextAgentImpl<?, ?> agent = messageProcessingStrategyDTO.getAgent();
         List<String> requiredFunctions = messageProcessingStrategyDTO.getRequiredFunctions();
         Prompt systemPrompt = messageProcessingStrategyDTO.getSystemPrompt();
 

@@ -17,13 +17,11 @@ import java.util.function.Function;
 @Component
 public class JwtUtil {
 
+    private final SecretKey secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     @Value("${jwt.secret}")
     private String SECRET_KEY;
-
     @Value("${jwt.expiration}")
     private long expirationTime;
-
-    private final SecretKey secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
     public String createToken(Map<String, Object> claims, String subject) {
         return Jwts.builder()
@@ -36,8 +34,8 @@ public class JwtUtil {
     }
 
     public boolean validateToken(String jwt, String username) {
-      // TODO Auto-generated method stub
-      throw new UnsupportedOperationException("Unimplemented method 'validateToken'");
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'validateToken'");
     }
 
     public String extractUsername(String token) {

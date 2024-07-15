@@ -1,4 +1,4 @@
-package com.springboot.FlomadAIplanner.ai.config.util;
+package com.springboot.FlomadAIplanner.ai.util;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;

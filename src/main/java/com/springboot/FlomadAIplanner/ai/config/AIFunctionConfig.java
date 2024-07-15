@@ -1,7 +1,7 @@
 package com.springboot.FlomadAIplanner.ai.config;
 
-import com.springboot.FlomadAIplanner.ai.config.util.FunctionAnnotationUtils;
 import com.springboot.FlomadAIplanner.ai.functions.AIFunction;
+import com.springboot.FlomadAIplanner.ai.util.FunctionAnnotationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

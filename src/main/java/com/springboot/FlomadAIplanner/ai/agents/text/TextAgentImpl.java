@@ -1,4 +1,4 @@
-package com.springboot.FlomadAIplanner.ai.agents;
+package com.springboot.FlomadAIplanner.ai.agents.text;
 
 import com.springboot.FlomadAIplanner.ai.agents.messageProcessing.EntityReturnProcessingStrategy;
 import com.springboot.FlomadAIplanner.ai.agents.messageProcessing.MessageProcessingStrategy;
@@ -17,12 +17,12 @@ import java.util.Map;
  * Represents an agent that wraps a ChatClient with additional configurations and message processing strategies.
  */
 @Slf4j
-public class TextTextAgentImpl<S, F> extends AbstractTextAgent<S, F> {
+public class TextAgentImpl<S, F> extends AbstractTextAgent<S, F> {
 
-    public TextTextAgentImpl(ChatClient chatClient, List<String> permittedFunctions,
-                             MessageProcessingStrategy<S> callMessageProcessingStrategy,
-                             MessageProcessingStrategy<F> streamMessageProcessingStrategy,
-                             Map<String, String> promptsList) {
+    public TextAgentImpl(ChatClient chatClient, List<String> permittedFunctions,
+                         MessageProcessingStrategy<S> callMessageProcessingStrategy,
+                         MessageProcessingStrategy<F> streamMessageProcessingStrategy,
+                         Map<String, String> promptsList) {
         super(chatClient, permittedFunctions, callMessageProcessingStrategy, streamMessageProcessingStrategy, promptsList);
     }
 
