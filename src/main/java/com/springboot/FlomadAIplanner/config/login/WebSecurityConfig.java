@@ -43,6 +43,8 @@ public class WebSecurityConfig {
                         .requestMatchers(
                                 "/api/auth/signup",
                                 "/api/auth/verify",
+                                "/api/chat/call",
+                                "/api/chat/stream",
                                 "/api/auth/login")
                         .permitAll()
                         .requestMatchers(

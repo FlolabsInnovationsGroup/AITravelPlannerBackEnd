@@ -1,16 +1,13 @@
 package com.springboot.FlomadAIplanner.ai.service;
 
 import com.springboot.FlomadAIplanner.ai.dto.AIMessageDTO;
-import com.springboot.FlomadAIplanner.ai.dto.ChatClientSuggestedProperties;
-import com.springboot.FlomadAIplanner.ai.factory.ChatClientFactory;
+import com.springboot.FlomadAIplanner.ai.factory.AgentFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
 import java.util.List;
 import java.util.Map;
-
-import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvisor.CHAT_MEMORY_CONVERSATION_ID_KEY;
 
 /**
  * ChatStreamService processes messages in a streaming manner.
@@ -21,13 +18,14 @@ import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvis
 public class ChatStreamService extends AbstractChatService {
 
     /**
-     * Constructs a new ChatStreamService.
+     * Constructor for ChatCallService.
      *
-     * @param chatClientFactory      the factory to create ChatClient instances
-     * @param aiFunctionDescriptions the list of AI function descriptions
+     * @param agentFactory           Factory for creating chat clients
+     * @param aiFunctionDescriptions List of available AI function descriptions
      */
-    public ChatStreamService(ChatClientFactory chatClientFactory, List<String> aiFunctionDescriptions, Map<String, String> promptsList) {
-        super(chatClientFactory, aiFunctionDescriptions, promptsList);
+    public ChatStreamService(AgentFactory agentFactory, List<String> aiFunctionDescriptions,
+                             Map<String, String> promptsList) {
+        super(agentFactory, aiFunctionDescriptions, promptsList);
         log.info("ChatCallService initialized with AI function descriptions: {}", aiFunctionDescriptions);
     }
 
@@ -37,33 +35,11 @@ public class ChatStreamService extends AbstractChatService {
      * @param aiMessage The user aiMessage DTO
      * @return The response content
      */
+    @SuppressWarnings("unchecked")
     public Flux<String> processMessage(AIMessageDTO aiMessage) {
-        log.info("Processing aiMessage: {}", aiMessage.getMessage());
-        ChatClientSuggestedProperties properties = getSuggestedChatClientProperties(aiMessage.getMessage());
+        log.info("Processing aiMessage: {}; sessionId: {}", aiMessage.getMessage(), aiMessage.getSessionId());
 
-        return askQuestionWithParameters(properties, aiMessage);
-    }
-
-    /**
-     * Retrieves the suggested chat client properties based on the aiMessage content.
-     *
-     * @param clientProperties The chat client suggested properties
-     * @param aiMessage        The user aiMessage
-     * @return processed response for user from LLM
-     */
-    private Flux<String> askQuestionWithParameters(ChatClientSuggestedProperties clientProperties, AIMessageDTO aiMessage) {
-        List<String> functions = clientProperties.getFunctionNames();
-        String systemPrompt = clientProperties.getSystemPrompt();
-
-        log.debug("Asking question with parameters for aiMessage: {}, functions: {}", aiMessage.getMessage(), functions);
-
-        return getChatClient().prompt()
-                .system(systemPrompt)
-                .user(aiMessage.getMessage())
-                .advisors(a -> a.param(CHAT_MEMORY_CONVERSATION_ID_KEY, aiMessage.getSessionId()))
-                .functions(functions.toArray(new String[0]))
-                .stream()
-                .content();
+        return (Flux<String>) getChatAgent().processStreamMessage(aiMessage);
     }
 
 }
