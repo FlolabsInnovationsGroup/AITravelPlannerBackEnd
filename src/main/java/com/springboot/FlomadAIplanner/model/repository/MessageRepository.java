@@ -1,6 +1,7 @@
 package com.springboot.FlomadAIplanner.model.repository;
 
 import com.springboot.FlomadAIplanner.model.entities.Message;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,9 +14,9 @@ import java.util.List;
  */
 @Repository
 public interface MessageRepository extends MongoRepository<Message, String> {
-    List<Message> findBySessionIdOrderByCreatedAtAsc(String sessionId);
-
     List<Message> findAllBySessionIdOrderByCreatedAtAsc(String sessionId);
+
+    List<Message> findBySessionIdOrderByCreatedAtDesc(String sessionId, Pageable pageable);
 
     void deleteBySessionId(String sessionId);
 }

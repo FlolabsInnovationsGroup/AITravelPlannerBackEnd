@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -47,12 +48,18 @@ public class CustomDatabaseChatMemory implements ChatMemory {
     @Override
     public List<org.springframework.ai.chat.messages.Message> get(String conversationId, int lastN) {
         log.info("Retrieving last {} messages from conversation: {}", lastN, conversationId);
-        List<Message> foundMessages = messageService.findAllBySessionId(conversationId);
-        // convert
-        List<org.springframework.ai.chat.messages.Message> all =
-                foundMessages.stream().map(messageRevertConverter::convert).toList();
 
-        return all.stream().skip(Math.max(0, all.size() - lastN)).toList();
+        List<Message> foundMessages;
+        if (lastN > 0) {
+            foundMessages = messageService.getMessagesBySessionIdWithLimit(conversationId, lastN);
+        } else {
+            foundMessages = Collections.emptyList();
+        }
+
+        log.info("Found {} messages", foundMessages.size());
+        return foundMessages.stream()
+                .map(messageRevertConverter::convert)
+                .toList();
     }
 
     @Override
