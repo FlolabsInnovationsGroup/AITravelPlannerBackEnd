@@ -1,6 +1,8 @@
 package com.springboot.FlomadAIplanner.model.entities.login;
 
 import com.springboot.FlomadAIplanner.model.entities.Model;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -19,13 +21,17 @@ public class User extends Model {
     @Field("username")
     @EqualsAndHashCode.Include
     @Indexed(unique = true)
+    @NotBlank
     private String username;
 
     @Field("password")
+    @NotBlank
     private String password;
 
     @Field("email")
     @Indexed(unique = true)
+    @Email
+    @NotBlank
     private String email;
 
     @Field("isVerified")

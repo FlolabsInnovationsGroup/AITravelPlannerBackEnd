@@ -17,6 +17,7 @@
         <java.version>21</java.version>
         <spring-ai.version>1.0.0-M1</spring-ai.version>
         <springdoc-openapi-ui.version>2.6.0</springdoc-openapi-ui.version> <!-- Use the latest version -->
+        <jakarta.version>3.1.0</jakarta.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -191,7 +192,12 @@
         <dependency>
             <groupId>jakarta.persistence</groupId>
             <artifactId>jakarta.persistence-api</artifactId>
-            <version>3.1.0</version>
+            <version>${jakarta.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+            <version>${jakarta.version}</version>
         </dependency>
     </dependencies>
 

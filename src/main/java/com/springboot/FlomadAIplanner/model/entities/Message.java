@@ -1,8 +1,11 @@
 package com.springboot.FlomadAIplanner.model.entities;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.springframework.ai.chat.messages.Media;
 import org.springframework.ai.chat.messages.MessageType;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -22,15 +25,20 @@ public class Message extends Model implements org.springframework.ai.chat.messag
     private static final long serialVersionUID = -7214728696555033419L;
 
     @Field("sessionId")
+    @Indexed
+    @NotBlank
     private String sessionId;
 
     @Field("content")
+    @NotBlank
     private String content;
 
     @Field("createdAt")
+    @NotNull
     private LocalDateTime createdAt;
 
     @Field("messageType")
+    @NotNull
     private MessageType messageType;
 
     @Field("metadata")

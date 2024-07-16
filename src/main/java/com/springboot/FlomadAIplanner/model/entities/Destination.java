@@ -1,5 +1,7 @@
 package com.springboot.FlomadAIplanner.model.entities;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -20,14 +22,17 @@ public class Destination extends Model {
     private static final long serialVersionUID = -8153912516789493415L;
 
     @Field("sortOrder")
+    @NotNull
     private Integer sortOrder;
 
     @Field("destinationId")
     @EqualsAndHashCode.Include
     @Indexed(unique = true)
+    @NotNull
     private Integer destinationId;
 
     @Field("destinationName")
+    @NotBlank
     private String destinationName;
 
     @Field("selectable")
@@ -55,6 +60,7 @@ public class Destination extends Model {
 
     @Field("destinationType")
     @EqualsAndHashCode.Include
+    @NotBlank
     private String destinationType;
 
     @Field("latitude")
