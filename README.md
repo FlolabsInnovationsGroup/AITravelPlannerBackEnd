@@ -147,3 +147,5 @@ High-Level Steps:
     * Implement data processing utilities.
 6. Model Integration
     * Integrate the AI model and handle inference requests. 
+
+# Flomad MasterClass 
