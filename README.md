@@ -1,63 +1,113 @@
-Spring AI development in Java leverages the robust Spring framework to build 
-scalable and maintainable applications. Here’s a comprehensive guide to get 
-you started with integrating AI capabilities into a Spring-based Java application.
 
-# 1. Task Understanding
+# Running the Application Locally
 
-Developing AI functionalities in a Spring application involves:
+This guide will help you set up and run the application on your local machine.
 
-Setting up the Spring Boot project
-Integrating AI libraries (e.g., TensorFlow, DL4J)
-Building RESTful APIs to expose AI functionalities
-Handling data processing and model inference
+## Prerequisites
 
-# 2. Clarification Requests
+- Java Development Kit (JDK) 21
+- Maven
+- MongoDB
 
-Do you have a specific AI model or task in mind (e.g., image recognition, NLP)?
-Are you using a pre-trained model or training a model from scratch?
-What AI library do you prefer (TensorFlow, Deeplearning4j, etc.)?
+## 1. Install Java and Maven
 
-# 3. Approach Outline
+### Install Java
 
-High-Level Steps:
+Download and install JDK 21 from either:
+- [Oracle JDK](https://www.oracle.com/java/technologies/javase-jdk21-downloads.html)
+- [OpenJDK](https://jdk.java.net/21/)
 
-1. Project Setup
-   
-Initialize a Spring Boot project.
+Verify the installation by running the following commands in your terminal:
 
-2. Dependency Management
-   
-Add necessary dependencies for Spring Boot, and AI libraries.
+```bash
+java -version
+javac -version
+```
 
-3. Service Layer
- 
-Implement AI services to handle model loading and inference.
+You should see an output similar to:
 
-4. Controller Layer
-   
-Create RESTful endpoints to interact with the AI service.
+```
+java version "21.0.1"
+Java(TM) SE Runtime Environment (build 21.0.1+12)
+Java HotSpot(TM) 64-Bit Server VM (build 21.0.1+12, mixed mode)
+```
 
-5. Data Processing
-   
-Implement data processing utilities.
+### Install Maven
 
-6. Model Integration
-   
-Integrate the AI model and handle inference requests.
-Ensure the AI model file (model.pb) is included in the resources directory of your project.
+Download and install Maven from the [Maven Download Page](https://maven.apache.org/download.cgi).
 
-# 4. Development (Master Branch) 
+Follow the installation instructions on the [Maven Installation Guide](https://maven.apache.org/install.html).
 
-# 5. Speculations and Predictions
+Verify the installation by running the following command in your terminal:
 
-Assumptions:
+```bash
+mvn -version
+```
 
-The AI model is a TensorFlow model saved in .pb format.
-Input and output nodes are known and correctly named as "input_node" and "output_node".
+You should see an output similar to:
 
-# 6. Confidence Rating & Explanation
+```
+Apache Maven 3.8.6 (b8d79a7c59fda6978d92783121db5dcac4f82f89)
+Maven home: /path/to/maven
+Java version: 21.0.1, vendor: Oracle Corporation, runtime: /path/to/jdk-21
+Default locale: en_US, platform encoding: UTF-8
+OS name: "your_os_name", version: "your_os_version", arch: "your_os_architecture", family: "your_os_family"
+```
 
-Confidence: 95%
-Explanation: The provided example integrates TensorFlow with Spring Boot for basic model inference. 
-The specifics of the AI model (input/output tensor names, preprocessing, postprocessing) may vary, 
-and adjustments might be necessary based on the actual model and use case.
+## 2. Install MongoDB
+
+To install MongoDB, follow these simple steps:
+
+1. Download the installer from the [MongoDB Download Center](https://www.mongodb.com/try/download/community).
+2. Run the installer and follow the instructions, using the default options.
+3. No need to create any users or databases manually; the application properties are pre-configured to handle everything.
+
+## 3. Clone the Repository
+
+Clone the repository to your local machine using the following command:
+
+```bash
+git clone <repository-url>
+```
+
+## 4. Build the Application
+
+Navigate to the project directory and build the application using Maven:
+
+```bash
+cd <project-directory>
+mvn clean install
+```
+
+## 5. Run the Application
+
+### Using Maven
+
+You can run the application using the Maven Spring Boot plugin:
+
+```bash
+mvn spring-boot:run
+```
+
+### Using IntelliJ IDEA
+
+1. Open IntelliJ IDEA and select `File > Open`.
+2. Navigate to the project directory and open it.
+3. Once the project is loaded, locate the main application class (e.g., `com.springboot.FlomadAIplanner.Application`).
+4. Right-click the main class and select `Run 'Application'`.
+
+## 6. Access the Application
+
+After the application starts, it will be accessible at [http://localhost:8080](http://localhost:8080) by default.
+
+## Additional Notes
+
+- Ensure that MongoDB is running before starting the application.
+- The application properties file is pre-configured with the necessary MongoDB connection settings:
+
+```properties
+spring.data.mongodb.uri=mongodb://localhost:27017
+spring.data.mongodb.database=testdb
+```
+
+By following these steps, you should be able to run the application locally without any issues.
