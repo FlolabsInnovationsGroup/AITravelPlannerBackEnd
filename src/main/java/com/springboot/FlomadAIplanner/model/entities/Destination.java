@@ -1,12 +1,12 @@
 package com.springboot.FlomadAIplanner.model.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.io.Serial;
 
@@ -14,54 +14,52 @@ import java.io.Serial;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
-@Entity
-@Table(name = "destinations")
+@Document(collection = "destinations")
 public class Destination extends Model {
     @Serial
     private static final long serialVersionUID = -8153912516789493415L;
 
-
-    @Column(name = "sortOrder")
+    @Field("sortOrder")
     private Integer sortOrder;
 
-    @Column(name = "destinationId")
+    @Field("destinationId")
     @EqualsAndHashCode.Include
+    @Indexed(unique = true)
     private Integer destinationId;
 
-    @Column(name = "destinationName")
+    @Field("destinationName")
     private String destinationName;
 
-    @Column(name = "selectable")
+    @Field("selectable")
     private Boolean selectable;
 
-    @Column(name = "destinationUrlName")
+    @Field("destinationUrlName")
     private String destinationUrlName;
 
-    @Column(name = "defaultCurrencyCode")
+    @Field("defaultCurrencyCode")
     private String defaultCurrencyCode;
 
-    @Column(name = "lookupId")
+    @Field("lookupId")
     private String lookupId;
 
-    @Column(name = "parentId")
+    @Field("parentId")
     @EqualsAndHashCode.Include
     private Integer parentId;
 
-    @Column(name = "timeZone")
+    @Field("timeZone")
     private String timeZone;
 
-    @Column(name = "iataCode")
+    @Field("iataCode")
     @EqualsAndHashCode.Include
     private String iataCode;
 
-    @Column(name = "destinationType")
+    @Field("destinationType")
     @EqualsAndHashCode.Include
     private String destinationType;
 
-    @Column(name = "latitude")
+    @Field("latitude")
     private Float latitude;
 
-    @Column(name = "longitude")
+    @Field("longitude")
     private Float longitude;
-
 }
