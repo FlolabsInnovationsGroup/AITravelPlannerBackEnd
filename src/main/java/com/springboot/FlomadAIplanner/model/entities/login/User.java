@@ -1,39 +1,39 @@
 package com.springboot.FlomadAIplanner.model.entities.login;
 
 import com.springboot.FlomadAIplanner.model.entities.Model;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.io.Serial;
 
-@Entity
-@Table(name = "users")
 @Data
 @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
+@Document(collection = "users")
 public class User extends Model {
     @Serial
     private static final long serialVersionUID = -5739385634520071526L;
 
-    @Column(name = "username", nullable = false, unique = true)
+    @Field("username")
     @EqualsAndHashCode.Include
+    @Indexed(unique = true)
     private String username;
 
-    @Column(name = "password", nullable = false)
+    @Field("password")
     private String password;
 
-    @Column(name = "email", unique = true)
+    @Field("email")
+    @Indexed(unique = true)
     private String email;
 
-    @Column(name = "is_verified", nullable = false)
+    @Field("isVerified")
     private boolean isVerified = false;
 
-    @Column(name = "enabled", nullable = false)
+    @Field("enabled")
     private boolean enabled = false;
 
-    @Column(name = "is_email_verified", nullable = false, columnDefinition = "boolean default false")
+    @Field("isEmailVerified")
     private Boolean isEmailVerified = false;
-
 }
