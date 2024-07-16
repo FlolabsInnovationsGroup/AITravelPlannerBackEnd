@@ -1,4 +1,3 @@
-
 # Running the Application Locally
 
 This guide will help you set up and run the application on your local machine.
@@ -14,6 +13,7 @@ This guide will help you set up and run the application on your local machine.
 ### Install Java
 
 Download and install JDK 21 from either:
+
 - [Oracle JDK](https://www.oracle.com/java/technologies/javase-jdk21-downloads.html)
 - [OpenJDK](https://jdk.java.net/21/)
 
@@ -60,7 +60,8 @@ To install MongoDB, follow these simple steps:
 
 1. Download the installer from the [MongoDB Download Center](https://www.mongodb.com/try/download/community).
 2. Run the installer and follow the instructions, using the default options.
-3. No need to create any users or databases manually; the application properties are pre-configured to handle everything.
+3. No need to create any users or databases manually; the application properties are pre-configured to handle
+   everything.
 
 ## 3. Clone the Repository
 

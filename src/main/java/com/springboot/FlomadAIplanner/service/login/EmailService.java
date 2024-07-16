@@ -1,5 +1,6 @@
 package com.springboot.FlomadAIplanner.service.login;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -12,7 +13,7 @@ public class EmailService {
     private final JavaMailSender emailSender;
     private final ExecutorService executorService;
 
-    public EmailService(JavaMailSender emailSender, ExecutorService executorService) {
+    public EmailService(JavaMailSender emailSender, @Qualifier("emailExecutorService") ExecutorService executorService) {
         this.emailSender = emailSender;
         this.executorService = executorService;
     }
