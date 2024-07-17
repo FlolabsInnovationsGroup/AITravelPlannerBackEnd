@@ -1,14 +1,18 @@
 package com.springboot.FlomadAIplanner.ai.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/ai")
 public class AIController {
+    private final AIService aiService;
 
-    @Autowired
-    private AIService aiService;
+    public AIController(AIService aiService) {
+        this.aiService = aiService;
+    }
 
     @PostMapping("/predict")
     public float[] predict(@RequestBody float[] inputData) {
