@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -18,12 +19,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class WebSecurityConfig {
 
     private final UserDetailsService userDetailsService;
-
     private final JwtRequestFilter jwtRequestFilter;
+    private final PasswordEncoder passwordEncoder;
 
-    public WebSecurityConfig(UserDetailsService userDetailsService, JwtRequestFilter jwtRequestFilter) {
+    public WebSecurityConfig(UserDetailsService userDetailsService, JwtRequestFilter jwtRequestFilter, PasswordEncoder passwordEncoder) {
         this.userDetailsService = userDetailsService;
         this.jwtRequestFilter = jwtRequestFilter;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Bean
@@ -32,7 +34,7 @@ public class WebSecurityConfig {
                 http.getSharedObject(AuthenticationManagerBuilder.class);
 
         builder.userDetailsService(userDetailsService)
-                .passwordEncoder(new BCryptPasswordEncoder());
+                .passwordEncoder(passwordEncoder); // Use the injected PasswordEncoder
 
         return builder.build();
     }
@@ -50,15 +52,13 @@ public class WebSecurityConfig {
                                 "/api/auth/login")
                         .permitAll()
                         .requestMatchers(
-                                "/v3/api-docs/**",        // Allow access to the API documentation
-                                "/swagger-ui/**",         // Allow access to Swagger UI
-                                "/swagger-ui.html")       // Allow access to Swagger UI HTML
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html")
                         .permitAll()
                         .anyRequest().authenticated()
                 )
-                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
-        ;
-
+                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

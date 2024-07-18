@@ -59,4 +59,3 @@ public class ChatCallService extends AbstractChatService {
     }
 
 }
-

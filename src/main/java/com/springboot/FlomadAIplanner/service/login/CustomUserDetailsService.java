@@ -18,7 +18,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String identifier) throws UsernameNotFoundException {
         User user = userService.findByUsernameOrEmail(identifier);
-        if (user != null && user.isVerified() && user.isEnabled()) {
+        if (user != null && user.getIsEmailVerified()) {
             return userConverter.convert(user);
         } else {
             throw new UsernameNotFoundException("User not found with username or email: " + identifier);

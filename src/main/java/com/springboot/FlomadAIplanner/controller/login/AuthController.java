@@ -62,20 +62,35 @@ public class AuthController {
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
         try {
             log.info("Attempting login for user: {}", loginRequest.getUsername());
+
+            // Authentication
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-            userValidator.validateUserPasswordMatches(userService.findUserByUsername(loginRequest.getUsername()), loginRequest.getPassword());
+            log.info("Authentication successful for user: {}", loginRequest.getUsername());
 
-            final User user = userService.findUserByUsername(loginRequest.getUsername());
-            final UserDetails userDetails = userConverter.convert(user);
-            final String jwtToken = jwtUtil.generateToken(userDetails);
+            // Validate user password matches
+            User user = userService.findUserByUsername(loginRequest.getUsername());
+            if (user == null) {
+                log.error("User not found: {}", loginRequest.getUsername());
+                throw new UserNotFoundException("User not found: " + loginRequest.getUsername());
+            }
+
+            log.debug("User found: {}", user);
+
+            userValidator.validateUserPasswordMatches(user, loginRequest.getPassword());
+            log.info("Password validation successful for user: {}", loginRequest.getUsername());
+
+            // Convert user to UserDetails
+            UserDetails userDetails = userConverter.convert(user);
+            String jwtToken = jwtUtil.generateToken(userDetails);
 
             log.info("Login successful for user: {}", loginRequest.getUsername());
-            return ResponseEntity.ok(new LoginResponse(user.isVerified(), jwtToken, "Login successful"));
+            return ResponseEntity.ok(new LoginResponse(user.getIsEmailVerified(), jwtToken, "Login successful"));
         } catch (AuthenticationException | UserNotFoundException e) {
             log.error("Login failed for user: {}. Error: {}", loginRequest.getUsername(), e.getMessage());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(new LoginResponse(false, null, "Login failed: " + e.getMessage()));
         }
     }
+
 }
