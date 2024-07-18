@@ -21,6 +21,7 @@ public class ChatCallService extends AbstractChatService {
      *
      * @param agentFactory           Factory for creating chat clients
      * @param aiFunctionDescriptions List of available AI function descriptions
+     * @param promptsList            List of prompts
      */
     public ChatCallService(AgentFactory agentFactory, List<String> aiFunctionDescriptions,
                            Map<String, String> promptsList) {
@@ -29,15 +30,33 @@ public class ChatCallService extends AbstractChatService {
     }
 
     /**
-     * Processes a aiMessage and determines the appropriate response.
+     * Processes an AI message and determines the appropriate response.
      *
-     * @param aiMessage The user aiMessage DTO
+     * @param aiMessage The user AI message DTO
      * @return The response content
      */
     public String processMessage(AIMessageDTO aiMessage) {
+        // Check for null values in aiMessage and its properties
+        if (aiMessage == null || aiMessage.getMessage() == null) {
+            log.error("AIMessageDTO or its message is null");
+            throw new IllegalArgumentException("AIMessageDTO and its message cannot be null");
+        }
+
         log.info("Processing aiMessage: {}; sessionId: {}", aiMessage.getMessage(), aiMessage.getSessionId());
 
-        return (String) getChatAgent().processCallMessage(aiMessage);
+        try {
+            // Process the message using the chat agent
+            return (String) getChatAgent().processCallMessage(aiMessage);
+        } catch (NullPointerException e) {
+            // Log the error and handle the exception
+            log.error("NullPointerException occurred while processing the message: {}", e.getMessage(), e);
+            throw new RuntimeException("Error processing chat message", e);
+        } catch (Exception e) {
+            // Log other potential errors
+            log.error("Exception occurred while processing the message: {}", e.getMessage(), e);
+            throw new RuntimeException("Error processing chat message", e);
+        }
     }
 
 }
+
