@@ -14,6 +14,16 @@ public class VerificationTokenService {
         this.verificationTokenRepository = verificationTokenRepository;
     }
 
+    public VerificationToken getVerificationTokenById(String id) {
+        log.debug("Attempting to find verification token with ID: {}", id);
+        VerificationToken token = verificationTokenRepository.findById(id).orElse(null);
+        if (token == null) {
+            log.warn("No verification token found with ID: {}", id);
+        } else {
+            log.info("Found verification token with ID: {}", id);
+        }
+        return token;
+    }
 
     public VerificationToken getVerificationTokenByUserId(String userId) {
         log.debug("Attempting to find verification token for user ID: {}", userId);
