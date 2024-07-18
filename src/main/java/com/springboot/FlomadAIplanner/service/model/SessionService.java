@@ -45,7 +45,7 @@ public class SessionService {
         Session session = sessionRepository.findByIdAndUserId(sessionId, userId);
         if (session != null) {
             session.setTitle(title);
-            session.setCreatedAt(timestamp);
+            session.setUpdatedAt(timestamp);
             return sessionRepository.save(session);
         } else {
             log.error("Entity not found");

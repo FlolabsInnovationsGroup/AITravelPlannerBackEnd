@@ -1,0 +1,33 @@
+package com.springboot.FlomadAIplanner;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.util.Assert;
+
+import com.springboot.FlomadAIplanner.model.entities.Session;
+import com.springboot.FlomadAIplanner.service.model.SessionService;
+
+import java.time.LocalDateTime;
+
+@SpringBootTest
+public class SessionServiceTest {
+
+    @Autowired
+    private SessionService sessionService;
+
+    @Test
+    public void testCreateSession() {
+        Session session = new Session();
+        session.setId("1");
+        session.setUserId("user1");
+        session.setTitle("Test Session");
+        session.setCreatedAt(LocalDateTime.now());  
+        session.setUpdatedAt(LocalDateTime.now()); 
+
+        Session savedSession = sessionService.saveSession(session);
+
+        Assert.notNull(savedSession, "Saved session should not be null");
+        Assert.isTrue(savedSession.getTitle().equals("Test Session"), "Session title should be 'Test Session'");
+    }
+}

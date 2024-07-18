@@ -4,6 +4,8 @@ import com.springboot.FlomadAIplanner.converter.Converter;
 import com.springboot.FlomadAIplanner.dto.MessageDTO;
 import com.springboot.FlomadAIplanner.model.entities.Message;
 import com.springboot.FlomadAIplanner.service.model.MessageService;
+import com.springboot.FlomadAIplanner.util.JwtUtil;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,16 +25,22 @@ public class MessageController {
     private final MessageService service;
     private final Converter<Message, MessageDTO> messageToDTOConverter;
     private final Converter<MessageDTO, Message> messageFromDTOConverter;
+    private JwtUtil jwtUtil;
 
-    public MessageController(MessageService service, Converter<Message, MessageDTO> messageToDTOConverter, Converter<MessageDTO, Message> messageFromDTOConverter) {
+    public MessageController(MessageService service, Converter<Message, MessageDTO> messageToDTOConverter, Converter<MessageDTO, Message> messageFromDTOConverter,JwtUtil jwtUtil) {
         this.service = service;
         this.messageToDTOConverter = messageToDTOConverter;
         this.messageFromDTOConverter = messageFromDTOConverter;
+        this.jwtUtil = jwtUtil;
     }
 
     @PostMapping
-    public ResponseEntity<Message> createMessage(@RequestBody MessageDTO dto) {
+    public ResponseEntity<Message> createMessage(@RequestBody MessageDTO dto, @RequestHeader("Authorization") String token) {
         log.info("Creating new message: {}", dto);
+
+        // String username = jwtUtil.extractUsername(token.substring(7)); 
+        // dto.setSessionId(username); 
+
         Message message = messageFromDTOConverter.convert(dto);
         Message newMessage = service.save(message);
         log.info("Message created");
@@ -42,7 +50,9 @@ public class MessageController {
     @GetMapping("/getSessionMessages")
     public ResponseEntity<List<MessageDTO>> getSessionMessages(@RequestParam String sessionId) {
         log.info("Retrieving messages for session: {}", sessionId);
+
         List<Message> messages = service.getMessagesBySessionId(sessionId);
+        log.info("messages of the session: {}", messages);
 
         List<MessageDTO> dtos = messages.stream()
                 .map(messageToDTOConverter::convert)

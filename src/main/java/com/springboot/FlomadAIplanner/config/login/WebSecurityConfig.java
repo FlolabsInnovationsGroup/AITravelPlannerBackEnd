@@ -47,7 +47,13 @@ public class WebSecurityConfig {
                                 "/api/auth/verify",
                                 "/api/chat/call",
                                 "/api/chat/stream",
-                                "/api/auth/login")
+                                "/api/auth/login",
+                                "/users/{userId}/sessions",
+                                "/add_session",
+                                "/users/{userId}/sessions/{sessionId}",
+                                "/users/{userId}/sessions/{sessionId}/updateTitle",
+                                "/messagesPersistence/getSessionMessages"
+                                )
                         .permitAll()
                         .requestMatchers(
                                 "/v3/api-docs/**",        // Allow access to the API documentation

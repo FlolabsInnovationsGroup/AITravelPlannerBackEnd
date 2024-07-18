@@ -23,4 +23,5 @@ public class MessageDTO {
     private LocalDateTime createdAt;
     private MessageType messageType;
     private Map<String, String> metadata;
+    
 }
