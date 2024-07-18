@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 public class AIService {
 
     public float[] predict(float[] inputData) {
-        
+
         throw new UnsupportedOperationException("Unimplemented method 'predict'");
     }
 
