@@ -2,29 +2,27 @@ package com.springboot.FlomadAIplanner.service.login;
 
 import com.springboot.FlomadAIplanner.converter.Converter;
 import com.springboot.FlomadAIplanner.model.entities.login.User;
-import com.springboot.FlomadAIplanner.model.repository.login.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final Converter<User, UserDetails> userConverter;
 
-    public CustomUserDetailsService(UserRepository userRepository, Converter<User, UserDetails> userConverter) {
-        this.userRepository = userRepository;
-        this.userConverter = userConverter;
+    @Override
+    public UserDetails loadUserByUsername(String identifier) throws UsernameNotFoundException {
+        User user = userService.findByUsernameOrEmail(identifier);
+        if (user != null && user.isVerified() && user.isEnabled()) {
+            return userConverter.convert(user);
+        } else {
+            throw new UsernameNotFoundException("User not found with username or email: " + identifier);
+        }
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username);
-        if (user == null) {
-            throw new UsernameNotFoundException("User not found");
-        }
-        return userConverter.convert(user);
-    }
 }
