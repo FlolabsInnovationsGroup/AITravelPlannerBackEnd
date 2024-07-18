@@ -53,17 +53,19 @@ public class UserService {
                 "http://localhost:8080/api/auth/verify?token=" + verificationToken;
 
         emailService.sendSimpleMessage(user.getEmail(), subject, text);
-        log.info("Verification email sent to user with username: {}", user.getUsername());
+        log.info("Verification email sent to the following email: {}", user.getEmail());
     }
 
     public User findByVerificationToken(String token) {
         log.debug("Finding user by verification token.");
-        return userRepository.findUserByVerificationToken(token);
+        VerificationToken verificationToken = verificationTokenService.getVerificationTokenById(token);
+        return verificationToken != null ? verificationToken.getUser() : null;
     }
 
     public void verifyUser(User user) {
         log.debug("Verifying user with ID: {}", user.getId());
         user.setVerified(true);
+        user.setEnabled(true);
         user.setIsEmailVerified(true);
         userRepository.save(user);
         verificationTokenService.deleteVerificationTokenByUserId(user.getId());
