@@ -35,7 +35,6 @@ public class User extends Model {
     private String email;
 
 
-
     @Field("isEmailVerified")
     private Boolean isEmailVerified = false;
 }

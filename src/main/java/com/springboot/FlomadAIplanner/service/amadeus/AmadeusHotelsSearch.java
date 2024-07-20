@@ -3,7 +3,7 @@ package com.springboot.FlomadAIplanner.service.amadeus;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.springboot.FlomadAIplanner.dto.amadeus.HotelOffersByHotelIdsRequest;
 import com.springboot.FlomadAIplanner.dto.amadeus.HotelSearchByGeocodeRequest;
-import com.springboot.FlomadAIplanner.exceptions.AmadeusAPIException;
+import com.springboot.FlomadAIplanner.exceptions.api.AmadeusAPIException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -1,6 +1,6 @@
 package com.springboot.FlomadAIplanner.filter;
 
-import com.springboot.FlomadAIplanner.service.login.CustomUserDetailsService;
+import com.springboot.FlomadAIplanner.service.security.CustomUserDetailsService;
 import com.springboot.FlomadAIplanner.util.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -42,7 +42,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
             UserDetails userDetails = this.customUserDetailsService.loadUserByUsername(username);
 
-            if (jwtUtil.validateToken(jwt, userDetails.getUsername())) {
+            if (jwtUtil.validateToken(jwt, userDetails)) {
 
                 var usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());

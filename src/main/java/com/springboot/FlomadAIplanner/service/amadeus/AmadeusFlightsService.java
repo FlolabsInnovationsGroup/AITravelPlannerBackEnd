@@ -5,7 +5,7 @@ import com.springboot.FlomadAIplanner.dto.amadeus.FlightDestinationsRequest;
 import com.springboot.FlomadAIplanner.dto.amadeus.FlightOfferPricingRequest;
 import com.springboot.FlomadAIplanner.dto.amadeus.FlightOffersPostRequest;
 import com.springboot.FlomadAIplanner.dto.amadeus.FlightsAirportLocationsRequest;
-import com.springboot.FlomadAIplanner.exceptions.AmadeusAPIException;
+import com.springboot.FlomadAIplanner.exceptions.api.AmadeusAPIException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,6 +33,7 @@ public class AmadeusFlightsService {
         }
     }
 
+    @SuppressWarnings("unused")
     public JsonNode getFlightDestinations(FlightDestinationsRequest request) throws AmadeusAPIException {
         log.info("Getting flight destinations from origin: {} with max price: {}", request.getOrigin(), request.getMaxPrice());
         try {

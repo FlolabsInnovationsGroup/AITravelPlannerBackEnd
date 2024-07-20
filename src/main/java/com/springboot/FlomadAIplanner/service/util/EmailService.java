@@ -1,4 +1,4 @@
-package com.springboot.FlomadAIplanner.service.login;
+package com.springboot.FlomadAIplanner.service.util;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

@@ -4,10 +4,11 @@ import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.springboot.FlomadAIplanner.dto.viator.BulkFreeTextSearchRequest;
-import com.springboot.FlomadAIplanner.exceptions.ViatorAPIException;
+import com.springboot.FlomadAIplanner.exceptions.api.ViatorAPIException;
 import com.springboot.FlomadAIplanner.service.viator.ViatorAuxiliaryServiceAsync;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -57,11 +58,12 @@ public class ToursFreeTextSearchFunction implements AIFunction<ToursFreeTextSear
     public static class FreeTextSearchRequestWrapper {
 
         @NotBlank
-        @JsonPropertyDescription("Required. Specifies the language into which the natural-language fields in the response will be translated if needed. Example: en-US. By default use en-US")
+        @JsonPropertyDescription("REQUIRED. Specifies the language into which the natural-language fields in the response will be translated if needed. Example: en-US. By default use en-US")
         private String acceptLanguage;
 
         @Valid
-        @JsonPropertyDescription("The free text search request containing the search term and filters for the search.")
+        @NotNull
+        @JsonPropertyDescription("REQUIRED. The free text search request containing the search term and filters for the search.")
         private BulkFreeTextSearchRequest request;
     }
 

@@ -1,11 +1,11 @@
-package com.springboot.FlomadAIplanner.service.login;
+package com.springboot.FlomadAIplanner.service.model;
 
 import com.springboot.FlomadAIplanner.model.entities.login.User;
 import com.springboot.FlomadAIplanner.model.entities.login.VerificationToken;
 import com.springboot.FlomadAIplanner.model.repository.login.UserRepository;
+import com.springboot.FlomadAIplanner.service.util.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

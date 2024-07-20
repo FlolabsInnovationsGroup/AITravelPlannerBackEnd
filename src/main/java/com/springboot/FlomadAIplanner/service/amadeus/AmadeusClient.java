@@ -23,14 +23,23 @@ public interface AmadeusClient {
                                    @RequestParam(value = "nonStop", required = false) Boolean nonStop,
                                    @RequestParam(value = "viewBy", required = false) String viewBy);
 
+    /**
+     * Docs link: <a href="https://developers.amadeus.com/self-service/category/flights/api-doc/flight-offers-search/api-reference">...</a>
+     */
     @PostMapping(value = "/v2/shopping/flight-offers", consumes = MediaType.APPLICATION_JSON_VALUE)
     JsonNode getFlightOffersPost(@RequestHeader("X-HTTP-Method-Override") String httpMethodOverride,
                                  @RequestBody FlightOffersPostRequest flightOffersRequest);
 
+    /**
+     * Docs link: <a href="https://developers.amadeus.com/self-service/category/flights/api-doc/flight-offers-price/api-reference">...</a>
+     */
     @PostMapping(value = "/v1/shopping/flight-offers/pricing", consumes = MediaType.APPLICATION_JSON_VALUE)
     JsonNode getOfferPricing(@RequestHeader("X-HTTP-Method-Override") String httpMethodOverride,
                              @RequestBody String offer);
 
+    /**
+     * Docs link: <a href="https://developers.amadeus.com/self-service/category/flights/api-doc/airport-and-city-search/api-reference">...</a>
+     */
     @GetMapping("/v1/reference-data/locations")
     JsonNode getLocations(@RequestParam("subType") String subType,
                           @RequestParam("keyword") String keyword,
@@ -40,6 +49,9 @@ public interface AmadeusClient {
                           @RequestParam(value = "sort", required = false) String sort,
                           @RequestParam(value = "view", required = false) String view);
 
+    /**
+     * Docs link: <a href="https://developers.amadeus.com/self-service/category/flights/api-doc/airport-and-city-search/api-reference">...</a>
+     */
     @GetMapping("/v1/reference-data/locations/{locationId}")
     JsonNode getLocationById(@PathVariable("locationId") String locationId);
 

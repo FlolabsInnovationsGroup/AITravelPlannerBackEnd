@@ -32,12 +32,12 @@ public class BulkFreeTextSearchRequest {
     @NotEmpty
     @Size(min = 1, max = 3)
     @Valid
-    @JsonPropertyDescription("Required. Min 1, Max 3 items. Specifies the domain(s) in which to search for the search term and the respective pagination details.")
+    @JsonPropertyDescription("REQUIRED. Min 1, Max 3 items. Specifies the domain(s) in which to search for the search term and the respective pagination details.")
     private List<FreeTextSearchRequest.SearchType> searchTypes;
 
     @NotBlank
     @Pattern(regexp = "AUD|BRL|CAD|CHF|DKK|EUR|GBP|HKD|INR|JPY|NOK|NZD|SEK|SGD|TWD|USD|ZAR", message = "Invalid currency code")
-    @JsonPropertyDescription("Required. Currency code of price range in request filter and the prices in response. Must be a valid ISO 4217 code.")
-    private String currency;
+    @JsonPropertyDescription("REQUIRED. regexp = \"AUD|BRL|CAD|CHF|DKK|EUR|GBP|HKD|INR|JPY|NOK|NZD|SEK|SGD|TWD|USD|ZAR\". Default is 'USD'. Currency code of price range in request filter and the prices in response. Must be a valid ISO 4217 code.")
+    private String currency = "USD";
 
 }

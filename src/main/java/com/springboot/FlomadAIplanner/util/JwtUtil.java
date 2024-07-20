@@ -23,7 +23,19 @@ public class JwtUtil {
     @Value("${jwt.expiration}")
     private long expirationTime;
 
-    public String createToken(Map<String, Object> claims, String subject) {
+
+    /**
+     * Generates a JWT token for the given user details.
+     *
+     * @param userDetails the user details to generate the token for
+     * @return the generated JWT token
+     */
+    public String generateToken(UserDetails userDetails) {
+        Map<String, Object> claims = new HashMap<>();
+        return createToken(claims, userDetails.getUsername());
+    }
+
+    private String createToken(Map<String, Object> claims, String subject) {
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)
@@ -33,23 +45,39 @@ public class JwtUtil {
                 .compact();
     }
 
-    public boolean validateToken(String jwt, String username) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'validateToken'");
-    }
-
+    /**
+     * Extracts the username from the given JWT token.
+     *
+     * @param token the JWT token to extract the username from
+     * @return the username extracted from the token
+     */
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
+    /**
+     * Extracts the expiration date from the given JWT token.
+     *
+     * @param token the JWT token to extract the expiration date from
+     * @return the expiration date extracted from the token
+     */
     public Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
 
-    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = extractAllClaims(token);
-        return claimsResolver.apply(claims);
+
+    /**
+     * Validates the given JWT token.
+     *
+     * @param token       the JWT token to validate
+     * @param userDetails the user details to validate the token against
+     * @return true if the token is valid, false otherwise
+     */
+    public Boolean validateToken(String token, UserDetails userDetails) {
+        final String username = extractUsername(token);
+        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
+
 
     private Claims extractAllClaims(String token) {
         return Jwts.parserBuilder()
@@ -63,13 +91,10 @@ public class JwtUtil {
         return extractExpiration(token).before(new Date());
     }
 
-    public String generateToken(UserDetails userDetails) {
-        Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, userDetails.getUsername());
+    private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = extractAllClaims(token);
+        return claimsResolver.apply(claims);
     }
 
-    public Boolean validateToken(String token, UserDetails userDetails) {
-        final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
-    }
+
 }
