@@ -6,6 +6,7 @@ import com.springboot.FlomadAIplanner.model.repository.login.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,16 +18,16 @@ public class UserService {
     private final UserRepository userRepository;
     private final EmailService emailService;
     private final VerificationTokenService verificationTokenService;
+    private final PasswordEncoder passwordEncoder;
 
     @SuppressWarnings("all")
     @Transactional
     public User registerUser(User user) {
         log.debug("Registering user with username: {}", user.getUsername());
 
-        user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(user.getPassword())); // Use the injected PasswordEncoder
         user.setIsEmailVerified(false);
-        user.setEnabled(false); // Set the default value for enabled field
-        user.setVerified(false); // Set the default value for isVerified field
+
 
         User savedUser = userRepository.save(user);
         log.info("User registered successfully with ID: {}", savedUser.getId());
@@ -62,8 +63,7 @@ public class UserService {
     public void verifyUser(User user) {
         log.debug("Verifying user with ID: {}", user.getId());
         // update the user fields
-        user.setVerified(true);
-        user.setEnabled(true);
+
         user.setIsEmailVerified(true);
         userRepository.save(user);
         // delete the verification token after successful verification
@@ -73,7 +73,13 @@ public class UserService {
 
     public User findUserByUsername(String username) {
         log.debug("Finding user by username: {}", username);
-        return userRepository.findByUsername(username);
+        User user = userRepository.findByUsername(username);
+        if (user == null) {
+            log.error("User not found with username: {}", username);
+        } else {
+            log.debug("User found: {}", user);
+        }
+        return user;
     }
 
     @SuppressWarnings("unused")
@@ -96,5 +102,5 @@ public class UserService {
         log.debug("Checking if user exists by email: {}", email);
         return userRepository.existsByEmail(email);
     }
-
 }
+
