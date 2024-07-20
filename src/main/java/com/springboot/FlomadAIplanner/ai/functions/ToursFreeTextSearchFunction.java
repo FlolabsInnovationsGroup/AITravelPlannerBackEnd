@@ -58,12 +58,12 @@ public class ToursFreeTextSearchFunction implements AIFunction<ToursFreeTextSear
     public static class FreeTextSearchRequestWrapper {
 
         @NotBlank
-        @JsonPropertyDescription("REQUIRED. Specifies the language into which the natural-language fields in the response will be translated if needed. Example: en-US. By default use en-US")
+        @JsonPropertyDescription("REQUIRED. Can't be null. Specifies the language into which the natural-language fields in the response will be translated if needed. Example: en-US. By default use en-US")
         private String acceptLanguage;
 
         @Valid
         @NotNull
-        @JsonPropertyDescription("REQUIRED. The free text search request containing the search term and filters for the search.")
+        @JsonPropertyDescription("REQUIRED. Can't be null. The free text search request containing the search term and filters for the search.")
         private BulkFreeTextSearchRequest request;
     }
 
