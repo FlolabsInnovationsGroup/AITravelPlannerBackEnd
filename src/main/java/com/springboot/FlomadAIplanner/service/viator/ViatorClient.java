@@ -1,9 +1,9 @@
 package com.springboot.FlomadAIplanner.service.viator;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.springboot.FlomadAIplanner.dto.viator.AttractionProductsRequest;
 import com.springboot.FlomadAIplanner.dto.viator.AttractionsRequest;
 import com.springboot.FlomadAIplanner.dto.viator.FreeTextSearchRequest;
+import com.springboot.FlomadAIplanner.dto.viator.FreeTextSearchResponse;
 import com.springboot.FlomadAIplanner.service.viator.confg.ViatorClientConfig;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
@@ -46,6 +46,6 @@ public interface ViatorClient {
      * @description <a href="https://docs.viator.com/partner-api/technical/#tag/Auxiliary/operation/searchFreeText"/>
      */
     @PostMapping(value = "/search/freetext", consumes = MediaType.APPLICATION_JSON_VALUE)
-    JsonNode searchFreeText(@RequestHeader("Accept") String accept, @RequestHeader("Accept-Language") String acceptLanguage, @RequestBody FreeTextSearchRequest freeTextSearchRequest);
+    FreeTextSearchResponse searchFreeText(@RequestHeader("Accept") String accept, @RequestHeader("Accept-Language") String acceptLanguage, @RequestBody FreeTextSearchRequest freeTextSearchRequest);
 
 }

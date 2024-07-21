@@ -1,9 +1,8 @@
 package com.springboot.FlomadAIplanner.ai.functions;
 
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.springboot.FlomadAIplanner.dto.viator.BulkFreeTextSearchRequest;
+import com.springboot.FlomadAIplanner.dto.viator.FreeTextSearchResponse;
 import com.springboot.FlomadAIplanner.exceptions.api.ViatorAPIException;
 import com.springboot.FlomadAIplanner.service.viator.ViatorAuxiliaryServiceAsync;
 import jakarta.validation.Valid;
@@ -17,6 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Description;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
+import java.util.List;
+
 @Slf4j
 @Component
 @Description("""
@@ -26,12 +28,13 @@ import org.springframework.stereotype.Component;
         Recommended to use for search for tours in all required places in one call. SearchTerms - [1,∞)
         Mostly could be called to find out general information about a tours (payed activities)\s
         or famous places available in the desired destination.
+        'request' - input param is REQUIRED!!!
         DESTINATION could be a country, city, town, etc.
         ATTRACTION could be a famous place, monument, museum, etc.
         PRODUCT could be a tour, activity, experience, etc.
         'productUrl' - is actually the link to the tour purchase and description, media.
-        P.S. Use CurrentDateTimeFunction before this function to get the current date and time in the real world.""")
-public class ToursFreeTextSearchFunction implements AIFunction<ToursFreeTextSearchFunction.FreeTextSearchRequestWrapper, JsonNode> {
+        You must use CurrentDateTimeFunction before this function to get the current date and time in the real world.""")
+public class ToursFreeTextSearchFunction implements AIFunction<ToursFreeTextSearchFunction.FreeTextSearchRequestWrapper, List<FreeTextSearchResponse>> {
 
     private final ViatorAuxiliaryServiceAsync viatorAuxiliaryService;
 
@@ -42,13 +45,13 @@ public class ToursFreeTextSearchFunction implements AIFunction<ToursFreeTextSear
 
     @Override
     @Valid
-    public JsonNode apply(FreeTextSearchRequestWrapper requestWrapper) {
+    public List<FreeTextSearchResponse> apply(FreeTextSearchRequestWrapper requestWrapper) {
         log.info("Performing free text search with term: {}", requestWrapper.getRequest().getSearchTerms());
         try {
             return viatorAuxiliaryService.bulkSearchFreeText(requestWrapper.getAcceptLanguage(), requestWrapper.getRequest());
         } catch (ViatorAPIException e) {
             log.error("Error performing free text search", e);
-            return JsonNodeFactory.instance.objectNode().put("error", e.getMessage());
+            return Collections.singletonList(FreeTextSearchResponse.builder().errorMessage(e.getMessage()).build());
         }
     }
 
@@ -59,7 +62,7 @@ public class ToursFreeTextSearchFunction implements AIFunction<ToursFreeTextSear
 
         @NotBlank
         @JsonPropertyDescription("REQUIRED. Can't be null. Specifies the language into which the natural-language fields in the response will be translated if needed. Example: en-US. By default use en-US")
-        private String acceptLanguage;
+        private String acceptLanguage = "en-US";
 
         @Valid
         @NotNull
