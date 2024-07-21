@@ -13,6 +13,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static java.nio.file.Files.readString;
+
+
 @Configuration
 public class PromptsConfig {
 
