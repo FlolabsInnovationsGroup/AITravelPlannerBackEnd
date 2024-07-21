@@ -2,7 +2,7 @@ package com.springboot.FlomadAIplanner.controller.freeCurrency;
 
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.springboot.FlomadAIplanner.exceptions.FreeCurrencyException;
+import com.springboot.FlomadAIplanner.exceptions.api.FreeCurrencyAPIException;
 import com.springboot.FlomadAIplanner.service.freeCurrency.FreeCurrencyService;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +34,7 @@ public class FreeCurrencyController {
      * @return Supported currencies
      */
     @GetMapping("/currencies")
-    public ResponseEntity<JsonNode> getSupportCurrencies(@RequestParam @Nullable String currencies) throws FreeCurrencyException {
+    public ResponseEntity<JsonNode> getSupportCurrencies(@RequestParam @Nullable String currencies) throws FreeCurrencyAPIException {
         log.info("Received currencies: {}", currencies);
 
         JsonNode response = freeCurrencyService.getSupportedCurrencies(currencies);
@@ -49,7 +49,7 @@ public class FreeCurrencyController {
      * @return usage of API and remaining attempts
      */
     @GetMapping("/status")
-    public ResponseEntity<JsonNode> getStatus() throws FreeCurrencyException {
+    public ResponseEntity<JsonNode> getStatus() throws FreeCurrencyAPIException {
         log.info("Performing Get FreeCurrency API Status");
 
         JsonNode response = freeCurrencyService.getStatus();
@@ -67,7 +67,7 @@ public class FreeCurrencyController {
      */
     @GetMapping("/latest")
     public ResponseEntity<JsonNode> getLatestCurrency(@RequestParam @Nullable String base,
-                                                      @RequestParam @Nullable String currencies) throws FreeCurrencyException {
+                                                      @RequestParam @Nullable String currencies) throws FreeCurrencyAPIException {
         log.info("Received currencies: {}, base currencies: {}", currencies, base);
 
         JsonNode response = freeCurrencyService.getLatestCurrency(base, currencies);
@@ -87,7 +87,7 @@ public class FreeCurrencyController {
     @GetMapping("/history")
     public ResponseEntity<JsonNode> getHistoricalCurrency(@RequestParam @NotNull String date,
                                                           @RequestParam @Nullable String base,
-                                                          @RequestParam @Nullable String currencies) throws FreeCurrencyException {
+                                                          @RequestParam @Nullable String currencies) throws FreeCurrencyAPIException {
         log.info("Received date: {} currencies: {}, base currencies: {}", date, currencies, base);
 
         JsonNode response = freeCurrencyService.getHistoricalCurrency(date, base, currencies);

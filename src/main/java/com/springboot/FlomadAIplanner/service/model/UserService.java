@@ -1,36 +1,33 @@
-package com.springboot.FlomadAIplanner.service.login;
+package com.springboot.FlomadAIplanner.service.model;
 
 import com.springboot.FlomadAIplanner.model.entities.login.User;
 import com.springboot.FlomadAIplanner.model.entities.login.VerificationToken;
 import com.springboot.FlomadAIplanner.model.repository.login.UserRepository;
+import com.springboot.FlomadAIplanner.service.util.EmailService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
     private final EmailService emailService;
     private final VerificationTokenService verificationTokenService;
-
-    public UserService(UserRepository userRepository, EmailService emailService, VerificationTokenService verificationTokenService) {
-        this.userRepository = userRepository;
-        this.emailService = emailService;
-        this.verificationTokenService = verificationTokenService;
-    }
+    private final PasswordEncoder passwordEncoder;
 
     @SuppressWarnings("all")
     @Transactional
     public User registerUser(User user) {
         log.debug("Registering user with username: {}", user.getUsername());
 
-        user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(user.getPassword())); // Use the injected PasswordEncoder
         user.setIsEmailVerified(false);
-        user.setEnabled(false); // Set the default value for enabled field
-        user.setVerified(false); // Set the default value for isVerified field
+
 
         User savedUser = userRepository.save(user);
         log.info("User registered successfully with ID: {}", savedUser.getId());
@@ -53,25 +50,57 @@ public class UserService {
                 "http://localhost:8080/api/auth/verify?token=" + verificationToken;
 
         emailService.sendSimpleMessage(user.getEmail(), subject, text);
-        log.info("Verification email sent to user with username: {}", user.getUsername());
+        log.info("Verification email sent to the following email: {}", user.getEmail());
     }
 
     public User findByVerificationToken(String token) {
         log.debug("Finding user by verification token.");
-        return userRepository.findUserByVerificationToken(token);
+        VerificationToken verificationToken = verificationTokenService.getVerificationTokenById(token);
+        return verificationToken != null ? verificationToken.getUser() : null;
     }
 
+    @Transactional
     public void verifyUser(User user) {
         log.debug("Verifying user with ID: {}", user.getId());
-        user.setVerified(true);
+        // update the user fields
+
         user.setIsEmailVerified(true);
         userRepository.save(user);
+        // delete the verification token after successful verification
         verificationTokenService.deleteVerificationTokenByUserId(user.getId());
         log.info("User verified successfully with ID: {}", user.getId());
     }
 
     public User findUserByUsername(String username) {
         log.debug("Finding user by username: {}", username);
-        return userRepository.findByUsername(username);
+        User user = userRepository.findByUsername(username);
+        if (user == null) {
+            log.error("User not found with username: {}", username);
+        } else {
+            log.debug("User found: {}", user);
+        }
+        return user;
+    }
+
+    @SuppressWarnings("unused")
+    public User findUserByEmail(String email) {
+        log.debug("Finding user by email: {}", email);
+        return userRepository.findByEmail(email);
+    }
+
+    public User findByUsernameOrEmail(String identifier) {
+        log.debug("Finding user by username or email: {}", identifier);
+        return userRepository.findByUsernameOrEmail(identifier);
+    }
+
+    public boolean existsByUsername(String username) {
+        log.debug("Checking if user exists by username: {}", username);
+        return userRepository.existsByUsername(username);
+    }
+
+    public boolean existsByEmail(String email) {
+        log.debug("Checking if user exists by email: {}", email);
+        return userRepository.existsByEmail(email);
     }
 }
+

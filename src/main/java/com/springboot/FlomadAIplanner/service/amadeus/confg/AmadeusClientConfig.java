@@ -1,6 +1,6 @@
 package com.springboot.FlomadAIplanner.service.amadeus.confg;
 
-import com.springboot.FlomadAIplanner.exceptions.AmadeusAPIException;
+import com.springboot.FlomadAIplanner.exceptions.api.AmadeusAPIException;
 import com.springboot.FlomadAIplanner.service.amadeus.AmadeusAuthService;
 import feign.RequestInterceptor;
 import lombok.extern.slf4j.Slf4j;

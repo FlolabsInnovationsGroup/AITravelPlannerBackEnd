@@ -156,20 +156,20 @@ public class FreeTextSearchRequest {
 
         @Valid
         @JsonPropertyDescription("Optional. Pagination details specifying which search results to return based on start position and item count.")
-        private Pagination pagination;
+        private Pagination pagination = new Pagination();
 
         @Data
         @NoArgsConstructor
         @AllArgsConstructor
         public static class Pagination {
             @Min(1)
-            @JsonPropertyDescription("Required. Min value is 1. Specifies the start position of the search results to return.")
-            private Integer start;
+            @JsonPropertyDescription("Required. Min value is 1. Default is 1. Specifies the start position of the search results to return.")
+            private Integer start = 1;
 
             @Min(1)
             @Max(100)
-            @JsonPropertyDescription("Required. Min value is 1. Max is 100. Specifies the number of search results to return.")
-            private Integer count;
+            @JsonPropertyDescription("Required. Min value is 1. Max is 100. Default is 5. Specifies the number of search results to return.")
+            private Integer count = 5;
         }
     }
 }

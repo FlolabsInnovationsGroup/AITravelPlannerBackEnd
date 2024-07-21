@@ -9,6 +9,13 @@ import org.springframework.stereotype.Repository;
 public interface UserRepository extends MongoRepository<User, String> {
     User findByUsername(String username);
 
-    @Query("{ 'verificationToken.id': ?0 }")
-    User findUserByVerificationToken(String verificationTokenId);
+    User findByEmail(String email);
+
+    @Query("{$or: [{username: ?0}, {email: ?0}]}")
+    User findByUsernameOrEmail(String identifier);
+
+    boolean existsByUsername(String username);
+
+    boolean existsByEmail(String email);
+
 }

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.springboot.FlomadAIplanner.dto.google.NearbyPlacesRequest;
-import com.springboot.FlomadAIplanner.exceptions.GoogleAPIException;
+import com.springboot.FlomadAIplanner.exceptions.api.GoogleAPIException;
 import com.springboot.FlomadAIplanner.service.google.GooglePlacesService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;

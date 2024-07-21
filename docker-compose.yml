@@ -78,9 +78,11 @@ services:
     build: .
     container_name: springboot
     ports:
-      - "4000:4000"
+      - "8080:8080"
     env_file:
       - .env
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://mongo:27017/testdb
     depends_on:
       - mongo
     networks:

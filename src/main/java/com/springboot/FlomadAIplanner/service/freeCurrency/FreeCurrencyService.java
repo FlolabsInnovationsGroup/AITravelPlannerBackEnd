@@ -4,7 +4,7 @@ package com.springboot.FlomadAIplanner.service.freeCurrency;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.springboot.FlomadAIplanner.exceptions.FreeCurrencyException;
+import com.springboot.FlomadAIplanner.exceptions.api.FreeCurrencyAPIException;
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,7 +26,7 @@ public class FreeCurrencyService {
      * @param currencies a list of currency code separated by ",", default select all currencies.
      * @return JsonNode type result.
      */
-    public JsonNode getSupportedCurrencies(String currencies) throws FreeCurrencyException {
+    public JsonNode getSupportedCurrencies(String currencies) throws FreeCurrencyAPIException {
         try {
             log.info("Search for Supported Currencies");
             JsonNode response;
@@ -48,11 +48,11 @@ public class FreeCurrencyService {
                 return errorNode;
             } else {
                 log.error("Error performing free text search", e);
-                throw new FreeCurrencyException("Error performing search Supported Currencies", e);
+                throw new FreeCurrencyAPIException("Error performing search Supported Currencies", e);
             }
         } catch (Exception e) {
             log.error("Error performing free text search", e);
-            throw new FreeCurrencyException("Error performing search Supported Currencies", e);
+            throw new FreeCurrencyAPIException("Error performing search Supported Currencies", e);
         }
     }
 
@@ -61,7 +61,7 @@ public class FreeCurrencyService {
      *
      * @return status of usage in JsonNode Type
      */
-    public JsonNode getStatus() throws FreeCurrencyException {
+    public JsonNode getStatus() throws FreeCurrencyAPIException {
         try {
             log.info("Getting Free Currencies Status");
             JsonNode response = freeCurrencyClient.getStatus();
@@ -69,7 +69,7 @@ public class FreeCurrencyService {
             return response;
         } catch (Exception e) {
             log.error("Error performing Getting Free Currencies Status", e);
-            throw new FreeCurrencyException("Error performing Getting Free Currencies Status", e);
+            throw new FreeCurrencyAPIException("Error performing Getting Free Currencies Status", e);
         }
     }
 
@@ -80,7 +80,7 @@ public class FreeCurrencyService {
      * @param currencies   a list of currency code separated by ",", default select all currencies.
      * @return JsonNode type result. Do not contain baseCurrency if it is not in currencies.
      */
-    public JsonNode getLatestCurrency(String baseCurrency, String currencies) throws FreeCurrencyException {
+    public JsonNode getLatestCurrency(String baseCurrency, String currencies) throws FreeCurrencyAPIException {
         try {
             log.info("Search for Latest Currencies:{} with Base Currency:{}", currencies, baseCurrency);
             JsonNode response;
@@ -97,7 +97,7 @@ public class FreeCurrencyService {
             return response;
         } catch (Exception e) {
             log.error("Error performing Searching Latest Currencies", e);
-            throw new FreeCurrencyException("Error performing search Latest Currencies", e);
+            throw new FreeCurrencyAPIException("Error performing search Latest Currencies", e);
         }
     }
 
@@ -109,7 +109,7 @@ public class FreeCurrencyService {
      * @param currencies   a list of currency code separated by ",", default select all currencies.
      * @return JsonNode type result. Do not contain baseCurrency if it is not in currencies.
      */
-    public JsonNode getHistoricalCurrency(String date, String baseCurrency, String currencies) throws FreeCurrencyException {
+    public JsonNode getHistoricalCurrency(String date, String baseCurrency, String currencies) throws FreeCurrencyAPIException {
         try {
             log.info("Search for Historical Currencies:{} with Base Currency:{}", currencies, baseCurrency);
             JsonNode response;
@@ -126,7 +126,7 @@ public class FreeCurrencyService {
             return response;
         } catch (Exception e) {
             log.error("Error performing Searching Historical Currencies", e);
-            throw new FreeCurrencyException("Error performing search Historical Currencies", e);
+            throw new FreeCurrencyAPIException("Error performing search Historical Currencies", e);
         }
     }
 

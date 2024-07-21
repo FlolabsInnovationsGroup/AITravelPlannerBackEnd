@@ -3,7 +3,6 @@ package com.springboot.FlomadAIplanner.controller.model;
 import com.springboot.FlomadAIplanner.model.entities.Destination;
 import com.springboot.FlomadAIplanner.service.model.DestinationsService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,8 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 public class DestinationController {
-    @Autowired
-    private DestinationsService destinationService;
+    private final DestinationsService destinationService;
+
+    public DestinationController(DestinationsService destinationService) {
+        this.destinationService = destinationService;
+    }
 
     @GetMapping("/getDestinationId")
     public Integer getDestinationId(@RequestParam String destinationName) {

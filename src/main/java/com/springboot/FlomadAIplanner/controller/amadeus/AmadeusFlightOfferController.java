@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.springboot.FlomadAIplanner.dto.amadeus.FlightOfferPricingRequest;
 import com.springboot.FlomadAIplanner.dto.amadeus.FlightOffersPostRequest;
 import com.springboot.FlomadAIplanner.dto.amadeus.FlightsAirportLocationsRequest;
-import com.springboot.FlomadAIplanner.exceptions.AmadeusAPIException;
+import com.springboot.FlomadAIplanner.exceptions.api.AmadeusAPIException;
 import com.springboot.FlomadAIplanner.service.amadeus.AmadeusFlightsService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;

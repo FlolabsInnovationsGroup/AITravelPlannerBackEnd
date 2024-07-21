@@ -25,7 +25,7 @@ public interface GooglePlacesClient {
     /**
      * Searches for nearby places based on the provided request parameters.
      * <p>
-     * This method sends a POST request to the Google Places API's `/v1/places:searchNearby` endpoint.
+     * This method sends a POST request to the Google Places APIs `/v1/places:searchNearby` endpoint.
      *
      * @param fieldMask (Optional) A comma-separated list of fields to restrict in the response.
      *                  Refer to Google Places API documentation for available fields.
@@ -37,12 +37,24 @@ public interface GooglePlacesClient {
      * The specific structure of the response depends on the requested fields.
      * @throws FeignException If an error occurs during the API call. Refer to Feign documentation
      *                        for details on potential exceptions.
+     *                        <p>
+     * @description <a href="https://developers.google.com/maps/documentation/places/web-service/nearby-search">...</a>
      */
     @PostMapping(value = "/v1/places:searchNearby", consumes = MediaType.APPLICATION_JSON_VALUE)
     JsonNode searchNearbyPlaces(
             @RequestHeader("X-Goog-FieldMask") String fieldMask,
             @RequestBody NearbyPlacesRequest request);
 
+    /**
+     * Searches for places based on the provided text query.
+     * <p>
+     * This method sends a POST request to the Google Places APIs `/v1/places:searchText` endpoint.
+     *
+     * @param fieldMask A comma-separated list of fields to request in the response.
+     * @param request   A {@link TextSearchRequest} object containing the text query to search for.
+     *                  <p>
+     * @description <a href="https://developers.google.com/maps/documentation/places/web-service/text-search">...</a>
+     */
     @PostMapping(value = "/v1/places:searchText", consumes = MediaType.APPLICATION_JSON_VALUE)
     JsonNode textSearchPlaces(
             @RequestHeader("X-Goog-FieldMask") String fieldMask,

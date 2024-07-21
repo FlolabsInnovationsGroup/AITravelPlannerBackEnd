@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 import static java.nio.file.Files.readString;
 
+
 @Configuration
 public class PromptsConfig {
 
@@ -36,7 +37,7 @@ public class PromptsConfig {
         PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
 
         // Assuming the templates are directly under resources folder
-        Resource[] resources = resolver.getResources("classpath:/templates/general-instructions-variants/.");
+        Resource[] resources = resolver.getResources("classpath:/templates/general-instructions-variants/*.*");
 
         for (Resource resource : resources) {
             String content = new BufferedReader(new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8))

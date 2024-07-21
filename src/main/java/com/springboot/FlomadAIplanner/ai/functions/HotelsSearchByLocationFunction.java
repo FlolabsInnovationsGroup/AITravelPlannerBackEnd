@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.springboot.FlomadAIplanner.dto.amadeus.HotelSearchByGeocodeRequest;
-import com.springboot.FlomadAIplanner.exceptions.AmadeusAPIException;
+import com.springboot.FlomadAIplanner.exceptions.api.AmadeusAPIException;
 import com.springboot.FlomadAIplanner.service.amadeus.AmadeusHotelsSearch;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
