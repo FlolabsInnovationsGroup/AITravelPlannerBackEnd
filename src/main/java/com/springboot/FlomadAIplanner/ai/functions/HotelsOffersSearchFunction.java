@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.springboot.FlomadAIplanner.dto.amadeus.HotelOffersByHotelIdsRequest;
 import com.springboot.FlomadAIplanner.exceptions.api.AmadeusAPIException;
-import com.springboot.FlomadAIplanner.service.amadeus.AmadeusHotelsSearch;
+import com.springboot.FlomadAIplanner.service.amadeus.AmadeusHotelsSearchService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -32,11 +32,11 @@ import java.util.List;
         """)
 public class HotelsOffersSearchFunction implements AIFunction<HotelsOffersSearchFunction.HotelOffersRequestWrapper, JsonNode> {
 
-    private final AmadeusHotelsSearch amadeusHotelsSearch;
+    private final AmadeusHotelsSearchService amadeusHotelsSearchService;
 
     @Autowired
-    public HotelsOffersSearchFunction(AmadeusHotelsSearch amadeusHotelsSearch) {
-        this.amadeusHotelsSearch = amadeusHotelsSearch;
+    public HotelsOffersSearchFunction(AmadeusHotelsSearchService amadeusHotelsSearchService) {
+        this.amadeusHotelsSearchService = amadeusHotelsSearchService;
     }
 
     @Override
@@ -64,7 +64,7 @@ public class HotelsOffersSearchFunction implements AIFunction<HotelsOffersSearch
                 );
 
                 log.info("Searching offers for hotel ID: {}", hotelId);
-                JsonNode response = amadeusHotelsSearch.searchHotelOffers(singleHotelRequest);
+                JsonNode response = amadeusHotelsSearchService.searchHotelOffers(singleHotelRequest);
                 combinedResults.add(response);
             } catch (AmadeusAPIException e) {
                 log.error("Error searching for hotel offers for hotel ID: {}", hotelId);
@@ -74,7 +74,8 @@ public class HotelsOffersSearchFunction implements AIFunction<HotelsOffersSearch
             }
         }
 
-        log.info("Combined search results for all provided hotel IDs.");
+        log.info("Combined search results for all provided hotel IDs. Response length: {}",
+                combinedResults.toString().length());
         return combinedResults;
     }
 

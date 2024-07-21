@@ -3,6 +3,7 @@ package com.springboot.FlomadAIplanner.service.amadeus;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.springboot.FlomadAIplanner.dto.amadeus.HotelOffersByHotelIdsRequest;
 import com.springboot.FlomadAIplanner.dto.amadeus.HotelSearchByGeocodeRequest;
+import com.springboot.FlomadAIplanner.dto.amadeus.HotelSearchByGeocodeResponse;
 import com.springboot.FlomadAIplanner.exceptions.api.AmadeusAPIException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,12 +13,12 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class AmadeusHotelsSearch {
+public class AmadeusHotelsSearchService {
 
     private final AmadeusClient amadeusClient;
 
     @Autowired
-    public AmadeusHotelsSearch(AmadeusClient amadeusClient) {
+    public AmadeusHotelsSearchService(AmadeusClient amadeusClient) {
         this.amadeusClient = amadeusClient;
     }
 
@@ -33,11 +34,11 @@ public class AmadeusHotelsSearch {
         return String.join(",", list);  // Wrap with square brackets
     }
 
-    public JsonNode searchHotelsByGeocode(HotelSearchByGeocodeRequest request) throws AmadeusAPIException {
+    public HotelSearchByGeocodeResponse searchHotelsByGeocode(HotelSearchByGeocodeRequest request) throws AmadeusAPIException {
         log.info("Searching hotels by geocode at latitude: {}, longitude: {}, with radius: {}",
                 request.getLatitude(), request.getLongitude(), request.getRadius());
         try {
-            JsonNode response = amadeusClient.searchHotelsByGeocode(
+            HotelSearchByGeocodeResponse response = amadeusClient.searchHotelsByGeocode(
                     request.getLatitude(),
                     request.getLongitude(),
                     request.getRadius(),

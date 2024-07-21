@@ -38,7 +38,7 @@ public class FlightOffersPostRequest {
 
     @Valid
     @JsonPropertyDescription("Optional. Additional search criteria to filter flight offers.")
-    private SearchCriteria searchCriteria;
+    private SearchCriteria searchCriteria = new SearchCriteria();
 
     @Data
     @NoArgsConstructor

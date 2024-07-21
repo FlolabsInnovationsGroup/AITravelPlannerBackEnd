@@ -17,7 +17,7 @@ import java.util.List;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class FlightOffersSearchResponse {
+public class FlightOffersPostResponse {
 
     @JsonPropertyDescription("Warnings related to the request.")
     private List<Issue> warnings = new ArrayList<>();

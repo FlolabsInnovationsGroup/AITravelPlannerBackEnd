@@ -2,7 +2,8 @@ package com.springboot.FlomadAIplanner.service.amadeus;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.springboot.FlomadAIplanner.dto.amadeus.FlightOffersPostRequest;
-import com.springboot.FlomadAIplanner.dto.amadeus.FlightOffersSearchResponse;
+import com.springboot.FlomadAIplanner.dto.amadeus.FlightOffersPostResponse;
+import com.springboot.FlomadAIplanner.dto.amadeus.HotelSearchByGeocodeResponse;
 import com.springboot.FlomadAIplanner.service.amadeus.confg.AmadeusClientConfig;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
@@ -28,8 +29,8 @@ public interface AmadeusClient {
      * @description <a href="https://developers.amadeus.com/self-service/category/flights/api-doc/flight-offers-search/api-reference">...</a>
      */
     @PostMapping(value = "/v2/shopping/flight-offers", consumes = MediaType.APPLICATION_JSON_VALUE)
-    FlightOffersSearchResponse getFlightOffersPost(@RequestHeader("X-HTTP-Method-Override") String httpMethodOverride,
-                                                   @RequestBody FlightOffersPostRequest flightOffersRequest);
+    FlightOffersPostResponse getFlightOffersPost(@RequestHeader("X-HTTP-Method-Override") String httpMethodOverride,
+                                                 @RequestBody FlightOffersPostRequest flightOffersRequest);
 
     /**
      * @description <a href="https://developers.amadeus.com/self-service/category/flights/api-doc/flight-offers-price/api-reference">...</a>
@@ -62,14 +63,14 @@ public interface AmadeusClient {
      * @description <a href="https://developers.amadeus.com/self-service/category/hotels/api-doc/hotel-list/api-reference">...</a>
      */
     @GetMapping("/v1/reference-data/locations/hotels/by-geocode")
-    JsonNode searchHotelsByGeocode(@RequestParam("latitude") Double latitude,
-                                   @RequestParam("longitude") Double longitude,
-                                   @RequestParam(value = "radius", required = false) Integer radius,
-                                   @RequestParam(value = "radiusUnit", required = false) String radiusUnit,
-                                   @RequestParam(value = "chainCodes", required = false) List<String> chainCodes,
-                                   @RequestParam(value = "amenities", required = false) List<String> amenities,
-                                   @RequestParam(value = "ratings", required = false) List<Integer> ratings,
-                                   @RequestParam(value = "hotelSource", required = false) String hotelSource);
+    HotelSearchByGeocodeResponse searchHotelsByGeocode(@RequestParam("latitude") Double latitude,
+                                                       @RequestParam("longitude") Double longitude,
+                                                       @RequestParam(value = "radius", required = false) Integer radius,
+                                                       @RequestParam(value = "radiusUnit", required = false) String radiusUnit,
+                                                       @RequestParam(value = "chainCodes", required = false) List<String> chainCodes,
+                                                       @RequestParam(value = "amenities", required = false) List<String> amenities,
+                                                       @RequestParam(value = "ratings", required = false) List<Integer> ratings,
+                                                       @RequestParam(value = "hotelSource", required = false) String hotelSource);
 
     /**
      * @description <a href="https://developers.amadeus.com/self-service/category/hotels/api-doc/hotel-search/api-reference">...</a>

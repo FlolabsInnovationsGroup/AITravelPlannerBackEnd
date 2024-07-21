@@ -26,7 +26,7 @@ public class HotelSearchByGeocodeRequest {
 
     @Min(1)
     @JsonPropertyDescription("Optional. Maximum distance from the geographical coordinates expressed in defined units. Default is 5 'radiusUnit' measurement units.")
-    private Integer radius;
+    private Integer radius = 5;
 
     @Pattern(regexp = "KM|MILE")
     @JsonPropertyDescription("Optional. regexp = \"KM|MILE\". Unit of measurement used to express the radius. Default is 'KM'.")
@@ -47,5 +47,5 @@ public class HotelSearchByGeocodeRequest {
 
     @Pattern(regexp = "BEDBANK|DIRECTCHAIN|ALL")
     @JsonPropertyDescription("Optional. Hotel source with values BEDBANK for aggregators, DIRECTCHAIN for GDS/Distribution and ALL for both. Default is 'ALL'.")
-    private String hotelSource;
+    private String hotelSource = "ALL";
 }

@@ -48,7 +48,9 @@ public class ToursFreeTextSearchFunction implements AIFunction<ToursFreeTextSear
     public List<FreeTextSearchResponse> apply(FreeTextSearchRequestWrapper requestWrapper) {
         log.info("Performing free text search with term: {}", requestWrapper.getRequest().getSearchTerms());
         try {
-            return viatorAuxiliaryService.bulkSearchFreeText(requestWrapper.getAcceptLanguage(), requestWrapper.getRequest());
+            List<FreeTextSearchResponse> response = viatorAuxiliaryService.bulkSearchFreeText(requestWrapper.getAcceptLanguage(), requestWrapper.getRequest());
+            log.info("Received free text search response from Viator. Response length: {}", response.toString().length());
+            return response;
         } catch (ViatorAPIException e) {
             log.error("Error performing free text search", e);
             return Collections.singletonList(FreeTextSearchResponse.builder().errorMessage(e.getMessage()).build());

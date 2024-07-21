@@ -3,7 +3,7 @@ package com.springboot.FlomadAIplanner.ai.functions;
 
 import com.springboot.FlomadAIplanner.converter.Converter;
 import com.springboot.FlomadAIplanner.dto.amadeus.FlightOffersPostRequest;
-import com.springboot.FlomadAIplanner.dto.amadeus.FlightOffersSearchResponse;
+import com.springboot.FlomadAIplanner.dto.amadeus.FlightOffersPostResponse;
 import com.springboot.FlomadAIplanner.service.amadeus.AmadeusFlightsService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ import java.util.List;
 public class FlightSearchFunction implements AIFunction<FlightOffersPostRequest, FlightSearchFunction.FlightSearchResponse> {
 
     private final AmadeusFlightsService amadeusFlightsService;
-    private final Converter<FlightOffersSearchResponse, FlightSearchResponse> fromAPIToResponseConverter;
+    private final Converter<FlightOffersPostResponse, FlightSearchResponse> fromAPIToResponseConverter;
 
 
     @Override
@@ -37,13 +37,14 @@ public class FlightSearchFunction implements AIFunction<FlightOffersPostRequest,
 
         List<FlightDetail> flights = new ArrayList<>();
         try {
-            FlightOffersSearchResponse departureResponse = amadeusFlightsService.getFlightOffersPost(request);
+            FlightOffersPostResponse departureResponse = amadeusFlightsService.getFlightOffersPost(request);
             flights = fromAPIToResponseConverter.convert(departureResponse).getFlights();
         } catch (Exception e) {
             log.error("Error getting departure flight offers", e);
             flights.add(new FlightDetail("Error", "Error", "Error", "Error", 0, ""));
         }
 
+        log.info("FlightsSearchFunction: Found {} flights. Response length: {}", flights.size(), flights.toString().length());
         return new FlightSearchResponse(flights);
     }
 

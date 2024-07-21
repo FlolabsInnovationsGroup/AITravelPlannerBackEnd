@@ -18,10 +18,10 @@ public class AmadeusFlightsService {
         this.amadeusClient = amadeusClient;
     }
 
-    public FlightOffersSearchResponse getFlightOffersPost(FlightOffersPostRequest flightOffersPostRequest) throws AmadeusAPIException {
+    public FlightOffersPostResponse getFlightOffersPost(FlightOffersPostRequest flightOffersPostRequest) throws AmadeusAPIException {
         log.info("Getting flight offers with POST request: {}", flightOffersPostRequest);
         try {
-            FlightOffersSearchResponse response = amadeusClient.getFlightOffersPost("GET", flightOffersPostRequest);
+            FlightOffersPostResponse response = amadeusClient.getFlightOffersPost("GET", flightOffersPostRequest);
             log.info("Received flight offers from Amadeus using POST request. Response length: {}", response.toString().length());
             return response;
         } catch (Exception e) {

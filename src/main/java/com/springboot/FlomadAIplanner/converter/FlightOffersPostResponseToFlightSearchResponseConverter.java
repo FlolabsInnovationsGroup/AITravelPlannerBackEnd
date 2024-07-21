@@ -1,9 +1,9 @@
 package com.springboot.FlomadAIplanner.converter;
 
 import com.springboot.FlomadAIplanner.ai.functions.FlightSearchFunction;
-import com.springboot.FlomadAIplanner.dto.amadeus.FlightOffersSearchResponse;
-import com.springboot.FlomadAIplanner.dto.amadeus.FlightOffersSearchResponse.FlightOffer;
-import com.springboot.FlomadAIplanner.dto.amadeus.FlightOffersSearchResponse.Segment;
+import com.springboot.FlomadAIplanner.dto.amadeus.FlightOffersPostResponse;
+import com.springboot.FlomadAIplanner.dto.amadeus.FlightOffersPostResponse.FlightOffer;
+import com.springboot.FlomadAIplanner.dto.amadeus.FlightOffersPostResponse.Segment;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @Slf4j
 @Component
-public class FlightOffersSearchResponseToFlightSearchResponseConverter implements Converter<FlightOffersSearchResponse, FlightSearchFunction.FlightSearchResponse> {
+public class FlightOffersPostResponseToFlightSearchResponseConverter implements Converter<FlightOffersPostResponse, FlightSearchFunction.FlightSearchResponse> {
 
     /**
      * Converts the FlightOffersSearchResponse to FlightSearchResponse
@@ -24,7 +24,7 @@ public class FlightOffersSearchResponseToFlightSearchResponseConverter implement
      * @return the FlightSearchResponse
      */
     @Override
-    public FlightSearchFunction.FlightSearchResponse convert(FlightOffersSearchResponse source) {
+    public FlightSearchFunction.FlightSearchResponse convert(FlightOffersPostResponse source) {
         log.info("Converting FlightOffersSearchResponse to FlightSearchResponse");
         List<FlightSearchFunction.FlightDetail> flights = new ArrayList<>();
 
@@ -48,17 +48,17 @@ public class FlightOffersSearchResponseToFlightSearchResponseConverter implement
 
     private String getPrice(FlightOffer flightOffer) {
         return Optional.ofNullable(flightOffer.getPrice())
-                .map(FlightOffersSearchResponse.Price::getTotal)
+                .map(FlightOffersPostResponse.Price::getTotal)
                 .orElse("0.0");
     }
 
-    private FlightSearchFunction.FlightDetail createFlightDetail(Segment segment, String price, FlightOffersSearchResponse source) {
+    private FlightSearchFunction.FlightDetail createFlightDetail(Segment segment, String price, FlightOffersPostResponse source) {
         String flightNumber = segment.getCarrierCode() + " " + segment.getNumber();
         String departureTime = Optional.ofNullable(segment.getDeparture())
-                .map(FlightOffersSearchResponse.FlightEndPoint::getAt)
+                .map(FlightOffersPostResponse.FlightEndPoint::getAt)
                 .orElse("");
         String arrivalTime = Optional.ofNullable(segment.getArrival())
-                .map(FlightOffersSearchResponse.FlightEndPoint::getAt)
+                .map(FlightOffersPostResponse.FlightEndPoint::getAt)
                 .orElse("");
         String airline = Optional.ofNullable(source.getDictionaries())
                 .map(dictionaries -> dictionaries.getCarriers().getCarrierName())

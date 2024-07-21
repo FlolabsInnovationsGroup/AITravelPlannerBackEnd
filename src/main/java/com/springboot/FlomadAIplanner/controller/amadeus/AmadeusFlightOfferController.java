@@ -3,7 +3,7 @@ package com.springboot.FlomadAIplanner.controller.amadeus;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.springboot.FlomadAIplanner.dto.amadeus.FlightOfferPricingRequest;
 import com.springboot.FlomadAIplanner.dto.amadeus.FlightOffersPostRequest;
-import com.springboot.FlomadAIplanner.dto.amadeus.FlightOffersSearchResponse;
+import com.springboot.FlomadAIplanner.dto.amadeus.FlightOffersPostResponse;
 import com.springboot.FlomadAIplanner.dto.amadeus.FlightsAirportLocationsRequest;
 import com.springboot.FlomadAIplanner.exceptions.api.AmadeusAPIException;
 import com.springboot.FlomadAIplanner.service.amadeus.AmadeusFlightsService;
@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/amadeus")
 @Validated
 public class AmadeusFlightOfferController {
-
     private final AmadeusFlightsService amadeusFlightsService;
 
     @Autowired
@@ -37,7 +36,7 @@ public class AmadeusFlightOfferController {
         log.info("Retrieving flight offers with POST request");
 
         // Use the service to get flight offers
-        FlightOffersSearchResponse response = amadeusFlightsService.getFlightOffersPost(flightOffersPostRequest);
+        FlightOffersPostResponse response = amadeusFlightsService.getFlightOffersPost(flightOffersPostRequest);
         if (response == null) {
             log.error("Failed to retrieve flight offers with POST request");
             return ResponseEntity.status(500).body("Failed to retrieve flight offers");
