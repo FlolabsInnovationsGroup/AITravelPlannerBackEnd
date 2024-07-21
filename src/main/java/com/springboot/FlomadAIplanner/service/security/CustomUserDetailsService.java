@@ -1,7 +1,8 @@
-package com.springboot.FlomadAIplanner.service.login;
+package com.springboot.FlomadAIplanner.service.security;
 
 import com.springboot.FlomadAIplanner.converter.Converter;
 import com.springboot.FlomadAIplanner.model.entities.login.User;
+import com.springboot.FlomadAIplanner.service.model.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

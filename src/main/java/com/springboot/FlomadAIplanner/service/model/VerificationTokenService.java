@@ -1,4 +1,4 @@
-package com.springboot.FlomadAIplanner.service.login;
+package com.springboot.FlomadAIplanner.service.model;
 
 import com.springboot.FlomadAIplanner.model.entities.login.VerificationToken;
 import com.springboot.FlomadAIplanner.model.repository.login.VerificationTokenRepository;

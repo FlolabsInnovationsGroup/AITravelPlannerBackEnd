@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.springboot.FlomadAIplanner.dto.google.NearbyPlacesRequest;
 import com.springboot.FlomadAIplanner.dto.google.TextSearchRequest;
-import com.springboot.FlomadAIplanner.exceptions.GoogleAPIException;
+import com.springboot.FlomadAIplanner.exceptions.api.GoogleAPIException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

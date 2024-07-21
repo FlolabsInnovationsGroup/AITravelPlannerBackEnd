@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.springboot.FlomadAIplanner.dto.viator.BulkFreeTextSearchRequest;
 import com.springboot.FlomadAIplanner.dto.viator.FreeTextSearchRequest;
-import com.springboot.FlomadAIplanner.exceptions.ViatorAPIException;
+import com.springboot.FlomadAIplanner.exceptions.api.ViatorAPIException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

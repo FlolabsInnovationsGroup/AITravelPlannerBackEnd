@@ -1,12 +1,12 @@
 package com.springboot.FlomadAIplanner.validator;
 
 import com.springboot.FlomadAIplanner.dto.UserDTO;
-import com.springboot.FlomadAIplanner.exceptions.UserAlreadyExistsException;
-import com.springboot.FlomadAIplanner.exceptions.UserNotFoundException;
+import com.springboot.FlomadAIplanner.exceptions.validators.UserAlreadyExistsException;
+import com.springboot.FlomadAIplanner.exceptions.validators.UserNotFoundException;
 import com.springboot.FlomadAIplanner.model.entities.login.User;
-import com.springboot.FlomadAIplanner.service.login.UserService;
+import com.springboot.FlomadAIplanner.service.model.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 public class UserValidator {
 
     private final UserService userService;
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     public void validateUserDoesNotExist(UserDTO userDTO) throws UserAlreadyExistsException {
         if (userService.existsByUsername(userDTO.getUsername())) {

@@ -1,4 +1,4 @@
-package com.springboot.FlomadAIplanner.exceptions;
+package com.springboot.FlomadAIplanner.exceptions.validators;
 
 public class UserAlreadyExistsException extends Exception {
     public UserAlreadyExistsException(String message) {
