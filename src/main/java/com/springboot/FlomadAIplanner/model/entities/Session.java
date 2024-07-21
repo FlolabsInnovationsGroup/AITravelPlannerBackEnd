@@ -1,5 +1,6 @@
 package com.springboot.FlomadAIplanner.model.entities;
 
+import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -22,6 +23,12 @@ public class Session extends Model {
     @Serial
     private static final long serialVersionUID = 7672693738433375044L;
 
+    @Id 
+    @Field("sessionId")
+    @NotBlank
+    @Indexed(unique = true)
+    private String sessionId;
+
     @Field("userId")
     @Indexed
     @NotBlank
@@ -38,4 +45,13 @@ public class Session extends Model {
     @Field("updatedAt")
     @NotNull
     private LocalDateTime updatedAt;
+
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId=sessionId;
+    }
+    
 }

@@ -54,10 +54,6 @@ public class ChatCallService extends AbstractChatService {
         }
 
         log.info("Processing aiMessage: {}; sessionId: {}", aiMessage.getMessage(), aiMessage.getSessionId());
-<<<<<<< HEAD
-        String aiResponse = (String) getChatAgent().processCallMessage(aiMessage);
-        return aiResponse;
-=======
 
         try {
             // Process the message using the chat agent
@@ -71,7 +67,6 @@ public class ChatCallService extends AbstractChatService {
             log.error("Exception occurred while processing the message: {}", e.getMessage(), e);
             throw new RuntimeException("Error processing chat message", e);
         }
->>>>>>> origin
     }
 
 }

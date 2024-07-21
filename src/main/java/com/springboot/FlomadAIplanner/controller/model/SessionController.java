@@ -1,14 +1,20 @@
 package com.springboot.FlomadAIplanner.controller.model;
 
+import com.springboot.FlomadAIplanner.dto.AddSessionDTO;
 import com.springboot.FlomadAIplanner.dto.SessionDTO;
 import com.springboot.FlomadAIplanner.dto.UpdateTitleRequest;
 import com.springboot.FlomadAIplanner.model.entities.Session;
 import com.springboot.FlomadAIplanner.service.model.SessionService;
+import com.springboot.FlomadAIplanner.util.JwtUtil;
+
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 
 /**
@@ -19,9 +25,11 @@ import java.util.List;
 @RestController
 public class SessionController {
     private final SessionService sessionService;
+    private JwtUtil jwtUtil;
 
-    public SessionController(SessionService sessionService) {
+    public SessionController(SessionService sessionService, JwtUtil jwtUtil) {
         this.sessionService = sessionService;
+        this.jwtUtil = jwtUtil;
     }
 
     /**
@@ -37,12 +45,24 @@ public class SessionController {
      * @description add a new line in the session table
      */
     @PostMapping("/add_session")
-    public ResponseEntity<Session> addSession(@RequestBody Session session) {
-        log.info("Creating new session: {}", session);
-        if (session.getId() == null || session.getId().isEmpty()) {
-            log.error("Session ID is not provided.");
-            throw new RuntimeException("Session ID is not provided.");
+    public ResponseEntity<Session> addSession(@RequestBody AddSessionDTO sessionDTO,@RequestHeader("Authorization") String token) {
+        if (sessionDTO.getSessionId() == null || sessionDTO.getSessionId().isEmpty()) {
+            String newId;
+            do {
+                newId = UUID.randomUUID().toString();
+            } while (sessionService.existsById(newId));
+            sessionDTO.setSessionId(newId);
+            log.info("Generated new Session ID: {}", sessionDTO.getSessionId());
+            // throw new RuntimeException("Session ID is not provided.");
         }
+        String userId = jwtUtil.extractUsername(token);
+        Session session = new Session();
+        session.setUserId(userId);
+        session.setTitle(sessionDTO.getTitle());
+        session.setCreatedAt(sessionDTO.getCreatedAt());
+        session.setUpdatedAt(sessionDTO.getUpdatedAt());
+
+        log.info("Creating new session: {}", session);
         Session savedSession = sessionService.saveSession(session);
         log.info("Session created");
         return ResponseEntity.ok(savedSession);
@@ -58,9 +78,19 @@ public class SessionController {
     @PostMapping("/users/{userId}/sessions/{sessionId}/updateTitle")
     public ResponseEntity<Session> updateSessionTitle(@PathVariable String userId, @PathVariable String sessionId,
                                                       @RequestBody UpdateTitleRequest updateRequest) {
-        Session updatedSession = sessionService.updateSessionTitle(sessionId, userId, updateRequest.getTitle());
-        return ResponseEntity.ok(updatedSession);
+        try {
+            if (!this.sessionService.existsByUserId(userId)) {
+                throw new RuntimeException("User not found");
+            }
+            if (!this.sessionService.existsBySessionIdAndUserId(sessionId, userId)) {
+                throw new RuntimeException("Session not found for the user");
+            }
+            Session updatedSession = sessionService.updateSessionTitle(sessionId, userId, updateRequest.getTitle());
+            return ResponseEntity.ok(updatedSession);
+        } catch (RuntimeException e) {
+            log.error("Error updating session title: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
-
 }
 
