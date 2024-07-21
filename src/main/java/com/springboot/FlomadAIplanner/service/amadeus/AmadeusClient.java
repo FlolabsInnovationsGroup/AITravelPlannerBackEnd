@@ -2,6 +2,7 @@ package com.springboot.FlomadAIplanner.service.amadeus;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.springboot.FlomadAIplanner.dto.amadeus.FlightOffersPostRequest;
+import com.springboot.FlomadAIplanner.dto.amadeus.FlightOffersSearchResponse;
 import com.springboot.FlomadAIplanner.service.amadeus.confg.AmadeusClientConfig;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
@@ -27,8 +28,8 @@ public interface AmadeusClient {
      * @description <a href="https://developers.amadeus.com/self-service/category/flights/api-doc/flight-offers-search/api-reference">...</a>
      */
     @PostMapping(value = "/v2/shopping/flight-offers", consumes = MediaType.APPLICATION_JSON_VALUE)
-    JsonNode getFlightOffersPost(@RequestHeader("X-HTTP-Method-Override") String httpMethodOverride,
-                                 @RequestBody FlightOffersPostRequest flightOffersRequest);
+    FlightOffersSearchResponse getFlightOffersPost(@RequestHeader("X-HTTP-Method-Override") String httpMethodOverride,
+                                                   @RequestBody FlightOffersPostRequest flightOffersRequest);
 
     /**
      * @description <a href="https://developers.amadeus.com/self-service/category/flights/api-doc/flight-offers-price/api-reference">...</a>

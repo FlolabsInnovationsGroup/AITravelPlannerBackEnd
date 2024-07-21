@@ -100,8 +100,8 @@ public class FlightOffersPostRequest {
 
         @Min(1)
         @Max(250)
-        @JsonPropertyDescription("Optional. Max 250. Maximum number of flight offers to return. Default: 250. Example: 100")
-        private Integer maxFlightOffers;
+        @JsonPropertyDescription("Optional. Max 250. Maximum number of flight offers to return. Default: 10. Example: 100")
+        private Integer maxFlightOffers = 10;
 
         @Valid
         @JsonPropertyDescription("Optional. Additional filters for the flight offers.")

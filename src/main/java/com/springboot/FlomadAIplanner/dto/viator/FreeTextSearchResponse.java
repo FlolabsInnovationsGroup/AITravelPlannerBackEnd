@@ -29,6 +29,11 @@ public class FreeTextSearchResponse {
     @JsonPropertyDescription("Error message if the search request fails.")
     private String errorMessage;
 
+    @Override
+    public String toString() {
+        return ToStringUtil.toStringNonNullOnly(this);
+    }
+
     @Data
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Destinations {
@@ -346,11 +351,6 @@ public class FreeTextSearchResponse {
 
         @JsonPropertyDescription("Value specifying the machine-translation service vendor.")
         private String translationAttribution;
-    }
-
-    @Override
-    public String toString() {
-        return ToStringUtil.toStringNonNullOnly(this);
     }
 
 }
