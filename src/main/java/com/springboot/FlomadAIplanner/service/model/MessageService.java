@@ -42,6 +42,11 @@ public class MessageService {
         return repository.findAllBySessionIdOrderByCreatedAtAsc(sessionId);
     }
 
+    public List<Message> getMessagesByUsername(String username) {
+        log.info("Finding entity for username: {}", username);
+        return repository.findAllByUsernameOrderByCreatedAtAsc(username);
+    }
+
     public List<Message> getMessagesBySessionIdWithLimit(String sessionId, int limit) {
         log.info("Finding entity for session: {} with limit: {}", sessionId, limit);
         if (limit <= 0) {

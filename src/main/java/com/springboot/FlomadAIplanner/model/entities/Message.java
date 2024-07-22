@@ -24,10 +24,17 @@ public class Message extends Model implements org.springframework.ai.chat.messag
     @Serial
     private static final long serialVersionUID = -7214728696555033419L;
 
+
     @Field("sessionId")
     @Indexed
     @NotBlank
     private String sessionId;
+
+    
+    @Field("username")
+    @Indexed
+    @NotBlank
+    private String username;
 
     @Field("content")
     @NotBlank
@@ -44,9 +51,10 @@ public class Message extends Model implements org.springframework.ai.chat.messag
     @Field("metadata")
     private Map<String, Object> metadata;
 
-    public Message(String id, String sessionId, String content, LocalDateTime createdAt, MessageType messageType, Map<String, Object> metadata) {
+    public Message(String id, String sessionId,String username, String content, LocalDateTime createdAt, MessageType messageType, Map<String, Object> metadata) {
         super(id);
         this.sessionId = sessionId;
+        this.username = username;
         this.content = content;
         this.createdAt = createdAt;
         this.messageType = messageType;

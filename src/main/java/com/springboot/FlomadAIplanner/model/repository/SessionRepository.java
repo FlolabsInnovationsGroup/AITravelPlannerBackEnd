@@ -15,5 +15,9 @@ import java.util.List;
 public interface SessionRepository extends MongoRepository<Session, String> {
     List<Session> findByUserId(String userId);
 
-    Session findByIdAndUserId(String sessionId, String userId); // For updating the session's title and timestamp
+    boolean existsByUserId(String userId);
+
+    boolean existsBySessionIdAndUserId(String sessionId, String userId);
+
+    Session findBySessionIdAndUserId(String sessionId, String userId); // For updating the session's title and timestamp
 }

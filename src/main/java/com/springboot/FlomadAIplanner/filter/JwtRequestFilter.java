@@ -2,11 +2,15 @@ package com.springboot.FlomadAIplanner.filter;
 
 import com.springboot.FlomadAIplanner.service.security.CustomUserDetailsService;
 import com.springboot.FlomadAIplanner.util.JwtUtil;
+
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,6 +20,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtRequestFilter extends OncePerRequestFilter {
@@ -29,7 +34,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         final String authorizationHeader = request.getHeader("Authorization");
-
+        log.info("authorizationHeader:{}",authorizationHeader);
+        
         String username = null;
         String jwt = null;
 
@@ -51,6 +57,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
             }
         }
+        log.info("Filtering request:{}",request);
+        log.info("response:", response);
         chain.doFilter(request, response);
     }
 }

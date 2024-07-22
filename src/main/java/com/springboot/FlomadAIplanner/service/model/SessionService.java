@@ -31,8 +31,16 @@ public class SessionService {
         return sessionRepository.findByUserId(userId)
                 .stream()
                 .sorted(Comparator.comparing(Session::getCreatedAt).reversed())
-                .map(session -> new SessionDTO(session.getId(), session.getUserId(), session.getTitle(), session.getCreatedAt()))
+                .map(session -> new SessionDTO(session.getSessionId(), session.getUserId(), session.getTitle(), session.getCreatedAt()))
                 .collect(Collectors.toList());
+    }
+
+    public boolean existsByUserId(String userId) {
+        return sessionRepository.existsByUserId(userId);
+    }
+
+    public boolean existsBySessionIdAndUserId(String sessionId, String userId) {
+        return sessionRepository.existsBySessionIdAndUserId(sessionId, userId);
     }
 
     public Session saveSession(Session session) {
@@ -40,12 +48,16 @@ public class SessionService {
         return sessionRepository.save(session);
     }
 
+    public boolean existsById(String id) {
+        return sessionRepository.existsById(id);
+    }
+
     public Session updateSession(String sessionId, String userId, String title, LocalDateTime timestamp) {
         log.info("Updating entity: {}", sessionId);
-        Session session = sessionRepository.findByIdAndUserId(sessionId, userId);
+        Session session = sessionRepository.findBySessionIdAndUserId(sessionId, userId);
         if (session != null) {
             session.setTitle(title);
-            session.setCreatedAt(timestamp);
+            session.setUpdatedAt(timestamp);
             return sessionRepository.save(session);
         } else {
             log.error("Entity not found");
@@ -54,8 +66,9 @@ public class SessionService {
     }
 
     public Session updateSessionTitle(String sessionId, String userId, String title) {
-        log.info("Updating entity: {}", sessionId);
-        Session session = sessionRepository.findByIdAndUserId(sessionId, userId);
+        log.info("Updating entity session ID: {}", sessionId);
+        log.info("Updating entity uer ID: {}", userId);
+        Session session = sessionRepository.findBySessionIdAndUserId(sessionId, userId);
         if (session != null) {
             session.setTitle(title);
             return sessionRepository.save(session);

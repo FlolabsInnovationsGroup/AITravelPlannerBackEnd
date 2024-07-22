@@ -16,6 +16,8 @@ import java.util.List;
 public interface MessageRepository extends MongoRepository<Message, String> {
     List<Message> findAllBySessionIdOrderByCreatedAtAsc(String sessionId);
 
+    List<Message> findAllByUsernameOrderByCreatedAtAsc(String username);
+
     List<Message> findBySessionIdOrderByCreatedAtDesc(String sessionId, Pageable pageable);
 
     void deleteBySessionId(String sessionId);
