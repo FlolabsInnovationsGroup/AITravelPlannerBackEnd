@@ -1,3 +1,66 @@
+#version: '3.8'
+#
+#services:
+#  mongo:
+#    image: mongo:latest
+#    container_name: mongo
+#    ports:
+#      - "27017:27017"
+#    networks:
+#      - springboot-mongo-network
+#    volumes:
+#      - mongo-data:/data/db
+#
+#  springboot:
+#    build: .
+#    container_name: springboot
+#    ports:
+#      - "4000:4000"
+#    environment:
+#      - SPRING_DATA_MONGODB_URI=mongodb://mongo:27017/flomad-ai-app
+#    depends_on:
+#      - mongo
+#    networks:
+#      - springboot-mongo-network
+#
+#networks:
+#  springboot-mongo-network:
+#
+#volumes:
+#  mongo-data:
+
+#version: '3.8'
+#
+#services:
+#  mongo:
+#    image: mongo:latest
+#    container_name: mongo
+#    ports:
+#      - "27017:27017"
+#    networks:
+#      - springboot-mongo-network
+#    volumes:
+#      - mongo-data:/data/db
+#
+#  springboot:
+#    build: .
+#    container_name: springboot
+#    ports:
+#      - "4000:4000"
+#    environment:
+#      - SPRING_PROFILES_ACTIVE=prod
+#      - SPRING_DATA_MONGODB_URI=${MONGODB_URI}
+#    depends_on:
+#      - mongo
+#    networks:
+#      - springboot-mongo-network
+#
+#networks:
+#  springboot-mongo-network:
+#
+#volumes:
+#  mongo-data:
+
 version: '3.8'
 
 services:
@@ -16,6 +79,8 @@ services:
     container_name: springboot
     ports:
       - "8080:8080"
+    env_file:
+      - .env
     environment:
       - SPRING_DATA_MONGODB_URI=mongodb://mongo:27017/testdb
     depends_on:
