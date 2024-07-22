@@ -1,10 +1,7 @@
 package com.springboot.FlomadAIplanner.service.amadeus;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.springboot.FlomadAIplanner.dto.amadeus.FlightDestinationsRequest;
-import com.springboot.FlomadAIplanner.dto.amadeus.FlightOfferPricingRequest;
-import com.springboot.FlomadAIplanner.dto.amadeus.FlightOffersPostRequest;
-import com.springboot.FlomadAIplanner.dto.amadeus.FlightsAirportLocationsRequest;
+import com.springboot.FlomadAIplanner.dto.amadeus.*;
 import com.springboot.FlomadAIplanner.exceptions.api.AmadeusAPIException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +18,11 @@ public class AmadeusFlightsService {
         this.amadeusClient = amadeusClient;
     }
 
-    public JsonNode getFlightOffersPost(FlightOffersPostRequest flightOffersPostRequest) throws AmadeusAPIException {
-        log.info("Getting flight offers with POST request");
+    public FlightOffersPostResponse getFlightOffersPost(FlightOffersPostRequest flightOffersPostRequest) throws AmadeusAPIException {
+        log.info("Getting flight offers with POST request: {}", flightOffersPostRequest);
         try {
-            JsonNode response = amadeusClient.getFlightOffersPost("GET", flightOffersPostRequest);
-            log.info("Received flight offers from Amadeus using POST request");
+            FlightOffersPostResponse response = amadeusClient.getFlightOffersPost("GET", flightOffersPostRequest);
+            log.info("Received flight offers from Amadeus using POST request. Response length: {}", response.toString().length());
             return response;
         } catch (Exception e) {
             log.error("Error getting flight offers with POST request", e);

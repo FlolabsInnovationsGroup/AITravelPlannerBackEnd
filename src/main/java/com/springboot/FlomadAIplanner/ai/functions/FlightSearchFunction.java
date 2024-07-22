@@ -1,13 +1,13 @@
 package com.springboot.FlomadAIplanner.ai.functions;
 
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.springboot.FlomadAIplanner.converter.Converter;
 import com.springboot.FlomadAIplanner.dto.amadeus.FlightOffersPostRequest;
+import com.springboot.FlomadAIplanner.dto.amadeus.FlightOffersPostResponse;
 import com.springboot.FlomadAIplanner.service.amadeus.AmadeusFlightsService;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Description;
 import org.springframework.stereotype.Component;
 
@@ -16,112 +16,36 @@ import java.util.List;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 @Description("""
         Searches for available flights based on the provided criteria.
         When you are using this function, make sure to provide IATA codes for the origin and destination airports.
         The customer may provide the city name, but you need to convert it to the IATA code before calling this function.
         If the customer just provided the departure time, It will be considered as a one-way trip.
         If the customer provided the return date, It will be considered as a round trip.
+        And that means you need to call this function twice, once for the departure and once for the return.
         """)
-public class FlightSearchFunction implements AIFunction<FlightSearchFunction.FlightSearchRequest, FlightSearchFunction.FlightSearchResponse> {
+public class FlightSearchFunction implements AIFunction<FlightOffersPostRequest, FlightSearchFunction.FlightSearchResponse> {
 
     private final AmadeusFlightsService amadeusFlightsService;
-
-    private final ObjectMapper objectMapper;
-
-
-    @Autowired
-    public FlightSearchFunction(AmadeusFlightsService amadeusFlightsService, ObjectMapper objectMapper) {
-        this.amadeusFlightsService = amadeusFlightsService;
-        this.objectMapper = objectMapper;
-    }
+    private final Converter<FlightOffersPostResponse, FlightSearchResponse> fromAPIToResponseConverter;
 
 
     @Override
-    public FlightSearchResponse apply(FlightSearchRequest request) {
-        log.info("Searching for flights from {} to {} on {} for {} passengers", request.getOrigin(), request.getDestination(), request.getDepartureDate(), request.getPassengers());
+    public FlightSearchResponse apply(FlightOffersPostRequest request) {
+        log.info("Searching for available flights information.");
 
         List<FlightDetail> flights = new ArrayList<>();
-
-        FlightOffersPostRequest departureRequest = createFlightOffersPostRequest(request.getOrigin(), request.getDestination(), request.getDepartureDate());
         try {
-            JsonNode departureResponse = amadeusFlightsService.getFlightOffersPost(departureRequest);
-            logJsonNode(departureResponse);
-            flights.addAll(parseFlightSearchResponse(departureResponse));
+            FlightOffersPostResponse departureResponse = amadeusFlightsService.getFlightOffersPost(request);
+            flights = fromAPIToResponseConverter.convert(departureResponse).getFlights();
         } catch (Exception e) {
             log.error("Error getting departure flight offers", e);
-            throw new RuntimeException("Error getting departure flight offers", e);
+            flights.add(new FlightDetail("Error", "Error", "Error", "Error", 0, ""));
         }
 
-        if (Boolean.TRUE.equals(request.getRoundTrip()) && request.getReturnDate() != null) {
-            log.info("Searching for return flights from {} to {} on {} for {} passengers", request.getDestination(), request.getOrigin(), request.getReturnDate(), request.getPassengers());
-            FlightOffersPostRequest returnRequest = createFlightOffersPostRequest(request.getDestination(), request.getOrigin(), request.getReturnDate());
-            try {
-                JsonNode returnResponse = amadeusFlightsService.getFlightOffersPost(returnRequest);
-                logJsonNode(returnResponse);
-                flights.addAll(parseFlightSearchResponse(returnResponse));
-            } catch (Exception e) {
-                log.error("Error getting return flight offers", e);
-                throw new RuntimeException("Error getting return flight offers", e);
-            }
-        }
+        log.info("FlightsSearchFunction: Found {} flights. Response length: {}", flights.size(), flights.toString().length());
         return new FlightSearchResponse(flights);
-    }
-
-    private List<FlightDetail> parseFlightSearchResponse(JsonNode root) {
-        List<FlightDetail> flights = new ArrayList<>();
-        JsonNode dataArray = root.path("data");
-
-        for (JsonNode dataNode : dataArray) {
-            JsonNode itineraries = dataNode.path("itineraries");
-            JsonNode priceNode = dataNode.path("price");
-            String price = priceNode.path("total").asText();
-
-            for (JsonNode itinerary : itineraries) {
-                JsonNode segments = itinerary.path("segments");
-                for (JsonNode segment : segments) {
-                    String flightNumber = segment.path("carrierCode").asText() + " " + segment.path("number").asText();
-                    String departureTime = segment.path("departure").path("at").asText();
-                    String arrivalTime = segment.path("arrival").path("at").asText();
-                    String airline = root.path("dictionaries").path("carriers").path(segment.path("carrierCode").asText()).asText();
-                    String bookingLink = "https://booking.example.com";
-
-                    flights.add(new FlightDetail(flightNumber, departureTime, arrivalTime, airline, Double.parseDouble(price), bookingLink));
-                }
-            }
-        }
-
-        return flights;
-    }
-
-    private FlightOffersPostRequest createFlightOffersPostRequest(String origin, String destination, String date) {
-        return new FlightOffersPostRequest(
-                "USD",
-                List.of(new FlightOffersPostRequest.OriginDestination("1", origin, destination,
-                        new FlightOffersPostRequest.OriginDestination.DateTimeRange(date, null))),
-                List.of(new FlightOffersPostRequest.Traveler("1", "ADULT")),
-                List.of("GDS"),
-                new FlightOffersPostRequest.SearchCriteria(1, null)
-        );
-    }
-
-    private void logJsonNode(JsonNode response) {
-        try {
-            String jsonString = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(response);
-            log.info("Received response from Amadeus: \n{}", jsonString);
-        } catch (Exception e) {
-            log.error("Error converting JsonNode to String", e);
-        }
-    }
-
-    @Data
-    public static class FlightSearchRequest {
-        private String origin;
-        private String destination;
-        private String departureDate;
-        private String returnDate;
-        private int passengers;
-        private Boolean roundTrip;
     }
 
     @Data
