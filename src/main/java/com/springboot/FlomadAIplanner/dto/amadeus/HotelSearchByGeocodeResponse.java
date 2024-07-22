@@ -37,7 +37,7 @@ public class HotelSearchByGeocodeResponse {
     public List<Hotel> getData() {
         return data == null ? List.of() : data.stream()
                 .sorted(Comparator.comparing(Hotel::getLastUpdate).reversed())
-                .limit(40)
+                .limit(30)
                 .collect(Collectors.toList());
     }
 

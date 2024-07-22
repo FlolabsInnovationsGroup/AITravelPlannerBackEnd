@@ -21,14 +21,14 @@ import java.util.List;
 @Slf4j
 @Component
 @Description("""
-        Use this function to search for multiple hotels' offers at ones, by a predefined list of hotel IDs and other
+        Use this function to search for one or multiple hotels' offers (rooms, apartments, beds, etc..) at ones, by a predefined list of hotel IDs and other
         optional parameters such as check-in and check-out dates, number of adults, room quantity, and more.
         This function allows users to specify exact hotels' properties
         and refine their search with various options like price range, board type, and amenities.
-        This method is ideal for users who know exactly what they want and are looking to tailor their hotel search to fit specific requirements.
-        Mostly used to check the availability of the hotel apartments/rooms/beds by a specific filter request.
+        This function is ideal to be called for those user's messages, which know exactly what they want and are looking to tailor their hotel search to fit specific requirements.
+        Mostly used to check the availability of the hotel apartments/rooms/beds/etc... by a specific filter request.
         Use CurrentDateTimeFunction to get the current date and time before calling this function if you need to use date parameter.
-        You can USE this function to search for offers in MULTIPLE hotels AT ONES using this function for more efficiency.
+        You should USE this function to search for offers in MULTIPLE hotels AT ONES using this function for more efficiency.
         """)
 public class HotelsOffersSearchFunction implements AIFunction<HotelsOffersSearchFunction.HotelOffersRequestWrapper, JsonNode> {
 
