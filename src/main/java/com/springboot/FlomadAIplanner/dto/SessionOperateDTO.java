@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class AddSessionDTO {
+public class SessionOperateDTO {
     @EqualsAndHashCode.Include
     private String sessionId;
     private String title;

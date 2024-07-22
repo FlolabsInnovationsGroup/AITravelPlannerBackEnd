@@ -49,11 +49,13 @@ public class WebSecurityConfig {
                                 "/api/chat/call",
                                 "/api/chat/stream",
                                 "/api/auth/login",
-                                "/users/{userId}/sessions",
+                                "/sessions",
                                 "/add_session",
                                 "/users/{userId}/sessions/{sessionId}",
                                 "/users/{userId}/sessions/{sessionId}/updateTitle",
-                                "/messagesPersistence/getSessionMessages"
+                                "/messagesPersistence/getSessionMessages",
+                                "/sessions/{sessionId}",
+                                "/messages"
                                 )
                         .permitAll()
                         .requestMatchers(

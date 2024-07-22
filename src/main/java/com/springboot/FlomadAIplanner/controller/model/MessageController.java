@@ -6,6 +6,7 @@ import com.springboot.FlomadAIplanner.model.entities.Message;
 import com.springboot.FlomadAIplanner.service.model.MessageService;
 import com.springboot.FlomadAIplanner.util.JwtUtil;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,14 +36,20 @@ public class MessageController {
     }
 
     @PostMapping
-    public ResponseEntity<Message> createMessage(@RequestBody MessageDTO dto, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Message> createMessage(@RequestBody MessageDTO dto, HttpServletRequest request) {
         log.info("Creating new message: {}", dto);
-
-        // String username = jwtUtil.extractUsername(token.substring(7)); 
-        // dto.setSessionId(username); 
-
+        final String authorizationHeader = request.getHeader("Authorization");
+        String username = null;
+        String jwt = null;
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            jwt = authorizationHeader.substring(7);
+            username = jwtUtil.extractUsername(jwt);
+        }
+        dto.setUsername(username);
+        log.info("message dto : {}", dto);
         Message message = messageFromDTOConverter.convert(dto);
         Message newMessage = service.save(message);
+
         log.info("Message created");
         return ResponseEntity.ok(newMessage);
     }

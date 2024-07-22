@@ -18,6 +18,7 @@ import java.util.Map;
 @AllArgsConstructor
 public class MessageDTO {
     private String id;
+    private String username;
     private String sessionId;
     private String content;
     private LocalDateTime createdAt;

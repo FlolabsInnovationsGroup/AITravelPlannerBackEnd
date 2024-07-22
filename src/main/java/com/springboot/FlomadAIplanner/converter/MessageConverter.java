@@ -32,6 +32,7 @@ public class MessageConverter implements Converter<Message, MessageDTO> {
 
         return new MessageDTO(
                 source.getId(),
+                source.getUsername(),
                 source.getSessionId(),
                 source.getContent(),
                 source.getCreatedAt(),
