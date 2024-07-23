@@ -21,5 +21,6 @@ public class SessionDTO {
     private String sessionId;
     private String userId;
     private String title;
-    private LocalDateTime timestamp;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

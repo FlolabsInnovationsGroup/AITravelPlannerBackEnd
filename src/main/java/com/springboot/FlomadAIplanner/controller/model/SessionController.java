@@ -1,159 +1,105 @@
 package com.springboot.FlomadAIplanner.controller.model;
 
-import com.springboot.FlomadAIplanner.dto.SessionOperateDTO;
+import com.springboot.FlomadAIplanner.converter.Converter;
 import com.springboot.FlomadAIplanner.dto.SessionDTO;
-import com.springboot.FlomadAIplanner.dto.UpdateTitleRequest;
 import com.springboot.FlomadAIplanner.model.entities.Message;
 import com.springboot.FlomadAIplanner.model.entities.Session;
+import com.springboot.FlomadAIplanner.model.entities.login.User;
 import com.springboot.FlomadAIplanner.service.model.MessageService;
 import com.springboot.FlomadAIplanner.service.model.SessionService;
-import com.springboot.FlomadAIplanner.util.JwtUtil;
-
-import jakarta.servlet.http.HttpServletRequest;
+import com.springboot.FlomadAIplanner.util.CurrentUserUtil;
 import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
-
-/**
- * @class
- * @description provide a controller for the front end that can operate the database
- */
 @Slf4j
 @RestController
-public class SessionController {
+@RequestMapping("/sessions")
+public class SessionController implements CrudController<SessionDTO, String> {
     private final SessionService sessionService;
-    private JwtUtil jwtUtil;
+    private final CurrentUserUtil currentUserUtil;
+    private final MessageService messageService;
+    private final Converter<SessionDTO, Session> sessionRevertConverter;
+    private final Converter<Session, SessionDTO> sessionToDTOConverter;
 
-    @Autowired
-    MessageService messageService;
-
-    public SessionController(SessionService sessionService, JwtUtil jwtUtil) {
+    public SessionController(SessionService sessionService, CurrentUserUtil currentUserUtil, MessageService messageService,
+                             Converter<SessionDTO, Session> sessionRevertConverter, Converter<Session, SessionDTO> sessionToDTOConverter) {
         this.sessionService = sessionService;
-        this.jwtUtil = jwtUtil;
+        this.currentUserUtil = currentUserUtil;
+        this.messageService = messageService;
+        this.sessionRevertConverter = sessionRevertConverter;
+        this.sessionToDTOConverter = sessionToDTOConverter;
     }
 
-    /**
-     * @description get all the id of all sessions under a given user
-     */
-    @GetMapping("/sessions")
-    public List<SessionDTO> getSessionIdsByUserId(HttpServletRequest request) {
-        final String authorizationHeader = request.getHeader("Authorization");
-        String username = null;
-        String jwt = null;
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            jwt = authorizationHeader.substring(7);
-            username = jwtUtil.extractUsername(jwt);
-        }
-        log.info("Retrieving session ids for user: {}", username);
-        return sessionService.findSessionIdsByUserId(username);
-    }
-
-    /**
-     * @description get all the messages of all sessions under a given user
-     */
-    @GetMapping("/messages")
-    public List<Message> getMessagesByUserId(HttpServletRequest request) {
-        log.info("request:{}",request);
-        final String authorizationHeader = request.getHeader("Authorization");
-        log.info("AuthorizationHeader:{}",authorizationHeader);
-        String username = null;
-        String jwt = null;
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            jwt = authorizationHeader.substring(7);
-            username = jwtUtil.extractUsername(jwt);
-        }
-        
-        log.info("Retrieving messages for user: {}", username);
-        return messageService.getMessagesByUsername(username);
-    }
-
-    /**
-     * @description add a new line in the session table
-     * ,@RequestHeader("Authorization") String token
-     */
-    @PostMapping("/add_session")
-    public ResponseEntity<Session> addSession(@RequestBody SessionOperateDTO sessionDTO,HttpServletRequest request) {
-        final String authorizationHeader = request.getHeader("Authorization");
-        String username = null;
-        String jwt = null;
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            jwt = authorizationHeader.substring(7);
-            username = jwtUtil.extractUsername(jwt);
-        }
-        if (sessionDTO.getSessionId() == null || sessionDTO.getSessionId().isEmpty()) {
-            String newId;
-            do {
-                newId = UUID.randomUUID().toString();
-            } while (sessionService.existsById(newId));
-            sessionDTO.setSessionId(newId);
-            log.info("Generated new Session ID: {}", sessionDTO.getSessionId());
-            // throw new RuntimeException("Session ID is not provided.");
-        }
-        log.info("SessionId:{}",sessionDTO.getSessionId());
-        String userId = jwtUtil.extractUsername(jwt);
-        Session session = new Session();
-        session.setUserId(userId);
-        session.setTitle(sessionDTO.getTitle());
-        session.setSessionId(sessionDTO.getSessionId());
-        session.setCreatedAt(sessionDTO.getCreatedAt());
-        session.setUpdatedAt(sessionDTO.getUpdatedAt());
-
+    @Override
+    @PostMapping
+    public ResponseEntity<SessionDTO> create(@RequestBody SessionDTO sessionDTO) {
+        User user = currentUserUtil.getCurrentUserFromSecurityContext();
+        String userId = user.getId();
+        sessionDTO.setUserId(userId);
+        Session session = sessionRevertConverter.convert(sessionDTO);
         log.info("Creating new session: {}", session);
-        Session savedSession = sessionService.saveSession(session);
+        Session savedSession = sessionService.save(session);
+        SessionDTO savedSessionDTO = sessionToDTOConverter.convert(savedSession);
         log.info("Session created");
-        return ResponseEntity.ok(savedSession);
+        return ResponseEntity.ok(savedSessionDTO);
     }
 
-    @PostMapping("/sessions/{sessionId}")
-    public ResponseEntity<Session> updateSession(HttpServletRequest request, @PathVariable String sessionId,
-                                                 @RequestBody SessionOperateDTO sessionOperateDTO) {
-        final String authorizationHeader = request.getHeader("Authorization");
-        String username = null;
-        String jwt = null;
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            jwt = authorizationHeader.substring(7);
-            username = jwtUtil.extractUsername(jwt);
-        }
-        if (!this.sessionService.existsByUserId(username)) {
-            throw new RuntimeException("User not found");
-        }
-        if (!this.sessionService.existsBySessionIdAndUserId(sessionId, username)) {
-            throw new RuntimeException("Session not found for the user");
-        }
-        Session updatedSession = sessionService.updateSession(sessionId, username, sessionOperateDTO.getTitle(), sessionOperateDTO.getUpdatedAt());
-        return ResponseEntity.ok(updatedSession);
+    @Override
+    @GetMapping("/{id}")
+    public ResponseEntity<SessionDTO> getById(@PathVariable String id) {
+        log.info("Retrieving session by id: {}", id);
+        Session session = sessionService.findById(id);
+        SessionDTO dto = sessionToDTOConverter.convert(session);
+        return ResponseEntity.ok(dto);
     }
 
-    @PostMapping("sessions/{sessionId}/updateTitle")
-    public ResponseEntity<Session> updateSessionTitle(HttpServletRequest request, @PathVariable String sessionId,
-                                                      @RequestBody UpdateTitleRequest updateRequest) {
-        try {
-            final String authorizationHeader = request.getHeader("Authorization");
-            String username = null;
-            String jwt = null;
-            if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-                jwt = authorizationHeader.substring(7);
-                username = jwtUtil.extractUsername(jwt);
-            }
-            if (!this.sessionService.existsByUserId(username)) {
-                throw new RuntimeException("User not found");
-            }
-            if (!this.sessionService.existsBySessionIdAndUserId(sessionId, username)) {
-                throw new RuntimeException("Session not found for the user");
-            }
-            Session updatedSession = sessionService.updateSessionTitle(sessionId, username, updateRequest.getTitle());
-            return ResponseEntity.ok(updatedSession);
-        } catch (RuntimeException e) {
-            log.error("Error updating session title: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
+    @Override
+    @GetMapping
+    public ResponseEntity<List<SessionDTO>> getAll() {
+        log.info("Retrieving all sessions");
+        List<Session> sessions = sessionService.findAll();
+        List<SessionDTO> dtos = sessions.stream()
+                .map(sessionToDTOConverter::convert)
+                .toList();
+        return ResponseEntity.ok(dtos);
+    }
+
+    @Override
+    @PutMapping("/{id}")
+    public ResponseEntity<SessionDTO> update(@PathVariable String id, @RequestBody SessionDTO updatedEntity) {
+        log.info("Updating session with id: {}", id);
+        Session session = sessionRevertConverter.convert(updatedEntity);
+        session.setId(id); // Ensure the session has the correct ID
+        Session updatedSession = sessionService.update(id, session);
+        SessionDTO updatedDTO = sessionToDTOConverter.convert(updatedSession);
+        log.info("Session updated");
+        return ResponseEntity.ok(updatedDTO);
+    }
+
+    @Override
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable String id) {
+        log.info("Deleting session with id: {}", id);
+        sessionService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/user-sessions")
+    public ResponseEntity<List<SessionDTO>> getSessionIdsByUserId() {
+        User user = currentUserUtil.getCurrentUserFromSecurityContext();
+        log.info("Retrieving session ids for user: {}", user.getUsername());
+        List<SessionDTO> sessions = sessionService.findSessionIdsByUserId(user.getId());
+        return ResponseEntity.ok(sessions);
+    }
+
+    @GetMapping("/user-messages")
+    public ResponseEntity<List<Message>> getMessagesByUserId() {
+        User user = currentUserUtil.getCurrentUserFromSecurityContext();
+        log.info("Retrieving messages for user: {}", user.getUsername());
+        List<Message> messages = messageService.getMessagesByUserId(user.getUsername());
+        return ResponseEntity.ok(messages);
     }
 }
-
