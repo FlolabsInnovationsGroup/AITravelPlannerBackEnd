@@ -6,6 +6,8 @@ import com.springboot.FlomadAIplanner.model.entities.Message;
 import com.springboot.FlomadAIplanner.model.entities.login.User;
 import com.springboot.FlomadAIplanner.service.model.MessageService;
 import com.springboot.FlomadAIplanner.util.CurrentUserUtil;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -48,6 +50,7 @@ public class MessageController implements CrudController<MessageDTO, String> {
         return ResponseEntity.ok(dto);
     }
 
+    @Operation(summary = "Get messages for 'current user' only", description = "Retrieves all messages for the current authenticated user")
     @Override
     @GetMapping
     public ResponseEntity<List<MessageDTO>> getAll() {
@@ -77,13 +80,23 @@ public class MessageController implements CrudController<MessageDTO, String> {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "Get messages by session ID", description = "Retrieves messages for a specific session by its ID")
     @GetMapping("/session/{sessionId}")
-    public ResponseEntity<List<MessageDTO>> getMessagesBySessionId(@PathVariable String sessionId) {
+    public ResponseEntity<List<MessageDTO>> getMessagesBySessionId(@Parameter(description = "ID of the session to retrieve messages for", required = true) @PathVariable String sessionId) {
         log.info("Retrieving messages for session: {}", sessionId);
         List<Message> messages = service.getMessagesBySessionId(sessionId);
         List<MessageDTO> dtos = messages.stream()
                 .map(messageToDTOConverter::convert)
                 .toList();
         return ResponseEntity.ok(dtos);
+    }
+
+    @Operation(summary = "Get messages for current user", description = "Retrieves all messages for the current authenticated user")
+    @GetMapping("/user-messages")
+    public ResponseEntity<List<Message>> getMessagesByUserId() {
+        User user = currentUserUtil.getCurrentUserFromSecurityContext();
+        log.info("Retrieving messages for user: {}", user.getUsername());
+        List<Message> messages = service.getMessagesByUserId(user.getUsername());
+        return ResponseEntity.ok(messages);
     }
 }

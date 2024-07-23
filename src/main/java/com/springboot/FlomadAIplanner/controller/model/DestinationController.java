@@ -2,6 +2,8 @@ package com.springboot.FlomadAIplanner.controller.model;
 
 import com.springboot.FlomadAIplanner.model.entities.Destination;
 import com.springboot.FlomadAIplanner.service.model.DestinationsService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -58,18 +60,21 @@ public class DestinationController implements CrudController<Destination, String
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "Get destination ID by name", description = "Retrieves the destination ID for a given destination name")
     @GetMapping("/getDestinationId")
-    public Integer getDestinationId(@RequestParam String destinationName) {
+    public Integer getDestinationId(@Parameter(description = "Name of the destination", required = true) @RequestParam String destinationName) {
         log.info("Retrieving destination id for destination: {}", destinationName);
         return destinationService.getDestinationIdByName(destinationName);
     }
 
+    @Operation(summary = "Count all destinations", description = "Counts the total number of destinations")
     @GetMapping("/countDestinations")
     public long countDestinations() {
         log.info("Counting destinations");
         return destinationService.countDestinations();
     }
 
+    @Operation(summary = "Get first destination", description = "Retrieves the first destination")
     @GetMapping("/getFirstDestination")
     public Destination getFirstDestination() {
         log.info("Retrieving first destination");

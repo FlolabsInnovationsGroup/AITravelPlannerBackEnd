@@ -2,12 +2,11 @@ package com.springboot.FlomadAIplanner.controller.model;
 
 import com.springboot.FlomadAIplanner.converter.Converter;
 import com.springboot.FlomadAIplanner.dto.SessionDTO;
-import com.springboot.FlomadAIplanner.model.entities.Message;
 import com.springboot.FlomadAIplanner.model.entities.Session;
 import com.springboot.FlomadAIplanner.model.entities.login.User;
-import com.springboot.FlomadAIplanner.service.model.MessageService;
 import com.springboot.FlomadAIplanner.service.model.SessionService;
 import com.springboot.FlomadAIplanner.util.CurrentUserUtil;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,15 +19,13 @@ import java.util.List;
 public class SessionController implements CrudController<SessionDTO, String> {
     private final SessionService sessionService;
     private final CurrentUserUtil currentUserUtil;
-    private final MessageService messageService;
     private final Converter<SessionDTO, Session> sessionRevertConverter;
     private final Converter<Session, SessionDTO> sessionToDTOConverter;
 
-    public SessionController(SessionService sessionService, CurrentUserUtil currentUserUtil, MessageService messageService,
+    public SessionController(SessionService sessionService, CurrentUserUtil currentUserUtil,
                              Converter<SessionDTO, Session> sessionRevertConverter, Converter<Session, SessionDTO> sessionToDTOConverter) {
         this.sessionService = sessionService;
         this.currentUserUtil = currentUserUtil;
-        this.messageService = messageService;
         this.sessionRevertConverter = sessionRevertConverter;
         this.sessionToDTOConverter = sessionToDTOConverter;
     }
@@ -87,6 +84,7 @@ public class SessionController implements CrudController<SessionDTO, String> {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "Get sessions for current user", description = "Retrieves all sessions for the current authenticated user")
     @GetMapping("/user-sessions")
     public ResponseEntity<List<SessionDTO>> getSessionIdsByUserId() {
         User user = currentUserUtil.getCurrentUserFromSecurityContext();
@@ -95,11 +93,4 @@ public class SessionController implements CrudController<SessionDTO, String> {
         return ResponseEntity.ok(sessions);
     }
 
-    @GetMapping("/user-messages")
-    public ResponseEntity<List<Message>> getMessagesByUserId() {
-        User user = currentUserUtil.getCurrentUserFromSecurityContext();
-        log.info("Retrieving messages for user: {}", user.getUsername());
-        List<Message> messages = messageService.getMessagesByUserId(user.getUsername());
-        return ResponseEntity.ok(messages);
-    }
 }
