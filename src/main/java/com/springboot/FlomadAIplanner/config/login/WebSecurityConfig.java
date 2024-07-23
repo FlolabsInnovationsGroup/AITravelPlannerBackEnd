@@ -41,6 +41,7 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .securityMatcher("sessions/**", "users/**", "messages/**", "destinations/**")
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(
@@ -48,15 +49,8 @@ public class WebSecurityConfig {
                                 "/api/auth/verify",
                                 "/api/chat/call",
                                 "/api/chat/stream",
-                                "/api/auth/login",
-                                "/sessions",
-                                "/add_session",
-                                "/users/{userId}/sessions/{sessionId}",
-                                "/users/{userId}/sessions/{sessionId}/updateTitle",
-                                "/messagesPersistence/getSessionMessages",
-                                "/sessions/{sessionId}",
-                                "/messages"
-                                )
+                                "/api/auth/login"
+                        )
                         .permitAll()
                         .requestMatchers(
                                 "/v3/api-docs/**",

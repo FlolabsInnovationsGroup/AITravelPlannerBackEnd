@@ -11,70 +11,64 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
-/**
- * @class
- * @description This is a Jpa object, where you can define datebase operation functions like findByUserId, Jpa object will read the function
- * name and infer the intent of coder. This is an interface with the database. This service operated the session table.
- */
 @Slf4j
 @Service
-public class SessionService {
+public class SessionService implements CrudService<Session, String> {
     private final SessionRepository sessionRepository;
 
     public SessionService(SessionRepository sessionRepository) {
         this.sessionRepository = sessionRepository;
     }
 
-    public List<SessionDTO> findSessionIdsByUserId(String userId) {
-        log.info("Finding entity for user: {}", userId);
-        return sessionRepository.findByUserId(userId)
-                .stream()
-                .sorted(Comparator.comparing(Session::getCreatedAt).reversed())
-                .map(session -> new SessionDTO(session.getSessionId(), session.getUserId(), session.getTitle(), session.getCreatedAt()))
-                .collect(Collectors.toList());
-    }
-
-    public boolean existsByUserId(String userId) {
-        return sessionRepository.existsByUserId(userId);
-    }
-
-    public boolean existsBySessionIdAndUserId(String sessionId, String userId) {
-        return sessionRepository.existsBySessionIdAndUserId(sessionId, userId);
-    }
-
-    public Session saveSession(Session session) {
-        log.info("Saving entity: {}", session);
+    @Override
+    public Session save(Session session) {
+        log.info("Saving session: {}", session);
         return sessionRepository.save(session);
     }
 
-    public boolean existsById(String id) {
-        return sessionRepository.existsById(id);
+    @Override
+    public Session findById(String id) {
+        log.info("Finding session by id: {}", id);
+        return sessionRepository.findById(id).orElse(null);
     }
 
-    public Session updateSession(String sessionId, String userId, String title, LocalDateTime timestamp) {
-        log.info("Updating entity: {}", sessionId);
-        Session session = sessionRepository.findBySessionIdAndUserId(sessionId, userId);
+    @Override
+    public List<Session> findAll() {
+        log.info("Finding all sessions");
+        return sessionRepository.findAll();
+    }
+
+    @Override
+    public Session update(String id, Session updatedSession) {
+        log.info("Updating session: {}", id);
+
+        String title = updatedSession.getTitle();
+        String userId = updatedSession.getUserId();
+
+        Session session = sessionRepository.findByIdAndUserId(id, userId);
         if (session != null) {
             session.setTitle(title);
-            session.setUpdatedAt(timestamp);
+            session.setUpdatedAt(LocalDateTime.now());
             return sessionRepository.save(session);
         } else {
-            log.error("Entity not found");
+            log.error("Session not found");
             throw new RuntimeException("Session not found");
         }
     }
 
-    public Session updateSessionTitle(String sessionId, String userId, String title) {
-        log.info("Updating entity session ID: {}", sessionId);
-        log.info("Updating entity uer ID: {}", userId);
-        Session session = sessionRepository.findBySessionIdAndUserId(sessionId, userId);
-        if (session != null) {
-            session.setTitle(title);
-            return sessionRepository.save(session);
-        } else {
-            log.error("Entity not found");
-            throw new RuntimeException("Session not found");
-        }
+    @Override
+    public void delete(String id) {
+        log.info("Deleting session with id: {}", id);
+        sessionRepository.deleteById(id);
     }
+
+    public List<SessionDTO> findSessionIdsByUserId(String userId) {
+        log.info("Finding sessions for user: {}", userId);
+        return sessionRepository.findByUserId(userId)
+                .stream()
+                .sorted(Comparator.comparing(Session::getCreatedAt).reversed())
+                .map(session -> new SessionDTO(session.getId(), session.getUserId(), session.getTitle(), session.getCreatedAt(), session.getUpdatedAt()))
+                .collect(Collectors.toList());
+    }
+
 }

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class UserDTOToUserConverter implements Converter<UserDTO, User> {
+public class UserRevertConverter implements Converter<UserDTO, User> {
 
     @Override
     public User convert(UserDTO source) {

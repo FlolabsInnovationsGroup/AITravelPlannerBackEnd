@@ -3,17 +3,59 @@ package com.springboot.FlomadAIplanner.controller.model;
 import com.springboot.FlomadAIplanner.model.entities.Destination;
 import com.springboot.FlomadAIplanner.service.model.DestinationsService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
-public class DestinationController {
+@RequestMapping("/destinations")
+public class DestinationController implements CrudController<Destination, String> {
     private final DestinationsService destinationService;
 
     public DestinationController(DestinationsService destinationService) {
         this.destinationService = destinationService;
+    }
+
+    @Override
+    @PostMapping
+    public ResponseEntity<Destination> create(@RequestBody Destination entity) {
+        log.info("Creating new destination: {}", entity);
+        Destination newDestination = destinationService.save(entity);
+        return ResponseEntity.ok(newDestination);
+    }
+
+    @Override
+    @GetMapping("/{id}")
+    public ResponseEntity<Destination> getById(@PathVariable String id) {
+        log.info("Retrieving destination by id: {}", id);
+        Destination destination = destinationService.findById(id);
+        return ResponseEntity.ok(destination);
+    }
+
+    @Override
+    @GetMapping
+    public ResponseEntity<List<Destination>> getAll() {
+        log.info("Retrieving all destinations");
+        List<Destination> destinations = destinationService.findAll();
+        return ResponseEntity.ok(destinations);
+    }
+
+    @Override
+    @PutMapping("/{id}")
+    public ResponseEntity<Destination> update(@PathVariable String id, @RequestBody Destination updatedEntity) {
+        log.info("Updating destination with id: {}", id);
+        Destination updatedDestination = destinationService.update(id, updatedEntity);
+        return ResponseEntity.ok(updatedDestination);
+    }
+
+    @Override
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable String id) {
+        log.info("Deleting destination with id: {}", id);
+        destinationService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/getDestinationId")

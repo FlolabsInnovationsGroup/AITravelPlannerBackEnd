@@ -37,7 +37,7 @@ public class VerificationTokenService {
     }
 
     @SuppressWarnings("all")
-    public VerificationToken saveVerificationToken(VerificationToken verificationToken) {
+    public VerificationToken save(VerificationToken verificationToken) {
         log.debug("Saving verification token for user ID: {}", verificationToken.getUser().getId());
         VerificationToken savedToken = verificationTokenRepository.save(verificationToken);
         log.info("Saved verification token for user ID: {}", savedToken.getUser().getId());

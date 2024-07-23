@@ -33,7 +33,6 @@ public class MessageRevertConverter implements Converter<MessageDTO, Message> {
 
         return new Message(
                 source.getId() != null ? String.valueOf(UUID.fromString(source.getId())) : null,
-                source.getUsername(),
                 source.getSessionId(),
                 source.getContent(),
                 source.getCreatedAt() != null ? source.getCreatedAt() : LocalDateTime.now(),
