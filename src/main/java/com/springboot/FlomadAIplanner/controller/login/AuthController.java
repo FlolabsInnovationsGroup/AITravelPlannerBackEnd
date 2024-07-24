@@ -73,7 +73,7 @@ public class AuthController {
             log.info("Authentication successful for user: {}", loginRequest.getUsername());
 
             // Validate user password matches
-            User user = userService.findUserByUsername(loginRequest.getUsername());
+            User user = userService.findByUsernameOrEmail(loginRequest.getUsername());
             if (user == null) {
                 log.error("User not found: {}", loginRequest.getUsername());
                 throw new UserNotFoundException("User not found: " + loginRequest.getUsername());

@@ -25,7 +25,7 @@ public class CurrentUserUtil {
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             String jwt = authorizationHeader.substring(7);
             String username = jwtUtil.extractUsername(jwt);
-            return userService.findUserByUsername(username);
+            return userService.findByUsernameOrEmail(username);
         }
         return null;
     }
@@ -35,7 +35,7 @@ public class CurrentUserUtil {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
             String username = ((UserDetails) authentication.getPrincipal()).getUsername();
-            return userService.findUserByUsername(username);
+            return userService.findByUsernameOrEmail(username);
         }
         return null;
     }
