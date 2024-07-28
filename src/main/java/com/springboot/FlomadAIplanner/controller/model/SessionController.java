@@ -68,8 +68,10 @@ public class SessionController implements CrudController<SessionDTO, String> {
     @PutMapping("/{id}")
     public ResponseEntity<SessionDTO> update(@PathVariable String id, @RequestBody SessionDTO updatedEntity) {
         log.info("Updating session with id: {}", id);
+        User user = currentUserUtil.getCurrentUserFromSecurityContext();
+        updatedEntity.setSessionId(id);
+        updatedEntity.setUserId(user.getId());
         Session session = sessionRevertConverter.convert(updatedEntity);
-        session.setId(id); // Ensure the session has the correct ID
         Session updatedSession = sessionService.update(id, session);
         SessionDTO updatedDTO = sessionToDTOConverter.convert(updatedSession);
         log.info("Session updated");
