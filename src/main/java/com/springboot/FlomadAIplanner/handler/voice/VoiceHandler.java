@@ -2,10 +2,9 @@ package com.springboot.FlomadAIplanner.handler.voice;
 
 
 public class VoiceHandler {
-    private final WebEngine webEngine;
+    private WebEngine webEngine;
 
     public VoiceHandler() {
-        this.webEngine = webEngine;
     }
 
     public void startVoiceRecognition() {
