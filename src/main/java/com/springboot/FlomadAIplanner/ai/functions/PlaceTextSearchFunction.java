@@ -15,7 +15,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Description;
 import org.springframework.stereotype.Component;
 
@@ -38,7 +37,6 @@ public class PlaceTextSearchFunction implements AIFunction<PlaceTextSearchFuncti
 
     private final GooglePlacesServiceAsync googlePlacesService;
 
-    @Autowired
     public PlaceTextSearchFunction(GooglePlacesServiceAsync googlePlacesService) {
         this.googlePlacesService = googlePlacesService;
         ChatBot chatBot;

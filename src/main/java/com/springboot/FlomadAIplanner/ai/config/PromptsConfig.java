@@ -38,6 +38,7 @@ public class PromptsConfig {
         Resource[] resources = resolver.getResources("classpath:/templates/general-instructions-variants/*.*");
 
         for (Resource resource : resources) {
+            @SuppressWarnings("resource")
             String content = new BufferedReader(new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8))
                     .lines()
                     .collect(Collectors.joining("\n"));

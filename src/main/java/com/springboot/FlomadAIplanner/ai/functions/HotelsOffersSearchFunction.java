@@ -16,10 +16,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.context.annotation.Description;
 import org.springframework.stereotype.Component;
 
+import java.beans.JavaBean;
 import java.io.IOException;
 import java.util.List;
 
@@ -35,19 +36,16 @@ import java.util.List;
         Use CurrentDateTimeFunction to get the current date and time before calling this function if you need to use date parameter.
         You should USE this function to search for offers in MULTIPLE hotels AT ONES using this function for more efficiency.
         """)
+@JavaBean        
 public class HotelsOffersSearchFunction implements AIFunction<HotelsOffersSearchFunction.HotelOffersRequestWrapper, JsonNode> {
 
     private final AmadeusHotelsSearchService amadeusHotelsSearchService;
 
-    @Autowired
     public HotelsOffersSearchFunction(AmadeusHotelsSearchService amadeusHotelsSearchService) {
         this.amadeusHotelsSearchService = amadeusHotelsSearchService;
-        ChatBot chatBot;
-        chatBot = new ChatBot();
-        TextField userInputField;
-        userInputField = new TextField();
-        TextArea chatArea;
-        chatArea = new TextArea();
+        ChatBot chatBot = new ChatBot();
+        TextField userInputField = new TextField();
+        TextArea chatArea = new TextArea();
         chatArea.setEditable(false);
         chatArea.setPrefHeight(200);
         String userInput = userInputField.getText();
