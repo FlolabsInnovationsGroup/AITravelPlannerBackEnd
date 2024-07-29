@@ -1,13 +1,17 @@
 package com.springboot.FlomadAIplanner.ai.functions;
 
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
+import com.springboot.FlomadAIplanner.ai.ChatBot;
 import com.springboot.FlomadAIplanner.dto.viator.BulkFreeTextSearchRequest;
 import com.springboot.FlomadAIplanner.dto.viator.FreeTextSearchResponse;
 import com.springboot.FlomadAIplanner.exceptions.api.ViatorAPIException;
+import com.springboot.FlomadAIplanner.handler.voice.VoiceHandler;
 import com.springboot.FlomadAIplanner.service.viator.ViatorAuxiliaryServiceAsync;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Description;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
@@ -41,11 +46,65 @@ public class ToursFreeTextSearchFunction implements AIFunction<ToursFreeTextSear
     @Autowired
     public ToursFreeTextSearchFunction(ViatorAuxiliaryServiceAsync viatorAuxiliaryService) {
         this.viatorAuxiliaryService = viatorAuxiliaryService;
+        ChatBot chatBot;
+        chatBot = new ChatBot();
+        TextField userInputField;
+        userInputField = new TextField();
+        TextArea chatArea;
+        chatArea = new TextArea();
+        chatArea.setEditable(false);
+        chatArea.setPrefHeight(200);
+        String userInput = userInputField.getText();
+        if (userInput.isEmpty()) {
+            return;
+        }
+        chatArea.appendText("You: " + userInput + "\n");
+        userInputField.clear();
+        VoiceHandler voiceHandler = new VoiceHandler();
+        new Thread(() -> {
+            try {
+
+                String response = chatBot.getResponse(userInput);
+                chatArea.appendText("AI: " + response + "\n");
+                voiceHandler.speakText(response);
+            } catch (IOException e) {
+                e.printStackTrace();
+                chatArea.appendText("AI: Error fetching response\n");
+            }
+        }).start();
+
     }
 
     @Override
     @Valid
     public List<FreeTextSearchResponse> apply(FreeTextSearchRequestWrapper requestWrapper) {
+        ChatBot chatBot;
+        chatBot = new ChatBot();
+        TextField userInputField;
+        userInputField = new TextField();
+        TextArea chatArea;
+        chatArea = new TextArea();
+        chatArea.setEditable(false);
+        chatArea.setPrefHeight(200);
+        String userInput = userInputField.getText();
+        if (userInput.isEmpty()) {
+            return null;
+        }
+        chatArea.appendText("You: " + userInput + "\n");
+        userInputField.clear();
+        VoiceHandler voiceHandler = new VoiceHandler();
+        new Thread(() -> {
+            try {
+
+                String response = chatBot.getResponse(userInput);
+                chatArea.appendText("AI: " + response + "\n");
+                voiceHandler.speakText(response);
+            } catch (IOException e) {
+                e.printStackTrace();
+                chatArea.appendText("AI: Error fetching response\n");
+            }
+        }).start();
+
         log.info("Performing free text search with term: {}", requestWrapper.getRequest().getSearchTerms());
         try {
             List<FreeTextSearchResponse> response = viatorAuxiliaryService.bulkSearchFreeText(requestWrapper.getAcceptLanguage(), requestWrapper.getRequest());
