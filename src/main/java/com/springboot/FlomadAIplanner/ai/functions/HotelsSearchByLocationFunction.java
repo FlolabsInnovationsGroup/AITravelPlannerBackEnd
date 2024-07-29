@@ -14,7 +14,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Description;
 import org.springframework.stereotype.Component;
 
@@ -33,7 +32,6 @@ public class HotelsSearchByLocationFunction implements AIFunction<HotelsSearchBy
 
     private final AmadeusHotelsSearchService amadeusHotelsSearchService;
 
-    @Autowired
     public HotelsSearchByLocationFunction(AmadeusHotelsSearchService amadeusHotelsSearchService) {
         this.amadeusHotelsSearchService = amadeusHotelsSearchService;
         ChatBot chatBot;

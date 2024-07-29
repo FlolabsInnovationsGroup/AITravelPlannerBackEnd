@@ -5,7 +5,6 @@ import com.springboot.FlomadAIplanner.dto.viator.FreeTextSearchRequest;
 import com.springboot.FlomadAIplanner.dto.viator.FreeTextSearchResponse;
 import com.springboot.FlomadAIplanner.exceptions.api.ViatorAPIException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -17,12 +16,10 @@ public class ViatorAuxiliaryService {
 
     private final ViatorClient viatorClient;
 
-    @Autowired
     public ViatorAuxiliaryService(ViatorClient viatorClient) {
         this.viatorClient = viatorClient;
     }
 
-    @SuppressWarnings("unused")
     public FreeTextSearchResponse searchFreeText(String acceptLang, FreeTextSearchRequest request) throws ViatorAPIException {
         log.info("Searching free text with term: {}", request.getSearchTerm());
         try {
@@ -36,7 +33,6 @@ public class ViatorAuxiliaryService {
         }
     }
 
-    @SuppressWarnings("unused")
     public List<FreeTextSearchResponse> bulkSearchFreeText(String acceptLang, BulkFreeTextSearchRequest request) throws ViatorAPIException {
         log.info("Performing bulk text searches for multiple queries.");
 

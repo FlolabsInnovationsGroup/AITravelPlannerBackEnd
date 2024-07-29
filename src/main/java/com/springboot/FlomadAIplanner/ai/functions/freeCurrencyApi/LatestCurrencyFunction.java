@@ -14,7 +14,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Description;
 import org.springframework.stereotype.Component;
 
@@ -32,7 +31,6 @@ public class LatestCurrencyFunction implements AIFunction<LatestCurrencyFunction
 
     private final FreeCurrencyService freeCurrencyService;
 
-    @Autowired
     public LatestCurrencyFunction(FreeCurrencyService freeCurrencyService) {
         this.freeCurrencyService = freeCurrencyService;
         ChatBot chatBot;
