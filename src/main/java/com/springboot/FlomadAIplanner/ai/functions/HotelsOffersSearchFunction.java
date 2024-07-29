@@ -4,10 +4,14 @@ import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.springboot.FlomadAIplanner.ai.ChatBot;
 import com.springboot.FlomadAIplanner.dto.amadeus.HotelOffersByHotelIdsRequest;
 import com.springboot.FlomadAIplanner.exceptions.api.AmadeusAPIException;
+import com.springboot.FlomadAIplanner.handler.voice.VoiceHandler;
 import com.springboot.FlomadAIplanner.service.amadeus.AmadeusHotelsSearchService;
 import jakarta.validation.Valid;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Description;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -37,6 +42,32 @@ public class HotelsOffersSearchFunction implements AIFunction<HotelsOffersSearch
     @Autowired
     public HotelsOffersSearchFunction(AmadeusHotelsSearchService amadeusHotelsSearchService) {
         this.amadeusHotelsSearchService = amadeusHotelsSearchService;
+        ChatBot chatBot;
+        chatBot = new ChatBot();
+        TextField userInputField;
+        userInputField = new TextField();
+        TextArea chatArea;
+        chatArea = new TextArea();
+        chatArea.setEditable(false);
+        chatArea.setPrefHeight(200);
+        String userInput = userInputField.getText();
+        if (userInput.isEmpty()) {
+            return;
+        }
+        chatArea.appendText("You: " + userInput + "\n");
+        userInputField.clear();
+        VoiceHandler voiceHandler = new VoiceHandler();
+        new Thread(() -> {
+            try {
+
+                String response = chatBot.getResponse(userInput);
+                chatArea.appendText("AI: " + response + "\n");
+                voiceHandler.speakText(response);
+            } catch (IOException e) {
+                e.printStackTrace();
+                chatArea.appendText("AI: Error fetching response\n");
+            }
+        }).start();
     }
 
     @Override

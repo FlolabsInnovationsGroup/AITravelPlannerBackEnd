@@ -1,11 +1,15 @@
 package com.springboot.FlomadAIplanner.ai.functions;
 
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
+import com.springboot.FlomadAIplanner.ai.ChatBot;
 import com.springboot.FlomadAIplanner.dto.amadeus.HotelSearchByGeocodeRequest;
 import com.springboot.FlomadAIplanner.dto.amadeus.HotelSearchByGeocodeResponse;
 import com.springboot.FlomadAIplanner.exceptions.api.AmadeusAPIException;
+import com.springboot.FlomadAIplanner.handler.voice.VoiceHandler;
 import com.springboot.FlomadAIplanner.service.amadeus.AmadeusHotelsSearchService;
 import jakarta.validation.Valid;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,6 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Description;
 import org.springframework.stereotype.Component;
+
+import java.io.IOException;
 
 @Slf4j
 @Component
@@ -30,10 +36,62 @@ public class HotelsSearchByLocationFunction implements AIFunction<HotelsSearchBy
     @Autowired
     public HotelsSearchByLocationFunction(AmadeusHotelsSearchService amadeusHotelsSearchService) {
         this.amadeusHotelsSearchService = amadeusHotelsSearchService;
+        ChatBot chatBot;
+        chatBot = new ChatBot();
+        TextField userInputField;
+        userInputField = new TextField();
+        TextArea chatArea;
+        chatArea = new TextArea();
+        chatArea.setEditable(false);
+        chatArea.setPrefHeight(200);
+        String userInput = userInputField.getText();
+        if (userInput.isEmpty()) {
+            return;
+        }
+        chatArea.appendText("You: " + userInput + "\n");
+        userInputField.clear();
+        VoiceHandler voiceHandler = new VoiceHandler();
+        new Thread(() -> {
+            try {
+
+                String response = chatBot.getResponse(userInput);
+                chatArea.appendText("AI: " + response + "\n");
+                voiceHandler.speakText(response);
+            } catch (IOException e) {
+                e.printStackTrace();
+                chatArea.appendText("AI: Error fetching response\n");
+            }
+        }).start();
     }
 
     @Valid
     public HotelSearchByGeocodeResponse apply(HotelSearchRequestWrapper requestWrapper) {
+        ChatBot chatBot;
+        chatBot = new ChatBot();
+        TextField userInputField;
+        userInputField = new TextField();
+        TextArea chatArea;
+        chatArea = new TextArea();
+        chatArea.setEditable(false);
+        chatArea.setPrefHeight(200);
+        String userInput = userInputField.getText();
+        if (userInput.isEmpty()) {
+            return null;
+        }
+        chatArea.appendText("You: " + userInput + "\n");
+        userInputField.clear();
+        VoiceHandler voiceHandler = new VoiceHandler();
+        new Thread(() -> {
+            try {
+
+                String response = chatBot.getResponse(userInput);
+                chatArea.appendText("AI: " + response + "\n");
+                voiceHandler.speakText(response);
+            } catch (IOException e) {
+                e.printStackTrace();
+                chatArea.appendText("AI: Error fetching response\n");
+            }
+        }).start();
         log.info("Searching hotels by geocode at latitude: {}, longitude: {}", requestWrapper.getRequest().getLatitude(), requestWrapper.getRequest().getLongitude());
         try {
             HotelSearchByGeocodeResponse response = amadeusHotelsSearchService.searchHotelsByGeocode(requestWrapper.getRequest());
