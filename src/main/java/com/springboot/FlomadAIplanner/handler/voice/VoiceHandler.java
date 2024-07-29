@@ -8,11 +8,11 @@ public class VoiceHandler {
     }
 
     public void startVoiceRecognition() {
-        webEngine.executeScript("window.java.startRecognition()");
+        webEngine.executeScript();
     }
 
     public void speakText(String text) {
-        webEngine.executeScript("window.java.speakText('" + text.replace("'", "\\'") + "')");
+        webEngine.executeScript();
     }
 
     // This method will be called from JavaScript
