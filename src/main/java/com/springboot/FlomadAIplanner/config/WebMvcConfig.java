@@ -57,7 +57,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         log.info("Adding CORS Mappings");
         registry.addMapping("/**")
-                .allowedOrigins(frontEndUrl)
+                .allowedOrigins("https://ai-travel-front-react-zofa.vercel.app")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);
