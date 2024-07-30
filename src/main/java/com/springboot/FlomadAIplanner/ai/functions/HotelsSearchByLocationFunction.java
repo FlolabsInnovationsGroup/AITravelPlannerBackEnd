@@ -53,7 +53,7 @@ public class HotelsSearchByLocationFunction implements AIFunction<HotelsSearchBy
     public static class HotelSearchRequestWrapper {
 
         @Valid
-        @JsonPropertyDescription("The geocode-based hotel search request body containing latitude, longitude, and optional filters.")
+        @JsonPropertyDescription("REQUIRED. The geocode-based hotel search request body containing latitude, longitude, and optional filters.")
         private HotelSearchByGeocodeRequest request;
     }
 }
