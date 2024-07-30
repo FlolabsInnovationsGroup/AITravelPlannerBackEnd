@@ -48,7 +48,9 @@ public class AmadeusAuthService {
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(requestBody, headers);
 
         try {
+            @SuppressWarnings("rawtypes")
             ResponseEntity<Map> responseEntity = restTemplate.postForEntity(amadeusOauthApiUrl, requestEntity, Map.class);
+            @SuppressWarnings("unchecked")
             Map<String, Object> responseBody = responseEntity.getBody();
             if (responseBody != null && responseBody.containsKey("access_token")) {
                 String accessToken = responseBody.get("access_token").toString();

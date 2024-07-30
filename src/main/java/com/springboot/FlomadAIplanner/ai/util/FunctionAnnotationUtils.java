@@ -1,6 +1,5 @@
 package com.springboot.FlomadAIplanner.ai.util;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Description;
 import org.springframework.stereotype.Component;
@@ -13,7 +12,7 @@ import java.util.stream.Collectors;
 /**
  * Utility class for working with AI functions.
  */
-@Slf4j
+
 @Component
 public class FunctionAnnotationUtils {
 

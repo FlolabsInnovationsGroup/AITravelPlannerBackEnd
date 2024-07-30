@@ -18,9 +18,9 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class SessionDTO {
     @EqualsAndHashCode.Include
-    private String id;
+    private String sessionId;
     private String userId;
     private String title;
-    private LocalDateTime timestamp;
-
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

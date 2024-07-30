@@ -24,6 +24,7 @@ public class Message extends Model implements org.springframework.ai.chat.messag
     @Serial
     private static final long serialVersionUID = -7214728696555033419L;
 
+
     @Field("sessionId")
     @Indexed
     @NotBlank

@@ -3,16 +3,21 @@ package com.springboot.FlomadAIplanner.ai.functions.freeCurrencyApi;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.springboot.FlomadAIplanner.ai.ChatBot;
 import com.springboot.FlomadAIplanner.ai.functions.AIFunction;
+import com.springboot.FlomadAIplanner.handler.voice.VoiceHandler;
 import com.springboot.FlomadAIplanner.service.freeCurrency.FreeCurrencyService;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Description;
 import org.springframework.stereotype.Component;
+
+import java.io.IOException;
 
 
 @Slf4j
@@ -25,10 +30,38 @@ import org.springframework.stereotype.Component;
 public class HistoryCurrencyFunction implements AIFunction<HistoryCurrencyFunction.HistoryCurrencyRequest, JsonNode> {
 
     private final FreeCurrencyService freeCurrencyService;
+    // private VoiceHandler voiceHandler;
 
-    @Autowired
     public HistoryCurrencyFunction(FreeCurrencyService freeCurrencyService) {
         this.freeCurrencyService = freeCurrencyService;
+
+        ChatBot chatBot;
+        chatBot = new ChatBot();
+        TextField userInputField;
+        userInputField = new TextField();
+        TextArea chatArea;
+        chatArea = new TextArea();
+        chatArea.setEditable(false);
+        chatArea.setPrefHeight(200);
+        String userInput = userInputField.getText();
+        if (userInput.isEmpty()) {
+            return;
+        }
+        chatArea.appendText("You: " + userInput + "\n");
+        userInputField.clear();
+        VoiceHandler voiceHandler = new VoiceHandler();
+        new Thread(() -> {
+            try {
+
+                String response = chatBot.getResponse(userInput);
+                chatArea.appendText("AI: " + response + "\n");
+                voiceHandler.speakText(response);
+            } catch (IOException e) {
+                e.printStackTrace();
+                chatArea.appendText("AI: Error fetching response\n");
+            }
+        }).start();
+
     }
 
     @Override

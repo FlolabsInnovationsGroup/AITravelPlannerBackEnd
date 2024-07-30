@@ -13,8 +13,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static java.nio.file.Files.readString;
-
 
 @Configuration
 public class PromptsConfig {
@@ -40,6 +38,7 @@ public class PromptsConfig {
         Resource[] resources = resolver.getResources("classpath:/templates/general-instructions-variants/*.*");
 
         for (Resource resource : resources) {
+            @SuppressWarnings("resource")
             String content = new BufferedReader(new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8))
                     .lines()
                     .collect(Collectors.joining("\n"));
