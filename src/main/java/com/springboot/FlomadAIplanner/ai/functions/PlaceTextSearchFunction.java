@@ -43,7 +43,9 @@ public class PlaceTextSearchFunction implements AIFunction<PlaceTextSearchFuncti
     public JsonNode apply(TextSearchRequestsWrapper requestsWrapper) {
         log.info("Performing text search with query: {}", requestsWrapper.getRequests());
         try {
-            return googlePlacesService.bulkTextSearchPlaces(requestsWrapper.getRequests());
+            JsonNode response = googlePlacesService.bulkTextSearchPlaces(requestsWrapper.getRequests());
+            log.info("Received text search response from Google. Response length: {}", response.toString().length());
+            return response;
         } catch (GoogleAPIException e) {
             log.error("Error performing text search", e);
             return JsonNodeFactory.instance.objectNode().put("error", e.getMessage());

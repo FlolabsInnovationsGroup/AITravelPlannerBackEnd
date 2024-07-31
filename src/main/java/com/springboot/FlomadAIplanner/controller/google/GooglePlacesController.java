@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.springboot.FlomadAIplanner.dto.google.NearbyPlacesRequest;
 import com.springboot.FlomadAIplanner.exceptions.api.GoogleAPIException;
 import com.springboot.FlomadAIplanner.service.google.GooglePlacesService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,6 +32,7 @@ public class GooglePlacesController {
      * @return JSON response with search results.
      * @throws GoogleAPIException If an error occurs while calling the Google Places API.
      */
+    @Operation(summary = "Search for nearby places", description = "Searches for nearby places using Google Places API")
     @PostMapping("/search")
     public JsonNode searchNearbyPlaces(@RequestBody NearbyPlacesRequest nearbyPlacesRequest) throws GoogleAPIException {
         log.info("Searching for nearby places using Google API with request:{}", nearbyPlacesRequest);

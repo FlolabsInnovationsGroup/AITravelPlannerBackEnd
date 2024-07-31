@@ -1,66 +1,96 @@
 package com.springboot.FlomadAIplanner.controller.model;
 
+import com.springboot.FlomadAIplanner.converter.Converter;
 import com.springboot.FlomadAIplanner.dto.SessionDTO;
-import com.springboot.FlomadAIplanner.dto.UpdateTitleRequest;
 import com.springboot.FlomadAIplanner.model.entities.Session;
+import com.springboot.FlomadAIplanner.model.entities.login.User;
 import com.springboot.FlomadAIplanner.service.model.SessionService;
+import com.springboot.FlomadAIplanner.util.CurrentUserUtil;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
-/**
- * @class
- * @description provide a controller for the front end that can operate the database
- */
 @Slf4j
 @RestController
-public class SessionController {
+@RequestMapping("/sessions")
+public class SessionController implements CrudController<SessionDTO, String> {
     private final SessionService sessionService;
+    private final CurrentUserUtil currentUserUtil;
+    private final Converter<SessionDTO, Session> sessionRevertConverter;
+    private final Converter<Session, SessionDTO> sessionToDTOConverter;
 
-    public SessionController(SessionService sessionService) {
+    public SessionController(SessionService sessionService, CurrentUserUtil currentUserUtil,
+                             Converter<SessionDTO, Session> sessionRevertConverter, Converter<Session, SessionDTO> sessionToDTOConverter) {
         this.sessionService = sessionService;
+        this.currentUserUtil = currentUserUtil;
+        this.sessionRevertConverter = sessionRevertConverter;
+        this.sessionToDTOConverter = sessionToDTOConverter;
     }
 
-    /**
-     * @description get all the id of all sessions under a given user
-     */
-    @GetMapping("/users/{userId}/sessions")
-    public List<SessionDTO> getSessionIdsByUserId(@PathVariable String userId) {
-        log.info("Retrieving session ids for user: {}", userId);
-        return sessionService.findSessionIdsByUserId(userId);
-    }
-
-    /**
-     * @description add a new line in the session table
-     */
-    @PostMapping("/add_session")
-    public ResponseEntity<Session> addSession(@RequestBody Session session) {
+    @Override
+    @PostMapping
+    public ResponseEntity<SessionDTO> create(@RequestBody SessionDTO sessionDTO) {
+        User user = currentUserUtil.getCurrentUserFromSecurityContext();
+        String userId = user.getId();
+        sessionDTO.setUserId(userId);
+        Session session = sessionRevertConverter.convert(sessionDTO);
         log.info("Creating new session: {}", session);
-        if (session.getId() == null || session.getId().isEmpty()) {
-            log.error("Session ID is not provided.");
-            throw new RuntimeException("Session ID is not provided.");
-        }
-        Session savedSession = sessionService.saveSession(session);
+        Session savedSession = sessionService.save(session);
+        SessionDTO savedSessionDTO = sessionToDTOConverter.convert(savedSession);
         log.info("Session created");
-        return ResponseEntity.ok(savedSession);
+        return ResponseEntity.ok(savedSessionDTO);
     }
 
-    @PostMapping("/users/{userId}/sessions/{sessionId}")
-    public ResponseEntity<Session> updateSession(@PathVariable String userId, @PathVariable String sessionId,
-                                                 @RequestBody SessionDTO sessionDto) {
-        Session updatedSession = sessionService.updateSession(sessionId, userId, sessionDto.getTitle(), sessionDto.getTimestamp());
-        return ResponseEntity.ok(updatedSession);
+    @Override
+    @GetMapping("/{id}")
+    public ResponseEntity<SessionDTO> getById(@PathVariable String id) {
+        log.info("Retrieving session by id: {}", id);
+        Session session = sessionService.findById(id);
+        SessionDTO dto = sessionToDTOConverter.convert(session);
+        return ResponseEntity.ok(dto);
     }
 
-    @PostMapping("/users/{userId}/sessions/{sessionId}/updateTitle")
-    public ResponseEntity<Session> updateSessionTitle(@PathVariable String userId, @PathVariable String sessionId,
-                                                      @RequestBody UpdateTitleRequest updateRequest) {
-        Session updatedSession = sessionService.updateSessionTitle(sessionId, userId, updateRequest.getTitle());
-        return ResponseEntity.ok(updatedSession);
+    @Override
+    @GetMapping
+    public ResponseEntity<List<SessionDTO>> getAll() {
+        log.info("Retrieving all sessions");
+        List<Session> sessions = sessionService.findAll();
+        List<SessionDTO> dtos = sessions.stream()
+                .map(sessionToDTOConverter::convert)
+                .toList();
+        return ResponseEntity.ok(dtos);
+    }
+
+    @Override
+    @PutMapping("/{id}")
+    public ResponseEntity<SessionDTO> update(@PathVariable String id, @RequestBody SessionDTO updatedEntity) {
+        log.info("Updating session with id: {}", id);
+        Session session = sessionRevertConverter.convert(updatedEntity);
+        session.setId(id); // Ensure the session has the correct ID
+        Session updatedSession = sessionService.update(id, session);
+        SessionDTO updatedDTO = sessionToDTOConverter.convert(updatedSession);
+        log.info("Session updated");
+        return ResponseEntity.ok(updatedDTO);
+    }
+
+    @Override
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable String id) {
+        log.info("Deleting session with id: {}", id);
+        sessionService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Get sessions for current user", description = "Retrieves all sessions for the current authenticated user")
+    @GetMapping("/user-sessions")
+    public ResponseEntity<List<SessionDTO>> getSessionIdsByUserId() {
+        User user = currentUserUtil.getCurrentUserFromSecurityContext();
+        log.info("Retrieving session ids for user: {}", user.getUsername());
+        List<SessionDTO> sessions = sessionService.findSessionIdsByUserId(user.getId());
+        return ResponseEntity.ok(sessions);
     }
 
 }
-

@@ -3,9 +3,11 @@ package com.springboot.FlomadAIplanner.controller.amadeus;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.springboot.FlomadAIplanner.dto.amadeus.FlightOfferPricingRequest;
 import com.springboot.FlomadAIplanner.dto.amadeus.FlightOffersPostRequest;
+import com.springboot.FlomadAIplanner.dto.amadeus.FlightOffersPostResponse;
 import com.springboot.FlomadAIplanner.dto.amadeus.FlightsAirportLocationsRequest;
 import com.springboot.FlomadAIplanner.exceptions.api.AmadeusAPIException;
 import com.springboot.FlomadAIplanner.service.amadeus.AmadeusFlightsService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -23,7 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/amadeus")
 @Validated
 public class AmadeusFlightOfferController {
-
     private final AmadeusFlightsService amadeusFlightsService;
 
     @Autowired
@@ -31,12 +32,13 @@ public class AmadeusFlightOfferController {
         this.amadeusFlightsService = amadeusFlightsService;
     }
 
+    @Operation(summary = "Get flight offers using POST request (Amadeus)", description = "Retrieves flight offers using POST request from Amadeus API")
     @PostMapping("/flight-offers")
     public ResponseEntity<String> getFlightOffersPost(@Valid @RequestBody FlightOffersPostRequest flightOffersPostRequest) throws AmadeusAPIException {
         log.info("Retrieving flight offers with POST request");
 
         // Use the service to get flight offers
-        JsonNode response = amadeusFlightsService.getFlightOffersPost(flightOffersPostRequest);
+        FlightOffersPostResponse response = amadeusFlightsService.getFlightOffersPost(flightOffersPostRequest);
         if (response == null) {
             log.error("Failed to retrieve flight offers with POST request");
             return ResponseEntity.status(500).body("Failed to retrieve flight offers");
@@ -45,6 +47,7 @@ public class AmadeusFlightOfferController {
         return ResponseEntity.ok(response.toString());
     }
 
+    @Operation(summary = "Get flight offer pricing (Amadeus)", description = "Retrieves flight offer pricing from Amadeus API")
     @PostMapping("/pricing")
     public ResponseEntity<JsonNode> getOfferPricing(@RequestBody @NotNull @NotEmpty FlightOfferPricingRequest offer) throws AmadeusAPIException {
         log.info("Received offer: {}", offer);
@@ -55,6 +58,7 @@ public class AmadeusFlightOfferController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "Get airport location (Amadeus)", description = "Retrieves airport location by city from Amadeus API")
     @PostMapping("/airport-location")
     public ResponseEntity<JsonNode> getAirportLocation(@RequestBody FlightsAirportLocationsRequest locationsRequest) throws AmadeusAPIException {
         log.info("Received locations request: {}", locationsRequest);

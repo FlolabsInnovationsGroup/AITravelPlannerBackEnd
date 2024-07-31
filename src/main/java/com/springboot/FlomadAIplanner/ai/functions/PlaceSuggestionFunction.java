@@ -38,10 +38,13 @@ public class PlaceSuggestionFunction implements AIFunction<PlaceSuggestionFuncti
     @Override
     public JsonNode apply(NearbyPlacesRequestWrapper requestWrapper) {
         NearbyPlacesRequest request = requestWrapper.getRequest();
-        log.info("Fetching place suggestions for location: {}|{} with types: {}", request.getLocationRestriction().getCircle().getCenter().getLatitude(), request.getLocationRestriction().getCircle().getCenter().getLongitude(), String.join(", ", request.getIncludedTypes()));
-
+        log.info("Fetching place suggestions for location: {}|{} with types: {}",
+                request.getLocationRestriction().getCircle().getCenter().getLatitude(),
+                request.getLocationRestriction().getCircle().getCenter().getLongitude(), String.join(", ", request.getIncludedTypes()));
         try {
-            return googlePlacesService.searchNearbyPlaces(request);
+            JsonNode response = googlePlacesService.searchNearbyPlaces(request);
+            log.info("Received place suggestions from Google. Response length: {}", response.toString().length());
+            return response;
         } catch (GoogleAPIException e) {
             log.error("Error fetching place suggestions", e);
             return JsonNodeFactory.instance.objectNode().put("error", e.getMessage());

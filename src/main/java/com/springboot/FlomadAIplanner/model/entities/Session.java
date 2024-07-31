@@ -38,4 +38,13 @@ public class Session extends Model {
     @Field("updatedAt")
     @NotNull
     private LocalDateTime updatedAt;
+
+    public Session(String id, String userId, String title, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        super(id);
+        this.userId = userId;
+        this.title = title;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+
 }
