@@ -16,12 +16,14 @@ import java.util.List;
 @Slf4j
 @Component("customDatabaseChatMemory")
 public class CustomDatabaseChatMemory implements ChatMemory {
-
     private final Converter<org.springframework.ai.chat.messages.Message, Message> messageConverter;
     private final Converter<Message, org.springframework.ai.chat.messages.Message> messageRevertConverter;
     private final MessageService messageService;
 
-    public CustomDatabaseChatMemory(Converter<org.springframework.ai.chat.messages.Message, Message> messageConverter, Converter<Message, org.springframework.ai.chat.messages.Message> messageRevertConverter, MessageService messageService) {
+    public CustomDatabaseChatMemory(
+            Converter<org.springframework.ai.chat.messages.Message, Message> messageConverter,
+            Converter<Message, org.springframework.ai.chat.messages.Message> messageRevertConverter,
+            MessageService messageService) {
         this.messageConverter = messageConverter;
         this.messageRevertConverter = messageRevertConverter;
         this.messageService = messageService;
@@ -31,7 +33,6 @@ public class CustomDatabaseChatMemory implements ChatMemory {
     @Override
     public void add(String conversationId, List<org.springframework.ai.chat.messages.Message> messages) {
         // check if existance of the session in DB
-
 
         List<Message> newMessages = new ArrayList<>();
         for (org.springframework.ai.chat.messages.Message message : messages) {

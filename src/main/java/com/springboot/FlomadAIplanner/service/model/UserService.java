@@ -10,30 +10,28 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class UserService implements CrudService<User, String> {
 
     private final UserRepository userRepository;
     private final EmailService emailService;
     private final VerificationTokenService verificationTokenService;
     private final PasswordEncoder passwordEncoder;
 
-    @SuppressWarnings("all")
-    @Transactional
-    public User registerUser(User user) {
-        log.debug("Registering user with username: {}", user.getUsername());
-
-        user.setPassword(passwordEncoder.encode(user.getPassword())); // Use the injected PasswordEncoder
+    @Override
+    public User save(User user) {
+        log.debug("Saving user: {}", user);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setIsEmailVerified(false);
-
-
         User savedUser = userRepository.save(user);
-        log.info("User registered successfully with ID: {}", savedUser.getId());
+        log.info("User saved successfully with ID: {}", savedUser.getId());
 
         VerificationToken verificationToken = new VerificationToken(user);
-        verificationTokenService.saveVerificationToken(verificationToken);
+        verificationTokenService.save(verificationToken);
         log.info("Verification token created for user with ID: {}", savedUser.getId());
 
         sendVerificationEmail(savedUser);
@@ -42,15 +40,45 @@ public class UserService {
         return savedUser;
     }
 
+    @Override
+    public User findById(String id) {
+        log.debug("Finding user by ID: {}", id);
+        return userRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public List<User> findAll() {
+        log.debug("Finding all users");
+        return userRepository.findAll();
+    }
+
+    @Override
+    public User update(String id, User updatedUser) {
+        log.debug("Updating user with ID: {}", id);
+        updatedUser.setId(id);
+        return userRepository.save(updatedUser);
+    }
+
+    @Override
+    public void delete(String id) {
+        log.debug("Deleting user with ID: {}", id);
+        userRepository.deleteById(id);
+    }
+
+    @Transactional
+    @SuppressWarnings("all")
+    public User registerUser(User user) {
+        log.debug("Registering user with username: {}", user.getUsername());
+        return save(user);
+    }
+
     private void sendVerificationEmail(User user) {
         String subject = "Email Verification";
         String verificationToken = verificationTokenService.getVerificationTokenByUserId(user.getId()).getId();
-
         String text = "To verify your email, please click the following link: " +
                 "http://localhost:8080/api/auth/verify?token=" + verificationToken;
-
         emailService.sendSimpleMessage(user.getEmail(), subject, text);
-        log.info("Verification email sent to the following email: {}", user.getEmail());
+        log.info("Verification email sent to: {}", user.getEmail());
     }
 
     public User findByVerificationToken(String token) {
@@ -62,30 +90,15 @@ public class UserService {
     @Transactional
     public void verifyUser(User user) {
         log.debug("Verifying user with ID: {}", user.getId());
-        // update the user fields
-
         user.setIsEmailVerified(true);
         userRepository.save(user);
-        // delete the verification token after successful verification
         verificationTokenService.deleteVerificationTokenByUserId(user.getId());
         log.info("User verified successfully with ID: {}", user.getId());
     }
 
     public User findUserByUsername(String username) {
         log.debug("Finding user by username: {}", username);
-        User user = userRepository.findByUsername(username);
-        if (user == null) {
-            log.error("User not found with username: {}", username);
-        } else {
-            log.debug("User found: {}", user);
-        }
-        return user;
-    }
-
-    @SuppressWarnings("unused")
-    public User findUserByEmail(String email) {
-        log.debug("Finding user by email: {}", email);
-        return userRepository.findByEmail(email);
+        return userRepository.findByUsername(username);
     }
 
     public User findByUsernameOrEmail(String identifier) {
@@ -103,4 +116,3 @@ public class UserService {
         return userRepository.existsByEmail(email);
     }
 }
-

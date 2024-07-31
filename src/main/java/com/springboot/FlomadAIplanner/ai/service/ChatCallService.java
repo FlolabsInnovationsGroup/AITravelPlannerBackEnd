@@ -16,13 +16,6 @@ import java.util.Map;
 @Service
 public class ChatCallService extends AbstractChatService {
 
-    /**
-     * Constructor for ChatCallService.
-     *
-     * @param agentFactory           Factory for creating chat clients
-     * @param aiFunctionDescriptions List of available AI function descriptions
-     * @param promptsList            List of prompts
-     */
     public ChatCallService(AgentFactory agentFactory, List<String> aiFunctionDescriptions,
                            Map<String, String> promptsList) {
         super(agentFactory, aiFunctionDescriptions, promptsList);

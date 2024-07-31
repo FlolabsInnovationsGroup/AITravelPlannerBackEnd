@@ -1,5 +1,6 @@
 package com.springboot.FlomadAIplanner.ai.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +15,7 @@ public class AIController {
         this.aiService = aiService;
     }
 
+    @Operation(summary = "Not yet implemented")
     @PostMapping("/predict")
     public float[] predict(@RequestBody float[] inputData) {
         return aiService.predict(inputData);

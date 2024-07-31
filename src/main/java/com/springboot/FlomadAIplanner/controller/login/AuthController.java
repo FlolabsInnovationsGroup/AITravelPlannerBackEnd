@@ -10,6 +10,7 @@ import com.springboot.FlomadAIplanner.model.entities.login.User;
 import com.springboot.FlomadAIplanner.service.model.UserService;
 import com.springboot.FlomadAIplanner.util.JwtUtil;
 import com.springboot.FlomadAIplanner.validator.UserValidator;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +35,7 @@ public class AuthController {
     private final JwtUtil jwtUtil;
     private final UserValidator userValidator;
 
+    @Operation(summary = "Sign-up new user", description = "Registers a new user")
     @PostMapping("/signup")
     public ResponseEntity<String> signUp(@Valid @RequestBody UserDTO userDTO) {
         try {
@@ -48,6 +50,7 @@ public class AuthController {
         }
     }
 
+    @Operation(summary = "Verify user email", description = "Verifies user email using the verification token provided in the email")
     @GetMapping("/verify")
     public ResponseEntity<String> verifyUser(@RequestParam("token") String token) {
         User user = userService.findByVerificationToken(token);
@@ -58,6 +61,7 @@ public class AuthController {
         return ResponseEntity.ok("Email verified successfully.");
     }
 
+    @Operation(summary = "Login user", description = "Logs in a user")
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
         try {
@@ -69,7 +73,7 @@ public class AuthController {
             log.info("Authentication successful for user: {}", loginRequest.getUsername());
 
             // Validate user password matches
-            User user = userService.findUserByUsername(loginRequest.getUsername());
+            User user = userService.findByUsernameOrEmail(loginRequest.getUsername());
             if (user == null) {
                 log.error("User not found: {}", loginRequest.getUsername());
                 throw new UserNotFoundException("User not found: " + loginRequest.getUsername());
