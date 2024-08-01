@@ -180,13 +180,22 @@
             <artifactId>httpclient</artifactId>
             <version>4.5.13</version>
         </dependency>
-        <!--- ChatBot Dependency -->
+        <!--- ChatBot Dependencies -->
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
             <version>4.9.2</version>
         </dependency>
-        <!--- End ChatBot Dependency -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>17.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-web</artifactId>
+            <version>17.0.1</version>
+        </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
@@ -202,6 +211,7 @@
             <artifactId>javafx-base</artifactId>
             <version>19.0.2.1</version>
         </dependency>
+         <!--- End ChatBot Dependencies -->
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>

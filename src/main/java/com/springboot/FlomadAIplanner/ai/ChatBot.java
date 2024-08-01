@@ -7,7 +7,7 @@ import okhttp3.*;
 import java.io.IOException;
 
 public class ChatBot {
-    private static final String API_KEY = "YOUR_OPENAI_API_KEY";
+    private static final String API_KEY = "sk-proj-d0nUjcu0yw4LTsaEfcC4T3BlbkFJddRVLMdvTUGSKqthNUkF";
     private static final String API_URL = "https://api.openai.com/v1/engines/davinci-codex/completions";
 
     public String getResponse(String prompt) throws IOException {
