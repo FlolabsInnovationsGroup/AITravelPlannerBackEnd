@@ -76,7 +76,7 @@ public class UserService implements CrudService<User, String> {
         String subject = "Email Verification";
         String verificationToken = verificationTokenService.getVerificationTokenByUserId(user.getId()).getId();
         String text = "To verify your email, please click the following link: " +
-                "http://localhost:8080/api/auth/verify?token=" + verificationToken;
+                "https://aitravelplannerbackend-production.up.railway.app/api/auth/verify?token=" + verificationToken;
         emailService.sendSimpleMessage(user.getEmail(), subject, text);
         log.info("Verification email sent to: {}", user.getEmail());
     }
