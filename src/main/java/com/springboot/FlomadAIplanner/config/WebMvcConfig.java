@@ -11,7 +11,6 @@ import org.springframework.web.servlet.config.annotation.AsyncSupportConfigurer;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import java.util.Arrays;
 import java.util.concurrent.ThreadPoolExecutor;
 
 @Slf4j
@@ -57,7 +56,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         log.info("Adding CORS Mappings");
-        System.err.println("frontEndUrl: " + Arrays.toString(frontEndUrl));
         registry.addMapping("/**")
                 .allowedOrigins(frontEndUrl)
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")

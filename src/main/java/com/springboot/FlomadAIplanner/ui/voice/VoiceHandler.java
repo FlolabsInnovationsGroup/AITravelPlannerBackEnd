@@ -1,5 +1,6 @@
 package com.springboot.FlomadAIplanner.ui.voice;
 
+import com.springboot.FlomadAIplanner.ai.ChatBot;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
@@ -13,17 +14,19 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.springboot.FlomadAIplanner.ai.ChatBot;
-
 
 public class VoiceHandler {
 
+    private static final Logger logger = Logger.getLogger(VoiceHandler.class.getName());
     private final WebEngine webEngine;
     private TextArea chatArea;
-    private TextField userInputField; 
+    private TextField userInputField;
     private VoiceHandler voiceHandler;
     private ChatBot chatBot;
-    private static final Logger logger = Logger.getLogger(VoiceHandler.class.getName());
+
+    public VoiceHandler(WebEngine webEngine) {
+        this.webEngine = webEngine;
+    }
 
     public void start(Stage primaryStage) {
         // Start the voice recognition service or initialize any required resources here
@@ -45,8 +48,8 @@ public class VoiceHandler {
         Button voiceButton = new Button("Activate Voice");
         voiceHandler = new VoiceHandler(webEngine);
         voiceButton.setOnAction(event -> voiceHandler.startVoiceRecognition());
- 
-        // Create the Physical View of the ChatBot! 
+
+        // Create the Physical View of the ChatBot!
         WebView webView = new WebView();
         WebEngine webEngine = webView.getEngine();
         webEngine.load(getClass().getResource("/voice/voice.html").toExternalForm());
@@ -55,7 +58,7 @@ public class VoiceHandler {
                 webEngine.executeScript("window.java = window.java || {}; window.java.receiveSpeechInput = function(text) { javafx.receiveSpeechInput(text); };");
             }
         });
-        
+
         VBox vbox = new VBox(10, chatArea, userInputField, voiceButton, webView);
         Scene scene = new Scene(vbox, 400, 600);
         primaryStage.setScene(scene);
@@ -82,10 +85,6 @@ public class VoiceHandler {
                 chatArea.appendText("AI: Error fetching response\n");
             }
         }).start();
-    }
-    
-    public VoiceHandler(WebEngine webEngine) {
-        this.webEngine = webEngine;
     }
 
     public void startVoiceRecognition() {
