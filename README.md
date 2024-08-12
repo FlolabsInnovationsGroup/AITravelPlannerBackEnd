@@ -4,7 +4,7 @@ This guide will help you set up and run the application on your local machine.
 
 ## Prerequisites
 
-- Java Development Kit (JDK) 21
+- Java Development Kit (JDK) 17
 - Maven
 - MongoDB
 
