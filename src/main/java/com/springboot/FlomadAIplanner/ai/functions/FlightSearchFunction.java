@@ -19,33 +19,39 @@ import java.util.List;
 @RequiredArgsConstructor
 @Description("""
         Searches for available flights based on the provided criteria.
-        When you are using this function, make sure to provide IATA codes for the origin and destination airports.
+        When using this function, ensure you provide IATA codes for the origin and destination airports.
         The customer may provide the city name, but you need to convert it to the IATA code before calling this function.
-        If the customer just provided the departure time, It will be considered as a one-way trip.
-        If the customer provided the return date, It will be considered as a round trip.
-        And that means you need to call this function twice, once for the departure and once for the return.
+        If the customer provides only the departure time, it will be considered a one-way trip.
+        If the customer provides a return date, it will be considered a round trip.
+        You will need to call this function twice: once for the departure and once for the return.
         """)
-public class FlightSearchFunction implements AIFunction<FlightOffersPostRequest, FlightSearchFunction.FlightSearchResponse> {
+public class FlightSearchFunction implements AIFunction<FlightSearchFunction.FlightSearchRequest, FlightSearchFunction.FlightSearchResponse> {
 
     private final AmadeusFlightsService amadeusFlightsService;
     private final Converter<FlightOffersPostResponse, FlightSearchResponse> fromAPIToResponseConverter;
 
-
     @Override
-    public FlightSearchResponse apply(FlightOffersPostRequest request) {
+    public FlightSearchResponse apply(FlightSearchRequest request) {
         log.info("Searching for available flights information.");
 
         List<FlightDetail> flights = new ArrayList<>();
         try {
-            FlightOffersPostResponse departureResponse = amadeusFlightsService.getFlightOffersPost(request);
-            flights = fromAPIToResponseConverter.convert(departureResponse).getFlights();
+            for (FlightOffersPostRequest flightRequest : request.getRequests()) {
+                FlightOffersPostResponse response = amadeusFlightsService.getFlightOffersPost(flightRequest);
+                flights.addAll(fromAPIToResponseConverter.convert(response).getFlights());
+            }
         } catch (Exception e) {
-            log.error("Error getting departure flight offers", e);
+            log.error("Error getting flight offers", e);
             flights.add(new FlightDetail("Error", "Error", "Error", "Error", 0, ""));
         }
 
-        log.info("FlightsSearchFunction: Found {} flights. Response length: {}", flights.size(), flights.toString().length());
+        log.info("FlightSearchFunction: Found {} flights. Response length: {}", flights.size(), flights.toString().length());
         return new FlightSearchResponse(flights);
+    }
+
+    @Data
+    public static class FlightSearchRequest {
+        private final List<FlightOffersPostRequest> requests;
     }
 
     @Data

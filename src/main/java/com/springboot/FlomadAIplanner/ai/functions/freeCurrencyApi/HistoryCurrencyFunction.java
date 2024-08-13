@@ -9,11 +9,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Description;
 import org.springframework.stereotype.Component;
-
+import java.util.Arrays;
 
 @Slf4j
 @Component
@@ -35,19 +38,18 @@ public class HistoryCurrencyFunction implements AIFunction<HistoryCurrencyFuncti
     public JsonNode apply(HistoryCurrencyFunction.HistoryCurrencyRequest request) {
         log.info("Performing Get History Currency Request");
         try {
-            String currencies = StringUtils.joinWith(",",
-                    StringUtils.defaultString(request.baseCurrency),
-                    StringUtils.defaultString(request.currencies));
-            JsonNode mes = freeCurrencyService.getSupportedCurrencies(currencies);
+            List<String> currenciesList = Arrays.asList(request.getCurrencies().split(","));
+            JsonNode mes = freeCurrencyService.getSupportedCurrencies(currenciesList);
             if (mes.has("errors")) {
                 return mes;
             }
-            return freeCurrencyService.getHistoricalCurrency(request.date, request.baseCurrency, request.currencies);
+            return freeCurrencyService.getHistoricalCurrency(request.getDate(), request.getBaseCurrency(), currenciesList);
         } catch (Exception e) {
             log.error("Error Getting History Currency Request", e);
             return JsonNodeFactory.instance.objectNode().put("error", e.getMessage());
         }
     }
+
 
     @Data
     @NoArgsConstructor

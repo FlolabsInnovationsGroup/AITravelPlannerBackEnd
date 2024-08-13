@@ -16,6 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Description;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Slf4j
 @Component
 @Description("""
@@ -26,7 +29,7 @@ import org.springframework.stereotype.Component;
         Should be called after the CurrentLocationFunction to get the user's current location.
         P.S. If you have the accurate location details from the chat history,
         you can directly call this function to get place suggestions.""")
-public class PlaceSuggestionFunction implements AIFunction<PlaceSuggestionFunction.NearbyPlacesRequestWrapper, JsonNode> {
+public class PlaceSuggestionFunction implements AIFunction<PlaceSuggestionFunction.NearbyPlacesRequestWrapper, List<JsonNode>> {
     private final GooglePlacesService googlePlacesService;
 
     @Autowired
@@ -36,19 +39,24 @@ public class PlaceSuggestionFunction implements AIFunction<PlaceSuggestionFuncti
 
     @Valid
     @Override
-    public JsonNode apply(NearbyPlacesRequestWrapper requestWrapper) {
-        NearbyPlacesRequest request = requestWrapper.getRequest();
-        log.info("Fetching place suggestions for location: {}|{} with types: {}",
-                request.getLocationRestriction().getCircle().getCenter().getLatitude(),
-                request.getLocationRestriction().getCircle().getCenter().getLongitude(), String.join(", ", request.getIncludedTypes()));
-        try {
-            JsonNode response = googlePlacesService.searchNearbyPlaces(request);
-            log.info("Received place suggestions from Google. Response length: {}", response.toString().length());
-            return response;
-        } catch (GoogleAPIException e) {
-            log.error("Error fetching place suggestions", e);
-            return JsonNodeFactory.instance.objectNode().put("error", e.getMessage());
+    public List<JsonNode> apply(NearbyPlacesRequestWrapper requestWrapper) {
+        List<JsonNode> responses = new ArrayList<>();
+
+        for (NearbyPlacesRequest request : requestWrapper.getRequests()) {
+            log.info("Fetching place suggestions for location: {}|{} with types: {}",
+                    request.getLocationRestriction().getCircle().getCenter().getLatitude(),
+                    request.getLocationRestriction().getCircle().getCenter().getLongitude(), String.join(", ", request.getIncludedTypes()));
+            try {
+                JsonNode response = googlePlacesService.searchNearbyPlaces(request);
+                log.info("Received place suggestions from Google. Response length: {}", response.toString().length());
+                responses.add(response);
+            } catch (GoogleAPIException e) {
+                log.error("Error fetching place suggestions", e);
+                responses.add(JsonNodeFactory.instance.objectNode().put("error", e.getMessage()));
+            }
         }
+
+        return responses;
     }
 
     @Data
@@ -56,13 +64,8 @@ public class PlaceSuggestionFunction implements AIFunction<PlaceSuggestionFuncti
     @AllArgsConstructor
     public static class NearbyPlacesRequestWrapper {
 
-        @NotBlank
-        @JsonPropertyDescription("Required. The destination place name. It is the same place name as we are looking for suggested places right now.")
-        private String destination;
-
         @Valid
-        @JsonPropertyDescription("Required. The nearby places request containing the search term and filters for the search.")
-        private NearbyPlacesRequest request;
+        @JsonPropertyDescription("List of nearby places requests containing the search terms and filters for each search.")
+        private List<NearbyPlacesRequest> requests;
     }
-
 }

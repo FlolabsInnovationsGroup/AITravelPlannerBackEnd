@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -36,7 +37,7 @@ public class FreeCurrencyController {
      */
     @Operation(summary = "Get supported currencies by FreeCurrency API", description = "Retrieves a list of supported currencies by FreeCurrency API")
     @GetMapping("/currencies")
-    public ResponseEntity<JsonNode> getSupportCurrencies(@RequestParam @Nullable String currencies) throws FreeCurrencyAPIException {
+    public ResponseEntity<JsonNode> getSupportCurrencies(@RequestParam @Nullable List<String> currencies) throws FreeCurrencyAPIException {
         log.info("Received currencies: {}", currencies);
 
         JsonNode response = freeCurrencyService.getSupportedCurrencies(currencies);
@@ -71,7 +72,7 @@ public class FreeCurrencyController {
     @Operation(summary = "Get latest currency exchange rate", description = "Retrieves the latest currency exchange rate")
     @GetMapping("/latest")
     public ResponseEntity<JsonNode> getLatestCurrency(@RequestParam @Nullable String base,
-                                                      @RequestParam @Nullable String currencies) throws FreeCurrencyAPIException {
+                                                      @RequestParam @Nullable List<String> currencies) throws FreeCurrencyAPIException {
         log.info("Received currencies: {}, base currencies: {}", currencies, base);
 
         JsonNode response = freeCurrencyService.getLatestCurrency(base, currencies);
@@ -79,7 +80,6 @@ public class FreeCurrencyController {
         log.info("Received response from FreeCurrency API");
         return ResponseEntity.ok(response);
     }
-
     /**
      * sample request parameters: /history?base=EUR&currencies=USD,CAD,CNY,EUR&date=2022-12-31.
      *
@@ -92,7 +92,7 @@ public class FreeCurrencyController {
     @GetMapping("/history")
     public ResponseEntity<JsonNode> getHistoricalCurrency(@RequestParam @NotNull String date,
                                                           @RequestParam @Nullable String base,
-                                                          @RequestParam @Nullable String currencies) throws FreeCurrencyAPIException {
+                                                          @RequestParam @Nullable List<String> currencies) throws FreeCurrencyAPIException {
         log.info("Received date: {} currencies: {}, base currencies: {}", date, currencies, base);
 
         JsonNode response = freeCurrencyService.getHistoricalCurrency(date, base, currencies);
