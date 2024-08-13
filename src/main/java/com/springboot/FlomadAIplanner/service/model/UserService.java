@@ -6,6 +6,7 @@ import com.springboot.FlomadAIplanner.model.repository.login.UserRepository;
 import com.springboot.FlomadAIplanner.service.util.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +22,9 @@ public class UserService implements CrudService<User, String> {
     private final EmailService emailService;
     private final VerificationTokenService verificationTokenService;
     private final PasswordEncoder passwordEncoder;
+
+    @Value("${application.backend.url}")
+    private String backendUrl;
 
     @Override
     public User save(User user) {
@@ -76,7 +80,7 @@ public class UserService implements CrudService<User, String> {
         String subject = "Email Verification";
         String verificationToken = verificationTokenService.getVerificationTokenByUserId(user.getId()).getId();
         String text = "To verify your email, please click the following link: " +
-                "http://localhost:8080/api/auth/verify?token=" + verificationToken;
+                backendUrl + "/api/auth/verify?token=" + verificationToken;
         emailService.sendSimpleMessage(user.getEmail(), subject, text);
         log.info("Verification email sent to: {}", user.getEmail());
     }
@@ -96,6 +100,7 @@ public class UserService implements CrudService<User, String> {
         log.info("User verified successfully with ID: {}", user.getId());
     }
 
+    @SuppressWarnings("unused")
     public User findUserByUsername(String username) {
         log.debug("Finding user by username: {}", username);
         return userRepository.findByUsername(username);

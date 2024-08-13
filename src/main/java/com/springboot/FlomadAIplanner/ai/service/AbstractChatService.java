@@ -3,6 +3,8 @@ package com.springboot.FlomadAIplanner.ai.service;
 import com.springboot.FlomadAIplanner.ai.agents.text.TextAgent;
 import com.springboot.FlomadAIplanner.ai.config.cnst.AIModel;
 import com.springboot.FlomadAIplanner.ai.factory.AgentFactory;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,16 +19,19 @@ import java.util.Map;
  * for interacting with the chat client, retrieving function suggestions, and processing prompts.
  */
 @Slf4j
+@Getter
 public abstract class AbstractChatService {
 
     // Factory for creating chat client instances
-    protected final AgentFactory agentFactory;
+    private final AgentFactory agentFactory;
     // List of AI function descriptions available for use
-    protected final List<String> aiFunctionDescriptions;
+    private final List<String> aiFunctionDescriptions;
     // Prompts stored as a map
-    protected final Map<String, String> promptsList;
+    private final Map<String, String> promptsList;
+
     @Value("classpath:/templates/PromptAndFunctionSuggestionsPrompt.txt")
-    protected Resource promptAndFunctionSuggestionsPrompt;
+    @Setter
+    private Resource promptAndFunctionSuggestionsPrompt;
 
     /**
      * Constructor for AbstractChatService.

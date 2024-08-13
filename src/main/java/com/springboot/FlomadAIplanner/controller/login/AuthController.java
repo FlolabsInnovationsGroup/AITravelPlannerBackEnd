@@ -45,7 +45,7 @@ public class AuthController {
             userService.registerUser(user);
             return ResponseEntity.ok("User registered successfully. Please check your email for verification instructions.");
         } catch (UserAlreadyExistsException e) {
-            log.error("Login failed for user: {}. Error: {}", userDTO.getUsername(), e.getMessage());
+            log.error("Sign-up failed for user: {}. Error: {}", userDTO.getUsername(), e.getMessage());
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Sign-up failed: " + e.getMessage());
         }
     }
