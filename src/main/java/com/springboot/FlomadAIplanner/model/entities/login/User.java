@@ -34,7 +34,9 @@ public class User extends Model {
     @NotBlank
     private String email;
 
-
     @Field("isEmailVerified")
     private Boolean isEmailVerified = false;
+
+    @Field("provider")
+    private String provider;
 }

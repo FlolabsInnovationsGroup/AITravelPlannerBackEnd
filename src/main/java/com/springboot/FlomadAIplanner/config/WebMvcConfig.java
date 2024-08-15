@@ -4,13 +4,21 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.AsyncSupportConfigurer;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.util.Arrays;
 import java.util.concurrent.ThreadPoolExecutor;
 
 @Slf4j
@@ -20,6 +28,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Value("${application.front-end.url}")
     private String[] frontEndUrl;
+
+    @Value("${application.backend.url}")
+    private String backEndUrl;
 
     /**
      * Configures the task executor for asynchronous processing.
@@ -54,12 +65,34 @@ public class WebMvcConfig implements WebMvcConfigurer {
     }
 
     @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/static/**")
+                .addResourceLocations("classpath:/static/");
+        // Ensure no overlap with OAuth2 login path
+    }
+
+    @Override
     public void addCorsMappings(CorsRegistry registry) {
         log.info("Adding CORS Mappings");
         registry.addMapping("/**")
-                .allowedOrigins(frontEndUrl)
+                .allowedOrigins(combineOrigins(frontEndUrl, backEndUrl))
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);
+    }
+
+    private String[] combineOrigins(String[] frontEndUrls, String backEndUrl) {
+        // Create a new array with the length of frontEndUrls + 1 for the backEndUrl
+        String[] origins = new String[frontEndUrls.length + 1];
+
+        // Copy the frontEndUrls array into the new array
+        System.arraycopy(frontEndUrls, 0, origins, 0, frontEndUrls.length);
+
+        // Add the backEndUrl as the last element in the new array
+        origins[frontEndUrls.length] = backEndUrl;
+
+        log.info("Origins: {}", (Object) origins);
+
+        return origins;
     }
 }

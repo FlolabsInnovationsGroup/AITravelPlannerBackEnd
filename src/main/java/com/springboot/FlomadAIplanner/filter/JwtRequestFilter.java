@@ -30,6 +30,13 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             throws IOException {
 
         try {
+            String requestURI = request.getRequestURI();
+            if (requestURI.startsWith("/oauth2/authorization")) {
+                chain.doFilter(request, response);
+                log.info("JWT filter passed!!!!!!!!!!!!!");
+                return;
+            }
+
             final String authorizationHeader = request.getHeader("Authorization");
             log.info("authorizationHeader:{}", authorizationHeader);
 

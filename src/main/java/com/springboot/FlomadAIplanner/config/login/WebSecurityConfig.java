@@ -16,15 +16,22 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
-
     private final UserDetailsService userDetailsService;
     private final JwtRequestFilter jwtRequestFilter;
     private final PasswordEncoder passwordEncoder;
+    private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+    private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
 
-    public WebSecurityConfig(UserDetailsService userDetailsService, JwtRequestFilter jwtRequestFilter, PasswordEncoder passwordEncoder) {
+    public WebSecurityConfig(UserDetailsService userDetailsService,
+                             JwtRequestFilter jwtRequestFilter,
+                             PasswordEncoder passwordEncoder,
+                             CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler,
+                             CustomAuthenticationFailureHandler customAuthenticationFailureHandler) {
         this.userDetailsService = userDetailsService;
         this.jwtRequestFilter = jwtRequestFilter;
         this.passwordEncoder = passwordEncoder;
+        this.customAuthenticationSuccessHandler = customAuthenticationSuccessHandler;
+        this.customAuthenticationFailureHandler = customAuthenticationFailureHandler;
     }
 
     @Bean
@@ -41,15 +48,16 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .securityMatcher("sessions/**", "users/**", "messages/**", "destinations/**")
+//                .securityMatcher("sessions/**", "users/**", "messages/**", "destinations/**")
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(
                                 "/api/auth/signup",
+                                "/api/auth/login",
                                 "/api/auth/verify",
                                 "/api/chat/call",
                                 "/api/chat/stream",
-                                "/api/auth/login"
+                                "/oauth2/**", "/login/oauth2/**"
                         )
                         .permitAll()
                         .requestMatchers(
@@ -58,6 +66,14 @@ public class WebSecurityConfig {
                                 "/swagger-ui.html")
                         .permitAll()
                         .anyRequest().authenticated()
+                )
+                .oauth2Login(
+                        oauth2 -> oauth2
+                        .authorizationEndpoint(authorization  -> authorization
+                                .baseUri("/oauth2/authorization")
+                        )
+                        .successHandler(customAuthenticationSuccessHandler)
+                        .failureHandler(customAuthenticationFailureHandler)
                 )
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
