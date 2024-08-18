@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
+
 @Component
 @RequiredArgsConstructor
 public class UserValidator {
@@ -23,6 +25,15 @@ public class UserValidator {
         if (userService.existsByEmail(userDTO.getEmail())) {
             throw new UserAlreadyExistsException("User with email " + userDTO.getEmail() + " already exists.");
         }
+    }
+
+    public User validateOAuthUserDoesNotExist(UserDTO userDTO) {
+        User user = userService.findByUsernameOrEmail(userDTO.getUsername());
+        if (user == null) {
+            user = userService.findByUsernameOrEmail(userDTO.getEmail());
+        }
+
+        return user;
     }
 
     public void validateUserPasswordMatches(User user, String password) throws UserNotFoundException {
