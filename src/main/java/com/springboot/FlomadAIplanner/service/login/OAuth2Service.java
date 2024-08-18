@@ -31,7 +31,7 @@ public class OAuth2Service {
             user = userService.registerUser(user);
         } else {
             // update
-            boolean isPresent = ("," + user.getProvider() + ",").contains("," + userDTO.getProvider() + ",");
+            boolean isPresent = (user.getProvider()).contains(userDTO.getProvider());
             if (!isPresent) {
                 String id = user.getId();
                 log.info("OAuth User {} Update", userDTO.getUsername());
