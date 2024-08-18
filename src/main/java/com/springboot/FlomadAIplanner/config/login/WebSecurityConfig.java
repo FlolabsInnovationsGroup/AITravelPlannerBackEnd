@@ -1,6 +1,8 @@
 package com.springboot.FlomadAIplanner.config.login;
 
 import com.springboot.FlomadAIplanner.filter.JwtRequestFilter;
+import com.springboot.FlomadAIplanner.handler.login.CustomAuthenticationFailureHandler;
+import com.springboot.FlomadAIplanner.handler.login.CustomAuthenticationSuccessHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

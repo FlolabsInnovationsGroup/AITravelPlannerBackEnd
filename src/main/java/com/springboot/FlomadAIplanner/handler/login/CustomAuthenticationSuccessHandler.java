@@ -1,21 +1,13 @@
-package com.springboot.FlomadAIplanner.config.login;
+package com.springboot.FlomadAIplanner.handler.login;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.springboot.FlomadAIplanner.dto.auth.LoginResponse;
-import com.springboot.FlomadAIplanner.model.entities.login.User;
-import com.springboot.FlomadAIplanner.service.login.AuthService;
-import com.springboot.FlomadAIplanner.service.login.OAuth2Service;
-import com.springboot.FlomadAIplanner.validator.UserValidator;
 import com.springboot.FlomadAIplanner.dto.UserDTO;
-import com.springboot.FlomadAIplanner.dto.auth.LoginRequest;
+import com.springboot.FlomadAIplanner.service.login.OAuth2Service;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -41,13 +33,16 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
             String username = oauthUser.getAttribute("name");
             String email = oauthUser.getAttribute("email");
             String registrationId = oauthToken.getAuthorizedClientRegistrationId();
+            log.info("OAuth User: {} try login with: {}",username, registrationId);
 
             UserDTO userDTO = new UserDTO(username, "", email, registrationId);
+            log.debug("User: {}", userDTO);
+
             String token = oauth2Service.handleOAuthLogin(userDTO);
+            log.debug("OAuth User {} Login Success! Token: {}", userDTO.getUsername(), token);
 
             response.sendRedirect(frontUrl + "/auth-redirect?token=" + token);
 
-//            log.info("registrationId: {}", registrationId);
         } else {
             throw new IllegalArgumentException("Authentication is not an instance of OAuth2AuthenticationToken");
         }

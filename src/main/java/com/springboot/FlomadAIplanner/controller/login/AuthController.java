@@ -6,6 +6,7 @@ import com.springboot.FlomadAIplanner.dto.auth.LoginResponse;
 import com.springboot.FlomadAIplanner.exceptions.validators.UserAlreadyExistsException;
 import com.springboot.FlomadAIplanner.service.login.AuthService;
 import com.springboot.FlomadAIplanner.validator.UserValidator;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,7 @@ public class AuthController {
     private final AuthService authService;
     private final UserValidator userValidator;
 
+    @Operation(summary = "Sign-up new user", description = "Registers a new user")
     @PostMapping("/signup")
     public ResponseEntity<String> signUp(@Valid @RequestBody UserDTO userDTO) {
         try {
@@ -35,12 +37,14 @@ public class AuthController {
         }
     }
 
+    @Operation(summary = "Verify user email", description = "Verifies user email using the verification token provided in the email")
     @GetMapping("/verify")
     public ResponseEntity<String> verifyUser(@RequestParam("token") String token) {
         return authService.verifyUser(token);
 
     }
 
+    @Operation(summary = "Login user", description = "Logs in a user")
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
         return authService.login(loginRequest);
