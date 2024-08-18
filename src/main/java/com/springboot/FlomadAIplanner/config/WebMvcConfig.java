@@ -9,6 +9,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.servlet.config.annotation.AsyncSupportConfigurer;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.concurrent.ThreadPoolExecutor;
@@ -18,8 +19,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 @EnableAsync
 public class WebMvcConfig implements WebMvcConfigurer {
 
-    @Value("${application.front-end.url}")
-    private String[] frontEndUrl;
+    @Value("${application.cors.allowed.origins}")
+    private String[] allowedOriginUrls;
 
     /**
      * Configures the task executor for asynchronous processing.
@@ -54,10 +55,17 @@ public class WebMvcConfig implements WebMvcConfigurer {
     }
 
     @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/static/**")
+                .addResourceLocations("classpath:/static/");
+        // Ensure no overlap with OAuth2 login path
+    }
+
+    @Override
     public void addCorsMappings(CorsRegistry registry) {
         log.info("Adding CORS Mappings");
         registry.addMapping("/**")
-                .allowedOrigins(frontEndUrl)
+                .allowedOrigins(allowedOriginUrls)
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);

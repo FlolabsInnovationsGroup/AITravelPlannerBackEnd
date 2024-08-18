@@ -21,4 +21,6 @@ public class UserDTO {
     @NotBlank(message = "Email is mandatory")
     @Email(message = "Email should be valid")
     private String email;
+
+    private String provider;
 }

@@ -12,6 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -28,9 +31,19 @@ public class UserService implements CrudService<User, String> {
 
     @Override
     public User save(User user) {
+
         log.debug("Saving user: {}", user);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setIsEmailVerified(false);
+
+        String password;
+        if (Objects.equals(user.getPassword(), "")) {
+            password = passwordEncoder.encode(UUID.randomUUID().toString());
+        } else {
+            password = passwordEncoder.encode(user.getPassword());
+        }
+
+        user.setPassword(password);
+        user.setIsEmailVerified(!Objects.equals(user.getProvider(), "none"));
+
         User savedUser = userRepository.save(user);
         log.info("User saved successfully with ID: {}", savedUser.getId());
 
@@ -38,8 +51,10 @@ public class UserService implements CrudService<User, String> {
         verificationTokenService.save(verificationToken);
         log.info("Verification token created for user with ID: {}", savedUser.getId());
 
-        sendVerificationEmail(savedUser);
-        log.debug("Verification email sent to user with ID: {}", savedUser.getId());
+        if (Objects.equals(savedUser.getProvider(), "none")) {
+            sendVerificationEmail(savedUser);
+            log.debug("Verification email sent to user with ID: {}", savedUser.getId());
+        }
 
         return savedUser;
     }
