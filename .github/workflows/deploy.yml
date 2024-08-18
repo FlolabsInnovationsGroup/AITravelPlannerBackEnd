@@ -37,7 +37,7 @@ jobs:
         run: |
           ssh -i ~/.ssh/id_rsa ubuntu@ec2-54-208-146-208.compute-1.amazonaws.com '
           cd ~/app
-          sudo systemctl stop flomad-ai-planner
+          sudo systemctl stop flomad
           mv *.jar Flomad-AI-planner-0.0.1-SNAPSHOT.jar
-          sudo systemctl start flomad-ai-planner
+          sudo systemctl start flomad
           '
