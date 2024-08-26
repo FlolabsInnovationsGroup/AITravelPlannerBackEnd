@@ -22,6 +22,7 @@ public class UserRevertConverter implements Converter<UserDTO, User> {
         user.setUsername(source.getUsername());
         user.setPassword(source.getPassword());
         user.setEmail(source.getEmail());
+        user.setProvider(source.getProvider());
 
         return user;
     }
