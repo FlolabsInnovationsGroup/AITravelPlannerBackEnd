@@ -7,7 +7,6 @@ import com.springboot.FlomadAIplanner.dto.google.NearbyPlacesRequest;
 import com.springboot.FlomadAIplanner.exceptions.api.GoogleAPIException;
 import com.springboot.FlomadAIplanner.service.google.GooglePlacesService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
