@@ -1,6 +1,7 @@
 package com.springboot.FlomadAIplanner.ai.functions;
 
 
+import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.springboot.FlomadAIplanner.converter.Converter;
 import com.springboot.FlomadAIplanner.dto.amadeus.FlightOffersPostRequest;
 import com.springboot.FlomadAIplanner.dto.amadeus.FlightOffersPostResponse;
@@ -51,6 +52,7 @@ public class FlightSearchFunction implements AIFunction<FlightSearchFunction.Fli
 
     @Data
     public static class FlightSearchRequest {
+        @JsonPropertyDescription("A list of flight offer requests, each containing the criteria for searching flights, such as origin, destination, and dates.")
         private final List<FlightOffersPostRequest> requests;
     }
 

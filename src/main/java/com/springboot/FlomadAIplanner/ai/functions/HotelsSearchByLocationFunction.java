@@ -25,7 +25,7 @@ import java.util.List;
         Before calling this function, use the "PlaceTextSearchFunction" to get the exact location (longitude and latitude) of a required place.
         Geocode search allows specifying exact geographical points using latitude and longitude, and filters based on proximity, amenities, ratings, and hotel sources.
         This method provides a way to discover hotels that are precisely tailored to geographical and preference-based needs.
-        To get the exact location (Google Maps link) for each of the found hotels, you must use the PlaceTextSearchFunction for every found hotel separately.""")
+        To get the exact location (Google Maps link) for each of the found hotels, YOU MUST use the PlaceTextSearchFunction for EVERY found hotel separately.""")
 public class HotelsSearchByLocationFunction implements AIFunction<HotelsSearchByLocationFunction.HotelSearchRequestWrapper, List<HotelSearchByGeocodeResponse>> {
 
     private final AmadeusHotelsSearchService amadeusHotelsSearchService;

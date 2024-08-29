@@ -32,7 +32,7 @@ import java.util.List;
             public JsonNode apply(SupportCurrencyRequest request) {
                 log.info("Performing Get Supported Currency Request");
                 try {
-                    List<String> currenciesList = request.currencies != null ? List.of(request.currencies.split(",")) : List.of();
+                    List<String> currenciesList = request.getCurrencies() != null ? request.getCurrencies() : List.of();
                     return freeCurrencyService.getSupportedCurrencies(currenciesList);
                 } catch (Exception e) {
                     log.error("Error Getting Supported Currency Request", e);
@@ -44,6 +44,7 @@ import java.util.List;
             @NoArgsConstructor
             @AllArgsConstructor
             public static class SupportCurrencyRequest {
-                private String currencies;  // A comma-separated string of currency codes
+                @JsonPropertyDescription("A list of currency codes to retrieve support information for")
+                private List<String> currencies;  // A comma-separated string of currency codes
             }
         }
