@@ -67,6 +67,8 @@ public class WebSecurityConfig {
                                 "/swagger-ui/**",
                                 "/swagger-ui.html")
                         .permitAll()
+                        .requestMatchers("/secured/admin").hasRole("ADMIN")
+                        .requestMatchers("/secured/user").hasRole("USER")
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(
