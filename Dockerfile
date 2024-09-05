@@ -1,11 +1,32 @@
-# Use an official Java runtime as a parent image
-FROM openjdk:11-jre-slim
+# Use an official Maven image to build the application
+FROM maven:3.8.5-openjdk-17 AS build
 
 # Set the working directory in the container
 WORKDIR /app
 
-# Copy the jar file into the container
-COPY target/Flomad-AI-planner-0.0.1-SNAPSHOT.jar /app/Flomad-AI-planner-0.0.1-SNAPSHOT.jar
+# Copy the pom.xml and source code
+COPY pom.xml .
+COPY src ./src
 
-# Command to run the application
-CMD ["java", "-jar", "Flomad-AI-planner-0.0.1-SNAPSHOT.jar"]
+# Copy the .env file
+COPY .env .
+
+
+# Package the application
+RUN mvn clean package
+
+# Use an official OpenJDK runtime as a parent image
+FROM openjdk:17-jdk-slim
+
+# Set the working directory in the container
+WORKDIR /app
+
+
+# Copy the jar file from the build stage
+COPY --from=build /app/target/*.jar app.jar
+
+# Expose the application port
+EXPOSE 8080
+
+# Run the jar file
+ENTRYPOINT ["java", "-jar", "app.jar"]
