@@ -6,10 +6,13 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.io.Serial;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
@@ -21,17 +24,17 @@ public class User extends Model {
     @Field("username")
     @EqualsAndHashCode.Include
     @Indexed(unique = true)
-    @NotBlank
+    @NotBlank(message = "Username cannot be blank")
     private String username;
 
     @Field("password")
-    @NotBlank
+    @NotBlank(message = "Password cannot be blank")
     private String password;
 
     @Field("email")
     @Indexed(unique = true)
-    @Email
-    @NotBlank
+    @Email(message = "Email should be valid")
+    @NotBlank(message = "Email cannot be blank")
     private String email;
 
     @Field("isEmailVerified")
@@ -39,4 +42,8 @@ public class User extends Model {
 
     @Field("provider")
     private String provider;
+
+    @DBRef
+    @Field("roles")
+    private Set<Role> roles = new HashSet<>();  //private Set<Role> roles = new, HashSet<>(); this ensures that even if no roles are assigned, roles will not be null.
 }
