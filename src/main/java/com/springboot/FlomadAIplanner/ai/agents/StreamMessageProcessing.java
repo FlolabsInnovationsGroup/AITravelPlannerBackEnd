@@ -12,5 +12,5 @@ public interface StreamMessageProcessing<S> {
      * @param aiMessage the message to process
      * @return the stream
      */
-    S processStreamMessage(AIMessageDTO aiMessage);
+    S processStreamMessage(AIMessageDTO aiMessage, String sessionID);
 }

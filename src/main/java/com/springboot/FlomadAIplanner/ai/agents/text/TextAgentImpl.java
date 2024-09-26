@@ -27,7 +27,7 @@ public class TextAgentImpl<S, F> extends AbstractTextAgent<S, F> {
     }
 
     @Override
-    public S processCallMessage(AIMessageDTO aiMessage) {
+    public S processCallMessage(AIMessageDTO aiMessage, String sessionID) {
         log.debug("Processing call message: {}", aiMessage.getMessage());
         ChatClientSuggestedProperties messageProperties = super.getSuggestedChatClientProperties(aiMessage.getMessage());
 
@@ -46,7 +46,7 @@ public class TextAgentImpl<S, F> extends AbstractTextAgent<S, F> {
     }
 
     @Override
-    public F processStreamMessage(AIMessageDTO aiMessage) {
+    public F processStreamMessage(AIMessageDTO aiMessage, String sessionID) {
         log.debug("Processing stream message: {}", aiMessage.getMessage());
         ChatClientSuggestedProperties messageProperties = super.getSuggestedChatClientProperties(aiMessage.getMessage());
 

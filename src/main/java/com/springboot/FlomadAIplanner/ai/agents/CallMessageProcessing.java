@@ -12,5 +12,5 @@ public interface CallMessageProcessing<C> {
      * @param aiMessage the message to process
      * @return the call
      */
-    C processCallMessage(AIMessageDTO aiMessage);
+    C processCallMessage(AIMessageDTO aiMessage, String sessionID);
 }

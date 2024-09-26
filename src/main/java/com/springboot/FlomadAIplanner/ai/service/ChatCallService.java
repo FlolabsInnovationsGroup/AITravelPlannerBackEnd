@@ -26,20 +26,21 @@ public class ChatCallService extends AbstractChatService {
      * Processes an AI message and determines the appropriate response.
      *
      * @param aiMessage The user AI message DTO
+     * @param sessionId  The user's guest session ID
      * @return The response content
      */
-    public String processMessage(AIMessageDTO aiMessage) {
+    public String processMessage(AIMessageDTO aiMessage, String sessionId) {
         // Check for null values in aiMessage and its properties
         if (aiMessage == null || aiMessage.getMessage() == null) {
             log.error("AIMessageDTO or its message is null");
             throw new IllegalArgumentException("AIMessageDTO and its message cannot be null");
         }
 
-        log.info("Processing aiMessage: {}; sessionId: {}", aiMessage.getMessage(), aiMessage.getSessionId());
+        log.info("Processing aiMessage: {}; sessionId: {}", aiMessage.getMessage(), sessionId);
 
         try {
-            // Process the message using the chat agent
-            return (String) getChatAgent().processCallMessage(aiMessage);
+            // Process the message using the chat agent, potentially using the sessionId
+            return (String) getChatAgent().processCallMessage(aiMessage, sessionId);
         } catch (NullPointerException e) {
             // Log the error and handle the exception
             log.error("NullPointerException occurred while processing the message: {}", e.getMessage(), e);
