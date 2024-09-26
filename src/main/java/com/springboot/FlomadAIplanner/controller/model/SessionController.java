@@ -33,9 +33,6 @@ public class SessionController implements CrudController<SessionDTO, String> {
     @Override
     @PostMapping
     public ResponseEntity<SessionDTO> create(@RequestBody SessionDTO sessionDTO) {
-        User user = currentUserUtil.getCurrentUserFromSecurityContext();
-        String userId = user.getId();
-        sessionDTO.setUserId(userId);
         Session session = sessionRevertConverter.convert(sessionDTO);
         log.info("Creating new session: {}", session);
         Session savedSession = sessionService.save(session);
@@ -68,9 +65,7 @@ public class SessionController implements CrudController<SessionDTO, String> {
     @PutMapping("/{id}")
     public ResponseEntity<SessionDTO> update(@PathVariable String id, @RequestBody SessionDTO updatedEntity) {
         log.info("Updating session with id: {}", id);
-        User user = currentUserUtil.getCurrentUserFromSecurityContext();
         updatedEntity.setSessionId(id);
-        updatedEntity.setUserId(user.getId());
         Session session = sessionRevertConverter.convert(updatedEntity);
         Session updatedSession = sessionService.update(id, session);
         SessionDTO updatedDTO = sessionToDTOConverter.convert(updatedSession);
