@@ -12,7 +12,7 @@ This guide will help you set up and run the application on your local machine.
 
 ### Install Java
 
-Download and install JDK 21 from either:
+Download and install JDK 17 from either:
 
 - [Oracle JDK](https://www.oracle.com/java/technologies/javase-jdk21-downloads.html)
 - [OpenJDK](https://jdk.java.net/21/)
@@ -27,9 +27,9 @@ javac -version
 You should see an output similar to:
 
 ```
-java version "21.0.1"
-Java(TM) SE Runtime Environment (build 21.0.1+12)
-Java HotSpot(TM) 64-Bit Server VM (build 21.0.1+12, mixed mode)
+java 17.0.12 2024-07-16 LTS
+Java(TM) SE Runtime Environment (build 17.0.12+8-LTS-286)
+Java HotSpot(TM) 64-Bit Server VM (build 17.0.12+8-LTS-286, mixed mode, sharing)
 ```
 
 ### Install Maven
@@ -49,7 +49,7 @@ You should see an output similar to:
 ```
 Apache Maven 3.8.6 (b8d79a7c59fda6978d92783121db5dcac4f82f89)
 Maven home: /path/to/maven
-Java version: 21.0.1, vendor: Oracle Corporation, runtime: /path/to/jdk-21
+Java version: 17.0.12, vendor: Oracle Corporation, runtime: /path/to/jdk-17
 Default locale: en_US, platform encoding: UTF-8
 OS name: "your_os_name", version: "your_os_version", arch: "your_os_architecture", family: "your_os_family"
 ```
@@ -125,7 +125,7 @@ Developing AI functionalities in a Spring application involves:
     * Integrating AI libraries (e.g., TensorFlow, DL4J)
     * Building RESTful APIs to expose AI functionalities
     * Handling data processing and model inference
-    
+
 # 2. Clarification Requests
 
 Do you have a specific AI model or task in mind (e.g., image recognition, NLP)?
@@ -147,6 +147,6 @@ High-Level Steps:
 5. Data Processing
     * Implement data processing utilities.
 6. Model Integration
-    * Integrate the AI model and handle inference requests. 
+    * Integrate the AI model and handle inference requests.
 
-# Flomad MasterClass 
+# Flomad MasterClass
