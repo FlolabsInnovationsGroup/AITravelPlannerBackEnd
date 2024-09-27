@@ -1,0 +1,66 @@
+package com.springboot.FlomadAIplanner;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.util.Assert;
+
+import com.springboot.FlomadAIplanner.model.entities.Destination;
+import com.springboot.FlomadAIplanner.service.model.DestinationsService;
+
+import java.util.List;
+
+@SpringBootTest
+public class DestinationsServiceTest {
+
+    @Autowired
+    private DestinationsService destinationsService;
+
+    @Test
+    public void testSaveDestination() {
+        Destination destination = new Destination();
+        destination.setId("1");
+        destination.setDestinationName("Test Destination");
+
+        Destination savedDestination = destinationsService.save(destination);
+
+        Assert.notNull(savedDestination, "Saved destination should not be null");
+        Assert.isTrue(savedDestination.getDestinationName().equals("Test Destination"), "Destination name should be 'Test Destination'");
+    }
+
+    @Test
+    public void testFindDestinationById() {
+        String id = "1";
+        Destination foundDestination = destinationsService.findById(id);
+
+        Assert.notNull(foundDestination, "Found destination should not be null");
+        Assert.isTrue(foundDestination.getId().equals(id), "Destination ID should match");
+    }
+
+    @Test
+    public void testFindAllDestinations() {
+        List<Destination> destinations = destinationsService.findAll();
+
+        Assert.notEmpty(destinations, "Destinations list should not be empty");
+    }
+
+    @Test
+    public void testUpdateDestination() {
+        String id = "1";
+        Destination updatedDestination = new Destination();
+        updatedDestination.setDestinationName("Updated Destination");
+
+        Destination savedDestination = destinationsService.update(id, updatedDestination);
+
+        Assert.isTrue(savedDestination.getDestinationName().equals("Updated Destination"), "Destination name should be 'Updated Destination'");
+    }
+
+    @Test
+    public void testDeleteDestination() {
+        String id = "1";
+        destinationsService.delete(id);
+
+        Destination deletedDestination = destinationsService.findById(id);
+        Assert.isNull(deletedDestination, "Deleted destination should be null");
+    }
+}

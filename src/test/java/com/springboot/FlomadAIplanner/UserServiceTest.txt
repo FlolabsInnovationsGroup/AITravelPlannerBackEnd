@@ -1,0 +1,68 @@
+package com.springboot.FlomadAIplanner;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.util.Assert;
+
+import com.springboot.FlomadAIplanner.model.entities.User;
+import com.springboot.FlomadAIplanner.service.model.UserService;
+
+import java.util.List;
+
+@SpringBootTest
+public class UserServiceTest {
+
+    @Autowired
+    private UserService userService;
+
+    @Test
+    public void testSaveUser() {
+        User user = new User();
+        user.setId("1");
+        user.setUsername("testuser");
+        user.setEmail("test@example.com");
+        user.setPassword("password");
+
+        User savedUser = userService.save(user);
+
+        Assert.notNull(savedUser, "Saved user should not be null");
+        Assert.isTrue(savedUser.getUsername().equals("testuser"), "Username should be 'testuser'");
+    }
+
+    @Test
+    public void testFindUserById() {
+        String id = "1";
+        User foundUser = userService.findById(id);
+
+        Assert.notNull(foundUser, "Found user should not be null");
+        Assert.isTrue(foundUser.getId().equals(id), "User ID should match");
+    }
+
+    @Test
+    public void testFindAllUsers() {
+        List<User> users = userService.findAll();
+
+        Assert.notEmpty(users, "Users list should not be empty");
+    }
+
+    @Test
+    public void testUpdateUser() {
+        String id = "1";
+        User updatedUser = new User();
+        updatedUser.setUsername("updateduser");
+
+        User savedUser = userService.update(id, updatedUser);
+
+        Assert.isTrue(savedUser.getUsername().equals("updateduser"), "Username should be 'updateduser'");
+    }
+
+    @Test
+    public void testDeleteUser() {
+        String id = "1";
+        userService.delete(id);
+
+        User deletedUser = userService.findById(id);
+        Assert.isNull(deletedUser, "Deleted user should be null");
+    }
+}

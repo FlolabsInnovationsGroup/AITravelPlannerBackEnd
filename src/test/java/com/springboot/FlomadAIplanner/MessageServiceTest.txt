@@ -1,0 +1,67 @@
+package com.springboot.FlomadAIplanner;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.util.Assert;
+
+import com.springboot.FlomadAIplanner.model.entities.Message;
+import com.springboot.FlomadAIplanner.service.model.MessageService;
+
+import java.util.List;
+
+@SpringBootTest
+public class MessageServiceTest {
+
+    @Autowired
+    private MessageService messageService;
+
+    @Test
+    public void testSaveMessage() {
+        Message message = new Message();
+        message.setId("1");
+        message.setContent("Test Message");
+        message.setSessionId("session1");
+
+        Message savedMessage = messageService.save(message);
+
+        Assert.notNull(savedMessage, "Saved message should not be null");
+        Assert.isTrue(savedMessage.getContent().equals("Test Message"), "Message content should be 'Test Message'");
+    }
+
+    @Test
+    public void testFindMessageById() {
+        String id = "1";
+        Message foundMessage = messageService.findById(id);
+
+        Assert.notNull(foundMessage, "Found message should not be null");
+        Assert.isTrue(foundMessage.getId().equals(id), "Message ID should match");
+    }
+
+    @Test
+    public void testFindAllMessages() {
+        List<Message> messages = messageService.findAll();
+
+        Assert.notEmpty(messages, "Messages list should not be empty");
+    }
+
+    @Test
+    public void testUpdateMessage() {
+        String id = "1";
+        Message updatedMessage = new Message();
+        updatedMessage.setContent("Updated Message");
+
+        Message savedMessage = messageService.update(id, updatedMessage);
+
+        Assert.isTrue(savedMessage.getContent().equals("Updated Message"), "Message content should be 'Updated Message'");
+    }
+
+    @Test
+    public void testDeleteMessage() {
+        String id = "1";
+        messageService.delete(id);
+
+        Message deletedMessage = messageService.findById(id);
+        Assert.isNull(deletedMessage, "Deleted message should be null");
+    }
+}
