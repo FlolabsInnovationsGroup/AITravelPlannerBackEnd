@@ -38,6 +38,7 @@ public class TextAgentImpl<S, F> extends AbstractTextAgent<S, F> {
                 .agent(this)
                 .requiredFunctions(messageProperties.getFunctionNames())
                 .systemPrompt(new Prompt(messageProperties.getSystemPrompt()))
+                .sessionID(sessionID)
                 .build();
 
         S result = getCallMessageProcessingStrategy().processMessage(messageProcessingStrategyDTO);
@@ -57,6 +58,7 @@ public class TextAgentImpl<S, F> extends AbstractTextAgent<S, F> {
                 .agent(this)
                 .requiredFunctions(messageProperties.getFunctionNames())
                 .systemPrompt(new Prompt(messageProperties.getSystemPrompt()))
+                .sessionID(sessionID)
                 .build();
 
         return getStreamMessageProcessingStrategy().processMessage(messageProcessingStrategyDTO);
