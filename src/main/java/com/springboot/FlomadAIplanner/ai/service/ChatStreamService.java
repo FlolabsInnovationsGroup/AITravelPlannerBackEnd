@@ -33,13 +33,13 @@ public class ChatStreamService extends AbstractChatService {
      * Processes a aiMessage and determines the appropriate response.
      *
      * @param aiMessage The user aiMessage DTO
+     * @param sessionId  The user's guest session ID
      * @return The response content
      */
     @SuppressWarnings("unchecked")
-    public Flux<String> processMessage(AIMessageDTO aiMessage) {
-        log.info("Processing aiMessage: {}; sessionId: {}", aiMessage.getMessage(), aiMessage.getSessionId());
+    public Flux<String> processMessage(AIMessageDTO aiMessage, String sessionId) {
+        log.info("Processing aiMessage: {}; sessionId: {}", aiMessage.getMessage(), sessionId);
 
-        return (Flux<String>) getChatAgent().processStreamMessage(aiMessage);
+        return (Flux<String>) getChatAgent().processStreamMessage(aiMessage, sessionId);
     }
-
 }

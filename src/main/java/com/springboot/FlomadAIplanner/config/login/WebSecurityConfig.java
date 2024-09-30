@@ -59,6 +59,7 @@ public class WebSecurityConfig {
                                 "/api/auth/verify",
                                 "/api/chat/call",
                                 "/api/chat/stream",
+                                "/api/guest-users",
                                 "/sessions",
                                 "/oauth2/**", "/login/oauth2/**"
                         )
