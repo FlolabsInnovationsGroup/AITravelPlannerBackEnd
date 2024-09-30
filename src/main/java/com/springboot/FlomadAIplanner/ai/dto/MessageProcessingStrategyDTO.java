@@ -15,4 +15,6 @@ public class MessageProcessingStrategyDTO {
     private List<String> requiredFunctions;
     private Prompt systemPrompt;
     private Class<?> returnClassType;
+
+    private String sessionID;
 }
