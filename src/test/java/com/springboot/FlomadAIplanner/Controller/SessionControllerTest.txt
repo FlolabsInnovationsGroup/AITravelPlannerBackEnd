@@ -1,0 +1,115 @@
+package com.springboot.FlomadAIplanner.Controller;
+
+import com.springboot.FlomadAIplanner.controller.model.SessionController;
+import com.springboot.FlomadAIplanner.converter.Converter;
+import com.springboot.FlomadAIplanner.dto.SessionDTO;
+import com.springboot.FlomadAIplanner.model.entities.Session;
+import com.springboot.FlomadAIplanner.model.entities.login.User;
+import com.springboot.FlomadAIplanner.service.model.SessionService;
+import com.springboot.FlomadAIplanner.util.CurrentUserUtil;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.http.ResponseEntity;
+
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
+public class SessionControllerTest {
+
+    @InjectMocks
+    private SessionController sessionController;
+
+    @Mock
+    private SessionService sessionService;
+
+    @Mock
+    private CurrentUserUtil currentUserUtil;
+
+    @Mock
+    private Converter<Session, SessionDTO> sessionToDTOConverter;
+
+    @Mock
+    private Converter<SessionDTO, Session> sessionRevertConverter;
+
+    private SessionDTO sessionDTO;
+    private Session session;
+
+    @BeforeEach
+    public void setup() {
+        MockitoAnnotations.openMocks(this);
+
+        // Create a sample SessionDTO and Session for testing
+        session = new Session();
+        session.setId("1");
+        session.setUserId("user1");
+        session.setTitle("Test Session");
+        session.setCreatedAt(LocalDateTime.now());
+
+        // Create a sample SessionDTO and Session for testing
+        session = new Session("1", "user1", "Test Session", LocalDateTime.now(), null);
+        sessionDTO = new SessionDTO("1", "user1", "Test Session", session.getCreatedAt(), null);
+
+        // Mock converters and service behavior
+        when(sessionRevertConverter.convert(any(SessionDTO.class))).thenReturn(session);
+        when(sessionToDTOConverter.convert(any(Session.class))).thenReturn(sessionDTO);
+        when(sessionService.save(any(Session.class))).thenReturn(session);
+        when(sessionService.update(any(String.class), any(Session.class))).thenReturn(session);
+        when(sessionService.findById("1")).thenReturn(session);
+        when(sessionService.findAll()).thenReturn(Arrays.asList(session));
+    }
+
+    @Test
+    public void testGetById() {
+        // Call the getById method of the controller
+        ResponseEntity<SessionDTO> response = sessionController.getById("1");
+
+        // Assert specific fields
+        assertEquals("user1", response.getBody().getUserId(), "User ID should match.");
+        assertEquals("Test Session", response.getBody().getTitle(), "Title should match.");
+    }
+
+    @Test
+    public void testGetAllSessions() {
+        // Call the getAll method of the controller
+        ResponseEntity<List<SessionDTO>> response = sessionController.getAll();
+
+        // Assert that the returned session list contains the expected session
+        assertEquals(1, response.getBody().size(), "There should be one session in the list.");
+        SessionDTO returnedSession = response.getBody().get(0);
+    }
+
+    @Test
+    public void testDeleteSession() {
+        // Call the delete method of the controller
+        ResponseEntity<Void> response = sessionController.delete("1");
+
+        // Assert that the response status is no content (204)
+        assertEquals(204, response.getStatusCodeValue(), "The response status should be 204 No Content.");
+    }
+
+    @Test
+    public void testGetSessionIdsByUserId() {
+        User user = new User();
+        user.setId("user1");
+        when(currentUserUtil.getCurrentUserFromSecurityContext()).thenReturn(user);
+        when(sessionService.findSessionIdsByUserId("user1")).thenReturn(Arrays.asList(sessionDTO));
+
+        // Call the getSessionIdsByUserId method
+        ResponseEntity<List<SessionDTO>> response = sessionController.getSessionIdsByUserId();
+
+        // Assert that the returned session list matches the expected value
+        assertEquals(1, response.getBody().size(), "The list should contain one session.");
+        SessionDTO returnedSession = response.getBody().get(0);
+        assertEquals("1", returnedSession.getSessionId(), "Session ID should match.");
+        assertEquals("user1", returnedSession.getUserId(), "User ID should match.");
+        assertEquals("Test Session", returnedSession.getTitle(), "Title should match.");
+    }
+}

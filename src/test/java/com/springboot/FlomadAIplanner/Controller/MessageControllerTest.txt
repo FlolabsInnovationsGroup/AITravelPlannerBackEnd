@@ -1,0 +1,109 @@
+package com.springboot.FlomadAIplanner.Controller;
+
+import com.springboot.FlomadAIplanner.controller.model.MessageController;
+import com.springboot.FlomadAIplanner.converter.Converter;
+import com.springboot.FlomadAIplanner.dto.MessageDTO;
+import com.springboot.FlomadAIplanner.model.entities.Message;
+import com.springboot.FlomadAIplanner.model.entities.login.User;
+import com.springboot.FlomadAIplanner.service.model.MessageService;
+import com.springboot.FlomadAIplanner.util.CurrentUserUtil;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.http.ResponseEntity;
+
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
+
+class MessageControllerTest {
+
+    @Mock
+    private MessageService messageService;
+
+    @Mock
+    private Converter<Message, MessageDTO> messageToDTOConverter;
+
+    @Mock
+    private Converter<MessageDTO, Message> messageFromDTOConverter;
+
+    @Mock
+    private CurrentUserUtil currentUserUtil;
+
+    @InjectMocks
+    private MessageController messageController;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    void testCreateMessage() {
+        // Given
+        MessageDTO messageDTO = new MessageDTO();
+        Message message = new Message();
+        Message savedMessage = new Message();
+        MessageDTO savedMessageDTO = new MessageDTO();
+
+        when(messageFromDTOConverter.convert(messageDTO)).thenReturn(message);
+        when(messageService.save(message)).thenReturn(savedMessage);
+        when(messageToDTOConverter.convert(savedMessage)).thenReturn(savedMessageDTO);
+
+        // When
+        ResponseEntity<MessageDTO> response = messageController.create(messageDTO);
+
+        // Then
+        assertEquals(savedMessageDTO, response.getBody());
+        assertEquals(200, response.getStatusCodeValue());
+        verify(messageService, times(1)).save(message);
+    }
+
+    @Test
+    void testGetById() {
+        // Given
+        String messageId = "123";
+        Message message = new Message();
+        MessageDTO messageDTO = new MessageDTO();
+
+        when(messageService.findById(messageId)).thenReturn(message);
+        when(messageToDTOConverter.convert(message)).thenReturn(messageDTO);
+
+        // When
+        ResponseEntity<MessageDTO> response = messageController.getById(messageId);
+
+        // Then
+        assertEquals(messageDTO, response.getBody());
+        assertEquals(200, response.getStatusCodeValue());
+        verify(messageService, times(1)).findById(messageId);
+    }
+
+    @Test
+    void testGetAllMessagesForCurrentUser() {
+        // Given
+        User user = new User();
+        user.setId("user123");
+        user.setUsername("testuser");
+
+        Message message = new Message();
+        List<Message> messages = Collections.singletonList(message);
+        MessageDTO messageDTO = new MessageDTO();
+        List<MessageDTO> messageDTOs = Collections.singletonList(messageDTO);
+
+        when(currentUserUtil.getCurrentUserFromSecurityContext()).thenReturn(user);
+        when(messageService.getMessagesByUserId(user.getId())).thenReturn(messages);
+        when(messageToDTOConverter.convert(message)).thenReturn(messageDTO);
+
+        // When
+        ResponseEntity<List<MessageDTO>> response = messageController.getAll();
+
+        // Then
+        assertEquals(messageDTOs, response.getBody());
+        assertEquals(200, response.getStatusCodeValue());
+        verify(messageService, times(1)).getMessagesByUserId(user.getId());
+    }
+}

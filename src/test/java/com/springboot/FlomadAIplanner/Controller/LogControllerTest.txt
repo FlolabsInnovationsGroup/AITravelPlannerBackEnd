@@ -1,0 +1,54 @@
+package com.springboot.FlomadAIplanner.Controller;
+
+import com.springboot.FlomadAIplanner.controller.LogController;
+import com.springboot.FlomadAIplanner.service.LogService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.http.ResponseEntity;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.doNothing;
+
+public class LogControllerTest {
+
+    @InjectMocks
+    private LogController logController;
+
+    @Mock
+    private LogService logService;
+
+    @BeforeEach
+    public void setup() {
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    public void testPerformAction() {
+        // Arrange
+        // Mocking the performAction method in LogService to do nothing
+        doNothing().when(logService).performAction();
+
+        // Act
+        ResponseEntity<String> response = ResponseEntity.ok(logController.performAction());
+
+        // Assert
+        assertEquals("Action performed!", response.getBody(), "Response should be 'Action performed!'");
+    }
+
+    @Test
+    public void testPerformActionThrowsException() {
+        // Arrange
+        // Mocking the performAction method to throw an exception
+        doNothing().when(logService).performAction();
+
+        // Act
+        String response = logController.performAction();
+
+        // Assert
+        assertEquals("Action performed!", response, "Response should be 'Action performed!'");
+    }
+}
+

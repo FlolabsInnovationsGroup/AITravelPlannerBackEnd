@@ -1,0 +1,96 @@
+package com.springboot.FlomadAIplanner.Controller;
+
+import com.springboot.FlomadAIplanner.controller.SecureDataController;
+import com.springboot.FlomadAIplanner.service.EncryptionService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
+
+public class SecureDataControllerTest {
+
+    @InjectMocks
+    private SecureDataController secureDataController;
+
+    @Mock
+    private EncryptionService encryptionService;
+
+    @BeforeEach
+    public void setup() {
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    public void testEncryptData() throws Exception {
+        // Arrange
+        String data = "Sensitive Data";
+        String encryptedData = "encodedIV:encodedKey:encodedData";
+        
+        // Mocking the encryptSensitiveData method
+        when(encryptionService.encryptSensitiveData(data)).thenReturn(encryptedData);
+
+        // Act
+        ResponseEntity<String> response = secureDataController.encryptData(data);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(encryptedData, response.getBody());
+    }
+
+    @Test
+    public void testEncryptDataThrowsException() throws Exception {
+        // Arrange
+        String data = "Sensitive Data";
+        
+        // Mocking the encryptSensitiveData method to throw an exception
+        when(encryptionService.encryptSensitiveData(data)).thenThrow(new RuntimeException("Encryption error"));
+
+        // Act
+        ResponseEntity<String> response = secureDataController.encryptData(data);
+
+        // Assert
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertEquals("Encryption error", response.getBody());
+    }
+
+    @Test
+    public void testDecryptData() throws Exception {
+        // Arrange
+        String encryptedData = "encodedIV:encodedKey:encodedData";
+        String decryptedData = "Sensitive Data";
+        
+        // Mocking the decryptSensitiveData method
+        when(encryptionService.decryptSensitiveData(encryptedData)).thenReturn(decryptedData);
+
+        // Act
+        ResponseEntity<String> response = secureDataController.decryptData(encryptedData);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(decryptedData, response.getBody());
+    }
+
+    @Test
+    public void testDecryptDataThrowsException() throws Exception {
+        // Arrange
+        String encryptedData = "encodedIV:encodedKey:encodedData";
+        
+        // Mocking the decryptSensitiveData method to throw an exception
+        when(encryptionService.decryptSensitiveData(encryptedData)).thenThrow(new RuntimeException("Decryption error"));
+
+        // Act
+        ResponseEntity<String> response = secureDataController.decryptData(encryptedData);
+
+        // Assert
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertEquals("Decryption error", response.getBody());
+    }
+}
+
+

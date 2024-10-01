@@ -1,0 +1,74 @@
+package com.springboot.FlomadAIplanner.ai.controller;
+
+import com.springboot.FlomadAIplanner.ai.dto.AIMessageDTO;
+import com.springboot.FlomadAIplanner.ai.service.ChatCallService;
+import com.springboot.FlomadAIplanner.ai.service.ChatStreamService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.http.ResponseEntity;
+import reactor.core.publisher.Flux;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
+public class ChatControllerTest {
+
+    @InjectMocks
+    private ChatController chatController;
+
+    @Mock
+    private ChatCallService chatCallService;
+
+    @Mock
+    private ChatStreamService chatStreamService;
+
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    public void testHandleCall() {
+        // Arrange
+        AIMessageDTO message = new AIMessageDTO();
+        message.setMessage("Hello");
+        String sessionId = "test-session-id";
+        String expectedResponse = "Hello, user!";
+
+        when(chatCallService.processMessage(any(AIMessageDTO.class), any(String.class)))
+                .thenReturn(expectedResponse);
+
+        // Act
+        ResponseEntity<String> response = chatController.handleCall(message, sessionId);
+
+        // Assert
+        assertEquals(ResponseEntity.ok(expectedResponse), response);
+    }
+
+    @Test
+    public void testHandleStream() {
+        // Arrange
+        AIMessageDTO message = new AIMessageDTO();
+        message.setMessage("Hello Stream");
+        String sessionId = "test-session-id";
+        Flux<String> expectedResponse = Flux.just("Hello", "Stream");
+
+        when(chatStreamService.processMessage(any(AIMessageDTO.class), any(String.class)))
+                .thenReturn(expectedResponse);
+
+        // Act
+        Flux<String> response = chatController.handleStream(message, sessionId);
+
+        // Assert
+        response.collectList().block();  // Block to collect the emitted items
+
+        // Verify the streamed output
+        assertEquals(2, response.count().block());
+    }
+}
+

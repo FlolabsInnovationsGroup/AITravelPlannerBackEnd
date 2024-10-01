@@ -1,0 +1,128 @@
+package com.springboot.FlomadAIplanner.Controller;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.springboot.FlomadAIplanner.controller.amadeus.AmadeusFlightOfferController;
+import com.springboot.FlomadAIplanner.dto.amadeus.FlightOfferPricingRequest;
+import com.springboot.FlomadAIplanner.dto.amadeus.FlightOffersPostRequest;
+import com.springboot.FlomadAIplanner.dto.amadeus.FlightOffersPostResponse;
+import com.springboot.FlomadAIplanner.dto.amadeus.FlightsAirportLocationsRequest;
+import com.springboot.FlomadAIplanner.exceptions.api.AmadeusAPIException;
+import com.springboot.FlomadAIplanner.service.amadeus.AmadeusFlightsService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+class AmadeusFlightOfferControllerTest {
+
+    @Mock
+    private AmadeusFlightsService amadeusFlightsService;
+
+    @InjectMocks
+    private AmadeusFlightOfferController amadeusFlightOfferController;
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    void testGetFlightOffersPost_Success() throws AmadeusAPIException {
+        // Arrange
+        FlightOffersPostRequest request = new FlightOffersPostRequest();  // Populate fields as needed
+        FlightOffersPostResponse mockResponse = new FlightOffersPostResponse();  // Populate fields as needed
+        when(amadeusFlightsService.getFlightOffersPost(request)).thenReturn(mockResponse);
+
+        // Act
+        ResponseEntity<String> responseEntity = amadeusFlightOfferController.getFlightOffersPost(request);
+
+        // Assert
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertNotNull(responseEntity.getBody());
+        verify(amadeusFlightsService, times(1)).getFlightOffersPost(request);
+    }
+
+    @Test
+    void testGetFlightOffersPost_Failure() throws AmadeusAPIException {
+        // Arrange
+        FlightOffersPostRequest request = new FlightOffersPostRequest();  // Populate fields as needed
+        when(amadeusFlightsService.getFlightOffersPost(request)).thenReturn(null);
+
+        // Act
+        ResponseEntity<String> responseEntity = amadeusFlightOfferController.getFlightOffersPost(request);
+
+        // Assert
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
+        assertEquals("Failed to retrieve flight offers", responseEntity.getBody());
+        verify(amadeusFlightsService, times(1)).getFlightOffersPost(request);
+    }
+
+    @Test
+    void testGetOfferPricing_Success() throws AmadeusAPIException {
+        // Arrange
+        FlightOfferPricingRequest request = new FlightOfferPricingRequest();  // Populate fields as needed
+        JsonNode mockResponse = objectMapper.createObjectNode();  // Mock JSON node response
+        when(amadeusFlightsService.getOfferPricing(request)).thenReturn(mockResponse);
+
+        // Act
+        ResponseEntity<JsonNode> responseEntity = amadeusFlightOfferController.getOfferPricing(request);
+
+        // Assert
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals(mockResponse, responseEntity.getBody());
+        verify(amadeusFlightsService, times(1)).getOfferPricing(request);
+    }
+
+    @Test
+    void testGetOfferPricing_Failure() throws AmadeusAPIException {
+        // Arrange
+        FlightOfferPricingRequest request = new FlightOfferPricingRequest();  // Populate fields as needed
+        when(amadeusFlightsService.getOfferPricing(request)).thenThrow(new AmadeusAPIException("Error retrieving pricing"));
+
+        // Act & Assert
+        assertThrows(AmadeusAPIException.class, () -> {
+            amadeusFlightOfferController.getOfferPricing(request);
+        });
+        verify(amadeusFlightsService, times(1)).getOfferPricing(request);
+    }
+
+    @Test
+    void testGetAirportLocation_Success() throws AmadeusAPIException {
+        // Arrange
+        FlightsAirportLocationsRequest request = new FlightsAirportLocationsRequest();  // Populate fields as needed
+        JsonNode mockResponse = objectMapper.createObjectNode();  // Mock JSON node response
+        when(amadeusFlightsService.getAirportCode(request)).thenReturn(mockResponse);
+
+        // Act
+        ResponseEntity<JsonNode> responseEntity = amadeusFlightOfferController.getAirportLocation(request);
+
+        // Assert
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals(mockResponse, responseEntity.getBody());
+        verify(amadeusFlightsService, times(1)).getAirportCode(request);
+    }
+
+    @Test
+    void testGetAirportLocation_Failure() throws AmadeusAPIException {
+        // Arrange
+        FlightsAirportLocationsRequest request = new FlightsAirportLocationsRequest();  // Populate fields as needed
+        when(amadeusFlightsService.getAirportCode(request)).thenThrow(new AmadeusAPIException("Error retrieving airport code"));
+
+        // Act & Assert
+        assertThrows(AmadeusAPIException.class, () -> {
+            amadeusFlightOfferController.getAirportLocation(request);
+        });
+        verify(amadeusFlightsService, times(1)).getAirportCode(request);
+    }
+}
+

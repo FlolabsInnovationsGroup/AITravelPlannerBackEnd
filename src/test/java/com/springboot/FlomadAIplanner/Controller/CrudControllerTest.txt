@@ -1,0 +1,96 @@
+package com.springboot.FlomadAIplanner.Controller;
+
+import com.springboot.FlomadAIplanner.controller.model.CrudController;
+import com.springboot.FlomadAIplanner.dto.viator.FreeTextSearchResponse;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+@SpringBootTest
+@AutoConfigureMockMvc
+class CrudControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    private CrudController<FreeTextSearchResponse, Long> crudController;
+
+    @BeforeEach
+    void setUp() {
+        crudController = Mockito.mock(CrudController.class);
+    }
+
+    @Test
+    void testCreate() throws Exception {
+        FreeTextSearchResponse response = new FreeTextSearchResponse();
+        when(crudController.create(any(FreeTextSearchResponse.class)))
+                .thenReturn(new ResponseEntity<>(response, HttpStatus.CREATED));
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/your-api-endpoint") // Change to your actual endpoint
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}")) // Replace with actual JSON content
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.someField").value(response.getSomeField())); // Change 'someField' as needed
+    }
+
+    @Test
+    void testGetById() throws Exception {
+        Long id = 1L;
+        FreeTextSearchResponse response = new FreeTextSearchResponse();
+        when(crudController.getById(id)).thenReturn(new ResponseEntity<>(response, HttpStatus.OK));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/your-api-endpoint/{id}", id)) // Change to your actual endpoint
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.someField").value(response.getSomeField())); // Change 'someField' as needed
+    }
+
+    @Test
+    void testGetAll() throws Exception {
+        List<FreeTextSearchResponse> responses = Collections.singletonList(new FreeTextSearchResponse());
+        when(crudController.getAll()).thenReturn(new ResponseEntity<>(responses, HttpStatus.OK));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/your-api-endpoint")) // Change to your actual endpoint
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)));
+    }
+
+    @Test
+    void testUpdate() throws Exception {
+        Long id = 1L;
+        FreeTextSearchResponse updatedResponse = new FreeTextSearchResponse();
+        when(crudController.update(eq(id), any(FreeTextSearchResponse.class)))
+                .thenReturn(new ResponseEntity<>(updatedResponse, HttpStatus.OK));
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/your-api-endpoint/{id}", id) // Change to your actual endpoint
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}")) // Replace with actual JSON content
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.someField").value(updatedResponse.getSomeField())); // Change 'someField' as needed
+    }
+
+    @Test
+    void testDelete() throws Exception {
+        Long id = 1L;
+        doNothing().when(crudController).delete(id);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/your-api-endpoint/{id}", id)) // Change to your actual endpoint
+                .andExpect(status().isNoContent());
+    }
+}
+

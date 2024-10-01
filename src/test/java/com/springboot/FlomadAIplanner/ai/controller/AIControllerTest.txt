@@ -1,0 +1,59 @@
+package com.springboot.FlomadAIplanner.ai.controller;
+
+import com.springboot.FlomadAIplanner.ai.controller.AIController;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
+
+public class AIControllerTest {
+
+    @InjectMocks
+    private AIController aiController;
+
+    @Mock
+    private AIService aiService;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    void testPredict() {
+        // Arrange
+        float[] inputData = new float[]{1.0f, 2.0f, 3.0f};
+        float[] expectedOutput = new float[]{0.1f, 0.2f, 0.3f};
+        
+        // Mock the AIService behavior
+        when(aiService.predict(inputData)).thenReturn(expectedOutput);
+        
+        // Act
+        float[] actualOutput = aiController.predict(inputData);
+        
+        // Assert
+        assertArrayEquals(expectedOutput, actualOutput);
+    }
+
+    @Test
+    void testPredictThrowsUnsupportedOperationException() {
+        // Arrange
+        float[] inputData = new float[]{1.0f, 2.0f, 3.0f};
+        
+        // Mock the AIService behavior to throw an exception
+        when(aiService.predict(inputData)).thenThrow(new UnsupportedOperationException("Unimplemented method 'predict'"));
+        
+        // Act & Assert
+        try {
+            aiController.predict(inputData);
+        } catch (UnsupportedOperationException e) {
+            assertEquals("Unimplemented method 'predict'", e.getMessage());
+        }
+    }
+}
+

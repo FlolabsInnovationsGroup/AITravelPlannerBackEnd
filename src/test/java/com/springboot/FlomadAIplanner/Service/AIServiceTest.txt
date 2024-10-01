@@ -1,0 +1,24 @@
+package com.springboot.FlomadAIplanner.Service;
+
+import org.junit.jupiter.api.Test;
+
+import com.springboot.FlomadAIplanner.ai.controller.AIService;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+public class AIServiceTest {
+
+    private final AIService aiService = new AIService();
+
+    @Test
+    public void testPredictThrowsException() {
+        // Arrange
+        float[] inputData = new float[]{1.0f, 2.0f, 3.0f};
+
+        // Act & Assert
+        assertThrows(UnsupportedOperationException.class, () -> {
+            aiService.predict(inputData);
+        });
+    }
+}
+

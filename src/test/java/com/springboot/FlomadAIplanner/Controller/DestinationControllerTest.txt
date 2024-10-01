@@ -1,0 +1,126 @@
+package com.springboot.FlomadAIplanner.Controller;
+
+import com.springboot.FlomadAIplanner.controller.model.DestinationController;
+import com.springboot.FlomadAIplanner.model.entities.Destination;
+import com.springboot.FlomadAIplanner.service.model.DestinationsService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.http.ResponseEntity;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
+class DestinationControllerTest {
+
+    @InjectMocks
+    private DestinationController destinationController;
+
+    @Mock
+    private DestinationsService destinationsService;
+
+    private Destination destination;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+        destination = new Destination();
+        destination.setId("1");
+        destination.setDestinationName("Paris");
+    }
+
+    @Test
+    void createDestination() {
+        when(destinationsService.save(any(Destination.class))).thenReturn(destination);
+
+        ResponseEntity<Destination> response = destinationController.create(destination);
+
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(destination, response.getBody());
+        verify(destinationsService, times(1)).save(any(Destination.class));
+    }
+
+    @Test
+    void getDestinationById() {
+        when(destinationsService.findById("1")).thenReturn(destination);
+
+        ResponseEntity<Destination> response = destinationController.getById("1");
+
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(destination, response.getBody());
+        verify(destinationsService, times(1)).findById("1");
+    }
+
+    @Test
+    void getAllDestinations() {
+        List<Destination> destinations = Arrays.asList(destination);
+        when(destinationsService.findAll()).thenReturn(destinations);
+
+        ResponseEntity<List<Destination>> response = destinationController.getAll();
+
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(destinations, response.getBody());
+        verify(destinationsService, times(1)).findAll();
+    }
+
+    @Test
+    void updateDestination() {
+        when(destinationsService.update("1", destination)).thenReturn(destination);
+
+        ResponseEntity<Destination> response = destinationController.update("1", destination);
+
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(destination, response.getBody());
+        verify(destinationsService, times(1)).update("1", destination);
+    }
+
+    @Test
+    void deleteDestination() {
+        doNothing().when(destinationsService).delete("1");
+
+        ResponseEntity<Void> response = destinationController.delete("1");
+
+        assertEquals(204, response.getStatusCodeValue());
+        verify(destinationsService, times(1)).delete("1");
+    }
+
+    @Test
+    void getDestinationIdByName() {
+        when(destinationsService.getDestinationIdByName("Paris")).thenReturn(1);
+
+        Integer id = destinationController.getDestinationId("Paris");
+
+        assertEquals(1, id);
+        verify(destinationsService, times(1)).getDestinationIdByName("Paris");
+    }
+
+    @Test
+    void countDestinations() {
+        when(destinationsService.countDestinations()).thenReturn(5L);
+
+        long count = destinationController.countDestinations();
+
+        assertEquals(5, count);
+        verify(destinationsService, times(1)).countDestinations();
+    }
+
+    @Test
+    void getFirstDestination() {
+        when(destinationsService.getFirstDestination()).thenReturn(destination);
+
+        Destination firstDestination = destinationController.getFirstDestination();
+
+        assertEquals(destination, firstDestination);
+        verify(destinationsService, times(1)).getFirstDestination();
+    }
+}
+
+

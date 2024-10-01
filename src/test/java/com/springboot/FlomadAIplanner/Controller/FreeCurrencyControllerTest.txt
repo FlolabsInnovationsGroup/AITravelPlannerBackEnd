@@ -1,0 +1,97 @@
+package com.springboot.FlomadAIplanner.Controller;
+
+import com.springboot.FlomadAIplanner.exceptions.api.FreeCurrencyAPIException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.springboot.FlomadAIplanner.controller.freeCurrency.FreeCurrencyController;
+import com.springboot.FlomadAIplanner.service.freeCurrency.FreeCurrencyService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
+class FreeCurrencyControllerTest {
+
+    @Mock
+    private FreeCurrencyService freeCurrencyService;
+
+    @InjectMocks
+    private FreeCurrencyController freeCurrencyController;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    void getSupportCurrencies_ShouldReturnCurrencies() throws FreeCurrencyAPIException {
+        // Mock response
+        JsonNode mockResponse = JsonNodeFactory.instance.objectNode().put("USD", "United States Dollar");
+        when(freeCurrencyService.getSupportedCurrencies(any())).thenReturn(mockResponse);
+
+        // Call the method and verify response
+        ResponseEntity<JsonNode> response = freeCurrencyController.getSupportCurrencies(List.of("USD"));
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(mockResponse, response.getBody());
+    }
+
+    @Test
+    void getSupportCurrencies_NoCurrencies_ShouldReturnAllCurrencies() throws FreeCurrencyAPIException {
+        // Mock response
+        JsonNode mockResponse = JsonNodeFactory.instance.objectNode().put("USD", "United States Dollar")
+                                                                   .put("EUR", "Euro");
+        when(freeCurrencyService.getSupportedCurrencies(null)).thenReturn(mockResponse);
+
+        // Call the method and verify response
+        ResponseEntity<JsonNode> response = freeCurrencyController.getSupportCurrencies(null);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(mockResponse, response.getBody());
+    }
+
+    @Test
+    void getStatus_ShouldReturnAPIStatus() throws FreeCurrencyAPIException {
+        // Mock response
+        JsonNode mockResponse = JsonNodeFactory.instance.objectNode().put("usage", 50).put("remaining", 4950);
+        when(freeCurrencyService.getStatus()).thenReturn(mockResponse);
+
+        // Call the method and verify response
+        ResponseEntity<JsonNode> response = freeCurrencyController.getStatus();
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(mockResponse, response.getBody());
+    }
+
+    @Test
+    void getLatestCurrency_ShouldReturnLatestExchangeRate() throws FreeCurrencyAPIException {
+        // Mock response
+        JsonNode mockResponse = JsonNodeFactory.instance.objectNode().put("USD", 1.0).put("EUR", 0.85);
+        when(freeCurrencyService.getLatestCurrency(any(), any())).thenReturn(mockResponse);
+
+        // Call the method and verify response
+        ResponseEntity<JsonNode> response = freeCurrencyController.getLatestCurrency("USD", List.of("EUR"));
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(mockResponse, response.getBody());
+    }
+
+    @Test
+    void getHistoricalCurrency_ShouldReturnHistoricalExchangeRate() throws FreeCurrencyAPIException {
+        // Mock response
+        JsonNode mockResponse = JsonNodeFactory.instance.objectNode().put("USD", 1.0).put("EUR", 0.90);
+        when(freeCurrencyService.getHistoricalCurrency(any(), any(), any())).thenReturn(mockResponse);
+
+        // Call the method and verify response
+        ResponseEntity<JsonNode> response = freeCurrencyController.getHistoricalCurrency("2023-09-30", "USD", List.of("EUR"));
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(mockResponse, response.getBody());
+    }
+}
+

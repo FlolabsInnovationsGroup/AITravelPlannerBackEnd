@@ -1,0 +1,125 @@
+package com.springboot.FlomadAIplanner.Controller;
+
+import com.springboot.FlomadAIplanner.controller.login.AuthController;
+import com.springboot.FlomadAIplanner.dto.UserDTO;
+import com.springboot.FlomadAIplanner.dto.auth.LoginRequest;
+import com.springboot.FlomadAIplanner.dto.auth.LoginResponse;
+import com.springboot.FlomadAIplanner.exceptions.validators.UserAlreadyExistsException;
+import com.springboot.FlomadAIplanner.service.login.AuthService;
+import com.springboot.FlomadAIplanner.validator.UserValidator;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
+class AuthControllerTest {
+
+    @InjectMocks
+    private AuthController authController;
+
+    @Mock
+    private AuthService authService;
+
+    @Mock
+    private UserValidator userValidator;
+
+    private UserDTO userDTO;
+    private LoginRequest loginRequest;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+        userDTO = new UserDTO(); // Initialize with test data as needed
+        loginRequest = new LoginRequest(); // Initialize with test data as needed
+    }
+
+    //@Test
+    //void signUp_Success() throws UserAlreadyExistsException {
+        // Arrange
+        //doNothing().when(userValidator).validateUserDoesNotExist(any(UserDTO.class)); // Make sure this is a void method
+        //doNothing().when(authService).registerUser(any(UserDTO.class)); // Make sure this is also a void method
+
+        // Act
+        //ResponseEntity<String> response = authController.signUp(userDTO);
+
+        // Assert
+        //assertEquals(HttpStatus.OK, response.getStatusCode());
+        //assertEquals("User registered successfully. Please check your email for verification instructions.", response.getBody());
+    //}
+
+    @Test
+    void signUp_UserAlreadyExists() throws UserAlreadyExistsException {
+        // Arrange
+        doThrow(new UserAlreadyExistsException("User already exists")).when(userValidator).validateUserDoesNotExist(any(UserDTO.class));
+
+        // Act
+        ResponseEntity<String> response = authController.signUp(userDTO);
+
+        // Assert
+        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+        assertEquals("Sign-up failed: User already exists", response.getBody());
+    }
+
+    @Test
+    void verifyUser_Success() {
+        // Arrange
+        String token = "valid_token";
+        when(authService.verifyUser(token)).thenReturn(ResponseEntity.ok("Email verified successfully."));
+
+        // Act
+        ResponseEntity<String> response = authController.verifyUser(token);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("Email verified successfully.", response.getBody());
+    }
+
+    @Test
+    void verifyUser_InvalidToken() {
+        // Arrange
+        String token = "invalid_token";
+        when(authService.verifyUser(token)).thenReturn(ResponseEntity.badRequest().body("Invalid verification token."));
+
+        // Act
+        ResponseEntity<String> response = authController.verifyUser(token);
+
+        // Assert
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("Invalid verification token.", response.getBody());
+    }
+
+    @Test
+    void login_Success() {
+        // Arrange
+        LoginResponse expectedResponse = new LoginResponse(true, "dummy_jwt_token", "Login successful");
+        when(authService.login(loginRequest)).thenReturn(ResponseEntity.ok(expectedResponse));
+
+        // Act
+        ResponseEntity<LoginResponse> response = authController.login(loginRequest);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(expectedResponse, response.getBody());
+    }
+
+    @Test
+    void login_Failure() {
+        // Arrange
+        LoginResponse expectedResponse = new LoginResponse(false, null, "Login failed: User not found");
+        when(authService.login(loginRequest)).thenReturn(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(expectedResponse));
+
+        // Act
+        ResponseEntity<LoginResponse> response = authController.login(loginRequest);
+
+        // Assert
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+        assertEquals(expectedResponse, response.getBody());
+    }
+}

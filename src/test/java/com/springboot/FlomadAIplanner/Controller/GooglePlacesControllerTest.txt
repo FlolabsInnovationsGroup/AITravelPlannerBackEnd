@@ -1,0 +1,52 @@
+package com.springboot.FlomadAIplanner.Controller;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.springboot.FlomadAIplanner.controller.google.GooglePlacesController;
+import com.springboot.FlomadAIplanner.dto.google.NearbyPlacesRequest;
+import com.springboot.FlomadAIplanner.exceptions.api.GoogleAPIException;
+import com.springboot.FlomadAIplanner.service.google.GooglePlacesService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
+class GooglePlacesControllerTest {
+
+    @InjectMocks
+    private GooglePlacesController googlePlacesController;
+
+    @Mock
+    private GooglePlacesService googlePlacesService;
+
+    private ObjectMapper objectMapper;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+        objectMapper = new ObjectMapper();
+    }
+
+    @Test
+    void testSearchNearbyPlaces_Success() throws Exception {
+        // Given
+        NearbyPlacesRequest request = new NearbyPlacesRequest(/* initialize with test data */);
+        JsonNode expectedResponse = objectMapper.readTree("{\"results\":[]}");
+        
+        when(googlePlacesService.searchNearbyPlaces(any(NearbyPlacesRequest.class))).thenReturn(expectedResponse);
+
+        // When
+        JsonNode actualResponse = googlePlacesController.searchNearbyPlaces(request);
+
+        // Then
+        assertEquals(expectedResponse, actualResponse);
+        verify(googlePlacesService).searchNearbyPlaces(request);
+    }
+
+}
