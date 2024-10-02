@@ -5,6 +5,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @class
@@ -16,4 +17,6 @@ public interface SessionRepository extends MongoRepository<Session, String> {
     List<Session> findByUserId(String userId);
 
     Session findByIdAndUserId(String sessionId, String userId); // For updating the session's title and timestamp
+
+    Optional<Session> findByUserIdIsNull();
 }
