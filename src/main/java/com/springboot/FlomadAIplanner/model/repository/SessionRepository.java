@@ -19,4 +19,6 @@ public interface SessionRepository extends MongoRepository<Session, String> {
     Session findByIdAndUserId(String sessionId, String userId); // For updating the session's title and timestamp
 
     Optional<Session> findByUserIdIsNull();
+
+    List<Session> findBySessionId(String sessionId);
 }

@@ -44,6 +44,9 @@ public class Session extends Model {
     @NotNull
     private LocalDateTime updatedAt;
 
+    @Field("messageCount")
+    private int messageCount = 0;
+    
     public void setSessionId(String sessionId) {
         this.sessionId = sessionId;
     }
@@ -57,4 +60,7 @@ public class Session extends Model {
         this.updatedAt = updatedAt;
     }
 
+    public void incrementMessageCount() {
+        messageCount++;
+    }
 }

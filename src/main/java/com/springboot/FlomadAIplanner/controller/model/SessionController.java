@@ -41,6 +41,7 @@ public class SessionController implements CrudController<SessionDTO, String> {
         if (currentUserUtil.getCurrentUserFromSecurityContext() == null) {
             String guestSessionId = UUID.randomUUID().toString(); // Generate a unique session ID
             session.setSessionId(guestSessionId);
+            session.setUserId(null);
         } else {
             User user = currentUserUtil.getCurrentUserFromSecurityContext();
             session.setUserId(user.getId()); // Associate session with the authenticated user
