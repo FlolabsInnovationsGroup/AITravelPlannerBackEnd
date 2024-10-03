@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @RestController
@@ -35,6 +36,17 @@ public class SessionController implements CrudController<SessionDTO, String> {
     public ResponseEntity<SessionDTO> create(@RequestBody SessionDTO sessionDTO) {
         Session session = sessionRevertConverter.convert(sessionDTO);
         log.info("Creating new session: {}", session);
+        
+        // Assign a temporary session ID for guest users
+        if (currentUserUtil.getCurrentUserFromSecurityContext() == null) {
+            String guestSessionId = UUID.randomUUID().toString(); // Generate a unique session ID
+            session.setSessionId(guestSessionId);
+            session.setUserId(null);
+        } else {
+            User user = currentUserUtil.getCurrentUserFromSecurityContext();
+            session.setUserId(user.getId()); // Associate session with the authenticated user
+        }
+        
         Session savedSession = sessionService.save(session);
         SessionDTO savedSessionDTO = sessionToDTOConverter.convert(savedSession);
         log.info("Session created");
@@ -89,5 +101,4 @@ public class SessionController implements CrudController<SessionDTO, String> {
         List<SessionDTO> sessions = sessionService.findSessionIdsByUserId(user.getId());
         return ResponseEntity.ok(sessions);
     }
-
 }

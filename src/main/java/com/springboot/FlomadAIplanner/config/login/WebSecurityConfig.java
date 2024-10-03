@@ -60,6 +60,7 @@ public class WebSecurityConfig {
                                 "/api/chat/call",
                                 "/api/chat/stream",
                                 "/sessions",
+                                "/sessions/guest",
                                 "/oauth2/**", "/login/oauth2/**"
                         )
                         .permitAll()

@@ -15,60 +15,58 @@ import java.util.stream.Collectors;
 @Service
 public class SessionService implements CrudService<Session, String> {
     private final SessionRepository sessionRepository;
+    private final GuestSessionService guestSessionService;
 
-    public SessionService(SessionRepository sessionRepository) {
+    public SessionService(SessionRepository sessionRepository, GuestSessionService guestSessionService) {
         this.sessionRepository = sessionRepository;
+        this.guestSessionService = guestSessionService;
     }
 
     @Override
     public Session save(Session session) {
         log.info("Saving session: {}", session);
+
+        // If the session does not have a userId, handle as a guest session
+        if (session.getUserId() == null || session.getUserId().isEmpty()) {
+            return guestSessionService.save(session);
+        }
+
+        session.setCreatedAt(LocalDateTime.now());
+        session.setUpdatedAt(LocalDateTime.now());
         return sessionRepository.save(session);
     }
 
     @Override
     public Session findById(String id) {
-        log.info("Finding session by id: {}", id);
-        return sessionRepository.findById(id).orElse(null);
+        return sessionRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Session not found"));
     }
 
     @Override
     public List<Session> findAll() {
-        log.info("Finding all sessions");
-        return sessionRepository.findAll();
-    }
-
-    @Override
-    public Session update(String id, Session updatedSession) {
-        log.info("Updating session: {}", id);
-
-        String title = updatedSession.getTitle();
-        String userId = updatedSession.getUserId();
-
-        Session session = sessionRepository.findByIdAndUserId(id, userId);
-        if (session != null) {
-            session.setTitle(title);
-            session.setUpdatedAt(LocalDateTime.now());
-            return sessionRepository.save(session);
-        } else {
-            log.error("Session not found");
-            throw new RuntimeException("Session not found");
-        }
-    }
-
-    @Override
-    public void delete(String id) {
-        log.info("Deleting session with id: {}", id);
-        sessionRepository.deleteById(id);
+        return sessionRepository.findAll()
+                .stream()
+                .sorted(Comparator.comparing(Session::getCreatedAt).reversed())
+                .collect(Collectors.toList());
     }
 
     public List<SessionDTO> findSessionIdsByUserId(String userId) {
-        log.info("Finding sessions for user: {}", userId);
         return sessionRepository.findByUserId(userId)
                 .stream()
-                .sorted(Comparator.comparing(Session::getCreatedAt).reversed())
                 .map(session -> new SessionDTO(session.getId(), session.getUserId(), session.getTitle(), session.getCreatedAt(), session.getUpdatedAt()))
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public Session update(String id, Session updatedSession) {
+        Session existingSession = findById(id);
+        existingSession.setTitle(updatedSession.getTitle());
+        existingSession.setUpdatedAt(LocalDateTime.now());
+        return sessionRepository.save(existingSession);
+    }
+
+    @Override
+    public void delete(String id) {
+        sessionRepository.deleteById(id);
+    }
 }
+
