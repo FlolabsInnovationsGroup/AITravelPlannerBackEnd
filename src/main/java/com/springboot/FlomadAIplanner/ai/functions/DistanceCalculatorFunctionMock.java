@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+
 @Slf4j
 @Component
 @Description("Calculates the distance between lists of locations.")

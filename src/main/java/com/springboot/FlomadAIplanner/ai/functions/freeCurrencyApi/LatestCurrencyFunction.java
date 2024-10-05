@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.List;
+
 @Slf4j
 @Component
 @Description("Retrieves the latest currencies exchange rate conversion for base currency against currencies list" +
@@ -22,31 +23,31 @@ import java.util.List;
         "Use this function whenever customer asks about currency exchange. " +
         "If the base currency is not provided in currencies list, you should add base currency into currencies list." +
         "If this function returns errors node, Do not proceed this function with the same input again.")
-        public class LatestCurrencyFunction implements AIFunction<LatestCurrencyFunction.LatestCurrencyRequest, JsonNode> {
+public class LatestCurrencyFunction implements AIFunction<LatestCurrencyFunction.LatestCurrencyRequest, JsonNode> {
 
-            private final FreeCurrencyService freeCurrencyService;
-        
-            @Autowired
-            public LatestCurrencyFunction(FreeCurrencyService freeCurrencyService) {
-                this.freeCurrencyService = freeCurrencyService;
+    private final FreeCurrencyService freeCurrencyService;
+
+    @Autowired
+    public LatestCurrencyFunction(FreeCurrencyService freeCurrencyService) {
+        this.freeCurrencyService = freeCurrencyService;
+    }
+
+    @Override
+    public JsonNode apply(LatestCurrencyFunction.LatestCurrencyRequest request) {
+        log.info("Performing Get History Currency Request");
+        try {
+            List<String> currenciesList = Arrays.asList(request.getCurrencies().split(","));
+            JsonNode mes = freeCurrencyService.getSupportedCurrencies(currenciesList);
+            if (mes.has("errors")) {
+                return mes;
             }
-        
-            @Override
-            public JsonNode apply(LatestCurrencyFunction.LatestCurrencyRequest request) {
-                log.info("Performing Get History Currency Request");
-                try {
-                    List<String> currenciesList = Arrays.asList(request.getCurrencies().split(","));
-                    JsonNode mes = freeCurrencyService.getSupportedCurrencies(currenciesList);
-                    if (mes.has("errors")) {
-                        return mes;
-                    }
-                    return freeCurrencyService.getLatestCurrency(request.baseCurrency, currenciesList);
-                } catch (Exception e) {
-                    log.error("Error Getting Latest Currency Request", e);
-                    return JsonNodeFactory.instance.objectNode().put("error", e.getMessage());
-                }
-            }
-        
+            return freeCurrencyService.getLatestCurrency(request.baseCurrency, currenciesList);
+        } catch (Exception e) {
+            log.error("Error Getting Latest Currency Request", e);
+            return JsonNodeFactory.instance.objectNode().put("error", e.getMessage());
+        }
+    }
+
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
