@@ -24,7 +24,8 @@ public class SessionRevertConverter implements Converter<SessionDTO, Session> {
                 source.getUserId(),
                 source.getTitle(),
                 source.getCreatedAt() != null ? source.getCreatedAt() : LocalDateTime.now(),
-                source.getUpdatedAt() != null ? source.getUpdatedAt() : LocalDateTime.now()
+                source.getUpdatedAt() != null ? source.getUpdatedAt() : LocalDateTime.now(),
+                0
         );
     }
 }
