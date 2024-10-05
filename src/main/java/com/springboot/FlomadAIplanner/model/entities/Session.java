@@ -27,11 +27,6 @@ public class Session extends Model {
     @NotBlank
     private String userId;
 
-    @Field("sessionId")
-    @Indexed
-    @NotBlank
-    private String sessionId;
-
     @Field("title")
     @NotBlank
     private String title;
@@ -44,23 +39,12 @@ public class Session extends Model {
     @NotNull
     private LocalDateTime updatedAt;
 
-    @Field("messageCount")
-    private int messageCount = 0;
-    
-    public void setSessionId(String sessionId) {
-        this.sessionId = sessionId;
-    }
-
-    public Session(String id, String sessionId, String userId, String title, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Session(String id, String userId, String title, LocalDateTime createdAt, LocalDateTime updatedAt) {
         super(id);
-        this.sessionId = sessionId;
         this.userId = userId;
         this.title = title;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
 
-    public void incrementMessageCount() {
-        messageCount++;
-    }
 }

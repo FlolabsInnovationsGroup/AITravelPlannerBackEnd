@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class SessionService implements CrudService<Session, String> {
+    private final int GUEST_MESSAGE_LIMIT = 5;
     private final SessionRepository sessionRepository;
     private final GuestSessionService guestSessionService;
 
@@ -24,6 +25,9 @@ public class SessionService implements CrudService<Session, String> {
 
     @Override
     public Session save(Session session) {
+        if (session.getUserId() == null) {
+            session.setMessageCount(0);
+        }
         log.info("Saving session: {}", session);
 
         // If the session does not have a userId, handle as a guest session
@@ -34,6 +38,18 @@ public class SessionService implements CrudService<Session, String> {
         session.setCreatedAt(LocalDateTime.now());
         session.setUpdatedAt(LocalDateTime.now());
         return sessionRepository.save(session);
+    }
+
+    public boolean checkAndIncrementMessageCount(String sessionId) {
+        Session session = sessionRepository.findById(sessionId).orElse(null);
+        if (session != null && session.getUserId() == null) { // Guest session
+            if (session.getMessageCount() >= GUEST_MESSAGE_LIMIT) {
+                return false; // Limit reached
+            }
+            session.setMessageCount(session.getMessageCount() + 1);
+            sessionRepository.save(session); // Save the updated count
+        }
+        return true; // Within limit
     }
 
     @Override
