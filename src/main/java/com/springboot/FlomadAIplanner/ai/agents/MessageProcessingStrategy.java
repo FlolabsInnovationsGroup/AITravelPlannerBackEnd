@@ -1,4 +1,4 @@
-package com.springboot.FlomadAIplanner.ai.agents.messageProcessing;
+package com.springboot.FlomadAIplanner.ai.agents;
 
 import com.springboot.FlomadAIplanner.ai.dto.MessageProcessingStrategyDTO;
 

@@ -1,26 +1,39 @@
 package com.springboot.FlomadAIplanner.ai.agents.text;
 
-import com.springboot.FlomadAIplanner.ai.agents.messageProcessing.MessageProcessingStrategy;
+import com.springboot.FlomadAIplanner.ai.agents.MessageProcessingStrategy;
 import com.springboot.FlomadAIplanner.ai.dto.ChatClientSuggestedProperties;
-import lombok.Data;
+import com.springboot.FlomadAIplanner.ai.dto.AIMessageDTO;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvisor.CHAT_MEMORY_RETRIEVE_SIZE_KEY;
 
 @Slf4j
-@Data
-public abstract class AbstractTextAgent<C, S> implements TextAgent<C, S> {
+@Setter
+@ToString
+public abstract class AbstractTextAgent<C, S extends Flux<?>> implements TextAgent<C, S> {
+    @Getter
     private final ChatClient chatClient;
+    @Getter
     private final List<String> permittedFunctions;
+    @Getter
     private final MessageProcessingStrategy<C> callMessageProcessingStrategy;
+    @Getter
     private final MessageProcessingStrategy<S> streamMessageProcessingStrategy;
+    @Getter
     private final Map<String, String> promptsList;
+    @Setter
+    private Predicate<AIMessageDTO> supportsPredicate;
 
     @Value("classpath:/templates/PromptAndFunctionSuggestionsPrompt.txt")
     protected Resource promptAndFunctionSuggestionsPrompt;
@@ -67,4 +80,8 @@ public abstract class AbstractTextAgent<C, S> implements TextAgent<C, S> {
         return properties;
     }
 
+    @Override
+    public boolean supports(AIMessageDTO inputMessage) {
+        return supportsPredicate.test(inputMessage);
+    }
 }

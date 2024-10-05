@@ -1,9 +1,10 @@
-package com.springboot.FlomadAIplanner.ai.agents.messageProcessing;
+package com.springboot.FlomadAIplanner.ai.agents.text.strategies;
 
-import com.springboot.FlomadAIplanner.ai.agents.text.TextAgentImpl;
+import com.springboot.FlomadAIplanner.ai.agents.MessageProcessingStrategy;
 import com.springboot.FlomadAIplanner.ai.dto.AIMessageDTO;
 import com.springboot.FlomadAIplanner.ai.dto.MessageProcessingStrategyDTO;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
@@ -21,11 +22,11 @@ public class StreamMessageProcessingStrategy implements MessageProcessingStrateg
         log.debug("Processing message: {}", messageProcessingStrategyDTO.getAiMessage().getMessage());
 
         AIMessageDTO aiMessage = messageProcessingStrategyDTO.getAiMessage();
-        TextAgentImpl<?, ?> agent = messageProcessingStrategyDTO.getAgent();
+        ChatClient client = messageProcessingStrategyDTO.getClient();
         List<String> requiredFunctions = messageProcessingStrategyDTO.getRequiredFunctions();
         Prompt systemPrompt = messageProcessingStrategyDTO.getSystemPrompt();
 
-        return agent.getChatClient().prompt()
+        return client.prompt()
                 .system(systemPrompt.getContents())
                 .user(aiMessage.getMessage())
                 .advisors(a -> a.param(CHAT_MEMORY_CONVERSATION_ID_KEY, aiMessage.getSessionId()))

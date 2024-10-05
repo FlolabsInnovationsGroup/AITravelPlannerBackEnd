@@ -1,23 +1,28 @@
 package com.springboot.FlomadAIplanner.ai.agents.text;
 
-import com.springboot.FlomadAIplanner.ai.agents.messageProcessing.EntityReturnProcessingStrategy;
-import com.springboot.FlomadAIplanner.ai.agents.messageProcessing.MessageProcessingStrategy;
-import com.springboot.FlomadAIplanner.ai.dto.AIMessageDTO;
+import com.springboot.FlomadAIplanner.ai.agents.MessageProcessingStrategy;
+import com.springboot.FlomadAIplanner.ai.agents.text.strategies.EntityReturnProcessingStrategy;
 import com.springboot.FlomadAIplanner.ai.dto.ChatClientSuggestedProperties;
+import com.springboot.FlomadAIplanner.ai.dto.AIMessageDTO;
 import com.springboot.FlomadAIplanner.ai.dto.MessageProcessingStrategyDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.prompt.Prompt;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
 import java.util.Map;
 
 /**
  * Represents an agent that wraps a ChatClient with additional configurations and message processing strategies.
+ * This agent is used to process text messages.
+ *
+ * @param <S> The return type of the stream message processing strategy
+ *            (e.g. Flux
  */
 @Slf4j
-public class TextAgentImpl<S, F> extends AbstractTextAgent<S, F> {
+public class TextAgentImpl<S, F extends Flux<?>> extends AbstractTextAgent<S, F> {
 
     public TextAgentImpl(ChatClient chatClient, List<String> permittedFunctions,
                          MessageProcessingStrategy<S> callMessageProcessingStrategy,
@@ -35,7 +40,7 @@ public class TextAgentImpl<S, F> extends AbstractTextAgent<S, F> {
         MessageProcessingStrategyDTO messageProcessingStrategyDTO = MessageProcessingStrategyDTO
                 .builder()
                 .aiMessage(aiMessage)
-                .agent(this)
+                .client(getChatClient())
                 .requiredFunctions(messageProperties.getFunctionNames())
                 .systemPrompt(new Prompt(messageProperties.getSystemPrompt()))
                 .build();
@@ -54,7 +59,7 @@ public class TextAgentImpl<S, F> extends AbstractTextAgent<S, F> {
         MessageProcessingStrategyDTO messageProcessingStrategyDTO = MessageProcessingStrategyDTO
                 .builder()
                 .aiMessage(aiMessage)
-                .agent(this)
+                .client(getChatClient())
                 .requiredFunctions(messageProperties.getFunctionNames())
                 .systemPrompt(new Prompt(messageProperties.getSystemPrompt()))
                 .build();
@@ -71,7 +76,7 @@ public class TextAgentImpl<S, F> extends AbstractTextAgent<S, F> {
         MessageProcessingStrategyDTO messageProcessingStrategyDTO = MessageProcessingStrategyDTO
                 .builder()
                 .aiMessage(aiMessage)
-                .agent(this)
+                .client(getChatClient())
                 .requiredFunctions(messageProperties.getFunctionNames())
                 .systemPrompt(new Prompt(messageProperties.getSystemPrompt()))
                 .returnClassType(returnClassType)
@@ -82,4 +87,5 @@ public class TextAgentImpl<S, F> extends AbstractTextAgent<S, F> {
         log.info("Processed entity message result: {}", StringUtils.substring(result.toString(), 0, 50));
         return result;
     }
+
 }
