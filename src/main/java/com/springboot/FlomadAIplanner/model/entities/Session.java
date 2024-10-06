@@ -12,6 +12,8 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.io.Serial;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -39,6 +41,9 @@ public class Session extends Model {
     @NotNull
     private LocalDateTime updatedAt;
 
+    @Field("messages")
+    private List<String> messages = new ArrayList<>();
+
     public Session(String id, String userId, String title, LocalDateTime createdAt, LocalDateTime updatedAt) {
         super(id);
         this.userId = userId;
@@ -46,5 +51,5 @@ public class Session extends Model {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
-
+    
 }

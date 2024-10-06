@@ -1,5 +1,6 @@
 package com.springboot.FlomadAIplanner.service.model;
 
+import org.springframework.beans.factory.annotation.Value;
 import com.springboot.FlomadAIplanner.dto.SessionDTO;
 import com.springboot.FlomadAIplanner.model.entities.Session;
 import com.springboot.FlomadAIplanner.model.repository.SessionRepository;
@@ -14,6 +15,9 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class SessionService implements CrudService<Session, String> {
+    
+    @Value("${application.guest-message-limit}")
+    private int GUEST_MESSAGE_LIMIT;
     private final SessionRepository sessionRepository;
 
     public SessionService(SessionRepository sessionRepository) {
@@ -24,6 +28,18 @@ public class SessionService implements CrudService<Session, String> {
     public Session save(Session session) {
         log.info("Saving session: {}", session);
         return sessionRepository.save(session);
+    }
+
+    public boolean checkAndIncrementMessageCount(String sessionId, String newMessage) {
+        Session session = sessionRepository.findById(sessionId).orElse(null);
+        if (session != null && session.getUserId() == null) { // Guest session
+            if (session.getMessages().size() >= GUEST_MESSAGE_LIMIT) {
+                return false; // Limit reached
+            }
+            session.getMessages().add(newMessage);
+            sessionRepository.save(session); // Save the updated count
+        }
+        return true; // Within limit
     }
 
     @Override
