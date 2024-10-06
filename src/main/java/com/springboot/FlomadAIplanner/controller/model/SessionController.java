@@ -88,20 +88,6 @@ public class SessionController implements CrudController<SessionDTO, String> {
         return ResponseEntity.ok(updatedDTO);
     }
 
-    @PostMapping("/{sessionId}/interact")
-    public ResponseEntity<?> interactWithSession(@PathVariable String sessionId, @RequestBody String message) {
-        if (!sessionService.checkAndIncrementMessageCount(sessionId)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Message limit reached. Please sign up or log in.");
-        }
-
-        Session session = sessionService.findById(sessionId);
-        log.info("Processing message for session {}: {}", sessionId, message);
-        session.addMessage(message);
-        session.setUpdatedAt(LocalDateTime.now());
-        sessionService.update(sessionId, session);
-        return ResponseEntity.ok("Message processed successfully. Current message count: " 
-                             + session.getMessageCount());
-    }
 
     @Override
     @DeleteMapping("/{id}")
