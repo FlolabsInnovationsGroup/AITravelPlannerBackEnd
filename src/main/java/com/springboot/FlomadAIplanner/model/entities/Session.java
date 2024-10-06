@@ -41,9 +41,6 @@ public class Session extends Model {
     @NotNull
     private LocalDateTime updatedAt;
 
-    @Field("messageCount")
-    private int messageCount;
-
     @Field("messages")
     private List<String> messages = new ArrayList<>();
 
@@ -55,8 +52,4 @@ public class Session extends Model {
         this.updatedAt = updatedAt;
     }
     
-    public void addMessage(String message) {
-        this.messages.add(message);
-    }
-
 }
