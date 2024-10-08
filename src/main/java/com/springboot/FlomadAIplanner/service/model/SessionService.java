@@ -40,7 +40,6 @@ public class SessionService implements CrudService<Session, String> {
             if (messageCount >= GUEST_MESSAGE_LIMIT) {
                 throw new GuestMessageLimitReachedException("Guest session has reached the message limit of " + GUEST_MESSAGE_LIMIT); 
             }
-            messageService.addNewMessage(sessionId, newMessage);
             return true;
         }
         return true; // Within limit

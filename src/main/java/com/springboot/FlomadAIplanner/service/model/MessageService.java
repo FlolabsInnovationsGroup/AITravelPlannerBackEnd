@@ -93,16 +93,4 @@ public class MessageService implements CrudService<Message, String> {
         messageRepository.deleteBySessionId(sessionId);
     }
 
-    public Message addNewMessage(String sessionId, String content) {
-        log.info("Adding new message to session: {}", sessionId);
-        
-        // Create a new message
-        Message newMessage = new Message();
-        newMessage.setSessionId(sessionId);
-        newMessage.setContent(content);
-        newMessage.setCreatedAt(LocalDateTime.now());
-
-        // Save the new message
-        return messageRepository.save(newMessage);
-    }
 }
