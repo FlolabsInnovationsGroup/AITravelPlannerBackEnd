@@ -2,6 +2,7 @@ package com.springboot.FlomadAIplanner.controller.model;
 
 import com.springboot.FlomadAIplanner.converter.Converter;
 import com.springboot.FlomadAIplanner.dto.SessionDTO;
+import com.springboot.FlomadAIplanner.exceptions.validators.GuestMessageLimitReachedException;
 import com.springboot.FlomadAIplanner.model.entities.Session;
 import com.springboot.FlomadAIplanner.model.entities.login.User;
 import com.springboot.FlomadAIplanner.service.model.SessionService;
@@ -13,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -31,6 +31,12 @@ public class SessionController implements CrudController<SessionDTO, String> {
         this.currentUserUtil = currentUserUtil;
         this.sessionRevertConverter = sessionRevertConverter;
         this.sessionToDTOConverter = sessionToDTOConverter;
+    }
+
+    @ExceptionHandler(GuestMessageLimitReachedException.class)
+    public ResponseEntity<String> handleGuestMessageLimitReached(GuestMessageLimitReachedException ex) {
+        log.error("Message limit reached for guest: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
     }
 
     @Override

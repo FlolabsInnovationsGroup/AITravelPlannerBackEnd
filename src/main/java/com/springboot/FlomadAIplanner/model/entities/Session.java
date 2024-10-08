@@ -41,8 +41,6 @@ public class Session extends Model {
     @NotNull
     private LocalDateTime updatedAt;
 
-    @Field("messages")
-    private List<String> messages = new ArrayList<>();
 
     public Session(String id, String userId, String title, LocalDateTime createdAt, LocalDateTime updatedAt) {
         super(id);

@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -64,6 +65,11 @@ public class MessageService implements CrudService<Message, String> {
         return messageRepository.findAllBySessionIdOrderByCreatedAtAsc(sessionId);
     }
 
+    public long countMessagesBySessionId(String sessionId) {
+        log.info("Count messages for session: {}", sessionId);
+        return messageRepository.countMessagesBySessionId(sessionId);
+    }
+
     public List<Message> getMessagesByUserId(String userId) {
         log.info("Finding messages for user: {}", userId);
         List<Session> sessions = sessionRepository.findByUserId(userId);
@@ -85,5 +91,18 @@ public class MessageService implements CrudService<Message, String> {
     public void deleteBySessionId(String sessionId) {
         log.info("Deleting messages for session: {}", sessionId);
         messageRepository.deleteBySessionId(sessionId);
+    }
+
+    public Message addNewMessage(String sessionId, String content) {
+        log.info("Adding new message to session: {}", sessionId);
+        
+        // Create a new message
+        Message newMessage = new Message();
+        newMessage.setSessionId(sessionId);
+        newMessage.setContent(content);
+        newMessage.setCreatedAt(LocalDateTime.now());
+
+        // Save the new message
+        return messageRepository.save(newMessage);
     }
 }
