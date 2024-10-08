@@ -43,7 +43,7 @@ public class GlobalExceptionHandler {
         log.error("Guest message limit reached: ", ex);
         
         // Custom message or interaction with LLM, if needed, for this specific exception
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(Exception.class)
