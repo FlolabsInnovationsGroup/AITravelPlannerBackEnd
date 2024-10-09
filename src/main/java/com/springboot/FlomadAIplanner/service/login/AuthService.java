@@ -3,7 +3,7 @@ package com.springboot.FlomadAIplanner.service.login;
 import com.springboot.FlomadAIplanner.converter.Converter;
 import com.springboot.FlomadAIplanner.exceptions.validators.UserNotFoundException;
 import com.springboot.FlomadAIplanner.model.entities.login.User;
-import com.springboot.FlomadAIplanner.model.repository.login.RoleRepository;
+import com.springboot.FlomadAIplanner.service.model.RoleService;
 import com.springboot.FlomadAIplanner.service.model.UserService;
 import com.springboot.FlomadAIplanner.util.JwtUtil;
 import com.springboot.FlomadAIplanner.validator.UserValidator;
@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.UUID;
 
@@ -38,11 +37,10 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final Converter<User, UserDetails> userConverter;
     private final Converter<UserDTO, User> userDTOToUserConverter;
-    private final RoleRepository roleService;
+    private final RoleService roleService;
     private final JwtUtil jwtUtil;
     private final UserValidator userValidator;
     private final PasswordEncoder passwordEncoder;
-    private final SecurityContextHolder securityContextHolder;
 
     public ResponseEntity<LoginResponse> login(LoginRequest loginRequest) {
         try {
@@ -112,7 +110,7 @@ public class AuthService {
     }
 
     private User getCurrentGuestUser() {
-        Authentication authentication = getCurrentAuthentication();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {
             String username = authentication.getName();
             if (username.startsWith("guest-")){
@@ -133,13 +131,9 @@ public class AuthService {
         return ResponseEntity.ok(new LoginResponse(false, token, "Quest token generated successfully"));
 
         }
-
-    private Authentication getCurrentAuthentication() {
-        return SecurityContextHolder.getContext().getAuthentication();
-    }
         
     private boolean isUserAuthenticated() {
-        Authentication authentication = getCurrentAuthentication();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication != null && authentication.isAuthenticated();
     }
         
@@ -153,8 +147,8 @@ public class AuthService {
             return guestUser;
     }
 
-    private String generateTokenForUser(User guestUser) {
-        UserDetails userDetails = userConverter.convert(guestUser);
+    private String generateTokenForUser(User user) {
+        UserDetails userDetails = userConverter.convert(user);
         return jwtUtil.generateToken(userDetails);
     }
-}
+} 
