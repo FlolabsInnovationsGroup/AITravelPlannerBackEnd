@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import com.springboot.FlomadAIplanner.dto.SessionDTO;
 import com.springboot.FlomadAIplanner.exceptions.validators.GuestMessageLimitReachedException;
 import com.springboot.FlomadAIplanner.model.entities.Session;
+import com.springboot.FlomadAIplanner.model.entities.login.User;
 import com.springboot.FlomadAIplanner.model.repository.SessionRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,11 +21,13 @@ public class SessionService implements CrudService<Session, String> {
     @Value("${application.guest-message-limit}")
     private int GUEST_MESSAGE_LIMIT;
     private final SessionRepository sessionRepository;
-    private MessageService messageService;
+    private final MessageService messageService;
+    private final UserService userService;
 
-    public SessionService(SessionRepository sessionRepository, MessageService messageService) {
+    public SessionService(SessionRepository sessionRepository, MessageService messageService, UserService userService) {
         this.sessionRepository = sessionRepository;
         this.messageService = messageService;
+        this.userService = userService;
     }
 
     @Override
@@ -35,7 +38,8 @@ public class SessionService implements CrudService<Session, String> {
 
     public boolean checkAndIncrementMessageCount(String sessionId, String newMessage) {
         Session session = sessionRepository.findById(sessionId).orElse(null);
-        if (session != null && session.getUserId() == null) { // Guest session
+        User user = userService.findById(session.getUserId());
+        if ( userService.isGuest(user)) { // Guest session
             long messageCount = messageService.countMessagesBySessionId(sessionId);
             if (messageCount >= GUEST_MESSAGE_LIMIT) {
                 throw new GuestMessageLimitReachedException("Guest session has reached the message limit of " + GUEST_MESSAGE_LIMIT); 

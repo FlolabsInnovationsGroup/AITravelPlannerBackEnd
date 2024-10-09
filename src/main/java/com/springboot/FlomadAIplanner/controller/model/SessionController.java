@@ -33,12 +33,6 @@ public class SessionController implements CrudController<SessionDTO, String> {
         this.sessionToDTOConverter = sessionToDTOConverter;
     }
 
-    @ExceptionHandler(GuestMessageLimitReachedException.class)
-    public ResponseEntity<String> handleGuestMessageLimitReached(GuestMessageLimitReachedException ex) {
-        log.error("Message limit reached for guest: {}", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
-    }
-
     @Override
     @PostMapping
     public ResponseEntity<SessionDTO> create(@RequestBody SessionDTO sessionDTO) {

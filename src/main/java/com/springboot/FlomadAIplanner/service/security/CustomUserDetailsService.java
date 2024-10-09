@@ -24,13 +24,14 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String identifier) throws UsernameNotFoundException {
         User user = userService.findByUsernameOrEmail(identifier);
         if (user != null && user.getIsEmailVerified()) {
+            String password = userService.isGuest(user) ? null : user.getPassword();
             return new org.springframework.security.core.userdetails.User(
-                    user.getUsername(),
-                    user.getPassword(),
-                    mapRolesToAuthorities(user.getRoles())); // Ensure roles are mapped
+                user.getUsername(),
+                password,
+                mapRolesToAuthorities(user.getRoles())); // Ensure roles are mapped
         } else {
             throw new UsernameNotFoundException("User not found with username or email: " + identifier);
-        }
+        }        
     }
     /**
      * Maps roles to authorities.
@@ -42,6 +43,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         return roles.stream()
                 .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName())) // Ensure role names are prefixed with ROLE_
                 .collect(Collectors.toList());
-    }
+    } 
 
 }

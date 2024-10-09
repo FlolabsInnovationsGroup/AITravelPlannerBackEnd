@@ -7,6 +7,8 @@ import com.springboot.FlomadAIplanner.service.util.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +27,16 @@ public class UserService implements CrudService<User, String> {
     private final EmailService emailService;
     private final VerificationTokenService verificationTokenService;
     private final PasswordEncoder passwordEncoder;
+
+    /*public User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            String username = authentication.getName(); 
+
+            return findUserByUsername(username);
+        }
+        return null;
+    }*/
 
     @Value("${application.backend.url}")
     private String backendUrl;
@@ -134,5 +146,9 @@ public class UserService implements CrudService<User, String> {
     public boolean existsByEmail(String email) {
         log.debug("Checking if user exists by email: {}", email);
         return userRepository.existsByEmail(email);
+    }
+
+    public boolean isGuest(User user) {
+        return user.getRoles().stream().anyMatch(role -> role.getName().equals("Guest"));
     }
 }

@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.io.Serial;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -23,18 +24,15 @@ public class User extends Model {
 
     @Field("username")
     @EqualsAndHashCode.Include
-    @Indexed(unique = true)
-    @NotBlank(message = "Username cannot be blank")
+    @Indexed(unique = true, sparse = true)
     private String username;
 
     @Field("password")
-    @NotBlank(message = "Password cannot be blank")
     private String password;
 
     @Field("email")
-    @Indexed(unique = true)
+    @Indexed(unique = true, sparse = true)
     @Email(message = "Email should be valid")
-    @NotBlank(message = "Email cannot be blank")
     private String email;
 
     @Field("isEmailVerified")
@@ -46,4 +44,7 @@ public class User extends Model {
     @DBRef
     @Field("roles")
     private Set<Role> roles = new HashSet<>();  //private Set<Role> roles = new, HashSet<>(); this ensures that even if no roles are assigned, roles will not be null.
+    
+    @Field("lastActive")
+    private LocalDateTime lastActive;
 }
