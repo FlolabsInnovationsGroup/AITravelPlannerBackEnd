@@ -27,6 +27,8 @@ public class UserService implements CrudService<User, String> {
 
     @Value("${application.backend.url}")
     private String backendUrl;
+    @Value("${application.email.confirmation.enabled}")
+    private Boolean emailConfirmationEnabled;
 
     @Override
     public User save(User user) {
@@ -50,7 +52,7 @@ public class UserService implements CrudService<User, String> {
         verificationTokenService.save(verificationToken);
         log.info("Verification token created for user with ID: {}", savedUser.getId());
 
-        if (Objects.equals(savedUser.getProvider(), "none")) {
+        if (Objects.equals(savedUser.getProvider(), "none") && emailConfirmationEnabled) {
             sendVerificationEmail(savedUser);
             log.debug("Verification email sent to user with ID: {}", savedUser.getId());
         }
