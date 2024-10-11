@@ -3,6 +3,7 @@ package com.springboot.FlomadAIplanner.model.repository;
 import com.springboot.FlomadAIplanner.model.entities.Message;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -20,6 +21,9 @@ public interface MessageRepository extends MongoRepository<Message, String> {
 
 
     List<Message> findBySessionIdOrderByCreatedAtDesc(String sessionId, Pageable pageable);
+
+    @Query("{ 'sessionId': ?0 }")
+    long countMessagesBySessionId(String sessionId);
 
     void deleteBySessionId(String sessionId);
 }

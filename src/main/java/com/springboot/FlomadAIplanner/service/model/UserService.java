@@ -136,4 +136,8 @@ public class UserService implements CrudService<User, String> {
         log.debug("Checking if user exists by email: {}", email);
         return userRepository.existsByEmail(email);
     }
+
+    public boolean isGuest(User user) {
+        return user.getRoles().stream().anyMatch(role -> role.getName().equals("GUEST"));
+    }
 }

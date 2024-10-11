@@ -8,11 +8,14 @@ import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.springboot.FlomadAIplanner.exceptions.validators.GuestMessageLimitReachedException;
 
 import java.util.Arrays;
 
@@ -32,6 +35,15 @@ public class GlobalExceptionHandler {
                 .defaultSystem(promptResource)
                 .defaultAdvisors(new PromptChatMemoryAdvisor(chatMemory))
                 .build();
+    }
+
+    @ExceptionHandler(GuestMessageLimitReachedException.class)
+    @ResponseBody
+    public ResponseEntity<String> handleGuestMessageLimitReached(GuestMessageLimitReachedException ex) {
+        log.error("Guest message limit reached: ", ex);
+        
+        // Custom message or interaction with LLM, if needed, for this specific exception
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(Exception.class)
