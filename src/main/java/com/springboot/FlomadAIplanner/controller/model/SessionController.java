@@ -2,7 +2,6 @@ package com.springboot.FlomadAIplanner.controller.model;
 
 import com.springboot.FlomadAIplanner.converter.Converter;
 import com.springboot.FlomadAIplanner.dto.SessionDTO;
-import com.springboot.FlomadAIplanner.exceptions.validators.GuestMessageLimitReachedException;
 import com.springboot.FlomadAIplanner.model.entities.Session;
 import com.springboot.FlomadAIplanner.model.entities.login.User;
 import com.springboot.FlomadAIplanner.service.model.SessionService;
@@ -10,7 +9,6 @@ import com.springboot.FlomadAIplanner.util.CurrentUserUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

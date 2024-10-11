@@ -24,7 +24,8 @@ public class User extends Model {
 
     @Field("username")
     @EqualsAndHashCode.Include
-    @Indexed(unique = true, sparse = true)
+    @Indexed(unique = true) // (unique = true, sparse = true) when username is not required
+    @NotBlank(message = "Username cannot be blank")
     private String username;
 
     @Field("password")

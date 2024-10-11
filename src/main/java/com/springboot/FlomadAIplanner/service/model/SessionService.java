@@ -36,7 +36,7 @@ public class SessionService implements CrudService<Session, String> {
         return sessionRepository.save(session);
     }
 
-    public boolean checkAndIncrementMessageCount(String sessionId, String newMessage) {
+    public boolean checkGuestUserLimitations(String sessionId, String newMessage) {
         Session session = sessionRepository.findById(sessionId).orElse(null);
         User user = userService.findById(session.getUserId());
         if ( userService.isGuest(user)) { // Guest session

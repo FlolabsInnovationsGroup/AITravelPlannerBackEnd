@@ -5,6 +5,7 @@ import com.springboot.FlomadAIplanner.exceptions.validators.UserNotFoundExceptio
 import com.springboot.FlomadAIplanner.model.entities.login.User;
 import com.springboot.FlomadAIplanner.service.model.RoleService;
 import com.springboot.FlomadAIplanner.service.model.UserService;
+import com.springboot.FlomadAIplanner.util.CurrentUserUtil;
 import com.springboot.FlomadAIplanner.util.JwtUtil;
 import com.springboot.FlomadAIplanner.validator.UserValidator;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +42,7 @@ public class AuthService {
     private final JwtUtil jwtUtil;
     private final UserValidator userValidator;
     private final PasswordEncoder passwordEncoder;
+    private final CurrentUserUtil currentUserUtil;
 
     public ResponseEntity<LoginResponse> login(LoginRequest loginRequest) {
         try {
@@ -86,9 +88,9 @@ public class AuthService {
     }
 
     public User registerUser(UserDTO userDTO) {
-        User existingUser = getCurrentGuestUser();
+        User existingUser = currentUserUtil.getCurrentUserFromSecurityContext();
 
-        if (existingUser != null) {
+        if (existingUser != null && userService.isGuest(existingUser)) {
             // Upgrade guest user to registered user
             existingUser.setUsername(userDTO.getUsername());
             existingUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
@@ -101,23 +103,16 @@ public class AuthService {
             userService.save(existingUser);
             log.info("Upgraded guest user to registered user: {}", existingUser.getUsername());
             return existingUser;
-        } else {
+        } else if (existingUser != null && !userService.isGuest(existingUser)) {
+            // If user is already a registered user, throw an exception
+            String exceptionMessage = String.format("User %s is currently logged in, please log out to register a new user", existingUser.getUsername());
+            throw new IllegalStateException(exceptionMessage);
+        } else { 
             // Existing logic to create a new user
             User user = userDTOToUserConverter.convert(userDTO);
             userService.registerUser(user);
             return user;
         }
-    }
-
-    private User getCurrentGuestUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.isAuthenticated()) {
-            String username = authentication.getName();
-            if (username.startsWith("guest-")){
-                return userService.findUserByUsername(username);
-            }
-        }
-        return null;
     }
 
     public ResponseEntity<LoginResponse> generateGuestToken() {

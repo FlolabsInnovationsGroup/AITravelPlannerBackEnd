@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -27,16 +26,6 @@ public class UserService implements CrudService<User, String> {
     private final EmailService emailService;
     private final VerificationTokenService verificationTokenService;
     private final PasswordEncoder passwordEncoder;
-
-    /*public User getCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.isAuthenticated()) {
-            String username = authentication.getName(); 
-
-            return findUserByUsername(username);
-        }
-        return null;
-    }*/
 
     @Value("${application.backend.url}")
     private String backendUrl;
