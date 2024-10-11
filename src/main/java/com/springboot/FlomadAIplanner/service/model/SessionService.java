@@ -36,17 +36,15 @@ public class SessionService implements CrudService<Session, String> {
         return sessionRepository.save(session);
     }
 
-    public boolean checkGuestUserLimitations(String sessionId, String newMessage) {
+    public void checkGuestUserLimitations(String sessionId, int newMessagesAmount) {
         Session session = sessionRepository.findById(sessionId).orElse(null);
         User user = userService.findById(session.getUserId());
         if ( userService.isGuest(user)) { // Guest session
-            long messageCount = messageService.countMessagesBySessionId(sessionId);
+            long messageCount = messageService.countMessagesBySessionId(sessionId) + newMessagesAmount;
             if (messageCount >= GUEST_MESSAGE_LIMIT) {
                 throw new GuestMessageLimitReachedException("Guest session has reached the message limit of " + GUEST_MESSAGE_LIMIT); 
             }
-            return true;
         }
-        return true; // Within limit
     }
 
     @Override
