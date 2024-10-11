@@ -38,7 +38,7 @@ public class CustomDatabaseChatMemory implements ChatMemory {
 
     @Override
     public void add(String conversationId, List<org.springframework.ai.chat.messages.Message> messages) {
-        sessionService.checkGuestUserLimitations(conversationId, messages.size());// check if existance of the session in DB
+        sessionService.checkGuestUserLimitations(conversationId, messages.size());
         
         List<Message> newMessages = new ArrayList<>();
         for (org.springframework.ai.chat.messages.Message message : messages) {
