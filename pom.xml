@@ -254,6 +254,12 @@
             <artifactId>elasticsearch-rest-high-level-client</artifactId>
             <version>7.17.4</version>
         </dependency>
+        <!-- Liquibase-->
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+            <version>${liquibase.version}</version>
+        </dependency>
     </dependencies>
 
     <profiles>

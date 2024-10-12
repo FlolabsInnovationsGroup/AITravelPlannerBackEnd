@@ -1,0 +1,4 @@
+id,name,description
+1,ADMIN,Administrator with full access
+2,USER,Regular user with limited access
+3,GUEST,Guest user with minimal access
