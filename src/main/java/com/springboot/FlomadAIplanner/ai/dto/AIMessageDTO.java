@@ -10,10 +10,13 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AIMessageDTO {
-    @NotNull(message = "Session ID cannot be null")
     private String sessionId;
+
+    @NotNull(message = "Message cannot be null")
     private String message;
+
+    // Field to store media (e.g., audio file)
     private MultipartFile media;
-    @NotNull
-    private OutputType outputType;
 }
+
+

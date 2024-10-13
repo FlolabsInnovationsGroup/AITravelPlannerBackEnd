@@ -1,5 +1,6 @@
 package com.springboot.FlomadAIplanner.ai.service;
 
+import com.springboot.FlomadAIplanner.ai.agents.Agent;
 import com.springboot.FlomadAIplanner.ai.dto.AIMessageDTO;
 import com.springboot.FlomadAIplanner.ai.factory.AgentFactory;
 import lombok.extern.slf4j.Slf4j;
@@ -18,28 +19,32 @@ import java.util.Map;
 public class ChatStreamService extends AbstractChatService {
 
     /**
-     * Constructor for ChatCallService.
+     * Constructor for ChatStreamService.
      *
      * @param agentFactory           Factory for creating chat clients
      * @param aiFunctionDescriptions List of available AI function descriptions
+     * @param promptsList            Map of prompt file names and their content
      */
     public ChatStreamService(AgentFactory agentFactory, List<String> aiFunctionDescriptions,
                              Map<String, String> promptsList) {
         super(agentFactory, aiFunctionDescriptions, promptsList);
-        log.info("ChatCallService initialized with AI function descriptions: {}", aiFunctionDescriptions);
+        log.info("ChatStreamService initialized with AI function descriptions: {}", aiFunctionDescriptions);
     }
 
     /**
-     * Processes a aiMessage and determines the appropriate response.
+     * Processes an AI message and streams the appropriate response.
      *
-     * @param aiMessage The user aiMessage DTO
-     * @return The response content
+     * @param aiMessage The user AI message DTO
+     * @return A stream of response content as Flux<String>
      */
     @SuppressWarnings("unchecked")
     public Flux<String> processMessage(AIMessageDTO aiMessage) {
-        log.info("Processing aiMessage: {}; sessionId: {}", aiMessage.getMessage(), aiMessage.getSessionId());
+        log.info("Processing AI message: {}; sessionId: {}", aiMessage.getMessage(), aiMessage.getSessionId());
 
-        return (Flux<String>) getChatAgent().processStreamMessage(aiMessage);
+        // Get the agent that supports this type of message
+        Agent agent = getChatAgent(aiMessage);
+
+        // Process the message using the selected agent
+        return (Flux<String>) agent.processStreamMessage(aiMessage);
     }
-
 }

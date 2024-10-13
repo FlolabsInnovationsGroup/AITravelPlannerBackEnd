@@ -1,12 +1,12 @@
 package com.springboot.FlomadAIplanner.ai.config;
 
+
+import com.springboot.FlomadAIplanner.ai.agents.Agent;
+import com.springboot.FlomadAIplanner.ai.agents.audio.AudioAgentImpl;
+import com.springboot.FlomadAIplanner.ai.agents.messageProcessing.CallMessageProcessingStrategy;
+import com.springboot.FlomadAIplanner.ai.agents.messageProcessing.StreamMessageProcessingStrategy;
 import com.springboot.FlomadAIplanner.ai.agents.text.TextAgent;
 import com.springboot.FlomadAIplanner.ai.agents.text.TextAgentImpl;
-import com.springboot.FlomadAIplanner.ai.agents.text.strategies.CallMessageProcessingStrategy;
-import com.springboot.FlomadAIplanner.ai.agents.text.strategies.StreamMessageProcessingStrategy;
-import com.springboot.FlomadAIplanner.ai.config.cnst.AIModel;
-import com.springboot.FlomadAIplanner.ai.dto.OutputType;
-import lombok.AllArgsConstructor;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -17,61 +17,56 @@ import java.util.List;
 import java.util.Map;
 
 @Configuration
-@AllArgsConstructor
 public class AgentConfig {
+    private final CallMessageProcessingStrategy callMessageProcessingStrategy;
+    private final StreamMessageProcessingStrategy streamMessageProcessingStrategy;
 
-//    =================== TEXT AGENTS ===================
+    public AgentConfig(CallMessageProcessingStrategy callMessageProcessingStrategy, StreamMessageProcessingStrategy streamMessageProcessingStrategy) {
+        this.callMessageProcessingStrategy = callMessageProcessingStrategy;
+        this.streamMessageProcessingStrategy = streamMessageProcessingStrategy;
+    }
+
 
     /**
-     * Agent for OpenAI
+     * Agent for OpenAI (Text Agent)
      */
     @Bean
     @Qualifier("openAiAgent")
     public TextAgent<String, Flux<String>> openAiAgent(@Qualifier("openAiChatClient") ChatClient openAiChatClient,
                                                        @Qualifier("aiFunctionDescriptions") List<String> allFunctionDescriptions,
-                                                       @Qualifier("templatePrompts") Map<String, String> promptsList,
-                                                       CallMessageProcessingStrategy callMessageProcessingStrategy,
-                                                       StreamMessageProcessingStrategy streamMessageProcessingStrategy) {
-        TextAgentImpl<String, Flux<String>> agent = new TextAgentImpl<>(openAiChatClient, allFunctionDescriptions,
+                                                       @Qualifier("templatePrompts") Map<String, String> promptsList) {
+        return new TextAgentImpl<>(openAiChatClient, allFunctionDescriptions,
                 callMessageProcessingStrategy, streamMessageProcessingStrategy, promptsList);
-        agent.setSupportsPredicate(inputMessage -> {
-            boolean isTextMessage = inputMessage.getMedia() == null && inputMessage.getMessage() != null;
-            boolean isOutputTypeText = inputMessage.getOutputType() == OutputType.TEXT;
-            return isTextMessage && isOutputTypeText;
-        });
-
-        return agent;
     }
 
     /**
-     * Agent for Gemini
+     * Agent for Gemini (Text Agent)
      */
     @Bean
     @Qualifier("geminiAiAgent")
     public TextAgent<String, Flux<String>> geminiAiAgent(@Qualifier("geminiChatClient") ChatClient geminiChatClient,
                                                          @Qualifier("aiFunctionDescriptions") List<String> allFunctionDescriptions,
-                                                         @Qualifier("templatePrompts") Map<String, String> promptsList,
-                                                         CallMessageProcessingStrategy callMessageProcessingStrategy,
-                                                         StreamMessageProcessingStrategy streamMessageProcessingStrategy) {
-        TextAgentImpl<String, Flux<String>> agent = new TextAgentImpl<>(geminiChatClient, allFunctionDescriptions,
+                                                         @Qualifier("templatePrompts") Map<String, String> promptsList) {
+        return new TextAgentImpl<>(geminiChatClient, allFunctionDescriptions,
                 callMessageProcessingStrategy, streamMessageProcessingStrategy, promptsList);
-        agent.setSupportsPredicate(inputMessage -> false);
-
-        return agent;
     }
 
-
-//    =================== CHAT AGENTS ===================
+    /**
+     * Agent for Audio Processing (Audio Agent)
+     */
+    @Bean
+    @Qualifier("audioAgent")
+    public Agent audioAgent(@Qualifier("audioChatClient") ChatClient audioChatClient) {
+        return new AudioAgentImpl(callMessageProcessingStrategy);
+    }
 
     @Bean
     @Qualifier("chatAgents")
-    public Map<AIModel, TextAgent<?, ?>> chatAgents(
-            @Qualifier("openAiAgent") TextAgent<?, ?> openAiAgent,
-            @Qualifier("geminiAiAgent") TextAgent<?, ?> geminiAiAgent) {
-        return Map.of(
-                AIModel.OPENAI_MODEL, openAiAgent,
-                AIModel.GEMINI_MODEL, geminiAiAgent
-        );
+    public List<Agent> agents(@Qualifier("openAiAgent") Agent openAiAgent,
+                              @Qualifier("geminiAiAgent") Agent geminiAiAgent,
+                              @Qualifier("audioAgent") Agent audioAgent) {
+        return List.of(openAiAgent, geminiAiAgent, audioAgent);
     }
 
-}
+    }
+
