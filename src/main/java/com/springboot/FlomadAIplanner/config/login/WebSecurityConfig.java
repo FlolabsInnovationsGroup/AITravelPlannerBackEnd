@@ -68,6 +68,8 @@ public class WebSecurityConfig {
                                 "/swagger-ui/**",
                                 "/swagger-ui.html")
                         .permitAll()
+                        .requestMatchers("/users/**").hasRole("ADMIN") // Restrict all user management endpoints to ADMIN
+                        .requestMatchers("/users/current").authenticated() // Allow any authenticated user to access current user endpoint
                         .requestMatchers("/api/chat", "/api/stream").hasAnyRole("ADMIN", "USER")
                         .anyRequest().authenticated()
                 )
