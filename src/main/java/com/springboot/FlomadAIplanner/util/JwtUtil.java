@@ -4,11 +4,14 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,13 +20,24 @@ import java.util.function.Function;
 @Component
 public class JwtUtil {
 
-    private final SecretKey secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+//    private final SecretKey secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+//    @Value("${jwt.secret}")
+//    private String SECRET_KEY;
+//    @Value("${jwt.expiration}")
+//    private long expirationTime;
+
     @Value("${jwt.secret}")
     private String SECRET_KEY;
     @Value("${jwt.expiration}")
     private long expirationTime;
 
+    private SecretKey secretKey;
 
+    @PostConstruct
+    public void init() {
+        byte[] decodedKey = Base64.getDecoder().decode(SECRET_KEY);
+        secretKey = new SecretKeySpec(decodedKey, 0, decodedKey.length, "HmacSHA256");
+    }
     /**
      * Generates a JWT token for the given user details.
      *
