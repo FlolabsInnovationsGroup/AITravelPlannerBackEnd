@@ -85,10 +85,9 @@ public class SessionController implements CrudController<SessionDTO, String> {
 
     @Operation(summary = "Get sessions for current user", description = "Retrieves all sessions for the current authenticated user")
     @GetMapping("/user-sessions")
-    public ResponseEntity<List<SessionDTO>> getSessionIdsByUserId() {
-        User user = currentUserUtil.getCurrentUserFromSecurityContext();
-        log.info("Retrieving session ids for user: {}", user.getUsername());
-        List<SessionDTO> sessions = sessionService.findSessionIdsByUserId(user.getId());
+    public ResponseEntity<List<SessionDTO>> getSessionIdsByUserId(@RequestParam String userId) {
+        log.info("Retrieving sessions for user id: {}", userId);
+        List<SessionDTO> sessions = sessionService.findSessionIdsByUserId(userId);
         return ResponseEntity.ok(sessions);
     }
 
