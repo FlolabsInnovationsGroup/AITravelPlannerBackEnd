@@ -85,6 +85,7 @@ public class AuthService {
         return ResponseEntity.ok("Email verified successfully.");
     }
 
+    @SuppressWarnings("all")
     public User registerUser(UserAuthDTO userAuthDTO) {
         User existingUser = currentUserUtil.getCurrentUserFromSecurityContext();
 

@@ -2,8 +2,6 @@ package com.springboot.FlomadAIplanner.util;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -38,6 +36,7 @@ public class JwtUtil {
         byte[] decodedKey = Base64.getDecoder().decode(SECRET_KEY);
         secretKey = new SecretKeySpec(decodedKey, 0, decodedKey.length, "HmacSHA256");
     }
+
     /**
      * Generates a JWT token for the given user details.
      *

@@ -3,12 +3,10 @@ package com.springboot.FlomadAIplanner.controller.model;
 import com.springboot.FlomadAIplanner.converter.Converter;
 import com.springboot.FlomadAIplanner.dto.SessionDTO;
 import com.springboot.FlomadAIplanner.model.entities.Session;
-import com.springboot.FlomadAIplanner.model.entities.login.User;
 import com.springboot.FlomadAIplanner.service.model.SessionService;
 import com.springboot.FlomadAIplanner.util.CurrentUserUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,14 +17,13 @@ import java.util.List;
 @RequestMapping("/sessions")
 public class SessionController implements CrudController<SessionDTO, String> {
     private final SessionService sessionService;
-    private final CurrentUserUtil currentUserUtil;
     private final Converter<SessionDTO, Session> sessionRevertConverter;
     private final Converter<Session, SessionDTO> sessionToDTOConverter;
 
-    public SessionController(SessionService sessionService, CurrentUserUtil currentUserUtil,
-                             Converter<SessionDTO, Session> sessionRevertConverter, Converter<Session, SessionDTO> sessionToDTOConverter) {
+    public SessionController(SessionService sessionService,
+                             Converter<SessionDTO, Session> sessionRevertConverter,
+                             Converter<Session, SessionDTO> sessionToDTOConverter) {
         this.sessionService = sessionService;
-        this.currentUserUtil = currentUserUtil;
         this.sessionRevertConverter = sessionRevertConverter;
         this.sessionToDTOConverter = sessionToDTOConverter;
     }
