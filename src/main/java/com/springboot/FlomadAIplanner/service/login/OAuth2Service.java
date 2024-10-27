@@ -1,7 +1,7 @@
 package com.springboot.FlomadAIplanner.service.login;
 
 import com.springboot.FlomadAIplanner.converter.Converter;
-import com.springboot.FlomadAIplanner.dto.UserDTO;
+import com.springboot.FlomadAIplanner.dto.UserAuthDTO;
 import com.springboot.FlomadAIplanner.model.entities.login.User;
 import com.springboot.FlomadAIplanner.service.model.UserService;
 import com.springboot.FlomadAIplanner.util.JwtUtil;
@@ -18,31 +18,31 @@ public class OAuth2Service {
 
     private final UserService userService;
     private final Converter<User, UserDetails> userConverter;
-    private final Converter<UserDTO, User> userDTOToUserConverter;
+    private final Converter<UserAuthDTO, User> userDTOToUserConverter;
     private final JwtUtil jwtUtil;
     private final UserValidator userValidator;
 
-    public String handleOAuthLogin(UserDTO userDTO) {
-        User user = userValidator.validateOAuthUserDoesNotExist(userDTO);
+    public String handleOAuthLogin(UserAuthDTO userAuthDTO) {
+        User user = userValidator.validateOAuthUserDoesNotExist(userAuthDTO);
         if (user == null) {
             // register
-            log.info("OAuth User {} Register", userDTO.getUsername());
-            user = userDTOToUserConverter.convert(userDTO);
+            log.info("OAuth User {} Register", userAuthDTO.getUsername());
+            user = userDTOToUserConverter.convert(userAuthDTO);
             user = userService.registerUser(user);
         } else {
             // update
-            boolean isPresent = (user.getProvider()).contains(userDTO.getProvider());
+            boolean isPresent = (user.getProvider()).contains(userAuthDTO.getProvider());
             if (!isPresent) {
                 String id = user.getId();
-                log.info("OAuth User {} Update", userDTO.getUsername());
+                log.info("OAuth User {} Update", userAuthDTO.getUsername());
                 if (user.getProvider() == null || user.getProvider().isEmpty()) {
-                    user.setProvider(userDTO.getProvider());
+                    user.setProvider(userAuthDTO.getProvider());
                 } else {
-                    user.setProvider(user.getProvider() + "," + userDTO.getProvider());
+                    user.setProvider(user.getProvider() + "," + userAuthDTO.getProvider());
                 }
                 user = userService.update(id, user);
             } else {
-                log.info("OAuth User {} Login", userDTO.getUsername());
+                log.info("OAuth User {} Login", userAuthDTO.getUsername());
             }
         }
         // login

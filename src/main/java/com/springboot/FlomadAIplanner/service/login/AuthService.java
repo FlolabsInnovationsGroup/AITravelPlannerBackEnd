@@ -19,13 +19,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import com.springboot.FlomadAIplanner.dto.UserDTO;
+import com.springboot.FlomadAIplanner.dto.UserAuthDTO;
 import com.springboot.FlomadAIplanner.dto.auth.LoginRequest;
 import com.springboot.FlomadAIplanner.dto.auth.LoginResponse;
 
@@ -37,7 +35,7 @@ public class AuthService {
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
     private final Converter<User, UserDetails> userConverter;
-    private final Converter<UserDTO, User> userDTOToUserConverter;
+    private final Converter<UserAuthDTO, User> userDTOToUserConverter;
     private final RoleService roleService;
     private final JwtUtil jwtUtil;
     private final UserValidator userValidator;
@@ -87,14 +85,14 @@ public class AuthService {
         return ResponseEntity.ok("Email verified successfully.");
     }
 
-    public User registerUser(UserDTO userDTO) {
+    public User registerUser(UserAuthDTO userAuthDTO) {
         User existingUser = currentUserUtil.getCurrentUserFromSecurityContext();
 
         if (existingUser != null && userService.isGuest(existingUser)) {
             // Upgrade guest user to registered user
-            existingUser.setUsername(userDTO.getUsername());
-            existingUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-            existingUser.setEmail(userDTO.getEmail());
+            existingUser.setUsername(userAuthDTO.getUsername());
+            existingUser.setPassword(passwordEncoder.encode(userAuthDTO.getPassword()));
+            existingUser.setEmail(userAuthDTO.getEmail());
             existingUser.setIsEmailVerified(false);
             existingUser.setProvider("none");
             existingUser.getRoles().removeIf(role -> role.getName().equals("GUEST"));
@@ -109,7 +107,7 @@ public class AuthService {
             throw new IllegalStateException(exceptionMessage);
         } else { 
             // Existing logic to create a new user
-            User user = userDTOToUserConverter.convert(userDTO);
+            User user = userDTOToUserConverter.convert(userAuthDTO);
             userService.registerUser(user);
             return user;
         }
@@ -128,15 +126,17 @@ public class AuthService {
         }
         
     private boolean isUserAuthenticated() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return authentication != null && authentication.isAuthenticated();
+        User user = currentUserUtil.getCurrentUserFromSecurityContext();
+        System.err.println("User: " + user);
+        return user != null;
     }
         
     private User createGuestUser() {
         User guestUser = new User();
         guestUser.setRoles(Collections.singleton(roleService.findByName("GUEST")));
         guestUser.setLastActive(LocalDateTime.now());
-        guestUser.setUsername("guest" + UUID.randomUUID().toString());
+        guestUser.setUsername("guest_" + UUID.randomUUID());
+        guestUser.setPassword(UUID.randomUUID().toString());
         userService.save(guestUser);
         log.info("Created new guest user with ID: {}", guestUser.getId());
             return guestUser;

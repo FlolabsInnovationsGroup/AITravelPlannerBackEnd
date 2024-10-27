@@ -1,11 +1,17 @@
 package com.springboot.FlomadAIplanner.controller.model;
 
+import com.springboot.FlomadAIplanner.converter.Converter;
+import com.springboot.FlomadAIplanner.dto.UserDTO;
 import com.springboot.FlomadAIplanner.model.entities.login.User;
 import com.springboot.FlomadAIplanner.service.model.UserService;
 import com.springboot.FlomadAIplanner.util.CurrentUserUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Slf4j
 @RestController
@@ -14,16 +20,22 @@ public class UserController {
 
     private final UserService userService;
     private final CurrentUserUtil currentUserUtil;
+    private final Converter<User, UserDTO> userConverter;
+    private final Converter<UserDTO, User> userRevertConverter;
 
-    public UserController(UserService userService, CurrentUserUtil currentUserUtil) {
+    public UserController(UserService userService, CurrentUserUtil currentUserUtil,
+                          @Qualifier("userToUserDTOConverter") Converter<User, UserDTO> userConverter,
+                          @Qualifier("userDTOToUserConverter") Converter<UserDTO, User> userRevertConverter) {
         this.userService = userService;
         this.currentUserUtil = currentUserUtil;
+        this.userConverter = userConverter;
+        this.userRevertConverter = userRevertConverter;
     }
 
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user) {
+    public ResponseEntity<User> createUser(@RequestBody UserDTO user) {
         log.info("Creating new user: {}", user);
-        User savedUser = userService.save(user);
+        User savedUser = userService.save(userRevertConverter.convert(user));
         return ResponseEntity.ok(savedUser);
     }
 
@@ -35,17 +47,22 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<Iterable<User>> getAllUsers() {
+    public ResponseEntity<Iterable<UserDTO>> getAllUsers() {
         log.info("Retrieving all users");
         Iterable<User> users = userService.findAll();
-        return ResponseEntity.ok(users);
+        // Convert User entities to UserDTOs
+        Iterable<UserDTO> userDTOs = StreamSupport.stream(users.spliterator(), false)
+                .map(userConverter::convert)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(userDTOs);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable String id, @RequestBody User updatedUser) {
+    public ResponseEntity<UserDTO> updateUser(@PathVariable String id, @RequestBody UserDTO updatedUser) {
         log.info("Updating user with id: {}", id);
-        User user = userService.update(id, updatedUser);
-        return ResponseEntity.ok(user);
+        User user = userService.update(id, userRevertConverter.convert(updatedUser));
+        return ResponseEntity.ok(userConverter.convert(user));
     }
 
     @DeleteMapping("/{id}")
@@ -56,11 +73,11 @@ public class UserController {
     }
 
     @GetMapping("/current")
-    public ResponseEntity<User> getCurrentUser() {
+    public ResponseEntity<UserDTO> getCurrentUser() {
         User user = currentUserUtil.getCurrentUserFromSecurityContext();
         if (user != null) {
             log.info("Retrieving current user: {}", user.getUsername());
-            return ResponseEntity.ok(user);
+            return ResponseEntity.ok(userConverter.convert(user));
         }
         return ResponseEntity.notFound().build();
     }

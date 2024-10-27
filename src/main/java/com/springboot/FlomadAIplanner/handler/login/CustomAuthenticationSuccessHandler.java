@@ -1,6 +1,6 @@
 package com.springboot.FlomadAIplanner.handler.login;
 
-import com.springboot.FlomadAIplanner.dto.UserDTO;
+import com.springboot.FlomadAIplanner.dto.UserAuthDTO;
 import com.springboot.FlomadAIplanner.service.login.OAuth2Service;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,11 +35,11 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
             String registrationId = oauthToken.getAuthorizedClientRegistrationId();
             log.info("OAuth User: {} try login with: {}",username, registrationId);
 
-            UserDTO userDTO = new UserDTO(username, "", email, registrationId);
-            log.debug("User: {}", userDTO);
+            UserAuthDTO userAuthDTO = new UserAuthDTO(username, "", email, registrationId);
+            log.debug("User: {}", userAuthDTO);
 
-            String token = oauth2Service.handleOAuthLogin(userDTO);
-            log.debug("OAuth User {} Login Success! Token: {}", userDTO.getUsername(), token);
+            String token = oauth2Service.handleOAuthLogin(userAuthDTO);
+            log.debug("OAuth User {} Login Success! Token: {}", userAuthDTO.getUsername(), token);
 
             response.sendRedirect(frontUrl + "/auth-redirect?token=" + token);
 
