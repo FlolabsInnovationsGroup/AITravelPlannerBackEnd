@@ -55,7 +55,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(
                                 "/api/auth/signup",
-                                "/api/auth/login",
+                                "/api/auth/signin",
                                 "/api/auth/verify",
                                 "/api/auth/guest-token",
                                 "/api/chat/call",

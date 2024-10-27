@@ -45,7 +45,7 @@ public class AuthController {
     }
 
     @Operation(summary = "Login user", description = "Logs in a user")
-    @PostMapping("/login")
+    @PostMapping("/signin")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
         return authService.login(loginRequest);
     }
