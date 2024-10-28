@@ -26,7 +26,7 @@ import java.util.List;
         This function processes a batch of place names, making it efficient for bulk queries.
         It is especially useful before calling the "PlaceSuggestionFunction" to obtain the exact locations (longitude and latitude) and
         Google Maps URLs for the searched places.
-                 
+        
         Do not change or edit in any way the URLs of the Google Maps links provided by this function.
         """)
 public class PlaceTextSearchFunction implements AIFunction<PlaceTextSearchFunction.TextSearchRequestsWrapper, JsonNode> {

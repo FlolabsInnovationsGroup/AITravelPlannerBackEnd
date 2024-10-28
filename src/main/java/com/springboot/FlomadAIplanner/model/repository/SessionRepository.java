@@ -3,7 +3,6 @@ package com.springboot.FlomadAIplanner.model.repository;
 import com.springboot.FlomadAIplanner.model.entities.Session;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

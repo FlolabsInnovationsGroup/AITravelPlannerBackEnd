@@ -20,12 +20,12 @@ import java.util.stream.Collectors;
 @Service
 public class SessionService implements CrudService<Session, String> {
 
-    @Value("${application.guest-message-limit}")
-    private int GUEST_MESSAGE_LIMIT;
     private final SessionRepository sessionRepository;
     private final MessageService messageService;
     private final UserService userService;
     private final CurrentUserUtil currentUserUtil;
+    @Value("${application.guest-message-limit}")
+    private int GUEST_MESSAGE_LIMIT;
 
     public SessionService(SessionRepository sessionRepository, MessageService messageService, UserService userService, CurrentUserUtil currentUserUtil) {
         this.sessionRepository = sessionRepository;

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+
 @Slf4j
 @Component
 @Description("Provides weather forecasts for a list of locations and dates.")

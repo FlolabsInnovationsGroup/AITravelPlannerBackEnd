@@ -5,8 +5,6 @@ import com.springboot.FlomadAIplanner.dto.UserAuthDTO;
 import com.springboot.FlomadAIplanner.dto.auth.LoginRequest;
 import com.springboot.FlomadAIplanner.dto.auth.LoginResponse;
 import com.springboot.FlomadAIplanner.exceptions.validators.UserNotFoundException;
-import com.springboot.FlomadAIplanner.model.entities.Message;
-import com.springboot.FlomadAIplanner.model.entities.Session;
 import com.springboot.FlomadAIplanner.model.entities.login.User;
 import com.springboot.FlomadAIplanner.service.model.MessageService;
 import com.springboot.FlomadAIplanner.service.model.RoleService;
@@ -27,7 +25,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.List;
 import java.util.UUID;
 
 @Slf4j

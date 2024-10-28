@@ -1,5 +1,7 @@
 package com.springboot.FlomadAIplanner.changelogs;
 
+import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvException;
 import com.springboot.FlomadAIplanner.model.entities.login.Role;
 import com.springboot.FlomadAIplanner.model.repository.login.RoleRepository;
 import io.mongock.api.annotations.ChangeUnit;
@@ -7,11 +9,10 @@ import io.mongock.api.annotations.Execution;
 import io.mongock.api.annotations.RollbackExecution;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
-import org.springframework.stereotype.Component;
-import com.opencsv.CSVReader;
-import com.opencsv.exceptions.CsvException;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.List;
 
 @ChangeUnit(id = "V1_1_LoadData", order = "001", author = "author", systemVersion = "1")
