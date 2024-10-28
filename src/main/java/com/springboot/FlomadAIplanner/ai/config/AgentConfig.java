@@ -3,10 +3,10 @@ package com.springboot.FlomadAIplanner.ai.config;
 
 import com.springboot.FlomadAIplanner.ai.agents.Agent;
 import com.springboot.FlomadAIplanner.ai.agents.audio.AudioAgentImpl;
-import com.springboot.FlomadAIplanner.ai.agents.messageProcessing.CallMessageProcessingStrategy;
-import com.springboot.FlomadAIplanner.ai.agents.messageProcessing.StreamMessageProcessingStrategy;
 import com.springboot.FlomadAIplanner.ai.agents.text.TextAgent;
 import com.springboot.FlomadAIplanner.ai.agents.text.TextAgentImpl;
+import com.springboot.FlomadAIplanner.ai.agents.text.strategies.CallMessageProcessingStrategy;
+import com.springboot.FlomadAIplanner.ai.agents.text.strategies.StreamMessageProcessingStrategy;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;

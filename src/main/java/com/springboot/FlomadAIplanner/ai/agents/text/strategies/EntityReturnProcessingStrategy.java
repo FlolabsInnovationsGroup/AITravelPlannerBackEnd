@@ -1,5 +1,6 @@
-package com.springboot.FlomadAIplanner.ai.agents.messageProcessing;
+package com.springboot.FlomadAIplanner.ai.agents.text.strategies;
 
+import com.springboot.FlomadAIplanner.ai.agents.MessageProcessingStrategy;
 import com.springboot.FlomadAIplanner.ai.agents.text.TextAgentImpl;
 import com.springboot.FlomadAIplanner.ai.dto.AIMessageDTO;
 import com.springboot.FlomadAIplanner.ai.dto.MessageProcessingStrategyDTO;

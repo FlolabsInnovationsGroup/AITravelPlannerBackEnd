@@ -1,7 +1,7 @@
 package com.springboot.FlomadAIplanner.ai.agents.audio;
 
 import com.springboot.FlomadAIplanner.ai.agents.Agent;
-import com.springboot.FlomadAIplanner.ai.agents.messageProcessing.CallMessageProcessingStrategy;
+import com.springboot.FlomadAIplanner.ai.agents.text.strategies.CallMessageProcessingStrategy;
 import com.springboot.FlomadAIplanner.ai.dto.AIMessageDTO;
 import com.springboot.FlomadAIplanner.ai.dto.MessageProcessingStrategyDTO;
 import lombok.extern.slf4j.Slf4j;
