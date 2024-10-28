@@ -28,7 +28,7 @@ public class ChatStreamService extends AbstractChatService {
     public ChatStreamService(AgentFactory agentFactory, List<String> aiFunctionDescriptions,
                              Map<String, String> promptsList) {
         super(agentFactory, aiFunctionDescriptions, promptsList);
-        log.info("ChatStreamService initialized with AI function descriptions: {}", aiFunctionDescriptions);
+        log.info("ChatStreamService initialized with necessary AI function descriptions.");
     }
 
     /**

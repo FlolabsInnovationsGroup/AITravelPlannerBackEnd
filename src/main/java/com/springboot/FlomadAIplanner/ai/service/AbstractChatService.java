@@ -35,7 +35,7 @@ public abstract class AbstractChatService {
         this.agentFactory = agentFactory;
         this.aiFunctionDescriptions = Collections.unmodifiableList(aiFunctionDescriptions);
         this.promptsList = promptsList;
-        log.info("Chat service initialized with AI function descriptions: {}", aiFunctionDescriptions);
+        log.info("Chat service initialized with AI function descriptions.");
     }
 
     /**

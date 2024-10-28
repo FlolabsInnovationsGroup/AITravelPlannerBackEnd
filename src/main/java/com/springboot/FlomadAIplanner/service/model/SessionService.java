@@ -1,9 +1,13 @@
 package com.springboot.FlomadAIplanner.service.model;
 
 import com.springboot.FlomadAIplanner.dto.SessionDTO;
+import com.springboot.FlomadAIplanner.exceptions.validators.GuestMessageLimitReachedException;
 import com.springboot.FlomadAIplanner.model.entities.Session;
+import com.springboot.FlomadAIplanner.model.entities.login.User;
 import com.springboot.FlomadAIplanner.model.repository.SessionRepository;
+import com.springboot.FlomadAIplanner.util.CurrentUserUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.ai.chat.messages.MessageType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -17,72 +21,92 @@ import java.util.stream.Collectors;
 public class SessionService implements CrudService<Session, String> {
 
     private final SessionRepository sessionRepository;
-    private final GuestSessionService guestSessionService;
+    private final MessageService messageService;
+    private final UserService userService;
+    private final CurrentUserUtil currentUserUtil;
     @Value("${application.guest-message-limit}")
     private int GUEST_MESSAGE_LIMIT;
 
-    public SessionService(SessionRepository sessionRepository, GuestSessionService guestSessionService) {
+    public SessionService(SessionRepository sessionRepository, MessageService messageService, UserService userService, CurrentUserUtil currentUserUtil) {
         this.sessionRepository = sessionRepository;
-        this.guestSessionService = guestSessionService;
+        this.messageService = messageService;
+        this.userService = userService;
+        this.currentUserUtil = currentUserUtil;
     }
 
     @Override
     public Session save(Session session) {
         log.info("Saving session: {}", session);
-
-        // If the session does not have a userId, handle as a guest session
-        if (session.getUserId() == null || session.getUserId().isEmpty()) {
-            return guestSessionService.save(session);
+        if (session.getUserId() == null) {
+            User user = currentUserUtil.getCurrentUserFromSecurityContext();
+            session.setUserId(user.getId());
         }
-
-        session.setCreatedAt(LocalDateTime.now());
-        session.setUpdatedAt(LocalDateTime.now());
         return sessionRepository.save(session);
     }
 
-    public boolean checkAndIncrementMessageCount(String sessionId, String newMessage) {
+    public void checkGuestUserLimitations(String sessionId, int newMessagesAmount) {
         Session session = sessionRepository.findById(sessionId).orElse(null);
-        if (session != null && session.getUserId() == null) { // Guest session
-            if (session.getMessages().size() >= GUEST_MESSAGE_LIMIT) {
-                return false; // Limit reached
+        assert session != null;
+        User user = userService.findById(session.getUserId());
+        if (userService.isGuest(user)) { // Guest session
+            long messageCount = messageService.countMessagesByUserId(user.getId(), MessageType.USER) + newMessagesAmount;
+            if (messageCount > GUEST_MESSAGE_LIMIT) {
+                throw new GuestMessageLimitReachedException("Guest session has reached the message limit of " + GUEST_MESSAGE_LIMIT);
             }
-            session.getMessages().add(newMessage);
-            sessionRepository.save(session); // Save the updated count
         }
-        return true; // Within limit
     }
 
     @Override
     public Session findById(String id) {
-        return sessionRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Session not found"));
+        log.info("Finding session by id: {}", id);
+        return sessionRepository.findById(id).orElse(null);
     }
 
     @Override
     public List<Session> findAll() {
-        return sessionRepository.findAll()
+        log.info("Finding all sessions");
+        return sessionRepository.findAll();
+    }
+
+    @Override
+    public Session update(String id, Session updatedSession) {
+        log.info("Updating session: {}", id);
+
+        String title = updatedSession.getTitle();
+        String userId = updatedSession.getUserId();
+
+        Session session = sessionRepository.findByIdAndUserId(id, userId);
+        if (session != null) {
+            session.setTitle(title);
+            session.setUpdatedAt(LocalDateTime.now());
+            return sessionRepository.save(session);
+        } else {
+            log.error("Session not found");
+            throw new RuntimeException("Session not found");
+        }
+    }
+
+    @Override
+    public void delete(String id) {
+        log.info("Deleting session with id: {}", id);
+        sessionRepository.deleteById(id);
+    }
+
+    public List<Session> findSessionsByUserId(String userId) {
+        log.info("Finding sessions for user: {}", userId);
+        return sessionRepository.findByUserId(userId)
                 .stream()
                 .sorted(Comparator.comparing(Session::getCreatedAt).reversed())
                 .collect(Collectors.toList());
     }
 
     public List<SessionDTO> findSessionIdsByUserId(String userId) {
+        log.info("Finding sessions for user: {}", userId);
         return sessionRepository.findByUserId(userId)
                 .stream()
+                .sorted(Comparator.comparing(Session::getCreatedAt).reversed())
                 .map(session -> new SessionDTO(session.getId(), session.getUserId(), session.getTitle(), session.getCreatedAt(), session.getUpdatedAt()))
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public Session update(String id, Session updatedSession) {
-        Session existingSession = findById(id);
-        existingSession.setTitle(updatedSession.getTitle());
-        existingSession.setUpdatedAt(LocalDateTime.now());
-        return sessionRepository.save(existingSession);
-    }
-
-    @Override
-    public void delete(String id) {
-        sessionRepository.deleteById(id);
-    }
 }
-

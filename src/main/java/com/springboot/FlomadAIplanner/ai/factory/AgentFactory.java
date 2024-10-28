@@ -16,6 +16,7 @@ public class AgentFactory {
 
     @Autowired
     public AgentFactory(List<Agent> agents) {
+        log.info("ChatClientFactory initialized with chat clients.");
         this.agents = agents;
     }
 

@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -27,16 +28,18 @@ public class UserService implements CrudService<User, String> {
 
     @Value("${application.backend.url}")
     private String backendUrl;
+    @Value("${application.email.confirmation.enabled}")
+    private Boolean emailConfirmationEnabled;
 
     @Override
     public User save(User user) {
 
         log.debug("Saving user: {}", user);
 
-        String password;
+        String password = user.getPassword();
         if (Objects.equals(user.getPassword(), "")) {
             password = passwordEncoder.encode(UUID.randomUUID().toString());
-        } else {
+        } else if (user.getId() == null) {
             password = passwordEncoder.encode(user.getPassword());
         }
 
@@ -50,7 +53,7 @@ public class UserService implements CrudService<User, String> {
         verificationTokenService.save(verificationToken);
         log.info("Verification token created for user with ID: {}", savedUser.getId());
 
-        if (Objects.equals(savedUser.getProvider(), "none")) {
+        if (Objects.equals(savedUser.getProvider(), "none") && emailConfirmationEnabled) {
             sendVerificationEmail(savedUser);
             log.debug("Verification email sent to user with ID: {}", savedUser.getId());
         }
@@ -133,5 +136,14 @@ public class UserService implements CrudService<User, String> {
     public boolean existsByEmail(String email) {
         log.debug("Checking if user exists by email: {}", email);
         return userRepository.existsByEmail(email);
+    }
+
+    public boolean isGuest(User user) {
+        return user.getRoles().stream().anyMatch(role -> role.getName().equals("GUEST"));
+    }
+
+    public void updateLastActive(User user) {
+        user.setLastActive(LocalDateTime.now());
+        userRepository.save(user);
     }
 }
