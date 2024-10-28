@@ -1,16 +1,16 @@
 package com.springboot.FlomadAIplanner.converter;
 
-import com.springboot.FlomadAIplanner.dto.UserDTO;
+import com.springboot.FlomadAIplanner.dto.UserAuthDTO;
 import com.springboot.FlomadAIplanner.model.entities.login.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class UserRevertConverter implements Converter<UserDTO, User> {
+public class UserAuthToUserConverter implements Converter<UserAuthDTO, User> {
 
     @Override
-    public User convert(UserDTO source) {
+    public User convert(UserAuthDTO source) {
         if (source == null) {
             log.error("Attempted to convert a 'null' UserDTO");
             throw new IllegalArgumentException("Cannot convert null UserDTO");

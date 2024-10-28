@@ -1,6 +1,6 @@
 package com.springboot.FlomadAIplanner.controller.login;
 
-import com.springboot.FlomadAIplanner.dto.UserDTO;
+import com.springboot.FlomadAIplanner.dto.UserAuthDTO;
 import com.springboot.FlomadAIplanner.dto.auth.LoginRequest;
 import com.springboot.FlomadAIplanner.dto.auth.LoginResponse;
 import com.springboot.FlomadAIplanner.exceptions.validators.UserAlreadyExistsException;
@@ -25,14 +25,14 @@ public class AuthController {
 
     @Operation(summary = "Sign-up new user", description = "Registers a new user")
     @PostMapping("/signup")
-    public ResponseEntity<String> signUp(@Valid @RequestBody UserDTO userDTO) {
+    public ResponseEntity<String> signUp(@Valid @RequestBody UserAuthDTO userAuthDTO) {
         try {
-            userValidator.validateUserDoesNotExist(userDTO);
-            userDTO.setProvider("none");
-            authService.registerUser(userDTO);
+            userValidator.validateUserDoesNotExist(userAuthDTO);
+            userAuthDTO.setProvider("none");
+            authService.registerUser(userAuthDTO);
             return ResponseEntity.ok("User registered successfully. Please check your email for verification instructions.");
         } catch (UserAlreadyExistsException e) {
-            log.error("Sign-up failed for user: {}. Error: {}", userDTO.getUsername(), e.getMessage());
+            log.error("Sign-up failed for user: {}. Error: {}", userAuthDTO.getUsername(), e.getMessage());
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Sign-up failed: " + e.getMessage());
         }
     }
@@ -45,7 +45,7 @@ public class AuthController {
     }
 
     @Operation(summary = "Login user", description = "Logs in a user")
-    @PostMapping("/login")
+    @PostMapping("/signin")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
         return authService.login(loginRequest);
     }

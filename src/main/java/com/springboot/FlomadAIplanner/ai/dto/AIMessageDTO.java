@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AIMessageDTO {
+    @NotNull(message = "Session ID cannot be null")
     private String sessionId;
     @NotNull(message = "Message cannot be null")
     private String message;

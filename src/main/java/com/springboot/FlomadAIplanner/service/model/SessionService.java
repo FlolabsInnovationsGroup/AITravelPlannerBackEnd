@@ -1,5 +1,7 @@
 package com.springboot.FlomadAIplanner.service.model;
 
+import com.springboot.FlomadAIplanner.util.CurrentUserUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import com.springboot.FlomadAIplanner.dto.SessionDTO;
 import com.springboot.FlomadAIplanner.exceptions.validators.GuestMessageLimitReachedException;
@@ -23,16 +25,22 @@ public class SessionService implements CrudService<Session, String> {
     private final SessionRepository sessionRepository;
     private final MessageService messageService;
     private final UserService userService;
+    private final CurrentUserUtil currentUserUtil;
 
-    public SessionService(SessionRepository sessionRepository, MessageService messageService, UserService userService) {
+    public SessionService(SessionRepository sessionRepository, MessageService messageService, UserService userService, CurrentUserUtil currentUserUtil) {
         this.sessionRepository = sessionRepository;
         this.messageService = messageService;
         this.userService = userService;
+        this.currentUserUtil = currentUserUtil;
     }
 
     @Override
     public Session save(Session session) {
         log.info("Saving session: {}", session);
+        if(session.getUserId() == null) {
+            User user = currentUserUtil.getCurrentUserFromSecurityContext();
+            session.setUserId(user.getId());
+        }
         return sessionRepository.save(session);
     }
 
