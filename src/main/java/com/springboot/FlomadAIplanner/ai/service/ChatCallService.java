@@ -19,7 +19,7 @@ public class ChatCallService extends AbstractChatService {
     public ChatCallService(AgentFactory agentFactory, List<String> aiFunctionDescriptions,
                            Map<String, String> promptsList) {
         super(agentFactory, aiFunctionDescriptions, promptsList);
-        log.info("ChatCallService initialized with AI function descriptions: {}", aiFunctionDescriptions);
+        log.info("ChatCallService initialized with AI function descriptions.");
     }
 
     /**
@@ -40,14 +40,9 @@ public class ChatCallService extends AbstractChatService {
         try {
             // Process the message using the chat agent
             return (String) getChatAgent().processCallMessage(aiMessage);
-        } catch (NullPointerException e) {
-            // Log the error and handle the exception
-            log.error("NullPointerException occurred while processing the message: {}", e.getMessage(), e);
-            throw new RuntimeException("Error processing chat message", e);
         } catch (Exception e) {
-            // Log other potential errors
             log.error("Exception occurred while processing the message: {}", e.getMessage(), e);
-            throw new RuntimeException("Error processing chat message", e);
+            throw e;
         }
     }
 
