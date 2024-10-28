@@ -1,10 +1,9 @@
 package com.springboot.FlomadAIplanner.service.model;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
 import com.springboot.FlomadAIplanner.model.entities.login.Role;
 import com.springboot.FlomadAIplanner.model.repository.login.RoleRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor

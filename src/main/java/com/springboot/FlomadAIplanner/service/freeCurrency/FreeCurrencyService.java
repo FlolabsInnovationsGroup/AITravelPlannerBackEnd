@@ -7,10 +7,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.springboot.FlomadAIplanner.exceptions.api.FreeCurrencyAPIException;
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
-
 import org.apache.commons.lang3.StringUtils;
-import java.util.List;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Slf4j
 @Service
@@ -62,6 +62,7 @@ public class FreeCurrencyService {
             throw new FreeCurrencyAPIException("Error performing search Supported Currencies", e);
         }
     }
+
     /**
      * Get status of usage of the FreeCurrency API, there is a limit of 5000 requests/months.
      *

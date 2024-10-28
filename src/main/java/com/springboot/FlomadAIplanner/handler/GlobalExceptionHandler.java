@@ -1,5 +1,6 @@
 package com.springboot.FlomadAIplanner.handler;
 
+import com.springboot.FlomadAIplanner.exceptions.validators.GuestMessageLimitReachedException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
@@ -14,8 +15,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.springboot.FlomadAIplanner.exceptions.validators.GuestMessageLimitReachedException;
 
 import java.util.Arrays;
 
@@ -41,7 +40,7 @@ public class GlobalExceptionHandler {
     @ResponseBody
     public ResponseEntity<String> handleGuestMessageLimitReached(GuestMessageLimitReachedException ex) {
         log.error("Guest message limit reached: ", ex);
-        
+
         // Custom message or interaction with LLM, if needed, for this specific exception
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.FORBIDDEN);
     }

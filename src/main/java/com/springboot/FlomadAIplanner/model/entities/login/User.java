@@ -45,7 +45,7 @@ public class User extends Model {
     @DBRef
     @Field("roles")
     private Set<Role> roles = new HashSet<>();  //private Set<Role> roles = new, HashSet<>(); this ensures that even if no roles are assigned, roles will not be null.
-    
+
     @Field("lastActive")
     private LocalDateTime lastActive;
 }

@@ -80,6 +80,7 @@ public class FreeCurrencyController {
         log.info("Received response from FreeCurrency API");
         return ResponseEntity.ok(response);
     }
+
     /**
      * sample request parameters: /history?base=EUR&currencies=USD,CAD,CNY,EUR&date=2022-12-31.
      *

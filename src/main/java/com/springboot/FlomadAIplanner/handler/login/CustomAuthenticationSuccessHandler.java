@@ -33,7 +33,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
             String username = oauthUser.getAttribute("name");
             String email = oauthUser.getAttribute("email");
             String registrationId = oauthToken.getAuthorizedClientRegistrationId();
-            log.info("OAuth User: {} try login with: {}",username, registrationId);
+            log.info("OAuth User: {} try login with: {}", username, registrationId);
 
             UserAuthDTO userAuthDTO = new UserAuthDTO(username, "", email, registrationId);
             log.debug("User: {}", userAuthDTO);

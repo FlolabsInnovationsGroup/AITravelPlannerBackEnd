@@ -17,7 +17,8 @@ public class AgentFactory {
 
     @Autowired
     public AgentFactory(@Qualifier("chatAgents") Map<AIModel, TextAgent<?, ?>> chatAgents) {
-        log.info("ChatClientFactory initialized with chat clients: {}", chatAgents);
+        log.info("ChatClientFactory initialized with chat clients.");
+        chatAgents.forEach((key, value) -> log.info("AIModel: {}, TextAgent: {}", key.getModelName(), value.getClass().getSimpleName()));
         this.chatAgents = chatAgents;
     }
 
