@@ -1,8 +1,8 @@
 package com.springboot.FlomadAIplanner.ai.agents.text;
 
 import com.springboot.FlomadAIplanner.ai.agents.MessageProcessingStrategy;
-import com.springboot.FlomadAIplanner.ai.dto.ChatClientSuggestedProperties;
 import com.springboot.FlomadAIplanner.ai.dto.AIMessageDTO;
+import com.springboot.FlomadAIplanner.ai.dto.ChatClientSuggestedProperties;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -32,11 +32,10 @@ public abstract class AbstractTextAgent<C, S extends Flux<?>> implements TextAge
     private final MessageProcessingStrategy<S> streamMessageProcessingStrategy;
     @Getter
     private final Map<String, String> promptsList;
-    @Setter
-    private Predicate<AIMessageDTO> supportsPredicate;
-
     @Value("classpath:/templates/PromptAndFunctionSuggestionsPrompt.txt")
     protected Resource promptAndFunctionSuggestionsPrompt;
+    @Setter
+    private Predicate<AIMessageDTO> supportsPredicate;
 
     protected AbstractTextAgent(ChatClient chatClient, List<String> permittedFunctions,
                                 MessageProcessingStrategy<C> callMessageProcessingStrategy,

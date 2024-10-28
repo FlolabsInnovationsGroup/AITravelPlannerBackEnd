@@ -68,5 +68,5 @@ public class AgentConfig {
         return List.of(openAiAgent, geminiAiAgent, audioAgent);
     }
 
-    }
+}
 

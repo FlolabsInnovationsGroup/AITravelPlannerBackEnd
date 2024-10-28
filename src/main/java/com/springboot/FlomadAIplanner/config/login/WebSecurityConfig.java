@@ -74,11 +74,11 @@ public class WebSecurityConfig {
                 )
                 .oauth2Login(
                         oauth2 -> oauth2
-                        .authorizationEndpoint(authorization  -> authorization
-                                .baseUri("/oauth2/authorization")
-                        )
-                        .successHandler(customAuthenticationSuccessHandler)
-                        .failureHandler(customAuthenticationFailureHandler)
+                                .authorizationEndpoint(authorization -> authorization
+                                        .baseUri("/oauth2/authorization")
+                                )
+                                .successHandler(customAuthenticationSuccessHandler)
+                                .failureHandler(customAuthenticationFailureHandler)
                 )
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 

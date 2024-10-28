@@ -1,6 +1,9 @@
 package com.springboot.FlomadAIplanner.service.login;
 
 import com.springboot.FlomadAIplanner.converter.Converter;
+import com.springboot.FlomadAIplanner.dto.UserDTO;
+import com.springboot.FlomadAIplanner.dto.auth.LoginRequest;
+import com.springboot.FlomadAIplanner.dto.auth.LoginResponse;
 import com.springboot.FlomadAIplanner.exceptions.validators.UserNotFoundException;
 import com.springboot.FlomadAIplanner.model.entities.login.User;
 import com.springboot.FlomadAIplanner.service.model.UserService;
@@ -15,9 +18,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import com.springboot.FlomadAIplanner.dto.UserDTO;
-import com.springboot.FlomadAIplanner.dto.auth.LoginRequest;
-import com.springboot.FlomadAIplanner.dto.auth.LoginResponse;
 
 @Slf4j
 @Service

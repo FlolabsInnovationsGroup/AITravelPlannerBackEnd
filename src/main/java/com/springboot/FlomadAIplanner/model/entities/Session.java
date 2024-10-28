@@ -51,5 +51,5 @@ public class Session extends Model {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
-    
+
 }

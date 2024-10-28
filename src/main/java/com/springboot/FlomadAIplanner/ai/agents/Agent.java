@@ -5,6 +5,7 @@ import com.springboot.FlomadAIplanner.ai.dto.AIMessageDTO;
 public interface Agent {
     /**
      * Process a call message and return the response.
+     *
      * @param aiMessage The message to process.
      * @return The processed message response.
      */
@@ -12,6 +13,7 @@ public interface Agent {
 
     /**
      * Process a stream message and return the response as a Flux.
+     *
      * @param aiMessage The message to process.
      * @return The processed message response as Flux<String>
      */
@@ -19,6 +21,7 @@ public interface Agent {
 
     /**
      * Determines if this agent supports the provided message.
+     *
      * @param inputMessage The input message to check.
      * @return true if supported, false otherwise.
      */

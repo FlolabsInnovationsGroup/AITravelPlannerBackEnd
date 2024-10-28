@@ -15,8 +15,8 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class GuestSessionService {
-    private final SessionRepository sessionRepository;
     private static final int MAX_GUEST_MESSAGES = 5; // Set maximum guest interactions
+    private final SessionRepository sessionRepository;
 
     public GuestSessionService(SessionRepository sessionRepository) {
         this.sessionRepository = sessionRepository;
@@ -40,14 +40,15 @@ public class GuestSessionService {
             session.setUpdatedAt(LocalDateTime.now());
         }
 
-         // If the guest has reached the maximum message limit, prevent saving the session.
+        // If the guest has reached the maximum message limit, prevent saving the session.
 
         if (!incrementMessageCount(session.getSessionId())) {
-        return null; // The session is not saved if the guest exceeded the interaction limit.
-    
-         }
+            return null; // The session is not saved if the guest exceeded the interaction limit.
+
+        }
         return sessionRepository.save(session);
     }
+
     /**
      * Increments the message count for a guest user session.
      * If the guest user exceeds the allowed message limit, prompts them to create an account.
@@ -57,7 +58,7 @@ public class GuestSessionService {
      */
     public boolean incrementMessageCount(String sessionId) {
         List<Session> guestSessions = sessionRepository.findBySessionId(sessionId);
-        
+
         if (guestSessions.isEmpty()) {
             Session newSession = new Session();
             newSession.setSessionId(sessionId);
@@ -76,6 +77,7 @@ public class GuestSessionService {
         log.info("Incrementing message count for guest session:{}", sessionId);
         return true;
     }
+
     /**
      * Prompts the guest user to create an account after they reach the message interaction limit.
      *

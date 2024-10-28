@@ -1,10 +1,10 @@
 package com.springboot.FlomadAIplanner.service.model;
 
-import org.springframework.beans.factory.annotation.Value;
 import com.springboot.FlomadAIplanner.dto.SessionDTO;
 import com.springboot.FlomadAIplanner.model.entities.Session;
 import com.springboot.FlomadAIplanner.model.repository.SessionRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -15,11 +15,11 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class SessionService implements CrudService<Session, String> {
-    
-    @Value("${application.guest-message-limit}")
-    private int GUEST_MESSAGE_LIMIT;
+
     private final SessionRepository sessionRepository;
     private final GuestSessionService guestSessionService;
+    @Value("${application.guest-message-limit}")
+    private int GUEST_MESSAGE_LIMIT;
 
     public SessionService(SessionRepository sessionRepository, GuestSessionService guestSessionService) {
         this.sessionRepository = sessionRepository;

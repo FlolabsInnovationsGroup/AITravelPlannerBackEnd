@@ -1,7 +1,7 @@
 package com.springboot.FlomadAIplanner.service.security;
 
-import com.springboot.FlomadAIplanner.model.entities.login.User;
 import com.springboot.FlomadAIplanner.model.entities.login.Role;
+import com.springboot.FlomadAIplanner.model.entities.login.User;
 import com.springboot.FlomadAIplanner.service.model.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -32,6 +32,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("User not found with username or email: " + identifier);
         }
     }
+
     /**
      * Maps roles to authorities.
      *

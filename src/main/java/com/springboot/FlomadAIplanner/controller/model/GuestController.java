@@ -1,13 +1,11 @@
 package com.springboot.FlomadAIplanner.controller.model;
 
+import com.springboot.FlomadAIplanner.dto.GuestDTO;
+import com.springboot.FlomadAIplanner.service.model.GuestSessionService;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.springboot.FlomadAIplanner.dto.GuestDTO;
-import com.springboot.FlomadAIplanner.service.model.GuestSessionService;
-
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 
 /**
@@ -27,7 +25,7 @@ public class GuestController {
     /**
      * Endpoint for guest users to send messages.
      * Limits guest users to 5 messages before requiring signup.
-     * 
+     *
      * @param session HttpSession to store and retrieve message count.
      * @return A message indicating the number of messages sent or requesting sign-up.
      */
