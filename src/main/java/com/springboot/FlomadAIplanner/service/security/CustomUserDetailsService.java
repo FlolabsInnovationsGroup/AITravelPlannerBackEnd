@@ -1,7 +1,7 @@
 package com.springboot.FlomadAIplanner.service.security;
 
-import com.springboot.FlomadAIplanner.model.entities.login.User;
 import com.springboot.FlomadAIplanner.model.entities.login.Role;
+import com.springboot.FlomadAIplanner.model.entities.login.User;
 import com.springboot.FlomadAIplanner.service.model.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -24,15 +24,15 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String identifier) throws UsernameNotFoundException {
         User user = userService.findByUsernameOrEmail(identifier);
         if (user != null) {
-            String password = userService.isGuest(user) ? null : user.getPassword();
             return new org.springframework.security.core.userdetails.User(
-                user.getUsername(),
-                password,
-                mapRolesToAuthorities(user.getRoles())); // Ensure roles are mapped
+                    user.getUsername(),
+                    user.getPassword(),
+                    mapRolesToAuthorities(user.getRoles())); // Ensure roles are mapped
         } else {
             throw new UsernameNotFoundException("User not found with username or email: " + identifier);
         }
     }
+
     /**
      * Maps roles to authorities.
      *
@@ -43,6 +43,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         return roles.stream()
                 .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName())) // Ensure role names are prefixed with ROLE_
                 .collect(Collectors.toList());
-    } 
+    }
 
 }

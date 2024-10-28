@@ -41,7 +41,6 @@ public class AuthController {
     @GetMapping("/verify")
     public ResponseEntity<String> verifyUser(@RequestParam("token") String token) {
         return authService.verifyUser(token);
-
     }
 
     @Operation(summary = "Login user", description = "Logs in a user")

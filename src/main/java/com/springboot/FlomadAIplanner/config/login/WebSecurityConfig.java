@@ -1,6 +1,7 @@
 package com.springboot.FlomadAIplanner.config.login;
 
 import com.springboot.FlomadAIplanner.filter.JwtRequestFilter;
+import com.springboot.FlomadAIplanner.filter.UserLastActiveUpdateFilter;
 import com.springboot.FlomadAIplanner.handler.login.CustomAuthenticationFailureHandler;
 import com.springboot.FlomadAIplanner.handler.login.CustomAuthenticationSuccessHandler;
 import org.springframework.context.annotation.Bean;
@@ -20,17 +21,19 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class WebSecurityConfig {
     private final UserDetailsService userDetailsService;
     private final JwtRequestFilter jwtRequestFilter;
+    private final UserLastActiveUpdateFilter userLastActiveUpdateFilter;
     private final PasswordEncoder passwordEncoder;
     private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
     private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
 
     public WebSecurityConfig(UserDetailsService userDetailsService,
-                             JwtRequestFilter jwtRequestFilter,
+                             JwtRequestFilter jwtRequestFilter, UserLastActiveUpdateFilter userLastActiveUpdateFilter,
                              PasswordEncoder passwordEncoder,
                              CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler,
                              CustomAuthenticationFailureHandler customAuthenticationFailureHandler) {
         this.userDetailsService = userDetailsService;
         this.jwtRequestFilter = jwtRequestFilter;
+        this.userLastActiveUpdateFilter = userLastActiveUpdateFilter;
         this.passwordEncoder = passwordEncoder;
         this.customAuthenticationSuccessHandler = customAuthenticationSuccessHandler;
         this.customAuthenticationFailureHandler = customAuthenticationFailureHandler;
@@ -76,13 +79,14 @@ public class WebSecurityConfig {
                 )
                 .oauth2Login(
                         oauth2 -> oauth2
-                        .authorizationEndpoint(authorization  -> authorization
-                                .baseUri("/oauth2/authorization")
-                        )
-                        .successHandler(customAuthenticationSuccessHandler)
-                        .failureHandler(customAuthenticationFailureHandler)
+                                .authorizationEndpoint(authorization -> authorization
+                                        .baseUri("/oauth2/authorization")
+                                )
+                                .successHandler(customAuthenticationSuccessHandler)
+                                .failureHandler(customAuthenticationFailureHandler)
                 )
-                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class) // execution order of these filters is essential
+                .addFilterBefore(userLastActiveUpdateFilter, JwtRequestFilter.class); // execution order of these filters is essential
 
         return http.build();
     }

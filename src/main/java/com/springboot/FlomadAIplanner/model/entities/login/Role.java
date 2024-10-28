@@ -4,12 +4,14 @@ import com.springboot.FlomadAIplanner.model.entities.Model;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.io.Serial;
 
 @Data
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
 @Document(collection = "roles")
 public class Role extends Model {
@@ -23,5 +25,12 @@ public class Role extends Model {
 
     @Field("description")
     private String description;  // Optional description of the role
+
+    public Role(String id, String name, String description) {
+        super(id);
+        this.name = name;
+        this.description = description;
+    }
+
 }
 

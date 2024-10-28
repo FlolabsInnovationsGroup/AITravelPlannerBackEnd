@@ -2,6 +2,7 @@ package com.springboot.FlomadAIplanner.filter;
 
 import com.springboot.FlomadAIplanner.service.security.CustomUserDetailsService;
 import com.springboot.FlomadAIplanner.util.JwtUtil;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -57,8 +58,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             }
             log.info("Filtering request:{}", request);
             chain.doFilter(request, response);
+        } catch (ExpiredJwtException e) {
+            log.error("JWT token is expired: {}", e.getMessage());
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "JWT token is expired");
         } catch (Exception e) {
-            log.error("Exception during JWT authentication: {}", e.getMessage());
+            log.error("Exception during JWT authentication: {}", e.getMessage(), e);
             response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden");
         }
     }

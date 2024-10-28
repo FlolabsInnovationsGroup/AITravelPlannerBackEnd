@@ -27,12 +27,7 @@ public class UserValidator {
     }
 
     public User validateOAuthUserDoesNotExist(UserAuthDTO userAuthDTO) {
-        User user = userService.findByUsernameOrEmail(userAuthDTO.getUsername());
-        if (user == null) {
-            user = userService.findByUsernameOrEmail(userAuthDTO.getEmail());
-        }
-
-        return user;
+        return userService.findByUsernameOrEmail(userAuthDTO.getUsername());
     }
 
     public void validateUserPasswordMatches(User user, String password) throws UserNotFoundException {

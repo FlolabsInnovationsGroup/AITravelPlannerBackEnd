@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -35,10 +36,10 @@ public class UserService implements CrudService<User, String> {
 
         log.debug("Saving user: {}", user);
 
-        String password;
+        String password = user.getPassword();
         if (Objects.equals(user.getPassword(), "")) {
             password = passwordEncoder.encode(UUID.randomUUID().toString());
-        } else {
+        } else if (user.getId() == null) {
             password = passwordEncoder.encode(user.getPassword());
         }
 
@@ -124,7 +125,9 @@ public class UserService implements CrudService<User, String> {
 
     public User findByUsernameOrEmail(String identifier) {
         log.debug("Finding user by username or email: {}", identifier);
-        return userRepository.findByUsernameOrEmail(identifier);
+        User user = userRepository.findByUsernameOrEmail(identifier);
+
+        return user;
     }
 
     public boolean existsByUsername(String username) {
@@ -139,5 +142,10 @@ public class UserService implements CrudService<User, String> {
 
     public boolean isGuest(User user) {
         return user.getRoles().stream().anyMatch(role -> role.getName().equals("GUEST"));
+    }
+
+    public void updateLastActive(User user) {
+        user.setLastActive(LocalDateTime.now());
+        userRepository.save(user);
     }
 }
