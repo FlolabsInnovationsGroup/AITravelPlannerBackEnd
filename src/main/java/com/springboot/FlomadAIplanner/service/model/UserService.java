@@ -125,9 +125,7 @@ public class UserService implements CrudService<User, String> {
 
     public User findByUsernameOrEmail(String identifier) {
         log.debug("Finding user by username or email: {}", identifier);
-        User user = userRepository.findByUsernameOrEmail(identifier);
-
-        return user;
+        return userRepository.findByUsernameOrEmail(identifier);
     }
 
     public boolean existsByUsername(String username) {

@@ -20,7 +20,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -37,22 +36,20 @@ public class AuthService extends AbstractAuthService {
     private final RoleService roleService;
     private final JwtUtil jwtUtil;
     private final UserValidator userValidator;
-    private final PasswordEncoder passwordEncoder;
     private final CurrentUserUtil currentUserUtil;
 
     public AuthService(UserService userService, SessionService sessionService,
                        MessageService messageService, AuthenticationManager authenticationManager,
                        Converter<User, UserDetails> userConverter, Converter<UserAuthDTO, User> userDTOToUserConverter,
                        RoleService roleService, JwtUtil jwtUtil, UserValidator userValidator,
-                       PasswordEncoder passwordEncoder, CurrentUserUtil currentUserUtil) {
-        super(userService, sessionService, messageService, roleService, passwordEncoder);
+                       CurrentUserUtil currentUserUtil) {
+        super(userService, sessionService, messageService, roleService);
         this.authenticationManager = authenticationManager;
         this.userConverter = userConverter;
         this.userDTOToUserConverter = userDTOToUserConverter;
         this.roleService = roleService;
         this.jwtUtil = jwtUtil;
         this.userValidator = userValidator;
-        this.passwordEncoder = passwordEncoder;
         this.currentUserUtil = currentUserUtil;
     }
 

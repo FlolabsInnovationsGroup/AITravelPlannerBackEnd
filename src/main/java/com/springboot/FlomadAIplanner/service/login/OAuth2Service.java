@@ -12,7 +12,6 @@ import com.springboot.FlomadAIplanner.util.JwtUtil;
 import com.springboot.FlomadAIplanner.validator.UserValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -25,8 +24,12 @@ public class OAuth2Service extends AbstractAuthService {
     private final UserValidator userValidator;
     private final CurrentUserUtil currentUserUtil;
 
-    public OAuth2Service(UserService userService, SessionService sessionService, MessageService messageService, RoleService roleService, PasswordEncoder passwordEncoder, Converter<User, UserDetails> userConverter, Converter<UserAuthDTO, User> userDTOToUserConverter, JwtUtil jwtUtil, UserValidator userValidator, CurrentUserUtil currentUserUtil) {
-        super(userService, sessionService, messageService, roleService, passwordEncoder);
+    public OAuth2Service(UserService userService, SessionService sessionService,
+                         MessageService messageService, RoleService roleService,
+                         Converter<User, UserDetails> userConverter,
+                         Converter<UserAuthDTO, User> userDTOToUserConverter,
+                         JwtUtil jwtUtil, UserValidator userValidator, CurrentUserUtil currentUserUtil) {
+        super(userService, sessionService, messageService, roleService);
         this.userConverter = userConverter;
         this.userDTOToUserConverter = userDTOToUserConverter;
         this.jwtUtil = jwtUtil;

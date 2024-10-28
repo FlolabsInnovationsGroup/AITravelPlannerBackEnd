@@ -8,7 +8,6 @@ import com.springboot.FlomadAIplanner.service.model.MessageService;
 import com.springboot.FlomadAIplanner.service.model.RoleService;
 import com.springboot.FlomadAIplanner.service.model.SessionService;
 import com.springboot.FlomadAIplanner.service.model.UserService;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -21,14 +20,12 @@ public abstract class AbstractAuthService {
     protected final SessionService sessionService;
     protected final MessageService messageService;
     protected final RoleService roleService;
-    protected final PasswordEncoder passwordEncoder;
 
-    public AbstractAuthService(UserService userService, SessionService sessionService, MessageService messageService, RoleService roleService, PasswordEncoder passwordEncoder) {
+    public AbstractAuthService(UserService userService, SessionService sessionService, MessageService messageService, RoleService roleService) {
         this.userService = userService;
         this.sessionService = sessionService;
         this.messageService = messageService;
         this.roleService = roleService;
-        this.passwordEncoder = passwordEncoder;
     }
 
     protected User createNewUserToRegister(UserAuthDTO userAuthDTO) {
