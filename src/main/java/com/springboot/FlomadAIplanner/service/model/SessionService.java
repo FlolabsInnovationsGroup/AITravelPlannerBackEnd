@@ -1,14 +1,14 @@
 package com.springboot.FlomadAIplanner.service.model;
 
-import com.springboot.FlomadAIplanner.util.CurrentUserUtil;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import com.springboot.FlomadAIplanner.dto.SessionDTO;
 import com.springboot.FlomadAIplanner.exceptions.validators.GuestMessageLimitReachedException;
 import com.springboot.FlomadAIplanner.model.entities.Session;
 import com.springboot.FlomadAIplanner.model.entities.login.User;
 import com.springboot.FlomadAIplanner.model.repository.SessionRepository;
+import com.springboot.FlomadAIplanner.util.CurrentUserUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.ai.chat.messages.MessageType;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class SessionService implements CrudService<Session, String> {
-    
+
     @Value("${application.guest-message-limit}")
     private int GUEST_MESSAGE_LIMIT;
     private final SessionRepository sessionRepository;
@@ -37,7 +37,7 @@ public class SessionService implements CrudService<Session, String> {
     @Override
     public Session save(Session session) {
         log.info("Saving session: {}", session);
-        if(session.getUserId() == null) {
+        if (session.getUserId() == null) {
             User user = currentUserUtil.getCurrentUserFromSecurityContext();
             session.setUserId(user.getId());
         }
@@ -46,11 +46,12 @@ public class SessionService implements CrudService<Session, String> {
 
     public void checkGuestUserLimitations(String sessionId, int newMessagesAmount) {
         Session session = sessionRepository.findById(sessionId).orElse(null);
+        assert session != null;
         User user = userService.findById(session.getUserId());
-        if ( userService.isGuest(user)) { // Guest session
-            long messageCount = messageService.countMessagesBySessionId(sessionId) + newMessagesAmount;
-            if (messageCount >= GUEST_MESSAGE_LIMIT) {
-                throw new GuestMessageLimitReachedException("Guest session has reached the message limit of " + GUEST_MESSAGE_LIMIT); 
+        if (userService.isGuest(user)) { // Guest session
+            long messageCount = messageService.countMessagesByUserId(user.getId(), MessageType.USER) + newMessagesAmount;
+            if (messageCount > GUEST_MESSAGE_LIMIT) {
+                throw new GuestMessageLimitReachedException("Guest session has reached the message limit of " + GUEST_MESSAGE_LIMIT);
             }
         }
     }
@@ -89,6 +90,14 @@ public class SessionService implements CrudService<Session, String> {
     public void delete(String id) {
         log.info("Deleting session with id: {}", id);
         sessionRepository.deleteById(id);
+    }
+
+    public List<Session> findSessionsByUserId(String userId) {
+        log.info("Finding sessions for user: {}", userId);
+        return sessionRepository.findByUserId(userId)
+                .stream()
+                .sorted(Comparator.comparing(Session::getCreatedAt).reversed())
+                .collect(Collectors.toList());
     }
 
     public List<SessionDTO> findSessionIdsByUserId(String userId) {

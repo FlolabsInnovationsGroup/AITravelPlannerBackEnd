@@ -1,7 +1,9 @@
 package com.springboot.FlomadAIplanner.model.repository;
 
 import com.springboot.FlomadAIplanner.model.entities.Session;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -14,6 +16,8 @@ import java.util.List;
 @Repository
 public interface SessionRepository extends MongoRepository<Session, String> {
     List<Session> findByUserId(String userId);
+
+    List<Session> findSessionByUserId(@NotBlank String userId);
 
     Session findByIdAndUserId(String sessionId, String userId); // For updating the session's title and timestamp
 }
