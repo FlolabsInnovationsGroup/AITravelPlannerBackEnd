@@ -3,6 +3,7 @@ package com.springboot.FlomadAIplanner.ai.agents.text;
 import com.springboot.FlomadAIplanner.ai.agents.MessageProcessingStrategy;
 import com.springboot.FlomadAIplanner.ai.dto.AIMessageDTO;
 import com.springboot.FlomadAIplanner.ai.dto.ChatClientSuggestedProperties;
+import com.springboot.FlomadAIplanner.ai.dto.MessageProcessingStrategyDTO;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -27,9 +28,9 @@ public abstract class AbstractTextAgent<C, S extends Flux<?>> implements TextAge
     @Getter
     private final List<String> permittedFunctions;
     @Getter
-    private final MessageProcessingStrategy<C> callMessageProcessingStrategy;
+    private final MessageProcessingStrategy<MessageProcessingStrategyDTO, C> callMessageProcessingStrategy;
     @Getter
-    private final MessageProcessingStrategy<S> streamMessageProcessingStrategy;
+    private final MessageProcessingStrategy<MessageProcessingStrategyDTO, S> streamMessageProcessingStrategy;
     @Getter
     private final Map<String, String> promptsList;
     @Value("classpath:/templates/PromptAndFunctionSuggestionsPrompt.txt")
@@ -38,8 +39,8 @@ public abstract class AbstractTextAgent<C, S extends Flux<?>> implements TextAge
     private Predicate<AIMessageDTO> supportsPredicate;
 
     protected AbstractTextAgent(ChatClient chatClient, List<String> permittedFunctions,
-                                MessageProcessingStrategy<C> callMessageProcessingStrategy,
-                                MessageProcessingStrategy<S> streamMessageProcessingStrategy,
+                                MessageProcessingStrategy<MessageProcessingStrategyDTO, C> callMessageProcessingStrategy,
+                                MessageProcessingStrategy<MessageProcessingStrategyDTO, S> streamMessageProcessingStrategy,
                                 Map<String, String> promptsList) {
         this.chatClient = chatClient;
         this.permittedFunctions = permittedFunctions;

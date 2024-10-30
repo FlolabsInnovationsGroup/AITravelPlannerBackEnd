@@ -3,6 +3,7 @@ package com.springboot.FlomadAIplanner.ai.config;
 
 import com.springboot.FlomadAIplanner.ai.agents.Agent;
 import com.springboot.FlomadAIplanner.ai.agents.audio.AudioAgentImpl;
+import com.springboot.FlomadAIplanner.ai.agents.audio.AudioTranscriptionService;
 import com.springboot.FlomadAIplanner.ai.agents.text.TextAgent;
 import com.springboot.FlomadAIplanner.ai.agents.text.TextAgentImpl;
 import com.springboot.FlomadAIplanner.ai.agents.text.strategies.CallMessageProcessingStrategy;
@@ -55,9 +56,10 @@ public class AgentConfig {
      * Agent for Audio Processing (Audio Agent)
      */
     @Bean
-    @Qualifier("audioAgent")
-    public Agent audioAgent(@Qualifier("audioChatClient") ChatClient audioChatClient) {
-        return new AudioAgentImpl(callMessageProcessingStrategy);
+    @Qualifier("openAiAudioAgent")
+    public Agent audioAgent(@Qualifier("openAiAgent") TextAgent<String, Flux<String>> textAgent,
+                            AudioTranscriptionService transcriptionModel) {
+        return new AudioAgentImpl(textAgent, transcriptionModel);
     }
 
     @Bean

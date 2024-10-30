@@ -1,10 +1,10 @@
 package com.springboot.FlomadAIplanner.ai.agents.text.strategies;
 
 import com.springboot.FlomadAIplanner.ai.agents.MessageProcessingStrategy;
-import com.springboot.FlomadAIplanner.ai.agents.text.TextAgentImpl;
 import com.springboot.FlomadAIplanner.ai.dto.AIMessageDTO;
 import com.springboot.FlomadAIplanner.ai.dto.MessageProcessingStrategyDTO;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.stereotype.Component;
 
@@ -14,23 +14,20 @@ import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvis
 
 @Slf4j
 @Component
-public class EntityReturnProcessingStrategy<T> implements MessageProcessingStrategy<T> {
+public class EntityReturnProcessingStrategy<T> implements MessageProcessingStrategy<MessageProcessingStrategyDTO, T> {
 
     @Override
-    public T processMessage(MessageProcessingStrategyDTO<T> messageProcessingStrategyDTO) {
+    public T processMessage(MessageProcessingStrategyDTO messageProcessingStrategyDTO) {
         log.debug("Processing message: {}", messageProcessingStrategyDTO.getAiMessage().getMessage());
 
         AIMessageDTO aiMessage = messageProcessingStrategyDTO.getAiMessage();
-
-        // Cast the Agent to TextAgentImpl, assuming it's always this type in this context.
-        TextAgentImpl<?, ?> agent = (TextAgentImpl<?, ?>) messageProcessingStrategyDTO.getAgent();
-
+        ChatClient client = messageProcessingStrategyDTO.getClient();
         List<String> requiredFunctions = messageProcessingStrategyDTO.getRequiredFunctions();
         Prompt systemPrompt = messageProcessingStrategyDTO.getSystemPrompt();
 
-        Class<T> clazz = messageProcessingStrategyDTO.getReturnClassType();
+        Class<T> clazz = getReturnClassType(messageProcessingStrategyDTO.getReturnClassType());
 
-        return agent.getChatClient().prompt()
+        return client.prompt()
                 .system(systemPrompt.getContents())
                 .user(aiMessage.getMessage())
                 .advisors(a -> a.param(CHAT_MEMORY_CONVERSATION_ID_KEY, aiMessage.getSessionId()))
@@ -38,5 +35,12 @@ public class EntityReturnProcessingStrategy<T> implements MessageProcessingStrat
                 .call()
                 .entity(clazz);
     }
+
+    @SuppressWarnings("unchecked")
+    private Class<T> getReturnClassType(Class<?> clazz) {
+        log.debug("Getting return class type: {}", clazz.getName());
+        return (Class<T>) clazz;
+    }
+
 }
 

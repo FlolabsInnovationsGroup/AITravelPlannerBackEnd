@@ -14,13 +14,14 @@ import reactor.core.publisher.Flux;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Slf4j
 public class TextAgentImpl<S, F extends Flux<?>> extends AbstractTextAgent<S, F> implements Agent {
 
     public TextAgentImpl(ChatClient chatClient, List<String> permittedFunctions,
-                         MessageProcessingStrategy<S> callMessageProcessingStrategy,
-                         MessageProcessingStrategy<F> streamMessageProcessingStrategy,
+                         MessageProcessingStrategy<MessageProcessingStrategyDTO, S> callMessageProcessingStrategy,
+                         MessageProcessingStrategy<MessageProcessingStrategyDTO, F> streamMessageProcessingStrategy,
                          Map<String, String> promptsList) {
         super(chatClient, permittedFunctions, callMessageProcessingStrategy, streamMessageProcessingStrategy, promptsList);
     }
@@ -31,10 +32,10 @@ public class TextAgentImpl<S, F extends Flux<?>> extends AbstractTextAgent<S, F>
         ChatClientSuggestedProperties messageProperties = super.getSuggestedChatClientProperties(aiMessage.getMessage());
 
         log.debug("Suggested properties for call message: {}", messageProperties);
-        MessageProcessingStrategyDTO<S> messageProcessingStrategyDTO = MessageProcessingStrategyDTO
-                .<S>builder()
+        MessageProcessingStrategyDTO messageProcessingStrategyDTO = MessageProcessingStrategyDTO
+                .builder()
                 .aiMessage(aiMessage)
-                .agent(this)
+                .client(getChatClient())
                 .requiredFunctions(messageProperties.getFunctionNames())
                 .systemPrompt(new Prompt(messageProperties.getSystemPrompt()))
                 .build();
@@ -50,10 +51,10 @@ public class TextAgentImpl<S, F extends Flux<?>> extends AbstractTextAgent<S, F>
         ChatClientSuggestedProperties messageProperties = super.getSuggestedChatClientProperties(aiMessage.getMessage());
 
         log.debug("Suggested properties for stream message: {}", messageProperties);
-        MessageProcessingStrategyDTO<F> messageProcessingStrategyDTO = MessageProcessingStrategyDTO
-                .<F>builder()
+        MessageProcessingStrategyDTO messageProcessingStrategyDTO = MessageProcessingStrategyDTO
+                .builder()
                 .aiMessage(aiMessage)
-                .agent(this)
+                .client(getChatClient())
                 .requiredFunctions(messageProperties.getFunctionNames())
                 .systemPrompt(new Prompt(messageProperties.getSystemPrompt()))
                 .build();
@@ -67,10 +68,10 @@ public class TextAgentImpl<S, F extends Flux<?>> extends AbstractTextAgent<S, F>
         ChatClientSuggestedProperties messageProperties = super.getSuggestedChatClientProperties(aiMessage.getMessage());
 
         log.debug("Suggested properties for entity message: {}", messageProperties);
-        MessageProcessingStrategyDTO<T> messageProcessingStrategyDTO = MessageProcessingStrategyDTO
-                .<T>builder()
+        MessageProcessingStrategyDTO messageProcessingStrategyDTO = MessageProcessingStrategyDTO
+                .builder()
                 .aiMessage(aiMessage)
-                .agent(this)
+                .client(getChatClient())
                 .requiredFunctions(messageProperties.getFunctionNames())
                 .systemPrompt(new Prompt(messageProperties.getSystemPrompt()))
                 .returnClassType(returnClassType)
@@ -85,7 +86,8 @@ public class TextAgentImpl<S, F extends Flux<?>> extends AbstractTextAgent<S, F>
     @Override
     public boolean supports(AIMessageDTO inputMessage) {
         // Implement the logic to determine if the agent supports the given message
-        return inputMessage != null && inputMessage.getMessage() != null;
+        return inputMessage != null && inputMessage.getMessage() != null
+                && Objects.isNull(inputMessage.getMedia());
     }
 }
 

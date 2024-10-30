@@ -13,7 +13,7 @@ public class AIMessageDTO {
     @NotNull(message = "Session ID cannot be null")
     private String sessionId;
 
-    @NotNull(message = "Message cannot be null")
+    //    @NotNull(message = "Message cannot be null")
     private String message;
 
     // Field to store media (e.g., audio file)
