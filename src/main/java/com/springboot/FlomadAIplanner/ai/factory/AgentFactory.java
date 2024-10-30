@@ -1,32 +1,30 @@
 package com.springboot.FlomadAIplanner.ai.factory;
 
-import com.springboot.FlomadAIplanner.ai.agents.text.TextAgent;
-import com.springboot.FlomadAIplanner.ai.config.cnst.AIModel;
+import com.springboot.FlomadAIplanner.ai.agents.Agent;
+import com.springboot.FlomadAIplanner.ai.dto.AIMessageDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
+import java.util.List;
 
 @Slf4j
 @Service
 public class AgentFactory {
 
-    private final Map<AIModel, TextAgent<?, ?>> chatAgents;
+    private final List<Agent> agents;
 
     @Autowired
-    public AgentFactory(@Qualifier("chatAgents") Map<AIModel, TextAgent<?, ?>> chatAgents) {
+    public AgentFactory(List<Agent> agents) {
         log.info("ChatClientFactory initialized with chat clients.");
-        chatAgents.forEach((key, value) -> log.info("AIModel: {}, TextAgent: {}", key.getModelName(), value.getClass().getSimpleName()));
-        this.chatAgents = chatAgents;
+        this.agents = agents;
     }
 
-    public TextAgent<?, ?> getAgent(AIModel aiModel) {
-        TextAgent<?, ?> agent = chatAgents.get(aiModel);
-        if (agent == null) {
-            throw new IllegalArgumentException("Unknown model: " + aiModel.getModelName());
-        }
-        return agent;
+    public Agent getAgent(AIMessageDTO aiMessage) {
+        // Loop through available agents and return the one that supports the message type
+        return agents.stream()
+                .filter(agent -> agent.supports(aiMessage))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("No suitable agent found for message"));
     }
 }

@@ -7,6 +7,7 @@ import com.springboot.FlomadAIplanner.model.repository.login.RoleRepository;
 import io.mongock.api.annotations.ChangeUnit;
 import io.mongock.api.annotations.Execution;
 import io.mongock.api.annotations.RollbackExecution;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
@@ -16,6 +17,7 @@ import java.io.InputStreamReader;
 import java.util.List;
 
 @ChangeUnit(id = "V1_1_LoadData", order = "001", author = "author", systemVersion = "1")
+@Profile("!test") // Exclude this change unit from the test profile
 public class V1_1_LoadDataChangeUnit {
 
     private final RoleRepository roleRepository;
