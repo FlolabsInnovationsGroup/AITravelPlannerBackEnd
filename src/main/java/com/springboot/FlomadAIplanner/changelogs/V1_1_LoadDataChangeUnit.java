@@ -17,7 +17,6 @@ import java.io.InputStreamReader;
 import java.util.List;
 
 @ChangeUnit(id = "V1_1_LoadData", order = "001", author = "author", systemVersion = "1")
-@Profile("!test") // Exclude this change unit from the test profile
 public class V1_1_LoadDataChangeUnit {
 
     private final RoleRepository roleRepository;
@@ -55,8 +54,6 @@ public class V1_1_LoadDataChangeUnit {
     public void rollbackLoadRoles() {
         // Implement rollback logic if necessary
         // For example, remove the inserted roles
-        roleRepository.deleteById("1");
-        roleRepository.deleteById("2");
-        roleRepository.deleteById("3");
+        roleRepository.deleteAll();
     }
 }

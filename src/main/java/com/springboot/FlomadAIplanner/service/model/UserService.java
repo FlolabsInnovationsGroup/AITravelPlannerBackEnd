@@ -86,6 +86,11 @@ public class UserService implements CrudService<User, String> {
         userRepository.deleteById(id);
     }
 
+    public void deleteAll() {
+        log.debug("Deleting all users");
+        userRepository.deleteAll();
+    }
+
     @Transactional
     @SuppressWarnings("all")
     public User registerUser(User user) {
