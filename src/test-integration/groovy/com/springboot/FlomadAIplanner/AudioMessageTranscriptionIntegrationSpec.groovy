@@ -6,6 +6,7 @@ import com.springboot.FlomadAIplanner.config.IntegrationTestsConfig
 import com.springboot.FlomadAIplanner.config.MongoDBConfig
 import com.springboot.FlomadAIplanner.model.entities.Session
 import com.springboot.FlomadAIplanner.model.entities.login.User
+import com.springboot.FlomadAIplanner.service.model.MessageService
 import com.springboot.FlomadAIplanner.service.model.SessionService
 import com.springboot.FlomadAIplanner.service.model.UserService
 import com.springboot.FlomadAIplanner.util.ResponseEvaluator
@@ -45,21 +46,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class AudioMessageTranscriptionIntegrationSpec extends Specification {
 
     @Autowired
-    MockMvc mockMvc
+    private MockMvc mockMvc
 
     @Autowired
-    AudioTranscriptionService audioTranscriptionService
+    private AudioTranscriptionService audioTranscriptionService
 
     @Autowired
-    ResponseEvaluator responseEvaluator
+    private ResponseEvaluator responseEvaluator
 
     @Autowired
-    UserService userService
+    private UserService userService
 
     @Autowired
-    SessionService sessionService
+    private SessionService sessionService
 
-    Session session
+    @Autowired
+    private MessageService messageService
+
+    private Session session
 
     def setup() {
         // Setup resources
@@ -72,6 +76,7 @@ class AudioMessageTranscriptionIntegrationSpec extends Specification {
 
     def cleanup() {
         // Cleanup resources
+        messageService.deleteAll()
         sessionService.deleteAll()
         userService.deleteAll()
     }

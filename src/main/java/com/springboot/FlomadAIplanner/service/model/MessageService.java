@@ -55,6 +55,11 @@ public class MessageService implements CrudService<Message, String> {
         messageRepository.deleteById(id);
     }
 
+    public void deleteAll() {
+        log.info("Deleting all messages");
+        messageRepository.deleteAll();
+    }
+
     @SuppressWarnings("all")
     public List<Message> saveAll(List<Message> messages) {
         log.info("Saving messages: {}", messages.size());
