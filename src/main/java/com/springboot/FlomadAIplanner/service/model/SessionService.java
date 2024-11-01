@@ -92,6 +92,11 @@ public class SessionService implements CrudService<Session, String> {
         sessionRepository.deleteById(id);
     }
 
+    public void deleteAll() {
+        log.info("Deleting all sessions");
+        sessionRepository.deleteAll();
+    }
+
     public List<Session> findSessionsByUserId(String userId) {
         log.info("Finding sessions for user: {}", userId);
         return sessionRepository.findByUserId(userId)
