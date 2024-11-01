@@ -5,6 +5,8 @@ import com.springboot.FlomadAIplanner.model.entities.Session;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+
 @Slf4j
 @Component
 public class SessionConverter implements Converter<Session, SessionDTO> {
@@ -21,8 +23,11 @@ public class SessionConverter implements Converter<Session, SessionDTO> {
                 source.getId(),
                 source.getUserId(),
                 source.getTitle(),
-                source.getCreatedAt(),
-                source.getUpdatedAt()
+                source.getCreatedAt() != null ? source.getCreatedAt() : LocalDateTime.now(),
+                source.getUpdatedAt() != null ? source.getUpdatedAt() : LocalDateTime.now(),
+                source.getUserType()  // Assuming userType is handled here correctly
         );
     }
 }
+
+

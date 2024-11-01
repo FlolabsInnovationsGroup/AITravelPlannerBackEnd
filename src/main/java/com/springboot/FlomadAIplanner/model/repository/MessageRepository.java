@@ -27,5 +27,7 @@ public interface MessageRepository extends MongoRepository<Message, String> {
 
     Long countBySessionIdInAndMessageType(Collection<@NotBlank String> sessionIds, @NotNull MessageType messageType);
 
+    Long countBySessionId(String sessionId);
+
     void deleteBySessionId(String sessionId);
 }

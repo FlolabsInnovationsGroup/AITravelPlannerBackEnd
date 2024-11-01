@@ -105,7 +105,7 @@ public class SessionService implements CrudService<Session, String> {
         return sessionRepository.findByUserId(userId)
                 .stream()
                 .sorted(Comparator.comparing(Session::getCreatedAt).reversed())
-                .map(session -> new SessionDTO(session.getId(), session.getUserId(), session.getTitle(), session.getCreatedAt(), session.getUpdatedAt()))
+                .map(session -> new SessionDTO(session.getId(), session.getUserId(), session.getTitle(), session.getCreatedAt(), session.getUpdatedAt(), session.getUserType()))
                 .collect(Collectors.toList());
     }
 

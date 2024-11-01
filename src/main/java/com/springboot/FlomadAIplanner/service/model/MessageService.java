@@ -1,5 +1,6 @@
 package com.springboot.FlomadAIplanner.service.model;
 
+import com.springboot.FlomadAIplanner.exceptions.validators.GuestMessageLimitReachedException;
 import com.springboot.FlomadAIplanner.model.entities.Message;
 import com.springboot.FlomadAIplanner.model.entities.Session;
 import com.springboot.FlomadAIplanner.model.repository.MessageRepository;
@@ -24,10 +25,29 @@ public class MessageService implements CrudService<Message, String> {
     private final MessageRepository messageRepository;
     private final SessionRepository sessionRepository;
 
+    private static final int GUEST_MESSAGE_LIMIT = 5;
+
     @Override
     public Message save(Message message) {
+        // Check if user is a guest and has exceeded message limit
+        if (isGuestUser(message.getSessionId()) && hasReachedMessageLimit(message.getSessionId())) {
+            throw new GuestMessageLimitReachedException("Guest users have reached the maximum allowed messages (5). Please log in or sign up.");
+        }
         log.info("Saving message: {}, content: {}, sessionId: {}", message, StringUtils.substring(message.getContent(), 0, 50), message.getSessionId());
         return messageRepository.save(message);
+    }
+
+    //Method to check if a session belongs ot a guest user
+    private boolean isGuestUser(String sessionId) {
+        Session session = sessionRepository.findById(sessionId).orElse(null);
+        return session != null && session.isGuest(); //Assuming Session has an isGuest()method
+    }
+
+    //Method to check if the guest user has reached the message limit
+    private boolean hasReachedMessageLimit(String sessionId) {
+        long messageCount = messageRepository.countBySessionId(sessionId);
+        log.info("Message count for session {} is : {}", sessionId, messageCount);
+        return messageCount >= GUEST_MESSAGE_LIMIT;
     }
 
     @Override

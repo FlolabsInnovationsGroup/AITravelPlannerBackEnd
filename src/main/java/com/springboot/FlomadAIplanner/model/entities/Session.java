@@ -39,13 +39,21 @@ public class Session extends Model {
     @NotNull
     private LocalDateTime updatedAt;
 
+    @Field("userType")
+    private String userType; // New field to indicate user type
 
-    public Session(String id, String userId, String title, LocalDateTime createdAt, LocalDateTime updatedAt) {
+
+    public Session(String id, String userId, String title, LocalDateTime createdAt, LocalDateTime updatedAt, String userType) {
         super(id);
         this.userId = userId;
         this.title = title;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.userType = userType;
+    }
+
+    public boolean isGuest() {
+        return "guest".equalsIgnoreCase(userType);
     }
 
 }
