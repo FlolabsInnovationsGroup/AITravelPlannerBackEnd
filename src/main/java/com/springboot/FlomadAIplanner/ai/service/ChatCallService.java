@@ -35,12 +35,6 @@ public class ChatCallService extends AbstractChatService {
      * @return The response content
      */
     public String processMessage(AIMessageDTO aiMessage) {
-        // Check for null values in aiMessage and its properties
-        if (aiMessage == null || aiMessage.getMessage() == null) {
-            log.error("AIMessageDTO or its message is null");
-            throw new IllegalArgumentException("AIMessageDTO and its message cannot be null");
-        }
-
         log.info("Processing aiMessage: {}; sessionId: {}", aiMessage.getMessage(), aiMessage.getSessionId());
 
         try {
