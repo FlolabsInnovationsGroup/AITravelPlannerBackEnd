@@ -63,6 +63,7 @@ public class WebSecurityConfig {
                                 "/api/auth/guest-token",
                                 "/api/chat/call",
                                 "/api/chat/stream",
+                                "api/audio/transcribe",
                                 "/sessions",
                                 "/oauth2/**", "/login/oauth2/**"
                         )
