@@ -26,5 +26,15 @@ public interface Agent {
      * @return true if supported, false otherwise.
      */
     boolean supports(AIMessageDTO inputMessage);
+
+    /**
+     * Process an entity-based message and return a typed response.
+     *
+     * @param aiMessage The message to process.
+     * @param returnClassType The class type of the response.
+     * @param <T> The type of the response object.
+     * @return The processed entity message response.
+     */
+    <T> T processEntityMessage(AIMessageDTO aiMessage, Class<T> returnClassType);
 }
 
