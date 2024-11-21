@@ -51,6 +51,7 @@ public class ChatCallService extends AbstractChatService {
             throw e;
         }
     }
+
     /**
      * Processes an AI message and returns the AI response with suggestions.
      *
@@ -68,7 +69,7 @@ public class ChatCallService extends AbstractChatService {
             String mainResponse = (String) agent.processCallMessage(aiMessage);
 
             // Generate suggestions (for now, static; replace with dynamic logic if needed)
-            List<String> suggestions = List.of("Book a flight", "Check hotels", "Explore attractions", "View weather");
+            List<String> suggestions = generateSuggestions(mainResponse);
 
             log.info("Generated response: {} with suggestions: {}", mainResponse, suggestions);
 
@@ -82,6 +83,28 @@ public class ChatCallService extends AbstractChatService {
             log.error("Exception occurred while processing the message: {}", e.getMessage(), e);
             throw e;
         }
+    }
+
+    private List<String> generateSuggestions(String mainResponse) {
+        // Map of keywords to context-specific suggestions
+        Map<String, List<String>> keywordSuggestions = Map.of(
+                "flight", List.of("Book a flight", "Check flight prices", "View airline reviews", "Explore deals"),
+                "hotel", List.of("Find hotels", "Compare prices", "Read guest reviews", "Explore boutique stays"),
+                "attraction", List.of("Discover local attractions", "Book tickets online", "View maps", "Plan your visit"),
+                "currency", List.of("Currency converter", "Check exchange rates", "Learn about local currency", "Plan your travel budget"),
+                "weather", List.of("Check local weather", "View 7-day forecast", "Pack accordingly", "Learn about the climate"),
+                "food", List.of("Discover local dishes", "Find restaurants", "Plan a food tour", "Ask for dining tips")
+        );
+
+        // Check for matching keywords in the main response
+        for (Map.Entry<String, List<String>> entry : keywordSuggestions.entrySet()) {
+            if (mainResponse.toLowerCase().contains(entry.getKey())) {
+                return entry.getValue();
+            }
+        }
+
+        // Default suggestions if no keywords match
+        return List.of("Start a new search", "Explore popular destinations", "Ask for travel tips", "Plan your journey");
     }
 
 }
