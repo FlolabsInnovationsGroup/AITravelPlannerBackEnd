@@ -39,7 +39,7 @@ public class ChatController {
             description = "Handles a chat message and returns the AI response along with suggested next inputs.")
     @PostMapping(value = "/call/entity", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<AIMessageResponse> handleEntityCall(@ModelAttribute AIMessageDTO message) {
-        AIMessageResponse response = chatCallService.processEntityMessage(message);
+        AIMessageResponse response = chatCallService.processEntityMessage(message, AIMessageResponse.class);
         return ResponseEntity.ok(response);
     }
 
