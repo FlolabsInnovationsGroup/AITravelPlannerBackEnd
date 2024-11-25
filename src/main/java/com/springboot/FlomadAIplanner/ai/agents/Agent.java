@@ -4,7 +4,6 @@ import com.springboot.FlomadAIplanner.ai.dto.AIMessageDTO;
 
 import java.util.List;
 
-
 /**
  * Represents an AI Agent responsible for processing different types of messages.
  * This interface defines the contract for handling various AI message processing
@@ -57,18 +56,6 @@ public interface Agent {
     <T> T processEntityMessage(AIMessageDTO aiMessage, Class<T> returnClassType);
 
     /**
-     * Generate context-aware suggestions for the next user input.
-     * This method dynamically generates suggestions based on the provided context.
-     * Suggestions are designed to guide the user and keep the conversation engaging.
-     *
-     * @param context The input context or the main response text.
-     * @return A list of suggested next inputs or actions.
-     */
-    default List<String> generateSuggestions(String context) {
-        throw new UnsupportedOperationException("This agent does not support suggestion generation.");
-    }
-
-    /**
      * Provides a brief description of the agent and its primary use case.
      * This can be used for logging or debugging to identify the agent's purpose.
      *
@@ -78,4 +65,5 @@ public interface Agent {
         return "Generic AI Agent";
     }
 }
+
 

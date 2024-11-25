@@ -4,29 +4,33 @@ import com.springboot.FlomadAIplanner.ai.agents.Agent;
 import com.springboot.FlomadAIplanner.ai.dto.AIMessageDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 /**
  * Factory class responsible for selecting the appropriate Agent to handle an AI message.
- * The factory loops through all registered agents to find one that supports the given message type.
+ * The factory retrieves agents based on the message type, or the default agent when needed.
  */
 @Slf4j
 @Service
 public class AgentFactory {
 
     private final List<Agent> agents;
+    private final Agent defaultAgent; // Added field for the default agent
 
     /**
      * Constructor for AgentFactory.
      *
-     * @param agents A list of available agents that implement the Agent interface.
+     * @param agents       A list of available agents that implement the Agent interface.
+     * @param defaultAgent The default agent to be used when no specific agent is selected.
      */
     @Autowired
-    public AgentFactory(List<Agent> agents) {
+    public AgentFactory(List<Agent> agents, @Qualifier("openAiAgent") Agent defaultAgent) {
         log.info("AgentFactory initialized with {} agents.", agents.size());
         this.agents = agents;
+        this.defaultAgent = defaultAgent; // Initialize default agent
     }
 
     /**
@@ -62,13 +66,7 @@ public class AgentFactory {
      */
     public Agent getDefaultAgent() {
         log.info("Retrieving default agent.");
-
-        return agents.stream()
-                .findFirst()
-                .orElseThrow(() -> {
-                    log.error("No agents available in the system.");
-                    return new IllegalStateException("No agents are registered in the system.");
-                });
+        return defaultAgent; // Return the explicitly defined default agent
     }
 }
 
