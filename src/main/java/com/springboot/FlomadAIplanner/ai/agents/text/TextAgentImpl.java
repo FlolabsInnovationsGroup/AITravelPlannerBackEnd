@@ -65,26 +65,18 @@ public class TextAgentImpl<S, F extends Flux<?>> extends AbstractTextAgent<S, F>
     @Override
     public <T> T processEntityMessage(AIMessageDTO aiMessage, Class<T> returnClassType) {
         log.debug("Processing entity message: {}", aiMessage.getMessage());
-
-        // Get suggested properties for the entity message
         ChatClientSuggestedProperties messageProperties = super.getSuggestedChatClientProperties(aiMessage.getMessage());
 
         log.debug("Suggested properties for entity message: {}", messageProperties);
-
-        // Update the system prompt to encourage specific actionable responses
-        String updatedPrompt = "Please provide specific destinations and actionable suggestions relevant to the user's query.";
-
-        // Build the DTO for processing
         MessageProcessingStrategyDTO messageProcessingStrategyDTO = MessageProcessingStrategyDTO
                 .builder()
                 .aiMessage(aiMessage)
                 .client(getChatClient())
                 .requiredFunctions(messageProperties.getFunctionNames())
-                .systemPrompt(new Prompt(updatedPrompt))
                 .returnClassType(returnClassType)
+                .systemPrompt(new Prompt(messageProperties.getSystemPrompt()))
                 .build();
 
-        // Process the message with EntityReturnProcessingStrategy
         EntityReturnProcessingStrategy<T> entityReturnProcessingStrategy = new EntityReturnProcessingStrategy<>();
         return entityReturnProcessingStrategy.processMessage(messageProcessingStrategyDTO);
     }
