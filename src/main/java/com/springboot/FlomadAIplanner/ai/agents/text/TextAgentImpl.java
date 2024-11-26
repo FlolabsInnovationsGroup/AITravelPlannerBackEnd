@@ -19,7 +19,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-
 @Slf4j
 public class TextAgentImpl<S, F extends Flux<?>> extends AbstractTextAgent<S, F> implements Agent {
 
@@ -70,91 +69,67 @@ public class TextAgentImpl<S, F extends Flux<?>> extends AbstractTextAgent<S, F>
     public <T> T processEntityMessage(AIMessageDTO aiMessage, Class<T> returnClassType) {
         log.debug("Processing entity message: {}", aiMessage.getMessage());
 
-        // Assuming getSuggestedChatClientProperties returns an object with function names and system prompt
+        // Get suggested properties for the entity message
         ChatClientSuggestedProperties messageProperties = super.getSuggestedChatClientProperties(aiMessage.getMessage());
 
         log.debug("Suggested properties for entity message: {}", messageProperties);
 
-        // Update the system prompt to ensure actionable suggestions
-        String updatedPrompt = "Please provide actionable suggestions like 'Browse destinations', 'Check activities', 'Explore travel dates'.";
+        // Update the system prompt to encourage specific actionable responses
+        String updatedPrompt = "Please provide specific destinations and actionable suggestions relevant to the user's query.";
 
-        // Create the MessageProcessingStrategyDTO with the updated system prompt
+        // Build the DTO for processing
         MessageProcessingStrategyDTO messageProcessingStrategyDTO = MessageProcessingStrategyDTO
                 .builder()
                 .aiMessage(aiMessage)
                 .client(getChatClient())
                 .requiredFunctions(messageProperties.getFunctionNames())
-                .systemPrompt(new Prompt(updatedPrompt)) // Updated prompt
+                .systemPrompt(new Prompt(updatedPrompt))
                 .returnClassType(returnClassType)
                 .build();
 
-        // Use the EntityReturnProcessingStrategy to process the message and return a result
+        // Process the message with EntityReturnProcessingStrategy
         EntityReturnProcessingStrategy<T> entityReturnProcessingStrategy = new EntityReturnProcessingStrategy<>();
         T result = entityReturnProcessingStrategy.processMessage(messageProcessingStrategyDTO);
 
         log.info("Processed entity message result: {}", result);
 
-        // Adding the action suggestions back to the result (if needed)
+        // If the result is an AIMessageResponse, sanitize and refine suggestions
         if (result instanceof AIMessageResponse) {
             AIMessageResponse response = (AIMessageResponse) result;
 
-            // Sanitize suggestions: Convert questions into actionable statements if needed
-            List<String> actionableSuggestions = sanitizeSuggestions(response.getSuggestions());
+            // Generate actionable suggestions
+            List<String> actionableSuggestions = generateSuggestions(response.getText());
 
-            // Set the sanitized actionable suggestions
+            // Update the response with actionable suggestions
             response.setSuggestions(actionableSuggestions);
         }
 
         return result;
     }
 
-    // Helper method to sanitize suggestions (convert questions to actionable items)
-    private List<String> sanitizeSuggestions(List<String> suggestions) {
-        return suggestions.stream()
-                .map(suggestion -> {
-                    // Clean up any leading/trailing spaces and remove question marks
-                    String sanitized = suggestion.trim().replaceAll("[?]$", "");
-
-                    // Convert question-based suggestions to actionable suggestions
-                    if (sanitized.toLowerCase().contains("where")) {
-                        return "Browse " + sanitized.replaceAll("(?i)where", "").trim() + ".";  // Example: "Browse destinations."
-                    } else if (sanitized.toLowerCase().contains("what")) {
-                        return "Check " + sanitized.replaceAll("(?i)what", "").trim() + ".";  // Example: "Check activities."
-                    } else if (sanitized.toLowerCase().contains("how")) {
-                        return "Explore " + sanitized.replaceAll("(?i)how", "").trim() + ".";  // Example: "Explore travel dates."
-                    } else if (sanitized.toLowerCase().contains("why")) {
-                        return "Understand " + sanitized.replaceAll("(?i)why", "").trim() + ".";  // Example: "Understand travel recommendations."
-                    } else if (sanitized.toLowerCase().contains("when")) {
-                        return "Find out when " + sanitized.replaceAll("(?i)when", "").trim() + ".";  // Example: "Find out when to travel."
-                    } else {
-                        // Default case for non-question suggestions, add period for consistency
-                        return sanitized + ".";  // Adding period for consistency
-                    }
-                })
-                .collect(Collectors.toList());
+    // Helper method to generate suggestions based on the context
+    private List<String> generateSuggestions(String context) {
+        if (context.toLowerCase().contains("beach")) {
+            return List.of("Discover hidden beach spots", "Find top-rated beach resorts", "Check snorkeling options", "Plan a beach adventure");
+        } else if (context.toLowerCase().contains("city")) {
+            return List.of("Explore city landmarks", "Find local events", "Discover restaurants", "Check guided tours");
+        } else if (context.toLowerCase().contains("cuisine")) {
+            return List.of("Find local restaurants", "Explore food tours", "Discover regional dishes", "Learn about local food history");
+        }
+        // Default suggestions
+        return List.of("Browse destinations", "Check activities", "Explore travel packages", "Plan your trip");
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     @Override
     public boolean supports(AIMessageDTO inputMessage) {
-        // Implement the logic to determine if the agent supports the given message
+        // Check if the agent supports the given message
         return inputMessage != null && inputMessage.getMessage() != null
                 && Objects.isNull(inputMessage.getMedia());
     }
 }
+
+
+
 
 
 
