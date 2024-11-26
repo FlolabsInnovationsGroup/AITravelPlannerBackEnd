@@ -1,6 +1,7 @@
 package com.springboot.FlomadAIplanner.ai.agents.text;
 
 import com.springboot.FlomadAIplanner.ai.agents.MessageProcessingStrategy;
+import com.springboot.FlomadAIplanner.ai.dto.AIMessageDTO;
 import com.springboot.FlomadAIplanner.ai.dto.ChatClientSuggestedProperties;
 import com.springboot.FlomadAIplanner.ai.dto.MessageProcessingStrategyDTO;
 import lombok.Getter;
@@ -14,6 +15,7 @@ import reactor.core.publisher.Flux;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvisor.CHAT_MEMORY_RETRIEVE_SIZE_KEY;
 
@@ -33,6 +35,8 @@ public abstract class AbstractTextAgent<C, S extends Flux<?>> implements TextAge
     private final Map<String, String> promptsList;
     @Value("classpath:/templates/PromptAndFunctionSuggestionsPrompt.txt")
     protected Resource promptAndFunctionSuggestionsPrompt;
+    @Setter
+    private Predicate<AIMessageDTO> supportsPredicate = (m) -> false;
 
     protected AbstractTextAgent(ChatClient chatClient, List<String> permittedFunctions,
                                 MessageProcessingStrategy<MessageProcessingStrategyDTO, C> callMessageProcessingStrategy,
@@ -76,4 +80,8 @@ public abstract class AbstractTextAgent<C, S extends Flux<?>> implements TextAge
         return properties;
     }
 
+    @Override
+    public boolean supports(AIMessageDTO inputMessage) {
+        return supportsPredicate.test(inputMessage);
+    }
 }
