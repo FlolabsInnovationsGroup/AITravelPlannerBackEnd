@@ -123,7 +123,7 @@ public class AuthService extends AbstractAuthService {
             log.info("User is already authenticated");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new LoginResponse(false, null, "User is already authenticated"));
         }
-
+        log.info("User not authenticated, generating guest token");
         User guestUser = createGuestUser();
         String token = generateTokenForUser(guestUser);
         return ResponseEntity.ok(new LoginResponse(false, token, "Quest token generated successfully"));
@@ -137,6 +137,7 @@ public class AuthService extends AbstractAuthService {
     }
 
     private User createGuestUser() {
+        log.info("Creating new guest user");
         User guestUser = new User();
         guestUser.setRoles(Collections.singleton(roleService.findByName("GUEST")));
         guestUser.setLastActive(LocalDateTime.now());
@@ -148,7 +149,10 @@ public class AuthService extends AbstractAuthService {
     }
 
     private String generateTokenForUser(User user) {
+        log.info("Generating token for user: {}", user.getUsername());
         UserDetails userDetails = userConverter.convert(user);
-        return jwtUtil.generateToken(userDetails);
+        String token = jwtUtil.generateToken(userDetails);
+        log.info("Generated token for user: {}", user.getUsername());
+        return token;
     }
 } 

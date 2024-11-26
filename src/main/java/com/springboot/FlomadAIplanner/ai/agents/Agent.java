@@ -2,8 +2,6 @@ package com.springboot.FlomadAIplanner.ai.agents;
 
 import com.springboot.FlomadAIplanner.ai.dto.AIMessageDTO;
 
-import java.util.List;
-
 /**
  * Represents an AI Agent responsible for processing different types of messages.
  * This interface defines the contract for handling various AI message processing
@@ -48,22 +46,13 @@ public interface Agent {
      * or any complex entity-based data. The response type is determined
      * by the `returnClassType` parameter.
      *
-     * @param aiMessage The message to process.
+     * @param aiMessage       The message to process.
      * @param returnClassType The class type of the response.
-     * @param <T> The type of the response object.
+     * @param <T>             The type of the response object.
      * @return The processed entity message response of type <T>.
      */
     <T> T processEntityMessage(AIMessageDTO aiMessage, Class<T> returnClassType);
 
-    /**
-     * Provides a brief description of the agent and its primary use case.
-     * This can be used for logging or debugging to identify the agent's purpose.
-     *
-     * @return A string describing the agent.
-     */
-    default String getDescription() {
-        return "Generic AI Agent";
-    }
 }
 
 

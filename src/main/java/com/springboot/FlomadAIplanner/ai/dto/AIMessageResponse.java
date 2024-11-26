@@ -1,7 +1,6 @@
 package com.springboot.FlomadAIplanner.ai.dto;
 
 import com.fasterxml.jackson.annotation.JsonClassDescription;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,13 +25,14 @@ public class AIMessageResponse {
 
 
     @JsonPropertyDescription("Required. " +
-            "TRAVEL ASSISTANT main response to the USER. This message will be displayed to the user." +
-            "Must be a complete answer, while generating this value imagine that 'suggestions' don't exist at all.")
-    private String text;
+            "TRAVEL ASSISTANT response to the USER input. This message will be displayed to the user." +
+            "Must be a complete friendly answer, based on the input. While generating this value imagine that 'suggestions' don't exist at all.")
+    private String message;
 
     @JsonPropertyDescription("Required." +
-            "List of suggested next requests USER can logically send to TRAVEL ASSISTANT in the current chat context." +
-            "While generating these suggestions, keep in mind that one of these suggestions could be a message from USER (client) to the TRAVEL ASSISTANT" +
+            "List of suggested next requests USER can logically send to TRAVEL ASSISTANT in the current chat context, and You MUST also think about the future flow of the dialogue." +
+            "Keep in mind that one of these suggestions will be a message from USER (client) to the TRAVEL ASSISTANT." +
+            "Suggestions must be really useful." +
             "Must be 4 items.")
     private List<String> suggestions;
 

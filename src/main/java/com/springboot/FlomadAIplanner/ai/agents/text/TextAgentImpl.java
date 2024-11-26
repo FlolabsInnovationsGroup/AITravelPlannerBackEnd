@@ -1,8 +1,6 @@
 package com.springboot.FlomadAIplanner.ai.agents.text;
 
 import com.springboot.FlomadAIplanner.ai.agents.Agent;
-import com.springboot.FlomadAIplanner.ai.dto.AIMessageResponse;
-
 import com.springboot.FlomadAIplanner.ai.agents.MessageProcessingStrategy;
 import com.springboot.FlomadAIplanner.ai.agents.text.strategies.EntityReturnProcessingStrategy;
 import com.springboot.FlomadAIplanner.ai.dto.AIMessageDTO;
@@ -17,7 +15,6 @@ import reactor.core.publisher.Flux;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Slf4j
 public class TextAgentImpl<S, F extends Flux<?>> extends AbstractTextAgent<S, F> implements Agent {
@@ -89,35 +86,7 @@ public class TextAgentImpl<S, F extends Flux<?>> extends AbstractTextAgent<S, F>
 
         // Process the message with EntityReturnProcessingStrategy
         EntityReturnProcessingStrategy<T> entityReturnProcessingStrategy = new EntityReturnProcessingStrategy<>();
-        T result = entityReturnProcessingStrategy.processMessage(messageProcessingStrategyDTO);
-
-        log.info("Processed entity message result: {}", result);
-
-        // If the result is an AIMessageResponse, sanitize and refine suggestions
-        if (result instanceof AIMessageResponse) {
-            AIMessageResponse response = (AIMessageResponse) result;
-
-            // Generate actionable suggestions
-            List<String> actionableSuggestions = generateSuggestions(response.getText());
-
-            // Update the response with actionable suggestions
-            response.setSuggestions(actionableSuggestions);
-        }
-
-        return result;
-    }
-
-    // Helper method to generate suggestions based on the context
-    private List<String> generateSuggestions(String context) {
-        if (context.toLowerCase().contains("beach")) {
-            return List.of("Discover hidden beach spots", "Find top-rated beach resorts", "Check snorkeling options", "Plan a beach adventure");
-        } else if (context.toLowerCase().contains("city")) {
-            return List.of("Explore city landmarks", "Find local events", "Discover restaurants", "Check guided tours");
-        } else if (context.toLowerCase().contains("cuisine")) {
-            return List.of("Find local restaurants", "Explore food tours", "Discover regional dishes", "Learn about local food history");
-        }
-        // Default suggestions
-        return List.of("Browse destinations", "Check activities", "Explore travel packages", "Plan your trip");
+        return entityReturnProcessingStrategy.processMessage(messageProcessingStrategyDTO);
     }
 
     @Override
@@ -126,6 +95,7 @@ public class TextAgentImpl<S, F extends Flux<?>> extends AbstractTextAgent<S, F>
         return inputMessage != null && inputMessage.getMessage() != null
                 && Objects.isNull(inputMessage.getMedia());
     }
+
 }
 
 
