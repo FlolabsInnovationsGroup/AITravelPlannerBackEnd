@@ -112,6 +112,12 @@
             <version>2.15.4</version>
         </dependency>
 
+        <!-- ======== WEBSOCKET SUPPORT =========================== -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+
         <!-- ======== LOMBOK =========================== -->
         <dependency>
             <groupId>org.projectlombok</groupId>
