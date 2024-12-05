@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.springboot.FlomadAIplanner.model.entities.Location;
 import com.springboot.FlomadAIplanner.service.model.LocationService;
 import com.springboot.FlomadAIplanner.service.socket.WebSocketService;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,14 +16,14 @@ import org.springframework.stereotype.Component;
 @Component
 @Description("""
         Function to add a new location to the map.
-
+        
         Purpose:
         Use this function to add a new location (dot) to the map associated with a chat session.
-
+        
         Output:
         Returns a confirmation message.
         """)
-public class AddLocationFunction implements AIFunction<AddLocationFunction.AddLocationRequest, String> {
+public class AddLocationFunction extends AbstractLocationFunction implements AIFunction<AddLocationFunction.AddLocationRequest, String> {
     private final LocationService locationService;
     private final WebSocketService webSocketService;
 
@@ -36,9 +35,11 @@ public class AddLocationFunction implements AIFunction<AddLocationFunction.AddLo
     @Override
     public String apply(AddLocationRequest request) {
         log.info("Starting AddLocationFunction with request: {}", request);
+
         try {
+            String sessionId = getSessionIdFromHttpRequest();
             Location location = Location.builder()
-                    .sessionId(request.getSessionId())
+                    .sessionId(sessionId)
                     .latitude(request.getLatitude())
                     .longitude(request.getLongitude())
                     .name(request.getName())
@@ -57,9 +58,6 @@ public class AddLocationFunction implements AIFunction<AddLocationFunction.AddLo
     @NoArgsConstructor
     @AllArgsConstructor
     public static class AddLocationRequest {
-        @NotBlank(message = "Session ID cannot be blank.")
-        @JsonPropertyDescription("Required. The ID of the chat session.")
-        private String sessionId;
 
         @NotNull(message = "Latitude cannot be null.")
         @JsonPropertyDescription("Required. Latitude of the location.")

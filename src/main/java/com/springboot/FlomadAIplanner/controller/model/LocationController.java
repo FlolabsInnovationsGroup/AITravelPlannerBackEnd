@@ -1,6 +1,6 @@
-package com.springboot.FlomadAIplanner.controller;
+package com.springboot.FlomadAIplanner.controller.model;
 
-import com.springboot.FlomadAIplanner.ai.functions.AddLocationFunction.AddLocationRequest;
+import com.springboot.FlomadAIplanner.dto.LocationDTO;
 import com.springboot.FlomadAIplanner.model.entities.Location;
 import com.springboot.FlomadAIplanner.service.model.LocationService;
 import com.springboot.FlomadAIplanner.service.socket.WebSocketService;
@@ -19,7 +19,7 @@ public class LocationController {
     private final WebSocketService webSocketService;
 
     @PostMapping("/add")
-    public ResponseEntity<String> addLocation(@RequestBody AddLocationRequest request) {
+    public ResponseEntity<String> addLocation(@RequestBody LocationDTO request) {
         try {
             // Step 1: Save location
             Location location = Location.builder()
