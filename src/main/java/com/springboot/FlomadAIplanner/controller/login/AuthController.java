@@ -52,7 +52,10 @@ public class AuthController {
     @Operation(summary = "Geneation Guest Token", description = "Generates a JWT token for guest user")
     @PostMapping("/guest-token")
     public ResponseEntity<LoginResponse> generateGuestToken() {
-        return authService.generateGuestToken();
+        log.info("Generating guest token");
+        ResponseEntity<LoginResponse> response = authService.generateGuestToken();
+        log.info("Guest token generated successfully");
+        return response;
     }
 
 //    private final UserService userService;

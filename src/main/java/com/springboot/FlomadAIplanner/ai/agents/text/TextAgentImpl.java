@@ -73,23 +73,25 @@ public class TextAgentImpl<S, F extends Flux<?>> extends AbstractTextAgent<S, F>
                 .aiMessage(aiMessage)
                 .client(getChatClient())
                 .requiredFunctions(messageProperties.getFunctionNames())
-                .systemPrompt(new Prompt(messageProperties.getSystemPrompt()))
                 .returnClassType(returnClassType)
+                .systemPrompt(new Prompt(messageProperties.getSystemPrompt()))
                 .build();
 
         EntityReturnProcessingStrategy<T> entityReturnProcessingStrategy = new EntityReturnProcessingStrategy<>();
-        T result = entityReturnProcessingStrategy.processMessage(messageProcessingStrategyDTO);
-        log.info("Processed entity message result: {}", StringUtils.substring(result.toString(), 0, 50));
-        return result;
+        return entityReturnProcessingStrategy.processMessage(messageProcessingStrategyDTO);
     }
 
     @Override
     public boolean supports(AIMessageDTO inputMessage) {
-        // Implement the logic to determine if the agent supports the given message
+        // Check if the agent supports the given message
         return inputMessage != null && inputMessage.getMessage() != null
                 && Objects.isNull(inputMessage.getMedia());
     }
+
 }
+
+
+
 
 
 

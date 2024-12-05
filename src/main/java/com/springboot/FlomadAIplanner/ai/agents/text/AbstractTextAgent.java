@@ -36,7 +36,7 @@ public abstract class AbstractTextAgent<C, S extends Flux<?>> implements TextAge
     @Value("classpath:/templates/PromptAndFunctionSuggestionsPrompt.txt")
     protected Resource promptAndFunctionSuggestionsPrompt;
     @Setter
-    private Predicate<AIMessageDTO> supportsPredicate;
+    private Predicate<AIMessageDTO> supportsPredicate = (m) -> false;
 
     protected AbstractTextAgent(ChatClient chatClient, List<String> permittedFunctions,
                                 MessageProcessingStrategy<MessageProcessingStrategyDTO, C> callMessageProcessingStrategy,

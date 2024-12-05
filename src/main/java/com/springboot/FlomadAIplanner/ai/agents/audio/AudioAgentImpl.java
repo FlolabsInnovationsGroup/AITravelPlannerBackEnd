@@ -63,4 +63,10 @@ public class AudioAgentImpl implements Agent {
             return Flux.error(new RuntimeException("Error processing audio stream: " + e.getMessage(), e));
         }
     }
+
+    @Override
+    public <T> T processEntityMessage(AIMessageDTO aiMessage, Class<T> returnClassType) {
+        log.warn("Entity message processing is not supported for AudioAgent.");
+        throw new UnsupportedOperationException("Entity message processing is not supported for AudioAgent.");
+    }
 }
