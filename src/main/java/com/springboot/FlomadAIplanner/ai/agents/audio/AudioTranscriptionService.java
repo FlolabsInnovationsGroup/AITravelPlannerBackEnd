@@ -1,10 +1,10 @@
 package com.springboot.FlomadAIplanner.ai.agents.audio;
 
+import org.springframework.ai.audio.transcription.AudioTranscriptionPrompt;
+import org.springframework.ai.audio.transcription.AudioTranscriptionResponse;
 import org.springframework.ai.model.Model;
 import org.springframework.ai.openai.OpenAiAudioTranscriptionOptions;
 import org.springframework.ai.openai.api.OpenAiAudioApi.TranscriptResponseFormat;
-import org.springframework.ai.openai.audio.transcription.AudioTranscriptionPrompt;
-import org.springframework.ai.openai.audio.transcription.AudioTranscriptionResponse;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;

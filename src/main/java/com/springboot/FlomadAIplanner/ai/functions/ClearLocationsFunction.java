@@ -1,11 +1,16 @@
 package com.springboot.FlomadAIplanner.ai.functions;
 
+import com.fasterxml.jackson.annotation.JsonPropertyDescription;
+import com.springboot.FlomadAIplanner.ai.dto.AIMessageDTO;
 import com.springboot.FlomadAIplanner.service.model.LocationService;
 import com.springboot.FlomadAIplanner.service.socket.WebSocketService;
+import com.springboot.FlomadAIplanner.util.RequestService;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Description;
 import org.springframework.stereotype.Component;
+
+import java.util.function.Function;
 
 @Slf4j
 @Component
@@ -18,20 +23,23 @@ import org.springframework.stereotype.Component;
         Output:
         Returns a confirmation message.
         """)
-public class ClearLocationsFunction extends AbstractLocationFunction implements AIFunction<ClearLocationsFunction.ClearLocationsRequest, String> {
+public class ClearLocationsFunction implements Function<ClearLocationsFunction.ClearLocationsRequest, String> {
     private final LocationService locationService;
     private final WebSocketService webSocketService;
+    private final RequestService requestService;
 
-    public ClearLocationsFunction(LocationService locationService, WebSocketService webSocketService) {
+    public ClearLocationsFunction(LocationService locationService, WebSocketService webSocketService, RequestService requestService) {
         this.locationService = locationService;
         this.webSocketService = webSocketService;
+        this.requestService = requestService;
     }
 
     @Override
     public String apply(ClearLocationsRequest request) {
-        String sessionId = getSessionIdFromHttpRequest();
-        log.info("Starting ClearLocationsFunction for sessionId: {}", sessionId);
         try {
+            String sessionId = requestService.getParameterFromRequest(AIMessageDTO.class.getDeclaredField("sessionId").getName());
+            log.info("Starting ClearLocationsFunction for sessionId: {}", sessionId);
+
             locationService.deleteAllBySessionId(sessionId);
             webSocketService.sendMapCleared(sessionId);
             return "All locations cleared successfully.";
@@ -43,6 +51,7 @@ public class ClearLocationsFunction extends AbstractLocationFunction implements 
 
     @Data
     public static class ClearLocationsRequest {
-
+        @JsonPropertyDescription("Just should be the value 'CLEAR'")
+        private String command;
     }
 }

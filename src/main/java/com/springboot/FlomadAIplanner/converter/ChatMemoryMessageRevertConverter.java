@@ -3,12 +3,10 @@ package com.springboot.FlomadAIplanner.converter;
 import com.springboot.FlomadAIplanner.model.entities.Message;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.ai.chat.messages.Media;
 import org.springframework.ai.chat.messages.MessageType;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -40,12 +38,6 @@ public class ChatMemoryMessageRevertConverter implements Converter<Message, org.
             @Override
             public String getContent() {
                 return source.getContent();
-            }
-
-            @SuppressWarnings("all")
-            @Override
-            public List<Media> getMedia(String... dummy) {
-                return null;
             }
 
             @Override

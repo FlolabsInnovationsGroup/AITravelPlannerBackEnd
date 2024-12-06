@@ -10,9 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-/**
- * Utility class for working with AI functions.
- */
 @Slf4j
 @Component
 public class FunctionAnnotationUtils {
@@ -25,9 +22,6 @@ public class FunctionAnnotationUtils {
 
     /**
      * Extracts bean names and descriptions from the given list of AI functions.
-     *
-     * @param aiFunctions the list of AI functions
-     * @return the list of bean names and descriptions
      */
     public List<String> extractBeanNamesAndDescriptions(Class<?>... aiFunctions) {
         List<Class<?>> aiFunctionList = Arrays.asList(aiFunctions);
@@ -53,7 +47,6 @@ public class FunctionAnnotationUtils {
                 ));
     }
 
-
     private String getDescriptionText(Class<?> clazz) {
         Description description = clazz.getAnnotation(Description.class);
         if (description != null) {
@@ -62,5 +55,4 @@ public class FunctionAnnotationUtils {
             return "No description";
         }
     }
-
 }

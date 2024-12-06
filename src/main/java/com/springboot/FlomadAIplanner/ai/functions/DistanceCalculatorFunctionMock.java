@@ -7,11 +7,12 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 @Slf4j
 @Component
 @Description("Calculates the distance between lists of locations.")
-public class DistanceCalculatorFunctionMock implements AIFunction<DistanceCalculatorFunctionMock.DistanceCalculatorRequest, DistanceCalculatorFunctionMock.DistanceCalculatorResponse> {
+public class DistanceCalculatorFunctionMock implements Function<DistanceCalculatorFunctionMock.DistanceCalculatorRequest, DistanceCalculatorFunctionMock.DistanceCalculatorResponse> {
 
     @Override
     public DistanceCalculatorResponse apply(DistanceCalculatorRequest request) {
