@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Description;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.function.Function;
 
 @Slf4j
 @Component
@@ -29,7 +30,7 @@ import java.util.List;
         Use CurrentDateTimeFunction to get the current date and time before calling this function if you need to use date parameter.
         You should USE this function to search for offers in MULTIPLE hotels AT ONCE for more efficiency.
         """)
-public class HotelsOffersSearchFunction implements AIFunction<HotelsOffersSearchFunction.HotelOffersRequestWrapper, JsonNode> {
+public class HotelsOffersSearchFunction implements Function<HotelsOffersSearchFunction.HotelOffersRequestWrapper, JsonNode> {
 
     private final AmadeusHotelsSearchService amadeusHotelsSearchService;
 

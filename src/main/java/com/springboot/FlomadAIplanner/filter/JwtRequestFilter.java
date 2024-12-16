@@ -26,6 +26,13 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
 
     @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        // Skip filtering for WebSocket requests
+        String path = request.getRequestURI();
+        return path.startsWith("/ws");
+    }
+
+    @Override
     @SuppressWarnings("NullableProblems")
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws IOException {

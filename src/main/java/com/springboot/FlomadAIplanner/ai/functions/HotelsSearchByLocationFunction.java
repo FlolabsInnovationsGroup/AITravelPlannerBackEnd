@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 @Slf4j
 @Component
@@ -26,7 +27,7 @@ import java.util.List;
         Geocode search allows specifying exact geographical points using latitude and longitude, and filters based on proximity, amenities, ratings, and hotel sources.
         This method provides a way to discover hotels that are precisely tailored to geographical and preference-based needs.
         To get the exact location (Google Maps link) for each of the found hotels, YOU MUST use the PlaceTextSearchFunction for EVERY found hotel separately.""")
-public class HotelsSearchByLocationFunction implements AIFunction<HotelsSearchByLocationFunction.HotelSearchRequestWrapper, List<HotelSearchByGeocodeResponse>> {
+public class HotelsSearchByLocationFunction implements Function<HotelsSearchByLocationFunction.HotelSearchRequestWrapper, List<HotelSearchByGeocodeResponse>> {
 
     private final AmadeusHotelsSearchService amadeusHotelsSearchService;
 

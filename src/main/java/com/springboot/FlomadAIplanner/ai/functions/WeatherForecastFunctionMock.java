@@ -7,11 +7,12 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 @Slf4j
 @Component
 @Description("Provides weather forecasts for a list of locations and dates.")
-public class WeatherForecastFunctionMock implements AIFunction<List<WeatherForecastFunctionMock.WeatherForecastRequest>, List<WeatherForecastFunctionMock.WeatherForecastResponse>> {
+public class WeatherForecastFunctionMock implements Function<List<WeatherForecastFunctionMock.WeatherForecastRequest>, List<WeatherForecastFunctionMock.WeatherForecastResponse>> {
 
     @Override
     public List<WeatherForecastResponse> apply(List<WeatherForecastRequest> requests) {

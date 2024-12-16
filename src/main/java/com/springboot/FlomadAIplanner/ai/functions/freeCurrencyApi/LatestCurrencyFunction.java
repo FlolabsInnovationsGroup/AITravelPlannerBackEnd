@@ -3,7 +3,6 @@ package com.springboot.FlomadAIplanner.ai.functions.freeCurrencyApi;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.springboot.FlomadAIplanner.ai.functions.AIFunction;
 import com.springboot.FlomadAIplanner.service.freeCurrency.FreeCurrencyService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 
 @Slf4j
 @Component
@@ -23,7 +23,7 @@ import java.util.List;
         "Use this function whenever customer asks about currency exchange. " +
         "If the base currency is not provided in currencies list, you should add base currency into currencies list." +
         "If this function returns errors node, Do not proceed this function with the same input again.")
-public class LatestCurrencyFunction implements AIFunction<LatestCurrencyFunction.LatestCurrencyRequest, JsonNode> {
+public class LatestCurrencyFunction implements Function<LatestCurrencyFunction.LatestCurrencyRequest, JsonNode> {
 
     private final FreeCurrencyService freeCurrencyService;
 

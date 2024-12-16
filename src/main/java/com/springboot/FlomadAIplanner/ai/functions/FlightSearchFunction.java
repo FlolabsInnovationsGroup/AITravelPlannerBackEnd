@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 @Slf4j
 @Component
@@ -26,7 +27,7 @@ import java.util.List;
         If the customer provides a return date, it will be considered a round trip.
         You will need to call this function twice: once for the departure and once for the return.
         """)
-public class FlightSearchFunction implements AIFunction<FlightSearchFunction.FlightSearchRequest, FlightSearchFunction.FlightSearchResponse> {
+public class FlightSearchFunction implements Function<FlightSearchFunction.FlightSearchRequest, FlightSearchFunction.FlightSearchResponse> {
 
     private final AmadeusFlightsService amadeusFlightsService;
     private final Converter<FlightOffersPostResponse, FlightSearchResponse> fromAPIToResponseConverter;

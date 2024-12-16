@@ -39,7 +39,7 @@ public class PlaceTextSearchFunction implements AIFunction<PlaceTextSearchFuncti
     }
 
     @Valid
-    @Override
+//    @Override
     public JsonNode apply(TextSearchRequestsWrapper requestsWrapper) {
         log.info("Performing text search with query: {}", requestsWrapper.getRequests());
         try {
