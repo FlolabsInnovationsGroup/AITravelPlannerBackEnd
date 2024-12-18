@@ -29,7 +29,9 @@ import java.util.function.Function;
         Should be called after the CurrentLocationFunction to get the user's current location.
         P.S. If you have the accurate location details from the chat history,
         you can directly call this function to get place suggestions.""")
-public class PlaceSuggestionFunction implements Function<PlaceSuggestionFunction.NearbyPlacesRequestWrapper, List<JsonNode>> {
+public class PlaceSuggestionFunction
+//        implements Function<PlaceSuggestionFunction.NearbyPlacesRequestWrapper, List<JsonNode>>
+{
     private final GooglePlacesService googlePlacesService;
 
     @Autowired

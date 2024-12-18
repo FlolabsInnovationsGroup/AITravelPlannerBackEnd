@@ -29,7 +29,9 @@ import java.util.List;
         
         Do not change or edit in any way the URLs of the Google Maps links provided by this function.
         """)
-public class PlaceTextSearchFunction implements AIFunction<PlaceTextSearchFunction.TextSearchRequestsWrapper, JsonNode> {
+public class PlaceTextSearchFunction
+//        implements AIFunction<PlaceTextSearchFunction.TextSearchRequestsWrapper, JsonNode>
+{
 
     private final GooglePlacesServiceAsync googlePlacesService;
 
