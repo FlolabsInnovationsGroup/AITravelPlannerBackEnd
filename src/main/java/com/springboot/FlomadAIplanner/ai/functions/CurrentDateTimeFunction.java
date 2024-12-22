@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.function.Function;
 
 @Slf4j
 @Component
@@ -21,7 +22,7 @@ import java.time.format.DateTimeFormatter;
         Use this function to get the current date and time in a specified format.
         This function is useful for getting context to AI model about the current date and time in the real world.
         MUST be called BEFORE any other function that requires date and time parameter.""")
-public class CurrentDateTimeFunction implements AIFunction<CurrentDateTimeFunction.CurrentDateTimeRequest, JsonNode> {
+public class CurrentDateTimeFunction implements Function<CurrentDateTimeFunction.CurrentDateTimeRequest, JsonNode> {
 
     @Override
     public JsonNode apply(CurrentDateTimeRequest request) {

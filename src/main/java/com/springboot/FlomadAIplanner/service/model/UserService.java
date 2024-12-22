@@ -11,7 +11,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -25,12 +28,24 @@ public class UserService implements CrudService<User, String> {
 
     @Value("${application.backend.url}")
     private String backendUrl;
+    @Value("${application.email.confirmation.enabled}")
+    private Boolean emailConfirmationEnabled;
 
     @Override
     public User save(User user) {
+
         log.debug("Saving user: {}", user);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setIsEmailVerified(false);
+
+        String password = user.getPassword();
+        if (Objects.equals(user.getPassword(), "")) {
+            password = passwordEncoder.encode(UUID.randomUUID().toString());
+        } else if (user.getId() == null) {
+            password = passwordEncoder.encode(user.getPassword());
+        }
+
+        user.setPassword(password);
+        user.setIsEmailVerified(!Objects.equals(user.getProvider(), "none"));
+
         User savedUser = userRepository.save(user);
         log.info("User saved successfully with ID: {}", savedUser.getId());
 
@@ -38,8 +53,10 @@ public class UserService implements CrudService<User, String> {
         verificationTokenService.save(verificationToken);
         log.info("Verification token created for user with ID: {}", savedUser.getId());
 
-        sendVerificationEmail(savedUser);
-        log.debug("Verification email sent to user with ID: {}", savedUser.getId());
+        if (Objects.equals(savedUser.getProvider(), "none") && emailConfirmationEnabled) {
+            sendVerificationEmail(savedUser);
+            log.debug("Verification email sent to user with ID: {}", savedUser.getId());
+        }
 
         return savedUser;
     }
@@ -67,6 +84,11 @@ public class UserService implements CrudService<User, String> {
     public void delete(String id) {
         log.debug("Deleting user with ID: {}", id);
         userRepository.deleteById(id);
+    }
+
+    public void deleteAll() {
+        log.debug("Deleting all users");
+        userRepository.deleteAll();
     }
 
     @Transactional
@@ -119,5 +141,14 @@ public class UserService implements CrudService<User, String> {
     public boolean existsByEmail(String email) {
         log.debug("Checking if user exists by email: {}", email);
         return userRepository.existsByEmail(email);
+    }
+
+    public boolean isGuest(User user) {
+        return user.getRoles().stream().anyMatch(role -> role.getName().equals("GUEST"));
+    }
+
+    public void updateLastActive(User user) {
+        user.setLastActive(LocalDateTime.now());
+        userRepository.save(user);
     }
 }

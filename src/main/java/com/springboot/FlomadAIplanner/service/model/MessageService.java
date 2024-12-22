@@ -7,10 +7,12 @@ import com.springboot.FlomadAIplanner.model.repository.SessionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.ai.chat.messages.MessageType;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -53,6 +55,11 @@ public class MessageService implements CrudService<Message, String> {
         messageRepository.deleteById(id);
     }
 
+    public void deleteAll() {
+        log.info("Deleting all messages");
+        messageRepository.deleteAll();
+    }
+
     @SuppressWarnings("all")
     public List<Message> saveAll(List<Message> messages) {
         log.info("Saving messages: {}", messages.size());
@@ -62,6 +69,22 @@ public class MessageService implements CrudService<Message, String> {
     public List<Message> getMessagesBySessionId(String sessionId) {
         log.info("Finding messages for session: {}", sessionId);
         return messageRepository.findAllBySessionIdOrderByCreatedAtAsc(sessionId);
+    }
+
+    private long countBySessionIdIn(Collection<String> sessionIds, MessageType messageType) {
+        log.info("Counting messages for session IDs: {} and messageType: {}", sessionIds, messageType);
+        long count = messageRepository.countBySessionIdInAndMessageType(sessionIds, messageType);
+        log.info("Counted {} messages for sessions: {}", count, sessionIds);
+        return count;
+    }
+
+    public long countMessagesByUserId(String userId, MessageType messageType) {
+        log.info("Counting messages for user: {}", userId);
+        List<Session> sessions = sessionRepository.findSessionByUserId(userId);
+        List<String> sessionIds = sessions.stream().map(Session::getId).collect(Collectors.toList());
+        long count = this.countBySessionIdIn(sessionIds, messageType);
+        log.info("Counted {} messages for user: {}", count, userId);
+        return count;
     }
 
     public List<Message> getMessagesByUserId(String userId) {
@@ -86,4 +109,5 @@ public class MessageService implements CrudService<Message, String> {
         log.info("Deleting messages for session: {}", sessionId);
         messageRepository.deleteBySessionId(sessionId);
     }
+
 }

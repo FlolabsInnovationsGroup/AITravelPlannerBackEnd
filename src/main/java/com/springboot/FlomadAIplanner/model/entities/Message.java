@@ -3,7 +3,6 @@ package com.springboot.FlomadAIplanner.model.entities;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.springframework.ai.chat.messages.Media;
 import org.springframework.ai.chat.messages.MessageType;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -11,7 +10,6 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.io.Serial;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Map;
 
 @Data
@@ -59,9 +57,4 @@ public class Message extends Model implements org.springframework.ai.chat.messag
         return metadata;
     }
 
-    @Override
-    @SuppressWarnings("all")
-    public List<Media> getMedia(String... dummy) {
-        return null;
-    }
 }

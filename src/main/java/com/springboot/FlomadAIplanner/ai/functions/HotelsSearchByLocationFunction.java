@@ -14,6 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Description;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
+
 @Slf4j
 @Component
 @Description("""
@@ -22,8 +26,8 @@ import org.springframework.stereotype.Component;
         Before calling this function, use the "PlaceTextSearchFunction" to get the exact location (longitude and latitude) of a required place.
         Geocode search allows specifying exact geographical points using latitude and longitude, and filters based on proximity, amenities, ratings, and hotel sources.
         This method provides a way to discover hotels that are precisely tailored to geographical and preference-based needs.
-        To get exact location (GoogleMaps link) for each of the found hotels YOU MUST use the PlaceTextSearchFunction for EVERY found hotel separately.""")
-public class HotelsSearchByLocationFunction implements AIFunction<HotelsSearchByLocationFunction.HotelSearchRequestWrapper, HotelSearchByGeocodeResponse> {
+        To get the exact location (Google Maps link) for each of the found hotels, YOU MUST use the PlaceTextSearchFunction for EVERY found hotel separately.""")
+public class HotelsSearchByLocationFunction implements Function<HotelsSearchByLocationFunction.HotelSearchRequestWrapper, List<HotelSearchByGeocodeResponse>> {
 
     private final AmadeusHotelsSearchService amadeusHotelsSearchService;
 
@@ -32,19 +36,29 @@ public class HotelsSearchByLocationFunction implements AIFunction<HotelsSearchBy
         this.amadeusHotelsSearchService = amadeusHotelsSearchService;
     }
 
+    @Override
     @Valid
-    public HotelSearchByGeocodeResponse apply(HotelSearchRequestWrapper requestWrapper) {
-        log.info("Searching hotels by geocode at latitude: {}, longitude: {}", requestWrapper.getRequest().getLatitude(), requestWrapper.getRequest().getLongitude());
-        try {
-            HotelSearchByGeocodeResponse response = amadeusHotelsSearchService.searchHotelsByGeocode(requestWrapper.getRequest());
-            log.info("Received hotel search response from Amadeus. size: {};  Response length: {}", response.getData().size(), response.toString().length());
-            return response;
-        } catch (AmadeusAPIException e) {
-            log.error("Error searching for hotels by geocode", e);
-            return HotelSearchByGeocodeResponse.builder()
-                    .errorMessage(e.getMessage())
-                    .build();
+    public List<HotelSearchByGeocodeResponse> apply(HotelSearchRequestWrapper requestWrapper) {
+        log.info("Initiating geocode-based hotel searches.");
+        List<HotelSearchByGeocodeResponse> combinedResponses = new ArrayList<>();
+
+        for (HotelSearchByGeocodeRequest request : requestWrapper.getRequests()) {
+            log.info("Searching hotels by geocode at latitude: {}, longitude: {}", request.getLatitude(), request.getLongitude());
+            try {
+                HotelSearchByGeocodeResponse response = amadeusHotelsSearchService.searchHotelsByGeocode(request);
+                log.info("Received hotel search response from Amadeus. size: {};  Response length: {}", response.getData().size(), response.toString().length());
+                combinedResponses.add(response);
+            } catch (AmadeusAPIException e) {
+                log.error("Error searching for hotels by geocode", e);
+                HotelSearchByGeocodeResponse errorResponse = HotelSearchByGeocodeResponse.builder()
+                        .errorMessage("Error for latitude " + request.getLatitude() + ", longitude " + request.getLongitude() + ": " + e.getMessage())
+                        .build();
+                combinedResponses.add(errorResponse);
+            }
         }
+
+        log.info("Combined search results for all provided geocode requests.");
+        return combinedResponses;
     }
 
     @Data
@@ -53,7 +67,7 @@ public class HotelsSearchByLocationFunction implements AIFunction<HotelsSearchBy
     public static class HotelSearchRequestWrapper {
 
         @Valid
-        @JsonPropertyDescription("The geocode-based hotel search request body containing latitude, longitude, and optional filters.")
-        private HotelSearchByGeocodeRequest request;
+        @JsonPropertyDescription("List of geocode-based hotel search requests containing latitude, longitude, and optional filters.")
+        private List<HotelSearchByGeocodeRequest> requests;
     }
 }

@@ -1,13 +1,13 @@
 package com.springboot.FlomadAIplanner.ai.controller;
 
 import com.springboot.FlomadAIplanner.ai.dto.AIMessageDTO;
+import com.springboot.FlomadAIplanner.ai.dto.AIMessageResponse;
 import com.springboot.FlomadAIplanner.ai.service.ChatCallService;
 import com.springboot.FlomadAIplanner.ai.service.ChatStreamService;
 import io.swagger.v3.oas.annotations.Operation;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 
 @RestController
@@ -22,10 +22,9 @@ public class ChatController {
         this.chatStreamService = chatStreamService;
     }
 
-    @Operation(summary = "Single message response from LLM",
-            description = "Processes a chat message and returns a response in a single message.")
-    @PostMapping("/call")
-    public String handleCall(@RequestBody AIMessageDTO message) {
+    @Operation(summary = "Process chat message with optional media")
+    @PostMapping(value = "/call", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public String handleCall(@ModelAttribute AIMessageDTO message) {
         return chatCallService.processMessage(message);
     }
 
@@ -34,6 +33,14 @@ public class ChatController {
     @PostMapping("/stream")
     public Flux<String> handleStream(@RequestBody AIMessageDTO message) {
         return chatStreamService.processMessage(message);
+    }
+
+    @Operation(summary = "Process chat message and return suggestions",
+            description = "Handles a chat message and returns the AI response along with suggested next inputs.")
+    @PostMapping(value = "/entity", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<AIMessageResponse> handleEntityCall(@ModelAttribute AIMessageDTO message) {
+        AIMessageResponse response = chatCallService.processEntityMessage(message, AIMessageResponse.class);
+        return ResponseEntity.ok(response);
     }
 
 }

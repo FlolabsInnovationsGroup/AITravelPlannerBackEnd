@@ -1,6 +1,9 @@
 package com.springboot.FlomadAIplanner.config.login;
 
 import com.springboot.FlomadAIplanner.filter.JwtRequestFilter;
+import com.springboot.FlomadAIplanner.filter.UserLastActiveUpdateFilter;
+import com.springboot.FlomadAIplanner.handler.login.CustomAuthenticationFailureHandler;
+import com.springboot.FlomadAIplanner.handler.login.CustomAuthenticationSuccessHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -8,6 +11,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -16,15 +20,24 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
-
     private final UserDetailsService userDetailsService;
     private final JwtRequestFilter jwtRequestFilter;
+    private final UserLastActiveUpdateFilter userLastActiveUpdateFilter;
     private final PasswordEncoder passwordEncoder;
+    private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+    private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
 
-    public WebSecurityConfig(UserDetailsService userDetailsService, JwtRequestFilter jwtRequestFilter, PasswordEncoder passwordEncoder) {
+    public WebSecurityConfig(UserDetailsService userDetailsService,
+                             JwtRequestFilter jwtRequestFilter, UserLastActiveUpdateFilter userLastActiveUpdateFilter,
+                             PasswordEncoder passwordEncoder,
+                             CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler,
+                             CustomAuthenticationFailureHandler customAuthenticationFailureHandler) {
         this.userDetailsService = userDetailsService;
         this.jwtRequestFilter = jwtRequestFilter;
+        this.userLastActiveUpdateFilter = userLastActiveUpdateFilter;
         this.passwordEncoder = passwordEncoder;
+        this.customAuthenticationSuccessHandler = customAuthenticationSuccessHandler;
+        this.customAuthenticationFailureHandler = customAuthenticationFailureHandler;
     }
 
     @Bean
@@ -41,25 +54,42 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .securityMatcher("sessions/**", "users/**", "messages/**", "destinations/**")
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(
                                 "/api/auth/signup",
+                                "/api/auth/signin",
                                 "/api/auth/verify",
+                                "/api/auth/guest-token",
                                 "/api/chat/call",
                                 "/api/chat/stream",
-                                "/api/auth/login"
-                        )
-                        .permitAll()
+                                "/api/audio/transcribe",
+                                "/api/chat/entity",
+                                "/sessions",
+                                "/oauth2/**",
+                                "/login/oauth2/**",
+                                "/ws/**" // WebSocket endpoint
+                        ).permitAll()
                         .requestMatchers(
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
-                                "/swagger-ui.html")
-                        .permitAll()
+                                "/swagger-ui.html"
+                        ).permitAll()
+                        .requestMatchers("/users/current").authenticated() // Allow authenticated users
+                        .requestMatchers("/users/**").hasRole("ADMIN") // Restrict user management to ADMIN
+//                        .requestMatchers("/api/chat", "/api/stream").hasAnyRole("ADMIN", "USER")
                         .anyRequest().authenticated()
                 )
-                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable)) // Updated with method reference
+                .oauth2Login(oauth2 -> oauth2
+                        .authorizationEndpoint(authorization -> authorization
+                                .baseUri("/oauth2/authorization")
+                        )
+                        .successHandler(customAuthenticationSuccessHandler)
+                        .failureHandler(customAuthenticationFailureHandler)
+                )
+                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class) // execution order of these filters is essential
+                .addFilterBefore(userLastActiveUpdateFilter, JwtRequestFilter.class); // execution order of these filters is essential
 
         return http.build();
     }

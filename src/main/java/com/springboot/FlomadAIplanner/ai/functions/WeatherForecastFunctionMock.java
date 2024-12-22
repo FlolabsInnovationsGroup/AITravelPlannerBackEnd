@@ -5,16 +5,25 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Description;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
+
 @Slf4j
 @Component
-@Description("Provides weather forecast for a given location and date.")
-public class WeatherForecastFunctionMock implements AIFunction<WeatherForecastFunctionMock.WeatherForecastRequest, WeatherForecastFunctionMock.WeatherForecastResponse> {
+@Description("Provides weather forecasts for a list of locations and dates.")
+public class WeatherForecastFunctionMock implements Function<List<WeatherForecastFunctionMock.WeatherForecastRequest>, List<WeatherForecastFunctionMock.WeatherForecastResponse>> {
 
     @Override
-    public WeatherForecastResponse apply(WeatherForecastRequest request) {
-        log.info("Fetching weather forecast for location: {} on date: {}", request.getLocation(), request.getDate());
-        // Mock implementation
-        return new WeatherForecastResponse("Sunny", 25);
+    public List<WeatherForecastResponse> apply(List<WeatherForecastRequest> requests) {
+        List<WeatherForecastResponse> responses = new ArrayList<>();
+        for (WeatherForecastRequest request : requests) {
+            log.info("Fetching weather forecast for location: {} on date: {}", request.getLocation(), request.getDate());
+            // Mock implementation for each request
+            WeatherForecastResponse response = new WeatherForecastResponse("Sunny", 25);
+            responses.add(response);
+        }
+        return responses;
     }
 
     @Data

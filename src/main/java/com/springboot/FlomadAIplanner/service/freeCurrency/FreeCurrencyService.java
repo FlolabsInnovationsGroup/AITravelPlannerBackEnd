@@ -7,7 +7,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.springboot.FlomadAIplanner.exceptions.api.FreeCurrencyAPIException;
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Slf4j
 @Service
@@ -26,12 +29,16 @@ public class FreeCurrencyService {
      * @param currencies a list of currency code separated by ",", default select all currencies.
      * @return JsonNode type result.
      */
-    public JsonNode getSupportedCurrencies(String currencies) throws FreeCurrencyAPIException {
+    public JsonNode getSupportedCurrencies(List<String> currencies) throws FreeCurrencyAPIException {
         try {
             log.info("Search for Supported Currencies");
             JsonNode response;
-            if (currencies != null && !currencies.isEmpty()) {
-                response = freeCurrencyClient.getSupportedCurrencies(currencies);
+            String currenciesStr = (currencies != null && !currencies.isEmpty())
+                    ? StringUtils.join(currencies, ",")
+                    : null;
+
+            if (currenciesStr != null) {
+                response = freeCurrencyClient.getSupportedCurrencies(currenciesStr);
             } else {
                 response = freeCurrencyClient.getSupportedCurrencies();
             }
@@ -43,7 +50,7 @@ public class FreeCurrencyService {
                 ObjectNode errorsNode = errorNode.putObject("errors");
                 errorsNode.put("message", "Validation error")
                         .put("currencies", "The selected currencies is invalid.")
-                        .put("code", currencies);
+                        .put("code", StringUtils.join(currencies, ","));
                 log.info("Invalid Currency: {}", errorNode);
                 return errorNode;
             } else {
@@ -80,16 +87,20 @@ public class FreeCurrencyService {
      * @param currencies   a list of currency code separated by ",", default select all currencies.
      * @return JsonNode type result. Do not contain baseCurrency if it is not in currencies.
      */
-    public JsonNode getLatestCurrency(String baseCurrency, String currencies) throws FreeCurrencyAPIException {
+    public JsonNode getLatestCurrency(String baseCurrency, List<String> currencies) throws FreeCurrencyAPIException {
         try {
             log.info("Search for Latest Currencies:{} with Base Currency:{}", currencies, baseCurrency);
             JsonNode response;
-            if (currencies != null && !currencies.isEmpty() && baseCurrency != null) {
-                response = freeCurrencyClient.getLatestCurrency(baseCurrency, currencies);
+            String currenciesStr = (currencies != null && !currencies.isEmpty())
+                    ? StringUtils.join(currencies, ",")
+                    : null;
+
+            if (currenciesStr != null && baseCurrency != null) {
+                response = freeCurrencyClient.getLatestCurrency(baseCurrency, currenciesStr);
             } else if (baseCurrency != null) {
                 response = freeCurrencyClient.getLatestCurrency(baseCurrency);
-            } else if (currencies != null && !currencies.isEmpty()) {
-                response = freeCurrencyClient.getUSDLatestCurrency(currencies);
+            } else if (currenciesStr != null) {
+                response = freeCurrencyClient.getUSDLatestCurrency(currenciesStr);
             } else {
                 response = freeCurrencyClient.getUSDLatestCurrency();
             }
@@ -109,16 +120,17 @@ public class FreeCurrencyService {
      * @param currencies   a list of currency code separated by ",", default select all currencies.
      * @return JsonNode type result. Do not contain baseCurrency if it is not in currencies.
      */
-    public JsonNode getHistoricalCurrency(String date, String baseCurrency, String currencies) throws FreeCurrencyAPIException {
+    public JsonNode getHistoricalCurrency(String date, String baseCurrency, List<String> currencies) throws FreeCurrencyAPIException {
         try {
             log.info("Search for Historical Currencies:{} with Base Currency:{}", currencies, baseCurrency);
             JsonNode response;
+            String currenciesString = StringUtils.join(currencies, ",");
             if (currencies != null && !currencies.isEmpty() && baseCurrency != null) {
-                response = freeCurrencyClient.getHistoricalCurrency(date, baseCurrency, currencies);
+                response = freeCurrencyClient.getHistoricalCurrency(date, baseCurrency, currenciesString);
             } else if (baseCurrency != null) {
                 response = freeCurrencyClient.getHistoricalCurrency(date, baseCurrency);
             } else if (currencies != null && !currencies.isEmpty()) {
-                response = freeCurrencyClient.getUSDHistoricalCurrency(date, currencies);
+                response = freeCurrencyClient.getUSDHistoricalCurrency(date, currenciesString);
             } else {
                 response = freeCurrencyClient.getUSDHistoricalCurrency(date);
             }
@@ -129,5 +141,4 @@ public class FreeCurrencyService {
             throw new FreeCurrencyAPIException("Error performing search Historical Currencies", e);
         }
     }
-
 }

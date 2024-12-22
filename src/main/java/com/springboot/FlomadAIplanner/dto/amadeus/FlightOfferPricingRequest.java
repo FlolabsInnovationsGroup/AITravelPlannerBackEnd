@@ -20,6 +20,6 @@ public class FlightOfferPricingRequest {
                                                "flightOffers": [] // List of flight offers to confirm the price received from the flight offers search in Json format.
                                              }
                                              }\s
-                                               """)
+            """)
     private String offer;
 }

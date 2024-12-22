@@ -15,9 +15,11 @@
     <description>AI planner project for Spring Boot</description>
     <properties>
         <java.version>17</java.version>
-        <spring-ai.version>1.0.0-M1</spring-ai.version>
+        <spring-ai.version>1.0.0-M4</spring-ai.version>
         <springdoc-openapi-ui.version>2.6.0</springdoc-openapi-ui.version> <!-- Use the latest version -->
         <jakarta.version>3.1.0</jakarta.version>
+        <mongock.version>5.5.0</mongock.version>
+        <testcontainers.version>1.20.3</testcontainers.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -35,6 +37,13 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <dependency>
+                <groupId>io.mongock</groupId>
+                <artifactId>mongock-bom</artifactId>
+                <version>${mongock.version}</version> <!-- Use the latest version -->
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     <dependencies>
@@ -42,11 +51,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
@@ -106,6 +110,12 @@
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
             <version>2.15.4</version>
+        </dependency>
+
+        <!-- ======== WEBSOCKET SUPPORT =========================== -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
         </dependency>
 
         <!-- ======== LOMBOK =========================== -->
@@ -181,7 +191,6 @@
             <version>4.5.13</version>
         </dependency>
         <!--- Environment File Encryption Dependency-->
-        <!-- https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk18on -->
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk18on</artifactId>
@@ -192,14 +201,11 @@
             <artifactId>json</artifactId>
             <version>20231013</version>
         </dependency>
+
+        <!-- ======== JSON =========================== -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>jakarta.persistence</groupId>
@@ -216,11 +222,100 @@
             <artifactId>dotenv-java</artifactId>
             <version>2.2.4</version>
         </dependency>
+        <!-- Kibana dependencies-->
         <dependency>
-            <groupId>org.thymeleaf</groupId>
-            <artifactId>thymeleaf</artifactId>
-            <version>3.1.2.RELEASE</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-logging</artifactId>
         </dependency>
+        <dependency>
+            <groupId>net.logstash.logback</groupId>
+            <artifactId>logstash-logback-encoder</artifactId>
+            <version>7.3</version> <!-- 7.3-->
+        </dependency>
+        <!-- SLF4J API -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.0.0</version> <!-- Or another appropriate version -->
+        </dependency>
+        <!-- ELK -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.4.11</version> <!-- 1.4.11 -->
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>1.4.11</version> <!-- Make sure this is the correct version -->
+        </dependency>
+        <dependency>
+            <groupId>org.elasticsearch.client</groupId>
+            <artifactId>elasticsearch-rest-high-level-client</artifactId>
+            <version>7.17.4</version>
+        </dependency>
+
+        <!-- Mongock-->
+        <dependency>
+            <groupId>io.mongock</groupId>
+            <artifactId>mongock-springboot</artifactId>
+            <version>${mongock.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.mongock</groupId>
+            <artifactId>mongodb-springdata-v4-driver</artifactId>
+            <version>${mongock.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <version>5.9</version>
+        </dependency>
+
+        <!-- ======== TEST =========================== -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.spockframework</groupId>
+            <artifactId>spock-core</artifactId>
+            <version>2.4-M4-groovy-4.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.spockframework</groupId>
+            <artifactId>spock-spring</artifactId>
+            <version>2.4-M4-groovy-4.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.groovy</groupId>
+            <artifactId>groovy</artifactId>
+            <version>4.0.23</version>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>spock</artifactId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>mongodb</artifactId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+
+
     </dependencies>
 
     <profiles>
@@ -246,6 +341,14 @@
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
+        </repository>
+        <repository>
+            <id>spring-snapshots</id>
+            <name>Spring Snapshots</name>
+            <url>https://repo.spring.io/snapshot</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
         </repository>
     </repositories>
     <build>

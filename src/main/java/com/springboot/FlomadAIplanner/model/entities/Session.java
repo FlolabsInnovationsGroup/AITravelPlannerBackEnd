@@ -39,6 +39,7 @@ public class Session extends Model {
     @NotNull
     private LocalDateTime updatedAt;
 
+
     public Session(String id, String userId, String title, LocalDateTime createdAt, LocalDateTime updatedAt) {
         super(id);
         this.userId = userId;

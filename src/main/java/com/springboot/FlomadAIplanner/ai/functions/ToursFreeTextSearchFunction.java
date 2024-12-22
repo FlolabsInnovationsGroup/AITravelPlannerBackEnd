@@ -1,5 +1,6 @@
 package com.springboot.FlomadAIplanner.ai.functions;
 
+import com.fasterxml.jackson.annotation.JsonClassDescription;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.springboot.FlomadAIplanner.dto.viator.BulkFreeTextSearchRequest;
 import com.springboot.FlomadAIplanner.dto.viator.FreeTextSearchResponse;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 
 @Slf4j
 @Component
@@ -34,7 +36,7 @@ import java.util.List;
         PRODUCT could be a tour, activity, experience, etc.
         'productUrl' - is actually the link to the tour purchase and description, media.
         You must use CurrentDateTimeFunction before this function to get the current date and time in the real world.""")
-public class ToursFreeTextSearchFunction implements AIFunction<ToursFreeTextSearchFunction.FreeTextSearchRequestWrapper, List<FreeTextSearchResponse>> {
+public class ToursFreeTextSearchFunction implements Function<ToursFreeTextSearchFunction.FreeTextSearchRequestWrapper, List<FreeTextSearchResponse>> {
 
     private final ViatorAuxiliaryServiceAsync viatorAuxiliaryService;
 
@@ -60,6 +62,7 @@ public class ToursFreeTextSearchFunction implements AIFunction<ToursFreeTextSear
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
+    @JsonClassDescription("Wrapper for the free text search request. JSON Schema of type: 'object'")
     public static class FreeTextSearchRequestWrapper {
 
         @NotBlank
