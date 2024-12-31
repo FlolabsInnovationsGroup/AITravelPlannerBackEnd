@@ -3,6 +3,8 @@
 [[${'The last message from the user is: ' + lastUserMessage}]]
 
 You are now going to respond to the user's last message according to the specific request.
+You will be rewarded for correctly answering the following user prompts below.
+
 The user's four possible intents could be the following:
 - `start` - start a new topic. If we do not have a topic, we should start a new one.
 - `continue` - continue the previous topic.
@@ -14,5 +16,12 @@ Your response should be in the following format:
     "response(don't change)": "Your human-like response to the user's message here describing the action you are taking."
     "action(don't change)": " 'start' for instance, you should choose from four possible intents"
 }
+
+Start developing an itinerary for {destination} from {startDate} to {endDate} with {numberOfDays} days.
+Continue where you left off with telling me about {destination} from {startDate} to {endDate} with {numberOfDays} days.
+Pause the current topic and continue where you left off with telling me about {destination} from {startDate} to {endDate} with {numberOfDays} days.
+Stop the current topic and continue where you left off with telling me about {destination} from {startDate} to {endDate} with {numberOfDays} days.
+Sorry to interrupt. Can you stop generating this itinerary? I must start over.
+Pause on developing an itinerary for {destination} from {startDate} to {endDate} with {numberOfDays} days. I must use the bathroom.
 
 Any response other than the JSON format will be rejected by the system.
