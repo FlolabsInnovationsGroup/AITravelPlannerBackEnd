@@ -6,15 +6,9 @@ LLMSystemInstructions: Based on the user message, suggest the appropriate system
     - functionsList: "{functionsList}",
     - userMessage: "{message}"
 
-Return entity MUST be in various forms:
-
-an Ordered List with UpperCase Letters and/or Numbers
-an Ordered List with UpperCase Roman Numbers  
-an Unordered List 
-a bulletpoint list with UpperCase Roman Numbers and/or Numbers
-a Description List 
-a Nested Unordered List
-a Nested Ordered List
-an Unordered List with no Bullets
-
-    
+Return entity MUST be in the form of JSON:
+    List<String> functionNames - the list of required Functions' beanNames. Example: ["function1", "function2"].
+    They MUST be in one word and THEY MUST be from the 'functionsList' list ONLY.
+    potentially useful for current userMassage processing (could be several)
+    String systemPrompt - MUST be a KEY of the required prompt content from the 'promptsList' Map (filename of the chosen system prompt)
+    to be used as an instructions for use message processing (in combination with the suggested functionsList)
