@@ -41,6 +41,7 @@ public class ReadLocationsFunction implements Function<ReadLocationsFunction.Rea
         try {
             String sessionId = requestService.getParameterFromRequest(AIMessageDTO.class.getDeclaredField("sessionId").getName());
             log.info("Starting ReadLocationsFunction for sessionId: {}", sessionId);
+
             return locationService.findAllBySessionId(sessionId);
         } catch (Exception e) {
             log.error("Error in ReadLocationsFunction: {}", e.getMessage(), e);

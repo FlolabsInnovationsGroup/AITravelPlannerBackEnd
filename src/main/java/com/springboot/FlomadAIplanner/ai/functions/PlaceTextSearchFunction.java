@@ -24,12 +24,17 @@ import java.util.List;
         Use this function to get detailed information about one or multiple - [1,∞) places based on text searches.
         Recommended to use for search for all required places in one call.
         This function processes a batch of place names, making it efficient for bulk queries.
-        It is especially useful before calling the "PlaceSuggestionFunction" to obtain the exact locations (longitude and latitude) and
+        It is especially useful before calling the "PlaceSuggestionFunction" and functions related to the MAP interaction to obtain the exact locations (longitude and latitude) and
         Google Maps URLs for the searched places.
+        
+        IMPORTANT:
+        You MUST strictly follow the description of the input parameter fields.
         
         Do not change or edit in any way the URLs of the Google Maps links provided by this function.
         """)
-public class PlaceTextSearchFunction implements AIFunction<PlaceTextSearchFunction.TextSearchRequestsWrapper, JsonNode> {
+public class PlaceTextSearchFunction
+//        implements AIFunction<PlaceTextSearchFunction.TextSearchRequestsWrapper, JsonNode>
+{
 
     private final GooglePlacesServiceAsync googlePlacesService;
 

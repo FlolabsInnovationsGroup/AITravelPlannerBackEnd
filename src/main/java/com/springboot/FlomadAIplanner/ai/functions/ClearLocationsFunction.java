@@ -15,13 +15,24 @@ import java.util.function.Function;
 @Slf4j
 @Component
 @Description("""
-        Function to clear all locations associated with a specific session.
+        Function to CLEAR ALL locations.
         
         Purpose:
-        Use this function to remove all dots from the map for a given chat session.
+        This function MUST be used to remove ALL markers or points from the map
+        whenever a user explicitly REQUESTS to clear the map OR when the CHAT CONTEXT REQUIRES resetting map locations.
+        
+        AI MUST call this function in scenarios SUCH AS:
+        1. The user explicitly says, "clear the map," "reset locations,"
+           or similar requests.
+        2. The chat flow requires REPLACING existing map data with NEW DATA.
+        3. ANY SITUATION where continuing with existing map markers would
+           CONFLICT with the conversation's goal.
+           
+        IMPORTANT:
+        YOU CANNOT RETURN A CONFIRMATION THAT THE MAP IS CLEARED IF YOU DID NOT RECEIVE A RESPONSE FROM THIS FUNCTION!
         
         Output:
-        Returns a confirmation message.
+        Returns a confirmation message after successfully clearing all locations.
         """)
 public class ClearLocationsFunction implements Function<ClearLocationsFunction.ClearLocationsRequest, String> {
     private final LocationService locationService;
@@ -36,18 +47,45 @@ public class ClearLocationsFunction implements Function<ClearLocationsFunction.C
 
     @Override
     public String apply(ClearLocationsRequest request) {
+        String sessionId;
         try {
-            String sessionId = requestService.getParameterFromRequest(AIMessageDTO.class.getDeclaredField("sessionId").getName());
+            // Retrieve session ID
+            log.info("Attempting to retrieve sessionId...");
+            sessionId = requestService.getParameterFromRequest(AIMessageDTO.class.getDeclaredField("sessionId").getName());
+            if (sessionId == null || sessionId.isEmpty()) {
+                log.error("Session ID is null or empty. Aborting clear operation.");
+                return "Error: Session ID is missing or invalid.";
+            }
             log.info("Starting ClearLocationsFunction for sessionId: {}", sessionId);
 
-            locationService.deleteAllBySessionId(sessionId);
-            webSocketService.sendMapCleared(sessionId);
+            // Delete all locations associated with the session
+            try {
+                locationService.deleteAllBySessionId(sessionId);
+                log.info("All locations for sessionId {} cleared from the database.", sessionId);
+            } catch (Exception e) {
+                log.error("Error deleting locations for sessionId {}: {}", sessionId, e.getMessage());
+                return "Error: Unable to clear locations. Please try again.";
+            }
+
+            // Send WebSocket notification to clear the map
+            try {
+                webSocketService.sendMapCleared(sessionId);
+                log.info("Sent MAP_CLEARED WebSocket event for sessionId: {}", sessionId);
+            } catch (Exception e) {
+                log.error("Error sending WebSocket clear message for sessionId {}: {}", sessionId, e.getMessage());
+                return "Error: Unable to notify clients to clear the map.";
+            }
+
             return "All locations cleared successfully.";
+        } catch (NoSuchFieldException e) {
+            log.error("Field 'sessionId' not found: {}", e.getMessage());
+            return "Error: 'sessionId' field is missing.";
         } catch (Exception e) {
             log.error("Error in ClearLocationsFunction: {}", e.getMessage(), e);
             return "Error clearing locations: " + e.getMessage();
         }
     }
+
 
     @Data
     public static class ClearLocationsRequest {
