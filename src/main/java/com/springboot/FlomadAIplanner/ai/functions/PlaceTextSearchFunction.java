@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Description;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.function.Function;
 
 @Slf4j
 @Component
@@ -33,7 +34,7 @@ import java.util.List;
         Do not change or edit in any way the URLs of the Google Maps links provided by this function.
         """)
 public class PlaceTextSearchFunction
-//        implements AIFunction<PlaceTextSearchFunction.TextSearchRequestsWrapper, JsonNode>
+//        implements Function<PlaceTextSearchFunction.TextSearchRequestsWrapper, JsonNode>
 {
 
     private final GooglePlacesServiceAsync googlePlacesService;
