@@ -31,7 +31,7 @@ public class ChatClientConfig {
     @Bean
     public ChatClient openAiChatClient(@Qualifier("openAiChatModel") ChatModel chatModel,
                                        @Qualifier("customDatabaseChatMemory") ChatMemory chatMemory) {
-        return CustomChatClient.builder(chatModel)
+        return ChatClient.builder(chatModel)
                 .defaultSystem(promptResource)
                 .defaultAdvisors(new PromptChatMemoryAdvisor(chatMemory))
                 .build();

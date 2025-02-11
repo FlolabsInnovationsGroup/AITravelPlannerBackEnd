@@ -3,7 +3,6 @@ package com.springboot.FlomadAIplanner.ai.functions;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.springboot.FlomadAIplanner.dto.google.TextSearchRequest;
 import com.springboot.FlomadAIplanner.exceptions.api.GoogleAPIException;
 import com.springboot.FlomadAIplanner.service.google.GooglePlacesServiceAsync;
@@ -17,6 +16,7 @@ import org.springframework.context.annotation.Description;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.function.Function;
 
 @Slf4j
 @Component
@@ -33,7 +33,8 @@ import java.util.List;
         
         Do not change or edit in any way the URLs of the Google Maps links provided by this function.
         """)
-public class PlaceTextSearchFunction implements AIFunction<PlaceTextSearchFunction.TextSearchRequestsWrapper, JsonNode>
+public class PlaceTextSearchFunction
+//        implements Function<PlaceTextSearchFunction.TextSearchRequestsWrapper, JsonNode>
 {
 
     private final GooglePlacesServiceAsync googlePlacesService;
@@ -48,24 +49,14 @@ public class PlaceTextSearchFunction implements AIFunction<PlaceTextSearchFuncti
     public JsonNode apply(TextSearchRequestsWrapper requestsWrapper) {
         log.info("Performing text search with query: {}", requestsWrapper.getRequests());
         try {
-            // Call the Google Places service
             JsonNode response = googlePlacesService.bulkTextSearchPlaces(requestsWrapper.getRequests());
             log.info("Received text search response from Google. Response length: {}", response.toString().length());
-
-            // Wrap response in an expected structure
-            ObjectNode result = JsonNodeFactory.instance.objectNode();
-            result.set("results", response);  // Ensure the output has a 'results' field
-            result.put("status", "success"); // Add a status field if needed
-            return result;
-
+            return response;
         } catch (GoogleAPIException e) {
             log.error("Error performing text search", e);
-            ObjectNode errorResponse = JsonNodeFactory.instance.objectNode();
-            errorResponse.put("error", e.getMessage());
-            return errorResponse;
+            return JsonNodeFactory.instance.objectNode().put("error", e.getMessage());
         }
     }
-
 
     @Data
     @NoArgsConstructor

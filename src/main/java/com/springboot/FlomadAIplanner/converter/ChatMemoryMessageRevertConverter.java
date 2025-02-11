@@ -36,6 +36,11 @@ public class ChatMemoryMessageRevertConverter implements Converter<Message, org.
         Map<String, Object> finalMetadata = metadata;
         return new org.springframework.ai.chat.messages.Message() {
             @Override
+            public String getText() {
+                return source.getText();
+            }
+
+            @Override
             public String getContent() {
                 return source.getContent();
             }
