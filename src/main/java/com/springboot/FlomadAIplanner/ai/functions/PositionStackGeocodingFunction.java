@@ -48,6 +48,7 @@ import java.util.function.Function;
         Latitude and Longitude coordinates for each address.
         """)
 // Note: Right now batch is not working properly, so we only support single address queries for now
+
 public class PositionStackGeocodingFunction
         implements Function<PositionStackForwardGeocodingRequest, List<PositionStackData>> {
 

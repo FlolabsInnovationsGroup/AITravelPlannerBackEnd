@@ -3,11 +3,9 @@ package com.springboot.FlomadAIplanner.ai.agents.audio;
 import com.springboot.FlomadAIplanner.ai.agents.Agent;
 import com.springboot.FlomadAIplanner.ai.agents.text.TextAgent;
 import com.springboot.FlomadAIplanner.ai.dto.AIMessageDTO;
-import com.springboot.FlomadAIplanner.ai.agents.audio.AudioTranscriptionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Flux;
 
 import java.io.IOException;
@@ -32,23 +30,21 @@ public class AudioAgentImpl implements Agent {
             log.error("No media attached in the AIMessageDTO.");
             return false;
         }
-        String contentType = Objects.requireNonNull(inputMessage.getMedia().getContentType(), "Content type is null");
+        String contentType = Objects.requireNonNull(inputMessage.getMedia().getContentType());
         return contentType.startsWith("audio/");
     }
 
     @Override
     public String processCallMessage(AIMessageDTO aiMessage) {
         try {
-            MultipartFile mediaFile = aiMessage.getMedia();
-            if (mediaFile == null || mediaFile.isEmpty()) {
-                throw new IllegalArgumentException("Audio file is empty or null.");
+            if (aiMessage.getMedia().isEmpty()) {
+                throw new IllegalArgumentException("Audio file is empty.");
             }
-            String transcribedText = audioTranscriptionService.transcribeAudio(mediaFile);
+            String transcribedText = audioTranscriptionService.transcribeAudio(aiMessage.getMedia());
             aiMessage.setMessage(transcribedText);
             return textAgent.processCallMessage(aiMessage);
         } catch (IllegalArgumentException | IOException e) {
-            log.error("Error processing audio call message: {}",
-                    aiMessage.getMedia() != null ? aiMessage.getMedia().getOriginalFilename() : "Unknown file", e);
+            log.error("Error processing audio call message: {}", aiMessage.getMedia().getOriginalFilename(), e);
             throw new RuntimeException("Error processing audio message: " + e.getMessage(), e);
         }
     }
@@ -56,16 +52,14 @@ public class AudioAgentImpl implements Agent {
     @Override
     public Flux<String> processStreamMessage(AIMessageDTO aiMessage) {
         try {
-            MultipartFile mediaFile = aiMessage.getMedia();
-            if (mediaFile == null || mediaFile.isEmpty()) {
-                throw new IllegalArgumentException("Audio stream is empty or null.");
+            if (aiMessage.getMedia().isEmpty()) {
+                throw new IllegalArgumentException("Audio stream is empty.");
             }
-            String transcribedText = audioTranscriptionService.transcribeAudio(mediaFile);
+            String transcribedText = audioTranscriptionService.transcribeAudio(aiMessage.getMedia());
             aiMessage.setMessage(transcribedText);
             return textAgent.processStreamMessage(aiMessage);
         } catch (IllegalArgumentException | IOException e) {
-            log.error("Error processing audio stream: {}",
-                    aiMessage.getMedia() != null ? aiMessage.getMedia().getOriginalFilename() : "Unknown file", e);
+            log.error("Error processing audio stream: {}", aiMessage.getMedia().getOriginalFilename(), e);
             return Flux.error(new RuntimeException("Error processing audio stream: " + e.getMessage(), e));
         }
     }

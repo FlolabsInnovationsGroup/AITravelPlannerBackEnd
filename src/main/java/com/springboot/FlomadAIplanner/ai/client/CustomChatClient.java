@@ -830,8 +830,8 @@ public class CustomChatClient implements ChatClient {
             Assert.notNull(function, "function cannot be null");
 
             var fcw = FunctionCallback.builder()
-//                    .description(description)
-//                    .responseConverter(Object::toString)
+                    .description(description)
+                    .responseConverter(Object::toString)
                     .function(name, function)
                     .inputType(inputType)
                     .build();

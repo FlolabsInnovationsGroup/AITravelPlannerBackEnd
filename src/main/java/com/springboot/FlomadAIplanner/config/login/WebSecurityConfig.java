@@ -16,9 +16,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-
-import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -57,20 +54,8 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors(cors -> cors.configurationSource(request -> {
-                    CorsConfiguration config = new CorsConfiguration();
-                    config.setAllowedOrigins(List.of("http://localhost:3000")); // ✅ Allow frontend
-                    config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // ✅ Allow preflight requests
-                    config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
-                    config.setAllowCredentials(true); // ✅ Allow authentication cookies/tokens
-                    return config;
-                }))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(
-                                "/api/audio/transcribe",
-                                "/api/chat/call/entity" // ✅ Make chat API public
-                        ).permitAll()
                         .requestMatchers(
                                 "/api/auth/signup",
                                 "/api/auth/signin",
@@ -78,34 +63,34 @@ public class WebSecurityConfig {
                                 "/api/auth/guest-token",
                                 "/api/chat/call",
                                 "/api/chat/stream",
+                                "/api/audio/transcribe",
                                 "/api/chat/entity",
                                 "/sessions",
                                 "/oauth2/**",
                                 "/login/oauth2/**",
-                                "/ws/**"
+                                "/ws/**" // WebSocket endpoint
                         ).permitAll()
                         .requestMatchers(
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html"
                         ).permitAll()
-                        .requestMatchers("/users/current").authenticated()
-                        .requestMatchers("/users/**").hasRole("ADMIN")
+                        .requestMatchers("/users/current").authenticated() // Allow authenticated users
+                        .requestMatchers("/users/**").hasRole("ADMIN") // Restrict user management to ADMIN
                         .requestMatchers("/api/chat", "/api/stream").hasAnyRole("ADMIN", "USER")
                         .anyRequest().authenticated()
                 )
-                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
+                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable)) // Updated with method reference
                 .oauth2Login(oauth2 -> oauth2
-                        .authorizationEndpoint(authorization -> authorization.baseUri("/oauth2/authorization"))
+                        .authorizationEndpoint(authorization -> authorization
+                                .baseUri("/oauth2/authorization")
+                        )
                         .successHandler(customAuthenticationSuccessHandler)
                         .failureHandler(customAuthenticationFailureHandler)
                 )
-                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(userLastActiveUpdateFilter, JwtRequestFilter.class);
+                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class) // execution order of these filters is essential
+                .addFilterBefore(userLastActiveUpdateFilter, JwtRequestFilter.class); // execution order of these filters is essential
 
         return http.build();
     }
-
-
-
 }
