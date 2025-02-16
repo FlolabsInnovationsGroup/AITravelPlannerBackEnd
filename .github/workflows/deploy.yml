@@ -24,48 +24,27 @@ jobs:
       - name: Setup SSH
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          SSH_HOST: ${{ secrets.SSH_HOST }}
-          SSH_USER: ${{ secrets.SSH_USER }}
         run: |
           mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
-          
-          # Test SSH connection
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa $SSH_USER@$SSH_HOST 'echo "SSH connection successful"'
+          ssh-keyscan -H ec2-50-17-181-203.compute-1.amazonaws.com >> ~/.ssh/known_hosts
 
-      - name: Deploy to EC2
-        env:
-          SSH_HOST: ${{ secrets.SSH_HOST }}
-          SSH_USER: ${{ secrets.SSH_USER }}
+      - name: Copy Files to EC2
         run: |
           # Copy JAR file
-          scp -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa target/*.jar $SSH_USER@$SSH_HOST:~/docker-app/Flomad-AI-planner-0.0.1-SNAPSHOT.jar
-          
-          # Execute deployment commands
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa $SSH_USER@$SSH_HOST '
+          scp -i ~/.ssh/id_rsa target/*.jar ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com:~/docker-app/
+
+      - name: Deploy to EC2
+        run: |
+          ssh -i ~/.ssh/id_rsa ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com '
             cd ~/docker-app
-          
-            # Backup current state
-            docker-compose -f docker-compose.yml down || true
-          
-            # Start services with new JAR
-            docker-compose -f docker-compose.yml up -d --build
-          
-            # Wait for application to start
-            sleep 30
-          
-            # Check application health
-            curl -f http://localhost:8080/actuator/health || echo "Health check failed"
+            ./deploy.sh
           '
 
       - name: Verify Deployment
-        env:
-          SSH_HOST: ${{ secrets.SSH_HOST }}
-          SSH_USER: ${{ secrets.SSH_USER }}
         run: |
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa $SSH_USER@$SSH_HOST '
+          ssh -i ~/.ssh/id_rsa ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com '
             echo "Container Status:"
             docker ps
           
