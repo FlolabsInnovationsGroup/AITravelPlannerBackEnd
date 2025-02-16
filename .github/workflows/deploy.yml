@@ -3,7 +3,7 @@ name: Deploy to AWS EC2
 on:
   push:
     branches:
-      - master  # Make sure this matches your main branch name
+      - master
 
 jobs:
   deploy:
@@ -30,16 +30,43 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ec2-50-17-181-203.compute-1.amazonaws.com >> ~/.ssh/known_hosts
 
-      - name: Copy JAR to EC2
-        run: scp -i ~/.ssh/id_rsa target/*.jar ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com:/home/ubuntu/app/
-
       - name: Deploy to EC2
         run: |
+          # Copy JAR file
+          scp -i ~/.ssh/id_rsa target/*.jar ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com:~/docker-app/Flomad-AI-planner-0.0.1-SNAPSHOT.jar
+          
+          # Execute deployment commands
           ssh -i ~/.ssh/id_rsa ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com '
-          sudo apt update
-          sudo apt install -y openjdk-17-jdk
-          cd ~/app
-          sudo systemctl stop flomad
-          mv *.jar Flomad-AI-planner-0.0.1-SNAPSHOT.jar
-          sudo systemctl start flomad
+            cd ~/docker-app
+          
+            # Backup current state
+            docker-compose -f docker-compose.yml down || true
+          
+            # Start services with new JAR
+            docker-compose -f docker-compose.yml up -d --build
+          
+            # Wait for application to start
+            sleep 30
+          
+            # Check application health
+            curl -f http://localhost:8080/actuator/health || echo "Health check failed"
+          
+            # Check container logs
+            docker logs flomad-app --tail 50
+          '
+
+      - name: Verify Deployment
+        run: |
+          ssh -i ~/.ssh/id_rsa ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com '
+            echo "Container Status:"
+            docker ps
+          
+            echo "Application Logs:"
+            docker logs flomad-app --tail 20
+          
+            echo "Checking ELK Stack:"
+            curl -s http://localhost:9200/_cat/health
+          
+            echo "Memory Usage:"
+            docker stats --no-stream
           '

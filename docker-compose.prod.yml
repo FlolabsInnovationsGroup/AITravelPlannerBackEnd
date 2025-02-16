@@ -1,0 +1,94 @@
+version: '3.8'
+
+services:
+  springboot:
+    build:
+      context: .
+      dockerfile: Dockerfile  # Use your production Dockerfile if different
+    container_name: flomad-app
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env   # This .env should contain your production variables, including MONGO_URL
+    environment:
+      # Use the production Mongo Atlas URL from the .env file
+      - SPRING_DATA_MONGODB_URI=${MONGO_URL}
+      - SPRING_DATA_MONGODB_DATABASE=flomadprod-db
+      - JAVA_OPTS=-XX:MaxRAMPercentage=70.0 -XX:InitialRAMPercentage=50.0
+    deploy:
+      resources:
+        limits:
+          memory: 768M
+        reservations:
+          memory: 512M
+    depends_on:
+      - logstash
+    networks:
+      - app-network
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms256m -Xmx256m
+      - xpack.security.enabled=false
+    ports:
+      - "9200:9200"
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.10.1
+    ports:
+      - "5601:5601"
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200/
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+    depends_on:
+      - elasticsearch
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.10.1
+    ports:
+      - "5044:5044"
+    volumes:
+      - ./src/main/resources/logging/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200/
+      - LS_JAVA_OPTS=-Xms256m -Xmx256m
+    depends_on:
+      - elasticsearch
+    networks:
+      - app-network
+    restart: unless-stopped
+
+volumes:
+  elasticsearch_data:
+
+networks:
+  app-network:
+    driver: bridge
