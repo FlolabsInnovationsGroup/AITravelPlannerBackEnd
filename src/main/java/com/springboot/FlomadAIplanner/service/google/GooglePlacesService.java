@@ -9,7 +9,6 @@ import com.springboot.FlomadAIplanner.exceptions.api.GoogleAPIException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 /**
@@ -20,6 +19,9 @@ import java.util.List;
 public class GooglePlacesService {
 
     private final GooglePlacesClient googlePlacesClient;
+
+    @Value("${google.api.key}")
+    private String googleApiKey;
 
     @Value("${google.places.fieldMask}")
     private String placesFieldMask;
@@ -38,11 +40,14 @@ public class GooglePlacesService {
      * @return JSON response with search results.
      * @throws GoogleAPIException If an error occurs while calling the Google Places API.
      */
-
     public JsonNode searchNearbyPlaces(NearbyPlacesRequest request) throws GoogleAPIException {
         log.info("Searching Google nearby places with request: {}", request);
         try {
-            JsonNode response = googlePlacesClient.searchNearbyPlaces(placesFieldMask, request);
+            JsonNode response = googlePlacesClient.searchNearbyPlaces(
+                    "Bearer " + googleApiKey,  // ✅ Fix: API Key should be first
+                    placesFieldMask,           // ✅ Fix: FieldMask should be second
+                    request                    // ✅ Fix: Request should be last
+            );
             log.info("Received response from Google Places API: {}", response);
             return response;
         } catch (Exception e) {
@@ -51,12 +56,22 @@ public class GooglePlacesService {
         }
     }
 
-    @SuppressWarnings("unused")
+    /**
+     * Method to perform a text-based search for places.
+     *
+     * @param request The request object containing search parameters.
+     * @return JSON response with search results.
+     * @throws GoogleAPIException If an error occurs while calling the Google Places API.
+     */
     public JsonNode textSearchPlaces(TextSearchRequest request) throws GoogleAPIException {
         log.info("Searching Google places with request: {}", request);
         try {
-            JsonNode response = googlePlacesClient.textSearchPlaces(textSearchFieldMask, request);
-            log.info("Received response from Google Places API");
+            JsonNode response = googlePlacesClient.textSearchPlaces(
+                    "Bearer " + googleApiKey,  // ✅ Correct
+                    textSearchFieldMask,       // ✅ Correct
+                    request                    // ✅ Correct
+            );
+            log.info("Received response from Google Places API: {}", response);
             return response;
         } catch (Exception e) {
             log.error("Error while searching places", e);
@@ -64,13 +79,23 @@ public class GooglePlacesService {
         }
     }
 
-    @SuppressWarnings("unused")
+    /**
+     * Method to perform a bulk text search for multiple queries.
+     *
+     * @param requests List of search requests.
+     * @return JSON response with search results.
+     */
     public JsonNode bulkTextSearchPlaces(List<TextSearchRequest> requests) {
         ArrayNode results = JsonNodeFactory.instance.arrayNode();
         log.info("Performing bulk text searches for multiple queries.");
+
         for (TextSearchRequest request : requests) {
             try {
-                JsonNode searchResult = googlePlacesClient.textSearchPlaces(textSearchFieldMask, request);
+                JsonNode searchResult = googlePlacesClient.textSearchPlaces(
+                        "Bearer " + googleApiKey,  // ✅ Correct
+                        textSearchFieldMask,       // ✅ Correct
+                        request                    // ✅ Correct
+                );
                 results.add(searchResult);
             } catch (Exception e) {
                 log.error("Error performing text search for query: {}", request.getTextQuery(), e);
@@ -79,5 +104,4 @@ public class GooglePlacesService {
         }
         return results;
     }
-
 }

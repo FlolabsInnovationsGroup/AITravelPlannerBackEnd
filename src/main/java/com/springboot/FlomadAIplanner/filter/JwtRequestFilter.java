@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
 
 @Slf4j
 @Component
@@ -25,12 +26,26 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     private final CustomUserDetailsService customUserDetailsService;
     private final JwtUtil jwtUtil;
 
+    private static final List<String> PUBLIC_URLS = List.of(
+            "/api/audio/transcribe",
+            "/api/auth/signup",
+            "/api/auth/signin",
+            "/api/auth/verify",
+            "/api/auth/guest-token",
+            "/api/chat/call",
+            "/api/chat/stream",
+            "/api/chat/entity",
+            "/sessions",
+            "/oauth2",
+            "/login/oauth2"
+    );
+
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        // Skip filtering for WebSocket requests
         String path = request.getRequestURI();
-        return path.startsWith("/ws");
+        return PUBLIC_URLS.stream().anyMatch(path::startsWith) || path.startsWith("/ws");
     }
+
 
     @Override
     @SuppressWarnings("NullableProblems")

@@ -31,6 +31,7 @@ import java.util.function.Function;
         Returns a confirmation message.
         """)
 public class RemoveLocationFunction implements Function<RemoveLocationFunction.RemoveLocationRequest, String> {
+
     private final LocationService locationService;
     private final WebSocketService webSocketService;
     private final RequestService requestService;
@@ -43,15 +44,37 @@ public class RemoveLocationFunction implements Function<RemoveLocationFunction.R
 
     @Override
     public String apply(RemoveLocationRequest request) {
-        try {
-            String sessionId = requestService.getParameterFromRequest(AIMessageDTO.class.getDeclaredField("sessionId").getName());
-            log.info("Starting RemoveLocationFunction for locationId: {}; in session: {}", request.getLocationId(), sessionId);
+        log.info("🔍 Attempting to remove location with ID: {}", request.getLocationId());
 
+        try {
+            // Ensure location exists before deleting
+            if (!locationService.exists(request.getLocationId())) {
+                log.warn("⚠️ Location ID '{}' not found in database!", request.getLocationId());
+                return "Location not found.";
+            }
+
+            // Get session ID
+            String sessionId = requestService.getParameterFromRequest(AIMessageDTO.class.getDeclaredField("sessionId").getName());
+            log.info("📌 Session ID retrieved: {}", sessionId);
+
+            // Delete location
+            log.info("🗑 Deleting location ID: {}", request.getLocationId());
             locationService.delete(request.getLocationId());
+
+            // Verify deletion
+            if (locationService.exists(request.getLocationId())) {
+                log.error("❌ Location ID '{}' still exists after deletion!", request.getLocationId());
+                return "Error: Location was not removed.";
+            }
+
+            // Notify WebSocket
+            log.info("📡 Sending WebSocket notification to remove location: {}", request.getLocationId());
             webSocketService.sendLocationRemoved(sessionId, request.getLocationId());
+
+            log.info("✅ Location ID '{}' removed successfully.", request.getLocationId());
             return "Location removed successfully.";
         } catch (Exception e) {
-            log.error("Error in RemoveLocationFunction: {}", e.getMessage(), e);
+            log.error("❌ Error in RemoveLocationFunction: {}", e.getMessage(), e);
             return "Error removing location: " + e.getMessage();
         }
     }
