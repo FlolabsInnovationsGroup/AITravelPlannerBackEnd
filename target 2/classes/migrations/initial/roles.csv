@@ -1,0 +1,4 @@
+id,name,description
+d842def0-ec61-40fd-bfae-6ea83fe59cfd,ADMIN,Administrator with full access
+80ccde48-ac1a-47f8-ac8b-e5f209fec01d,USER,Regular user with limited access
+808f0763-84c4-46b5-b339-14df1600a739,GUEST,Guest user with minimal access

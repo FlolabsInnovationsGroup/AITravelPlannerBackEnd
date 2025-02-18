@@ -1,0 +1,870 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.springboot.FlomadAIplanner.FlomadAiPlannerApplicationTests" time="9.41" tests="1" errors="1" skipped="0" failures="0">
+  <properties>
+    <property name="PATH" value="/Library/Frameworks/Python.framework/Versions/3.10/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/usr/local/share/dotnet:~/.dotnet/tools:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/Users/elizabethemerson/Downloads/apache-maven-3.9.9/bin"/>
+    <property name="GOOGLE_CLIENT_SECRET" value="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"/>
+    <property name="java.specification.version" value="17"/>
+    <property name="sun.jnu.encoding" value="UTF-8"/>
+    <property name="SPRING_AI_VERTEX_AI_API_KEY" value="AIzaSyAZCPz43FXfLpSAqGHwAKtakmldtMgVb94"/>
+    <property name="sun.arch.data.model" value="64"/>
+    <property name="java.vendor.url" value="https://java.oracle.com/"/>
+    <property name="JWT_SECRET" value="UeFAFJHgl8ZimyjRCiuq88PgIvti/LyaeaVdYbIvSYw="/>
+    <property name="GIT_HUB-CLIENT_ID" value="Ov23liYklMWxMGgqLym8"/>
+    <property name="GIT_HUB_CLIENT_SECRET" value="4c72eb7d2d0f2fe3635ea1cd97fe2c183d2bba9d"/>
+    <property name="PWD" value="/Users/elizabethemerson/Desktop/FlomadLabs/AITravelPlannerBackEnd"/>
+    <property name="sun.boot.library.path" value="/Library/Java/JavaVirtualMachines/jdk-17.0.1.jdk/Contents/Home/lib"/>
+    <property name="SERVER_PORT" value="8080"/>
+    <property name="sun.java.command" value="/Users/elizabethemerson/Desktop/FlomadLabs/AITravelPlannerBackEnd/target/surefire/surefirebooter-20250103202005295_3.jar /Users/elizabethemerson/Desktop/FlomadLabs/AITravelPlannerBackEnd/target/surefire 2025-01-03T20-20-05_179-jvmRun1 surefire-20250103202005295_1tmp surefire_0-20250103202005295_2tmp"/>
+    <property name="VIATOR_PARTNER_KEY" value="1e012b2f-9b7a-46ed-963d-bfeba81ea599"/>
+    <property name="jdk.debug" value="release"/>
+    <property name="java.specification.vendor" value="Oracle Corporation"/>
+    <property name="java.version.date" value="2021-10-19"/>
+    <property name="java.home" value="/Library/Java/JavaVirtualMachines/jdk-17.0.1.jdk/Contents/Home"/>
+    <property name="file.separator" value="/"/>
+    <property name="basedir" value="/Users/elizabethemerson/Desktop/FlomadLabs/AITravelPlannerBackEnd"/>
+    <property name="java.vm.compressedOopsMode" value="Zero based"/>
+    <property name="line.separator" value="&#10;"/>
+    <property name="XPC_FLAGS" value="0x0"/>
+    <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
+    <property name="java.specification.name" value="Java Platform API Specification"/>
+    <property name="TERM_SESSION_ID" value="a8347ad0-9c4f-4ceb-9037-8b39afe06a52"/>
+    <property name="LC_CTYPE" value="UTF-8"/>
+    <property name="SHLVL" value="2"/>
+    <property name="MAIL_PASSWORD" value="b8MK^Fw,Z?)L&gt;#Tk"/>
+    <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
+    <property name="SPRING_PROFILES_ACTIVE" value="dev"/>
+    <property name="java.runtime.version" value="17.0.1+12-LTS-39"/>
+    <property name="JAVA_HOME" value="/Library/Java/JavaVirtualMachines/jdk-17.0.1.jdk/Contents/Home"/>
+    <property name="user.name" value="elizabethemerson"/>
+    <property name="TERM" value="xterm-256color"/>
+    <property name="COMMAND_MODE" value="unix2003"/>
+    <property name="file.encoding" value="UTF-8"/>
+    <property name="SPRING_AI_OPENAI_API_KEY" value="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"/>
+    <property name="GOOGLE_API_KEY" value="AIzaSyB9-8lvTQV2x0XuxHkXHHMHPA6femV-y5A"/>
+    <property name="localRepository" value="/Users/elizabethemerson/.m2/repository"/>
+    <property name="_" value="/Library/Java/JavaVirtualMachines/jdk-17.0.1.jdk/Contents/Home/bin/java"/>
+    <property name="java.io.tmpdir" value="/var/folders/cv/3fgrjbzs2970l1nh1mxllh8r0000gn/T/"/>
+    <property name="java.version" value="17.0.1"/>
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+    <property name="MAVEN_PROJECTBASEDIR" value="/Users/elizabethemerson/Desktop/FlomadLabs/AITravelPlannerBackEnd"/>
+    <property name="PID" value="3236"/>
+    <property name="TERMINAL_EMULATOR" value="JetBrains-JediTerm"/>
+    <property name="CONSOLE_LOG_CHARSET" value="UTF-8"/>
+    <property name="native.encoding" value="UTF-8"/>
+    <property name="java.library.path" value="/Users/elizabethemerson/Library/Java/Extensions:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java:."/>
+    <property name="java.vendor" value="Oracle Corporation"/>
+    <property name="FACEBOOK_CLIENT_ID" value="1172359027377420"/>
+    <property name="sun.io.unicode.encoding" value="UnicodeBig"/>
+    <property name="socksNonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
+    <property name="LOGGED_APPLICATION_NAME" value="[Flomad-AI-planner] "/>
+    <property name="MONGO_URL" value="mongodb+srv://dev_team:tsVmf6PBTZ7lok1o@cluster0.bxcwvsw.mongodb.net/flomadprod-db?retryWrites=true&amp;w=majority&amp;appName=Cluster0"/>
+    <property name="java.class.path" value="/Users/elizabethemerson/Desktop/FlomadLabs/AITravelPlannerBackEnd/target/test-classes:/Users/elizabethemerson/Desktop/FlomadLabs/AITravelPlannerBackEnd/target/classes:/Users/elizabethemerson/.m2/repository/org/springframework/boot/spring-boot-starter/3.2.8/spring-boot-starter-3.2.8.jar:/Users/elizabethemerson/.m2/repository/org/springframework/boot/spring-boot/3.2.8/spring-boot-3.2.8.jar:/Users/elizabethemerson/.m2/repository/org/springframework/spring-context/6.1.11/spring-context-6.1.11.jar:/Users/elizabethemerson/.m2/repository/org/springframework/boot/spring-boot-autoconfigure/3.2.8/spring-boot-autoconfigure-3.2.8.jar:/Users/elizabethemerson/.m2/repository/jakarta/annotation/jakarta.annotation-api/2.1.1/jakarta.annotation-api-2.1.1.jar:/Users/elizabethemerson/.m2/repository/org/springframework/spring-core/6.1.11/spring-core-6.1.11.jar:/Users/elizabethemerson/.m2/repository/org/springframework/spring-jcl/6.1.11/spring-jcl-6.1.11.jar:/Users/elizabethemerson/.m2/repository/org/yaml/snakeyaml/2.2/snakeyaml-2.2.jar:/Users/elizabethemerson/.m2/repository/org/springframework/security/spring-security-oauth2-client/6.2.5/spring-security-oauth2-client-6.2.5.jar:/Users/elizabethemerson/.m2/repository/org/springframework/security/spring-security-core/6.2.5/spring-security-core-6.2.5.jar:/Users/elizabethemerson/.m2/repository/org/springframework/security/spring-security-crypto/6.2.5/spring-security-crypto-6.2.5.jar:/Users/elizabethemerson/.m2/repository/org/springframework/spring-beans/6.1.11/spring-beans-6.1.11.jar:/Users/elizabethemerson/.m2/repository/org/springframework/spring-expression/6.1.11/spring-expression-6.1.11.jar:/Users/elizabethemerson/.m2/repository/io/micrometer/micrometer-observation/1.12.8/micrometer-observation-1.12.8.jar:/Users/elizabethemerson/.m2/repository/io/micrometer/micrometer-commons/1.12.8/micrometer-commons-1.12.8.jar:/Users/elizabethemerson/.m2/repository/org/springframework/security/spring-security-oauth2-core/6.2.5/spring-security-oauth2-core-6.2.5.jar:/Users/elizabethemerson/.m2/repository/org/springframework/security/spring-security-web/6.2.5/spring-security-web-6.2.5.jar:/Users/elizabethemerson/.m2/repository/com/nimbusds/oauth2-oidc-sdk/9.43.4/oauth2-oidc-sdk-9.43.4.jar:/Users/elizabethemerson/.m2/repository/com/github/stephenc/jcip/jcip-annotations/1.0-1/jcip-annotations-1.0-1.jar:/Users/elizabethemerson/.m2/repository/com/nimbusds/content-type/2.2/content-type-2.2.jar:/Users/elizabethemerson/.m2/repository/com/nimbusds/lang-tag/1.7/lang-tag-1.7.jar:/Users/elizabethemerson/.m2/repository/org/springframework/boot/spring-boot-starter-mail/3.2.8/spring-boot-starter-mail-3.2.8.jar:/Users/elizabethemerson/.m2/repository/org/springframework/spring-context-support/6.1.11/spring-context-support-6.1.11.jar:/Users/elizabethemerson/.m2/repository/org/eclipse/angus/jakarta.mail/2.0.3/jakarta.mail-2.0.3.jar:/Users/elizabethemerson/.m2/repository/jakarta/activation/jakarta.activation-api/2.1.3/jakarta.activation-api-2.1.3.jar:/Users/elizabethemerson/.m2/repository/org/eclipse/angus/angus-activation/2.0.2/angus-activation-2.0.2.jar:/Users/elizabethemerson/.m2/repository/org/springframework/boot/spring-boot-starter-security/3.2.8/spring-boot-starter-security-3.2.8.jar:/Users/elizabethemerson/.m2/repository/org/springframework/spring-aop/6.1.11/spring-aop-6.1.11.jar:/Users/elizabethemerson/.m2/repository/org/springframework/security/spring-security-config/6.2.5/spring-security-config-6.2.5.jar:/Users/elizabethemerson/.m2/repository/org/springframework/security/spring-security-oauth2-jose/6.2.5/spring-security-oauth2-jose-6.2.5.jar:/Users/elizabethemerson/.m2/repository/com/nimbusds/nimbus-jose-jwt/9.37.3/nimbus-jose-jwt-9.37.3.jar:/Users/elizabethemerson/.m2/repository/com/google/cloud/spring-cloud-gcp-starter-firestore/2.0.8/spring-cloud-gcp-starter-firestore-2.0.8.jar:/Users/elizabethemerson/.m2/repository/com/google/cloud/spring-cloud-gcp-starter/2.0.8/spring-cloud-gcp-starter-2.0.8.jar:/Users/elizabethemerson/.m2/repository/com/google/cloud/spring-cloud-gcp-core/2.0.8/spring-cloud-gcp-core-2.0.8.jar:/Users/elizabethemerson/.m2/repository/com/google/cloud/spring-cloud-gcp-autoconfigure/2.0.8/spring-cloud-gcp-autoconfigure-2.0.8.jar:/Users/elizabethemerson/.m2/repository/com/google/cloud/google-cloud-firestore/3.0.10/google-cloud-firestore-3.0.10.jar:/Users/elizabethemerson/.m2/repository/com/google/cloud/google-cloud-core-grpc/2.3.5/google-cloud-core-grpc-2.3.5.jar:/Users/elizabethemerson/.m2/repository/com/google/api/grpc/proto-google-cloud-firestore-v1/3.0.10/proto-google-cloud-firestore-v1-3.0.10.jar:/Users/elizabethemerson/.m2/repository/com/google/cloud/proto-google-cloud-firestore-bundle-v1/3.0.10/proto-google-cloud-firestore-bundle-v1-3.0.10.jar:/Users/elizabethemerson/.m2/repository/io/opencensus/opencensus-contrib-grpc-util/0.28.0/opencensus-contrib-grpc-util-0.28.0.jar:/Users/elizabethemerson/.m2/repository/org/bouncycastle/bcpkix-jdk15on/1.67/bcpkix-jdk15on-1.67.jar:/Users/elizabethemerson/.m2/repository/org/bouncycastle/bcprov-jdk15on/1.67/bcprov-jdk15on-1.67.jar:/Users/elizabethemerson/.m2/repository/com/google/cloud/google-cloud-core/2.3.5/google-cloud-core-2.3.5.jar:/Users/elizabethemerson/.m2/repository/com/google/api/grpc/proto-google-iam-v1/1.2.0/proto-google-iam-v1-1.2.0.jar:/Users/elizabethemerson/.m2/repository/org/springframework/boot/spring-boot-starter-thymeleaf/3.2.8/spring-boot-starter-thymeleaf-3.2.8.jar:/Users/elizabethemerson/.m2/repository/org/thymeleaf/thymeleaf-spring6/3.1.2.RELEASE/thymeleaf-spring6-3.1.2.RELEASE.jar:/Users/elizabethemerson/.m2/repository/org/thymeleaf/thymeleaf/3.1.2.RELEASE/thymeleaf-3.1.2.RELEASE.jar:/Users/elizabethemerson/.m2/repository/org/attoparser/attoparser/2.0.7.RELEASE/attoparser-2.0.7.RELEASE.jar:/Users/elizabethemerson/.m2/repository/org/unbescape/unbescape/1.1.6.RELEASE/unbescape-1.1.6.RELEASE.jar:/Users/elizabethemerson/.m2/repository/org/springframework/boot/spring-boot-starter-web/3.2.8/spring-boot-starter-web-3.2.8.jar:/Users/elizabethemerson/.m2/repository/org/springframework/boot/spring-boot-starter-json/3.2.8/spring-boot-starter-json-3.2.8.jar:/Users/elizabethemerson/.m2/repository/com/fasterxml/jackson/datatype/jackson-datatype-jdk8/2.15.4/jackson-datatype-jdk8-2.15.4.jar:/Users/elizabethemerson/.m2/repository/com/fasterxml/jackson/module/jackson-module-parameter-names/2.15.4/jackson-module-parameter-names-2.15.4.jar:/Users/elizabethemerson/.m2/repository/org/springframework/boot/spring-boot-starter-tomcat/3.2.8/spring-boot-starter-tomcat-3.2.8.jar:/Users/elizabethemerson/.m2/repository/org/apache/tomcat/embed/tomcat-embed-core/10.1.26/tomcat-embed-core-10.1.26.jar:/Users/elizabethemerson/.m2/repository/org/apache/tomcat/embed/tomcat-embed-websocket/10.1.26/tomcat-embed-websocket-10.1.26.jar:/Users/elizabethemerson/.m2/repository/org/springframework/spring-web/6.1.11/spring-web-6.1.11.jar:/Users/elizabethemerson/.m2/repository/org/springframework/spring-webmvc/6.1.11/spring-webmvc-6.1.11.jar:/Users/elizabethemerson/.m2/repository/org/springframework/boot/spring-boot-starter-data-mongodb/3.2.8/spring-boot-starter-data-mongodb-3.2.8.jar:/Users/elizabethemerson/.m2/repository/org/mongodb/mongodb-driver-sync/4.11.2/mongodb-driver-sync-4.11.2.jar:/Users/elizabethemerson/.m2/repository/org/mongodb/bson/4.11.2/bson-4.11.2.jar:/Users/elizabethemerson/.m2/repository/org/mongodb/mongodb-driver-core/4.11.2/mongodb-driver-core-4.11.2.jar:/Users/elizabethemerson/.m2/repository/org/mongodb/bson-record-codec/4.11.2/bson-record-codec-4.11.2.jar:/Users/elizabethemerson/.m2/repository/org/springframework/data/spring-data-mongodb/4.2.8/spring-data-mongodb-4.2.8.jar:/Users/elizabethemerson/.m2/repository/org/springframework/spring-tx/6.1.11/spring-tx-6.1.11.jar:/Users/elizabethemerson/.m2/repository/org/springframework/data/spring-data-commons/3.2.8/spring-data-commons-3.2.8.jar:/Users/elizabethemerson/.m2/repository/org/springframework/cloud/spring-cloud-starter-openfeign/4.1.2/spring-cloud-starter-openfeign-4.1.2.jar:/Users/elizabethemerson/.m2/repository/org/springframework/cloud/spring-cloud-starter/4.1.3/spring-cloud-starter-4.1.3.jar:/Users/elizabethemerson/.m2/repository/org/springframework/cloud/spring-cloud-context/4.1.3/spring-cloud-context-4.1.3.jar:/Users/elizabethemerson/.m2/repository/org/springframework/security/spring-security-rsa/1.1.3/spring-security-rsa-1.1.3.jar:/Users/elizabethemerson/.m2/repository/org/springframework/cloud/spring-cloud-openfeign-core/4.1.2/spring-cloud-openfeign-core-4.1.2.jar:/Users/elizabethemerson/.m2/repository/io/github/openfeign/form/feign-form-spring/3.8.0/feign-form-spring-3.8.0.jar:/Users/elizabethemerson/.m2/repository/io/github/openfeign/form/feign-form/3.8.0/feign-form-3.8.0.jar:/Users/elizabethemerson/.m2/repository/commons-fileupload/commons-fileupload/1.5/commons-fileupload-1.5.jar:/Users/elizabethemerson/.m2/repository/commons-io/commons-io/2.11.0/commons-io-2.11.0.jar:/Users/elizabethemerson/.m2/repository/org/springframework/cloud/spring-cloud-commons/4.1.3/spring-cloud-commons-4.1.3.jar:/Users/elizabethemerson/.m2/repository/io/github/openfeign/feign-core/13.2.1/feign-core-13.2.1.jar:/Users/elizabethemerson/.m2/repository/io/github/openfeign/feign-slf4j/13.2.1/feign-slf4j-13.2.1.jar:/Users/elizabethemerson/.m2/repository/org/springdoc/springdoc-openapi-starter-webmvc-ui/2.6.0/springdoc-openapi-starter-webmvc-ui-2.6.0.jar:/Users/elizabethemerson/.m2/repository/org/springdoc/springdoc-openapi-starter-webmvc-api/2.6.0/springdoc-openapi-starter-webmvc-api-2.6.0.jar:/Users/elizabethemerson/.m2/repository/org/springdoc/springdoc-openapi-starter-common/2.6.0/springdoc-openapi-starter-common-2.6.0.jar:/Users/elizabethemerson/.m2/repository/io/swagger/core/v3/swagger-core-jakarta/2.2.22/swagger-core-jakarta-2.2.22.jar:/Users/elizabethemerson/.m2/repository/io/swagger/core/v3/swagger-annotations-jakarta/2.2.22/swagger-annotations-jakarta-2.2.22.jar:/Users/elizabethemerson/.m2/repository/io/swagger/core/v3/swagger-models-jakarta/2.2.22/swagger-models-jakarta-2.2.22.jar:/Users/elizabethemerson/.m2/repository/org/webjars/swagger-ui/5.17.14/swagger-ui-5.17.14.jar:/Users/elizabethemerson/.m2/repository/org/springframework/boot/spring-boot-starter-validation/3.2.8/spring-boot-starter-validation-3.2.8.jar:/Users/elizabethemerson/.m2/repository/org/apache/tomcat/embed/tomcat-embed-el/10.1.26/tomcat-embed-el-10.1.26.jar:/Users/elizabethemerson/.m2/repository/org/hibernate/validator/hibernate-validator/8.0.1.Final/hibernate-validator-8.0.1.Final.jar:/Users/elizabethemerson/.m2/repository/org/jboss/logging/jboss-logging/3.5.3.Final/jboss-logging-3.5.3.Final.jar:/Users/elizabethemerson/.m2/repository/com/fasterxml/classmate/1.6.0/classmate-1.6.0.jar:/Users/elizabethemerson/.m2/repository/org/springframework/ai/spring-ai-openai-spring-boot-starter/1.0.0-M4/spring-ai-openai-spring-boot-starter-1.0.0-M4.jar:/Users/elizabethemerson/.m2/repository/org/springframework/ai/spring-ai-spring-boot-autoconfigure/1.0.0-M4/spring-ai-spring-boot-autoconfigure-1.0.0-M4.jar:/Users/elizabethemerson/.m2/repository/org/springframework/ai/spring-ai-openai/1.0.0-M4/spring-ai-openai-1.0.0-M4.jar:/Users/elizabethemerson/.m2/repository/org/springframework/ai/spring-ai-core/1.0.0-M4/spring-ai-core-1.0.0-M4.jar:/Users/elizabethemerson/.m2/repository/com/fasterxml/jackson/module/jackson-module-jsonSchema/2.15.4/jackson-module-jsonSchema-2.15.4.jar:/Users/elizabethemerson/.m2/repository/javax/validation/validation-api/1.1.0.Final/validation-api-1.1.0.Final.jar:/Users/elizabethemerson/.m2/repository/io/swagger/core/v3/swagger-annotations/2.2.20/swagger-annotations-2.2.20.jar:/Users/elizabethemerson/.m2/repository/com/github/victools/jsonschema-module-swagger-2/4.35.0/jsonschema-module-swagger-2-4.35.0.jar:/Users/elizabethemerson/.m2/repository/org/antlr/ST4/4.3.4/ST4-4.3.4.jar:/Users/elizabethemerson/.m2/repository/org/antlr/antlr-runtime/3.5.3/antlr-runtime-3.5.3.jar:/Users/elizabethemerson/.m2/repository/org/antlr/antlr4-runtime/4.13.1/antlr4-runtime-4.13.1.jar:/Users/elizabethemerson/.m2/repository/io/projectreactor/reactor-core/3.6.8/reactor-core-3.6.8.jar:/Users/elizabethemerson/.m2/repository/org/reactivestreams/reactive-streams/1.0.4/reactive-streams-1.0.4.jar:/Users/elizabethemerson/.m2/repository/io/micrometer/micrometer-core/1.12.8/micrometer-core-1.12.8.jar:/Users/elizabethemerson/.m2/repository/org/latencyutils/LatencyUtils/2.0.3/LatencyUtils-2.0.3.jar:/Users/elizabethemerson/.m2/repository/io/micrometer/context-propagation/1.1.1/context-propagation-1.1.1.jar:/Users/elizabethemerson/.m2/repository/com/knuddels/jtokkit/1.1.0/jtokkit-1.1.0.jar:/Users/elizabethemerson/.m2/repository/org/springframework/ai/spring-ai-retry/1.0.0-M4/spring-ai-retry-1.0.0-M4.jar:/Users/elizabethemerson/.m2/repository/org/springframework/retry/spring-retry/2.0.7/spring-retry-2.0.7.jar:/Users/elizabethemerson/.m2/repository/org/springframework/spring-webflux/6.1.11/spring-webflux-6.1.11.jar:/Users/elizabethemerson/.m2/repository/io/rest-assured/json-path/5.3.2/json-path-5.3.2.jar:/Users/elizabethemerson/.m2/repository/org/apache/groovy/groovy-json/4.0.22/groovy-json-4.0.22.jar:/Users/elizabethemerson/.m2/repository/io/rest-assured/rest-assured-common/5.3.2/rest-assured-common-5.3.2.jar:/Users/elizabethemerson/.m2/repository/com/github/victools/jsonschema-generator/4.31.1/jsonschema-generator-4.31.1.jar:/Users/elizabethemerson/.m2/repository/com/github/victools/jsonschema-module-jackson/4.31.1/jsonschema-module-jackson-4.31.1.jar:/Users/elizabethemerson/.m2/repository/org/springframework/ai/spring-ai-vertex-ai-gemini-spring-boot-starter/1.0.0-M4/spring-ai-vertex-ai-gemini-spring-boot-starter-1.0.0-M4.jar:/Users/elizabethemerson/.m2/repository/org/springframework/ai/spring-ai-vertex-ai-gemini/1.0.0-M4/spring-ai-vertex-ai-gemini-1.0.0-M4.jar:/Users/elizabethemerson/.m2/repository/com/google/cloud/google-cloud-vertexai/1.11.0/google-cloud-vertexai-1.11.0.jar:/Users/elizabethemerson/.m2/repository/com/google/api/grpc/proto-google-cloud-vertexai-v1/1.11.0/proto-google-cloud-vertexai-v1-1.11.0.jar:/Users/elizabethemerson/.m2/repository/com/google/api/grpc/grpc-google-iam-v1/1.40.1/grpc-google-iam-v1-1.40.1.jar:/Users/elizabethemerson/.m2/repository/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/2.15.4/jackson-datatype-jsr310-2.15.4.jar:/Users/elizabethemerson/.m2/repository/com/fasterxml/jackson/core/jackson-annotations/2.15.4/jackson-annotations-2.15.4.jar:/Users/elizabethemerson/.m2/repository/com/fasterxml/jackson/core/jackson-core/2.15.4/jackson-core-2.15.4.jar:/Users/elizabethemerson/.m2/repository/org/springframework/boot/spring-boot-starter-websocket/3.2.8/spring-boot-starter-websocket-3.2.8.jar:/Users/elizabethemerson/.m2/repository/org/springframework/spring-messaging/6.1.11/spring-messaging-6.1.11.jar:/Users/elizabethemerson/.m2/repository/org/springframework/spring-websocket/6.1.11/spring-websocket-6.1.11.jar:/Users/elizabethemerson/.m2/repository/org/projectlombok/lombok/1.18.34/lombok-1.18.34.jar:/Users/elizabethemerson/.m2/repository/com/google/api-client/google-api-client/2.0.0/google-api-client-2.0.0.jar:/Users/elizabethemerson/.m2/repository/com/google/oauth-client/google-oauth-client/1.34.1/google-oauth-client-1.34.1.jar:/Users/elizabethemerson/.m2/repository/com/google/http-client/google-http-client-gson/1.42.1/google-http-client-gson-1.42.1.jar:/Users/elizabethemerson/.m2/repository/com/google/guava/guava/31.1-jre/guava-31.1-jre.jar:/Users/elizabethemerson/.m2/repository/com/google/http-client/google-http-client-apache-v2/1.42.1/google-http-client-apache-v2-1.42.1.jar:/Users/elizabethemerson/.m2/repository/org/apache/httpcomponents/httpcore/4.4.16/httpcore-4.4.16.jar:/Users/elizabethemerson/.m2/repository/com/google/http-client/google-http-client/1.42.1/google-http-client-1.42.1.jar:/Users/elizabethemerson/.m2/repository/com/google/code/gson/gson/2.8.9/gson-2.8.9.jar:/Users/elizabethemerson/.m2/repository/com/google/cloud/google-cloud-dialogflow-cx/0.51.0/google-cloud-dialogflow-cx-0.51.0.jar:/Users/elizabethemerson/.m2/repository/io/grpc/grpc-api/1.62.2/grpc-api-1.62.2.jar:/Users/elizabethemerson/.m2/repository/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar:/Users/elizabethemerson/.m2/repository/com/google/errorprone/error_prone_annotations/2.26.1/error_prone_annotations-2.26.1.jar:/Users/elizabethemerson/.m2/repository/io/grpc/grpc-stub/1.62.2/grpc-stub-1.62.2.jar:/Users/elizabethemerson/.m2/repository/io/grpc/grpc-protobuf/1.62.2/grpc-protobuf-1.62.2.jar:/Users/elizabethemerson/.m2/repository/io/grpc/grpc-protobuf-lite/1.62.2/grpc-protobuf-lite-1.62.2.jar:/Users/elizabethemerson/.m2/repository/com/google/api/api-common/2.29.1/api-common-2.29.1.jar:/Users/elizabethemerson/.m2/repository/com/google/auto/value/auto-value-annotations/1.10.4/auto-value-annotations-1.10.4.jar:/Users/elizabethemerson/.m2/repository/javax/annotation/javax.annotation-api/1.3.2/javax.annotation-api-1.3.2.jar:/Users/elizabethemerson/.m2/repository/com/google/j2objc/j2objc-annotations/3.0.0/j2objc-annotations-3.0.0.jar:/Users/elizabethemerson/.m2/repository/com/google/protobuf/protobuf-java/3.25.2/protobuf-java-3.25.2.jar:/Users/elizabethemerson/.m2/repository/com/google/api/grpc/proto-google-common-protos/2.37.1/proto-google-common-protos-2.37.1.jar:/Users/elizabethemerson/.m2/repository/com/google/api/grpc/grpc-google-common-protos/2.37.1/grpc-google-common-protos-2.37.1.jar:/Users/elizabethemerson/.m2/repository/com/google/guava/failureaccess/1.0.2/failureaccess-1.0.2.jar:/Users/elizabethemerson/.m2/repository/com/google/guava/listenablefuture/9999.0-empty-to-avoid-conflict-with-guava/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar:/Users/elizabethemerson/.m2/repository/org/checkerframework/checker-qual/3.42.0/checker-qual-3.42.0.jar:/Users/elizabethemerson/.m2/repository/com/google/api/grpc/proto-google-cloud-dialogflow-cx-v3beta1/0.51.0/proto-google-cloud-dialogflow-cx-v3beta1-0.51.0.jar:/Users/elizabethemerson/.m2/repository/com/google/api/grpc/proto-google-cloud-dialogflow-cx-v3/0.51.0/proto-google-cloud-dialogflow-cx-v3-0.51.0.jar:/Users/elizabethemerson/.m2/repository/com/google/api/gax/2.46.1/gax-2.46.1.jar:/Users/elizabethemerson/.m2/repository/com/google/auth/google-auth-library-credentials/1.23.0/google-auth-library-credentials-1.23.0.jar:/Users/elizabethemerson/.m2/repository/io/opencensus/opencensus-api/0.31.1/opencensus-api-0.31.1.jar:/Users/elizabethemerson/.m2/repository/io/grpc/grpc-context/1.62.2/grpc-context-1.62.2.jar:/Users/elizabethemerson/.m2/repository/com/google/auth/google-auth-library-oauth2-http/1.23.0/google-auth-library-oauth2-http-1.23.0.jar:/Users/elizabethemerson/.m2/repository/io/opentelemetry/opentelemetry-api/1.31.0/opentelemetry-api-1.31.0.jar:/Users/elizabethemerson/.m2/repository/io/opentelemetry/opentelemetry-context/1.31.0/opentelemetry-context-1.31.0.jar:/Users/elizabethemerson/.m2/repository/com/google/api/gax-grpc/2.46.1/gax-grpc-2.46.1.jar:/Users/elizabethemerson/.m2/repository/io/grpc/grpc-inprocess/1.62.2/grpc-inprocess-1.62.2.jar:/Users/elizabethemerson/.m2/repository/io/grpc/grpc-core/1.62.2/grpc-core-1.62.2.jar:/Users/elizabethemerson/.m2/repository/com/google/android/annotations/4.1.1.4/annotations-4.1.1.4.jar:/Users/elizabethemerson/.m2/repository/org/codehaus/mojo/animal-sniffer-annotations/1.23/animal-sniffer-annotations-1.23.jar:/Users/elizabethemerson/.m2/repository/io/grpc/grpc-alts/1.62.2/grpc-alts-1.62.2.jar:/Users/elizabethemerson/.m2/repository/io/grpc/grpc-grpclb/1.62.2/grpc-grpclb-1.62.2.jar:/Users/elizabethemerson/.m2/repository/org/conscrypt/conscrypt-openjdk-uber/2.5.2/conscrypt-openjdk-uber-2.5.2.jar:/Users/elizabethemerson/.m2/repository/io/grpc/grpc-auth/1.62.2/grpc-auth-1.62.2.jar:/Users/elizabethemerson/.m2/repository/io/grpc/grpc-netty-shaded/1.62.2/grpc-netty-shaded-1.62.2.jar:/Users/elizabethemerson/.m2/repository/io/grpc/grpc-util/1.62.2/grpc-util-1.62.2.jar:/Users/elizabethemerson/.m2/repository/io/perfmark/perfmark-api/0.27.0/perfmark-api-0.27.0.jar:/Users/elizabethemerson/.m2/repository/io/grpc/grpc-googleapis/1.62.2/grpc-googleapis-1.62.2.jar:/Users/elizabethemerson/.m2/repository/io/grpc/grpc-xds/1.62.2/grpc-xds-1.62.2.jar:/Users/elizabethemerson/.m2/repository/io/opencensus/opencensus-proto/0.2.0/opencensus-proto-0.2.0.jar:/Users/elizabethemerson/.m2/repository/io/grpc/grpc-services/1.62.2/grpc-services-1.62.2.jar:/Users/elizabethemerson/.m2/repository/com/google/re2j/re2j/1.7/re2j-1.7.jar:/Users/elizabethemerson/.m2/repository/com/google/api/gax-httpjson/2.46.1/gax-httpjson-2.46.1.jar:/Users/elizabethemerson/.m2/repository/commons-codec/commons-codec/1.16.1/commons-codec-1.16.1.jar:/Users/elizabethemerson/.m2/repository/io/opencensus/opencensus-contrib-http-util/0.31.1/opencensus-contrib-http-util-0.31.1.jar:/Users/elizabethemerson/.m2/repository/org/threeten/threetenbp/1.6.8/threetenbp-1.6.8.jar:/Users/elizabethemerson/.m2/repository/com/google/cloud/functions/functions-framework-api/1.0.4/functions-framework-api-1.0.4.jar:/Users/elizabethemerson/.m2/repository/io/cloudevents/cloudevents-api/2.0.0.RC2/cloudevents-api-2.0.0.RC2.jar:/Users/elizabethemerson/.m2/repository/com/google/protobuf/protobuf-java-util/3.19.1/protobuf-java-util-3.19.1.jar:/Users/elizabethemerson/.m2/repository/mysql/mysql-connector-java/8.0.28/mysql-connector-java-8.0.28.jar:/Users/elizabethemerson/.m2/repository/io/jsonwebtoken/jjwt-api/0.11.5/jjwt-api-0.11.5.jar:/Users/elizabethemerson/.m2/repository/io/jsonwebtoken/jjwt-impl/0.11.5/jjwt-impl-0.11.5.jar:/Users/elizabethemerson/.m2/repository/io/jsonwebtoken/jjwt-jackson/0.11.5/jjwt-jackson-0.11.5.jar:/Users/elizabethemerson/.m2/repository/com/h2database/h2/2.2.224/h2-2.2.224.jar:/Users/elizabethemerson/.m2/repository/org/apache/httpcomponents/httpclient/4.5.13/httpclient-4.5.13.jar:/Users/elizabethemerson/.m2/repository/commons-logging/commons-logging/1.2/commons-logging-1.2.jar:/Users/elizabethemerson/.m2/repository/org/bouncycastle/bcprov-jdk18on/1.78/bcprov-jdk18on-1.78.jar:/Users/elizabethemerson/.m2/repository/org/json/json/20231013/json-20231013.jar:/Users/elizabethemerson/.m2/repository/com/fasterxml/jackson/core/jackson-databind/2.15.4/jackson-databind-2.15.4.jar:/Users/elizabethemerson/.m2/repository/jakarta/persistence/jakarta.persistence-api/3.1.0/jakarta.persistence-api-3.1.0.jar:/Users/elizabethemerson/.m2/repository/jakarta/validation/jakarta.validation-api/3.1.0/jakarta.validation-api-3.1.0.jar:/Users/elizabethemerson/.m2/repository/io/github/cdimascio/dotenv-java/2.2.4/dotenv-java-2.2.4.jar:/Users/elizabethemerson/.m2/repository/org/springframework/boot/spring-boot-starter-logging/3.2.8/spring-boot-starter-logging-3.2.8.jar:/Users/elizabethemerson/.m2/repository/org/apache/logging/log4j/log4j-to-slf4j/2.21.1/log4j-to-slf4j-2.21.1.jar:/Users/elizabethemerson/.m2/repository/org/apache/logging/log4j/log4j-api/2.21.1/log4j-api-2.21.1.jar:/Users/elizabethemerson/.m2/repository/org/slf4j/jul-to-slf4j/2.0.13/jul-to-slf4j-2.0.13.jar:/Users/elizabethemerson/.m2/repository/net/logstash/logback/logstash-logback-encoder/7.3/logstash-logback-encoder-7.3.jar:/Users/elizabethemerson/.m2/repository/org/slf4j/slf4j-api/2.0.0/slf4j-api-2.0.0.jar:/Users/elizabethemerson/.m2/repository/ch/qos/logback/logback-classic/1.4.11/logback-classic-1.4.11.jar:/Users/elizabethemerson/.m2/repository/ch/qos/logback/logback-core/1.4.11/logback-core-1.4.11.jar:/Users/elizabethemerson/.m2/repository/org/elasticsearch/client/elasticsearch-rest-high-level-client/7.17.4/elasticsearch-rest-high-level-client-7.17.4.jar:/Users/elizabethemerson/.m2/repository/org/elasticsearch/elasticsearch/7.17.4/elasticsearch-7.17.4.jar:/Users/elizabethemerson/.m2/repository/org/elasticsearch/elasticsearch-core/7.17.4/elasticsearch-core-7.17.4.jar:/Users/elizabethemerson/.m2/repository/org/elasticsearch/elasticsearch-secure-sm/7.17.4/elasticsearch-secure-sm-7.17.4.jar:/Users/elizabethemerson/.m2/repository/org/elasticsearch/elasticsearch-x-content/7.17.4/elasticsearch-x-content-7.17.4.jar:/Users/elizabethemerson/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-smile/2.15.4/jackson-dataformat-smile-2.15.4.jar:/Users/elizabethemerson/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.15.4/jackson-dataformat-yaml-2.15.4.jar:/Users/elizabethemerson/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/2.15.4/jackson-dataformat-cbor-2.15.4.jar:/Users/elizabethemerson/.m2/repository/org/elasticsearch/elasticsearch-geo/7.17.4/elasticsearch-geo-7.17.4.jar:/Users/elizabethemerson/.m2/repository/org/elasticsearch/elasticsearch-lz4/7.17.4/elasticsearch-lz4-7.17.4.jar:/Users/elizabethemerson/.m2/repository/org/lz4/lz4-java/1.8.0/lz4-java-1.8.0.jar:/Users/elizabethemerson/.m2/repository/org/apache/lucene/lucene-core/8.11.1/lucene-core-8.11.1.jar:/Users/elizabethemerson/.m2/repository/org/apache/lucene/lucene-analyzers-common/8.11.1/lucene-analyzers-common-8.11.1.jar:/Users/elizabethemerson/.m2/repository/org/apache/lucene/lucene-backward-codecs/8.11.1/lucene-backward-codecs-8.11.1.jar:/Users/elizabethemerson/.m2/repository/org/apache/lucene/lucene-grouping/8.11.1/lucene-grouping-8.11.1.jar:/Users/elizabethemerson/.m2/repository/org/apache/lucene/lucene-highlighter/8.11.1/lucene-highlighter-8.11.1.jar:/Users/elizabethemerson/.m2/repository/org/apache/lucene/lucene-join/8.11.1/lucene-join-8.11.1.jar:/Users/elizabethemerson/.m2/repository/org/apache/lucene/lucene-memory/8.11.1/lucene-memory-8.11.1.jar:/Users/elizabethemerson/.m2/repository/org/apache/lucene/lucene-misc/8.11.1/lucene-misc-8.11.1.jar:/Users/elizabethemerson/.m2/repository/org/apache/lucene/lucene-queries/8.11.1/lucene-queries-8.11.1.jar:/Users/elizabethemerson/.m2/repository/org/apache/lucene/lucene-queryparser/8.11.1/lucene-queryparser-8.11.1.jar:/Users/elizabethemerson/.m2/repository/org/apache/lucene/lucene-sandbox/8.11.1/lucene-sandbox-8.11.1.jar:/Users/elizabethemerson/.m2/repository/org/apache/lucene/lucene-spatial3d/8.11.1/lucene-spatial3d-8.11.1.jar:/Users/elizabethemerson/.m2/repository/org/apache/lucene/lucene-suggest/8.11.1/lucene-suggest-8.11.1.jar:/Users/elizabethemerson/.m2/repository/org/elasticsearch/elasticsearch-cli/7.17.4/elasticsearch-cli-7.17.4.jar:/Users/elizabethemerson/.m2/repository/net/sf/jopt-simple/jopt-simple/5.0.2/jopt-simple-5.0.2.jar:/Users/elizabethemerson/.m2/repository/com/carrotsearch/hppc/0.8.1/hppc-0.8.1.jar:/Users/elizabethemerson/.m2/repository/joda-time/joda-time/2.10.10/joda-time-2.10.10.jar:/Users/elizabethemerson/.m2/repository/com/tdunning/t-digest/3.2/t-digest-3.2.jar:/Users/elizabethemerson/.m2/repository/org/hdrhistogram/HdrHistogram/2.1.9/HdrHistogram-2.1.9.jar:/Users/elizabethemerson/.m2/repository/net/java/dev/jna/jna/5.10.0/jna-5.10.0.jar:/Users/elizabethemerson/.m2/repository/org/elasticsearch/elasticsearch-plugin-classloader/7.17.4/elasticsearch-plugin-classloader-7.17.4.jar:/Users/elizabethemerson/.m2/repository/org/elasticsearch/client/elasticsearch-rest-client/8.10.4/elasticsearch-rest-client-8.10.4.jar:/Users/elizabethemerson/.m2/repository/org/apache/httpcomponents/httpasyncclient/4.1.5/httpasyncclient-4.1.5.jar:/Users/elizabethemerson/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.16/httpcore-nio-4.4.16.jar:/Users/elizabethemerson/.m2/repository/org/elasticsearch/plugin/mapper-extras-client/7.17.4/mapper-extras-client-7.17.4.jar:/Users/elizabethemerson/.m2/repository/org/elasticsearch/plugin/parent-join-client/7.17.4/parent-join-client-7.17.4.jar:/Users/elizabethemerson/.m2/repository/org/elasticsearch/plugin/aggs-matrix-stats-client/7.17.4/aggs-matrix-stats-client-7.17.4.jar:/Users/elizabethemerson/.m2/repository/org/elasticsearch/plugin/rank-eval-client/7.17.4/rank-eval-client-7.17.4.jar:/Users/elizabethemerson/.m2/repository/org/elasticsearch/plugin/lang-mustache-client/7.17.4/lang-mustache-client-7.17.4.jar:/Users/elizabethemerson/.m2/repository/com/github/spullara/mustache/java/compiler/0.9.6/compiler-0.9.6.jar:/Users/elizabethemerson/.m2/repository/io/mongock/mongock-springboot/5.5.0/mongock-springboot-5.5.0.jar:/Users/elizabethemerson/.m2/repository/io/mongock/mongock-springboot-base/5.5.0/mongock-springboot-base-5.5.0.jar:/Users/elizabethemerson/.m2/repository/io/mongock/mongock-spring-base/5.5.0/mongock-spring-base-5.5.0.jar:/Users/elizabethemerson/.m2/repository/io/mongock/mongock-runner-core/5.5.0/mongock-runner-core-5.5.0.jar:/Users/elizabethemerson/.m2/repository/org/reflections/reflections/0.10.1/reflections-0.10.1.jar:/Users/elizabethemerson/.m2/repository/org/apache/maven/maven-artifact/3.6.1/maven-artifact-3.6.1.jar:/Users/elizabethemerson/.m2/repository/org/codehaus/plexus/plexus-utils/3.2.0/plexus-utils-3.2.0.jar:/Users/elizabethemerson/.m2/repository/io/mongock/mongock-utils/5.5.0/mongock-utils-5.5.0.jar:/Users/elizabethemerson/.m2/repository/org/springframework/boot/spring-boot-configuration-processor/3.2.8/spring-boot-configuration-processor-3.2.8.jar:/Users/elizabethemerson/.m2/repository/io/mongock/mongodb-springdata-v4-driver/5.5.0/mongodb-springdata-v4-driver-5.5.0.jar:/Users/elizabethemerson/.m2/repository/io/mongock/mongock-driver-core/5.5.0/mongock-driver-core-5.5.0.jar:/Users/elizabethemerson/.m2/repository/io/mongock/mongock-driver-api/5.5.0/mongock-driver-api-5.5.0.jar:/Users/elizabethemerson/.m2/repository/org/javassist/javassist/3.28.0-GA/javassist-3.28.0-GA.jar:/Users/elizabethemerson/.m2/repository/javax/inject/javax.inject/1/javax.inject-1.jar:/Users/elizabethemerson/.m2/repository/io/mongock/mongock-api/5.5.0/mongock-api-5.5.0.jar:/Users/elizabethemerson/.m2/repository/io/mongock/mongodb-sync-v4-driver/5.5.0/mongodb-sync-v4-driver-5.5.0.jar:/Users/elizabethemerson/.m2/repository/com/opencsv/opencsv/5.9/opencsv-5.9.jar:/Users/elizabethemerson/.m2/repository/org/apache/commons/commons-lang3/3.13.0/commons-lang3-3.13.0.jar:/Users/elizabethemerson/.m2/repository/org/apache/commons/commons-text/1.11.0/commons-text-1.11.0.jar:/Users/elizabethemerson/.m2/repository/commons-beanutils/commons-beanutils/1.9.4/commons-beanutils-1.9.4.jar:/Users/elizabethemerson/.m2/repository/commons-collections/commons-collections/3.2.2/commons-collections-3.2.2.jar:/Users/elizabethemerson/.m2/repository/org/apache/commons/commons-collections4/4.4/commons-collections4-4.4.jar:/Users/elizabethemerson/.m2/repository/org/springframework/boot/spring-boot-starter-test/3.2.8/spring-boot-starter-test-3.2.8.jar:/Users/elizabethemerson/.m2/repository/org/springframework/boot/spring-boot-test/3.2.8/spring-boot-test-3.2.8.jar:/Users/elizabethemerson/.m2/repository/org/springframework/boot/spring-boot-test-autoconfigure/3.2.8/spring-boot-test-autoconfigure-3.2.8.jar:/Users/elizabethemerson/.m2/repository/com/jayway/jsonpath/json-path/2.9.0/json-path-2.9.0.jar:/Users/elizabethemerson/.m2/repository/jakarta/xml/bind/jakarta.xml.bind-api/4.0.2/jakarta.xml.bind-api-4.0.2.jar:/Users/elizabethemerson/.m2/repository/net/minidev/json-smart/2.5.1/json-smart-2.5.1.jar:/Users/elizabethemerson/.m2/repository/net/minidev/accessors-smart/2.5.1/accessors-smart-2.5.1.jar:/Users/elizabethemerson/.m2/repository/org/ow2/asm/asm/9.6/asm-9.6.jar:/Users/elizabethemerson/.m2/repository/org/assertj/assertj-core/3.24.2/assertj-core-3.24.2.jar:/Users/elizabethemerson/.m2/repository/net/bytebuddy/byte-buddy/1.14.18/byte-buddy-1.14.18.jar:/Users/elizabethemerson/.m2/repository/org/awaitility/awaitility/4.2.1/awaitility-4.2.1.jar:/Users/elizabethemerson/.m2/repository/org/hamcrest/hamcrest/2.2/hamcrest-2.2.jar:/Users/elizabethemerson/.m2/repository/org/junit/jupiter/junit-jupiter/5.10.3/junit-jupiter-5.10.3.jar:/Users/elizabethemerson/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.10.3/junit-jupiter-api-5.10.3.jar:/Users/elizabethemerson/.m2/repository/org/junit/jupiter/junit-jupiter-params/5.10.3/junit-jupiter-params-5.10.3.jar:/Users/elizabethemerson/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.10.3/junit-jupiter-engine-5.10.3.jar:/Users/elizabethemerson/.m2/repository/org/mockito/mockito-core/5.7.0/mockito-core-5.7.0.jar:/Users/elizabethemerson/.m2/repository/net/bytebuddy/byte-buddy-agent/1.14.18/byte-buddy-agent-1.14.18.jar:/Users/elizabethemerson/.m2/repository/org/objenesis/objenesis/3.3/objenesis-3.3.jar:/Users/elizabethemerson/.m2/repository/org/mockito/mockito-junit-jupiter/5.7.0/mockito-junit-jupiter-5.7.0.jar:/Users/elizabethemerson/.m2/repository/org/skyscreamer/jsonassert/1.5.3/jsonassert-1.5.3.jar:/Users/elizabethemerson/.m2/repository/com/vaadin/external/google/android-json/0.0.20131108.vaadin1/android-json-0.0.20131108.vaadin1.jar:/Users/elizabethemerson/.m2/repository/org/springframework/spring-test/6.1.11/spring-test-6.1.11.jar:/Users/elizabethemerson/.m2/repository/org/xmlunit/xmlunit-core/2.9.1/xmlunit-core-2.9.1.jar:/Users/elizabethemerson/.m2/repository/org/spockframework/spock-core/2.4-M4-groovy-4.0/spock-core-2.4-M4-groovy-4.0.jar:/Users/elizabethemerson/.m2/repository/org/junit/platform/junit-platform-engine/1.10.3/junit-platform-engine-1.10.3.jar:/Users/elizabethemerson/.m2/repository/org/opentest4j/opentest4j/1.3.0/opentest4j-1.3.0.jar:/Users/elizabethemerson/.m2/repository/org/junit/platform/junit-platform-commons/1.10.3/junit-platform-commons-1.10.3.jar:/Users/elizabethemerson/.m2/repository/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar:/Users/elizabethemerson/.m2/repository/io/leangen/geantyref/geantyref/1.3.15/geantyref-1.3.15.jar:/Users/elizabethemerson/.m2/repository/org/spockframework/spock-spring/2.4-M4-groovy-4.0/spock-spring-2.4-M4-groovy-4.0.jar:/Users/elizabethemerson/.m2/repository/org/apache/groovy/groovy/4.0.23/groovy-4.0.23.jar:/Users/elizabethemerson/.m2/repository/org/testcontainers/testcontainers/1.20.3/testcontainers-1.20.3.jar:/Users/elizabethemerson/.m2/repository/junit/junit/4.13.2/junit-4.13.2.jar:/Users/elizabethemerson/.m2/repository/org/hamcrest/hamcrest-core/2.2/hamcrest-core-2.2.jar:/Users/elizabethemerson/.m2/repository/org/apache/commons/commons-compress/1.24.0/commons-compress-1.24.0.jar:/Users/elizabethemerson/.m2/repository/org/rnorth/duct-tape/duct-tape/1.0.8/duct-tape-1.0.8.jar:/Users/elizabethemerson/.m2/repository/org/jetbrains/annotations/17.0.0/annotations-17.0.0.jar:/Users/elizabethemerson/.m2/repository/com/github/docker-java/docker-java-api/3.4.0/docker-java-api-3.4.0.jar:/Users/elizabethemerson/.m2/repository/com/github/docker-java/docker-java-transport-zerodep/3.4.0/docker-java-transport-zerodep-3.4.0.jar:/Users/elizabethemerson/.m2/repository/com/github/docker-java/docker-java-transport/3.4.0/docker-java-transport-3.4.0.jar:/Users/elizabethemerson/.m2/repository/org/testcontainers/spock/1.20.3/spock-1.20.3.jar:/Users/elizabethemerson/.m2/repository/org/testcontainers/mongodb/1.20.3/mongodb-1.20.3.jar:"/>
+    <property name="JWT_EXPIRATION" value="3600000"/>
+    <property name="java.vm.vendor" value="Oracle Corporation"/>
+    <property name="user.timezone" value="America/New_York"/>
+    <property name="org.jboss.logging.provider" value="slf4j"/>
+    <property name="VIATOR_API_KEY" value="d28b2bc4-a332-4954-a7dc-69aa45a348b4"/>
+    <property name="java.vm.specification.version" value="17"/>
+    <property name="os.name" value="Mac OS X"/>
+    <property name="LOGNAME" value="elizabethemerson"/>
+    <property name="sun.java.launcher" value="SUN_STANDARD"/>
+    <property name="user.country" value="US"/>
+    <property name="http.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
+    <property name="SHELL" value="/bin/zsh"/>
+    <property name="surefire.test.class.path" value="/Users/elizabethemerson/Desktop/FlomadLabs/AITravelPlannerBackEnd/target/test-classes:/Users/elizabethemerson/Desktop/FlomadLabs/AITravelPlannerBackEnd/target/classes:/Users/elizabethemerson/.m2/repository/org/springframework/boot/spring-boot-starter/3.2.8/spring-boot-starter-3.2.8.jar:/Users/elizabethemerson/.m2/repository/org/springframework/boot/spring-boot/3.2.8/spring-boot-3.2.8.jar:/Users/elizabethemerson/.m2/repository/org/springframework/spring-context/6.1.11/spring-context-6.1.11.jar:/Users/elizabethemerson/.m2/repository/org/springframework/boot/spring-boot-autoconfigure/3.2.8/spring-boot-autoconfigure-3.2.8.jar:/Users/elizabethemerson/.m2/repository/jakarta/annotation/jakarta.annotation-api/2.1.1/jakarta.annotation-api-2.1.1.jar:/Users/elizabethemerson/.m2/repository/org/springframework/spring-core/6.1.11/spring-core-6.1.11.jar:/Users/elizabethemerson/.m2/repository/org/springframework/spring-jcl/6.1.11/spring-jcl-6.1.11.jar:/Users/elizabethemerson/.m2/repository/org/yaml/snakeyaml/2.2/snakeyaml-2.2.jar:/Users/elizabethemerson/.m2/repository/org/springframework/security/spring-security-oauth2-client/6.2.5/spring-security-oauth2-client-6.2.5.jar:/Users/elizabethemerson/.m2/repository/org/springframework/security/spring-security-core/6.2.5/spring-security-core-6.2.5.jar:/Users/elizabethemerson/.m2/repository/org/springframework/security/spring-security-crypto/6.2.5/spring-security-crypto-6.2.5.jar:/Users/elizabethemerson/.m2/repository/org/springframework/spring-beans/6.1.11/spring-beans-6.1.11.jar:/Users/elizabethemerson/.m2/repository/org/springframework/spring-expression/6.1.11/spring-expression-6.1.11.jar:/Users/elizabethemerson/.m2/repository/io/micrometer/micrometer-observation/1.12.8/micrometer-observation-1.12.8.jar:/Users/elizabethemerson/.m2/repository/io/micrometer/micrometer-commons/1.12.8/micrometer-commons-1.12.8.jar:/Users/elizabethemerson/.m2/repository/org/springframework/security/spring-security-oauth2-core/6.2.5/spring-security-oauth2-core-6.2.5.jar:/Users/elizabethemerson/.m2/repository/org/springframework/security/spring-security-web/6.2.5/spring-security-web-6.2.5.jar:/Users/elizabethemerson/.m2/repository/com/nimbusds/oauth2-oidc-sdk/9.43.4/oauth2-oidc-sdk-9.43.4.jar:/Users/elizabethemerson/.m2/repository/com/github/stephenc/jcip/jcip-annotations/1.0-1/jcip-annotations-1.0-1.jar:/Users/elizabethemerson/.m2/repository/com/nimbusds/content-type/2.2/content-type-2.2.jar:/Users/elizabethemerson/.m2/repository/com/nimbusds/lang-tag/1.7/lang-tag-1.7.jar:/Users/elizabethemerson/.m2/repository/org/springframework/boot/spring-boot-starter-mail/3.2.8/spring-boot-starter-mail-3.2.8.jar:/Users/elizabethemerson/.m2/repository/org/springframework/spring-context-support/6.1.11/spring-context-support-6.1.11.jar:/Users/elizabethemerson/.m2/repository/org/eclipse/angus/jakarta.mail/2.0.3/jakarta.mail-2.0.3.jar:/Users/elizabethemerson/.m2/repository/jakarta/activation/jakarta.activation-api/2.1.3/jakarta.activation-api-2.1.3.jar:/Users/elizabethemerson/.m2/repository/org/eclipse/angus/angus-activation/2.0.2/angus-activation-2.0.2.jar:/Users/elizabethemerson/.m2/repository/org/springframework/boot/spring-boot-starter-security/3.2.8/spring-boot-starter-security-3.2.8.jar:/Users/elizabethemerson/.m2/repository/org/springframework/spring-aop/6.1.11/spring-aop-6.1.11.jar:/Users/elizabethemerson/.m2/repository/org/springframework/security/spring-security-config/6.2.5/spring-security-config-6.2.5.jar:/Users/elizabethemerson/.m2/repository/org/springframework/security/spring-security-oauth2-jose/6.2.5/spring-security-oauth2-jose-6.2.5.jar:/Users/elizabethemerson/.m2/repository/com/nimbusds/nimbus-jose-jwt/9.37.3/nimbus-jose-jwt-9.37.3.jar:/Users/elizabethemerson/.m2/repository/com/google/cloud/spring-cloud-gcp-starter-firestore/2.0.8/spring-cloud-gcp-starter-firestore-2.0.8.jar:/Users/elizabethemerson/.m2/repository/com/google/cloud/spring-cloud-gcp-starter/2.0.8/spring-cloud-gcp-starter-2.0.8.jar:/Users/elizabethemerson/.m2/repository/com/google/cloud/spring-cloud-gcp-core/2.0.8/spring-cloud-gcp-core-2.0.8.jar:/Users/elizabethemerson/.m2/repository/com/google/cloud/spring-cloud-gcp-autoconfigure/2.0.8/spring-cloud-gcp-autoconfigure-2.0.8.jar:/Users/elizabethemerson/.m2/repository/com/google/cloud/google-cloud-firestore/3.0.10/google-cloud-firestore-3.0.10.jar:/Users/elizabethemerson/.m2/repository/com/google/cloud/google-cloud-core-grpc/2.3.5/google-cloud-core-grpc-2.3.5.jar:/Users/elizabethemerson/.m2/repository/com/google/api/grpc/proto-google-cloud-firestore-v1/3.0.10/proto-google-cloud-firestore-v1-3.0.10.jar:/Users/elizabethemerson/.m2/repository/com/google/cloud/proto-google-cloud-firestore-bundle-v1/3.0.10/proto-google-cloud-firestore-bundle-v1-3.0.10.jar:/Users/elizabethemerson/.m2/repository/io/opencensus/opencensus-contrib-grpc-util/0.28.0/opencensus-contrib-grpc-util-0.28.0.jar:/Users/elizabethemerson/.m2/repository/org/bouncycastle/bcpkix-jdk15on/1.67/bcpkix-jdk15on-1.67.jar:/Users/elizabethemerson/.m2/repository/org/bouncycastle/bcprov-jdk15on/1.67/bcprov-jdk15on-1.67.jar:/Users/elizabethemerson/.m2/repository/com/google/cloud/google-cloud-core/2.3.5/google-cloud-core-2.3.5.jar:/Users/elizabethemerson/.m2/repository/com/google/api/grpc/proto-google-iam-v1/1.2.0/proto-google-iam-v1-1.2.0.jar:/Users/elizabethemerson/.m2/repository/org/springframework/boot/spring-boot-starter-thymeleaf/3.2.8/spring-boot-starter-thymeleaf-3.2.8.jar:/Users/elizabethemerson/.m2/repository/org/thymeleaf/thymeleaf-spring6/3.1.2.RELEASE/thymeleaf-spring6-3.1.2.RELEASE.jar:/Users/elizabethemerson/.m2/repository/org/thymeleaf/thymeleaf/3.1.2.RELEASE/thymeleaf-3.1.2.RELEASE.jar:/Users/elizabethemerson/.m2/repository/org/attoparser/attoparser/2.0.7.RELEASE/attoparser-2.0.7.RELEASE.jar:/Users/elizabethemerson/.m2/repository/org/unbescape/unbescape/1.1.6.RELEASE/unbescape-1.1.6.RELEASE.jar:/Users/elizabethemerson/.m2/repository/org/springframework/boot/spring-boot-starter-web/3.2.8/spring-boot-starter-web-3.2.8.jar:/Users/elizabethemerson/.m2/repository/org/springframework/boot/spring-boot-starter-json/3.2.8/spring-boot-starter-json-3.2.8.jar:/Users/elizabethemerson/.m2/repository/com/fasterxml/jackson/datatype/jackson-datatype-jdk8/2.15.4/jackson-datatype-jdk8-2.15.4.jar:/Users/elizabethemerson/.m2/repository/com/fasterxml/jackson/module/jackson-module-parameter-names/2.15.4/jackson-module-parameter-names-2.15.4.jar:/Users/elizabethemerson/.m2/repository/org/springframework/boot/spring-boot-starter-tomcat/3.2.8/spring-boot-starter-tomcat-3.2.8.jar:/Users/elizabethemerson/.m2/repository/org/apache/tomcat/embed/tomcat-embed-core/10.1.26/tomcat-embed-core-10.1.26.jar:/Users/elizabethemerson/.m2/repository/org/apache/tomcat/embed/tomcat-embed-websocket/10.1.26/tomcat-embed-websocket-10.1.26.jar:/Users/elizabethemerson/.m2/repository/org/springframework/spring-web/6.1.11/spring-web-6.1.11.jar:/Users/elizabethemerson/.m2/repository/org/springframework/spring-webmvc/6.1.11/spring-webmvc-6.1.11.jar:/Users/elizabethemerson/.m2/repository/org/springframework/boot/spring-boot-starter-data-mongodb/3.2.8/spring-boot-starter-data-mongodb-3.2.8.jar:/Users/elizabethemerson/.m2/repository/org/mongodb/mongodb-driver-sync/4.11.2/mongodb-driver-sync-4.11.2.jar:/Users/elizabethemerson/.m2/repository/org/mongodb/bson/4.11.2/bson-4.11.2.jar:/Users/elizabethemerson/.m2/repository/org/mongodb/mongodb-driver-core/4.11.2/mongodb-driver-core-4.11.2.jar:/Users/elizabethemerson/.m2/repository/org/mongodb/bson-record-codec/4.11.2/bson-record-codec-4.11.2.jar:/Users/elizabethemerson/.m2/repository/org/springframework/data/spring-data-mongodb/4.2.8/spring-data-mongodb-4.2.8.jar:/Users/elizabethemerson/.m2/repository/org/springframework/spring-tx/6.1.11/spring-tx-6.1.11.jar:/Users/elizabethemerson/.m2/repository/org/springframework/data/spring-data-commons/3.2.8/spring-data-commons-3.2.8.jar:/Users/elizabethemerson/.m2/repository/org/springframework/cloud/spring-cloud-starter-openfeign/4.1.2/spring-cloud-starter-openfeign-4.1.2.jar:/Users/elizabethemerson/.m2/repository/org/springframework/cloud/spring-cloud-starter/4.1.3/spring-cloud-starter-4.1.3.jar:/Users/elizabethemerson/.m2/repository/org/springframework/cloud/spring-cloud-context/4.1.3/spring-cloud-context-4.1.3.jar:/Users/elizabethemerson/.m2/repository/org/springframework/security/spring-security-rsa/1.1.3/spring-security-rsa-1.1.3.jar:/Users/elizabethemerson/.m2/repository/org/springframework/cloud/spring-cloud-openfeign-core/4.1.2/spring-cloud-openfeign-core-4.1.2.jar:/Users/elizabethemerson/.m2/repository/io/github/openfeign/form/feign-form-spring/3.8.0/feign-form-spring-3.8.0.jar:/Users/elizabethemerson/.m2/repository/io/github/openfeign/form/feign-form/3.8.0/feign-form-3.8.0.jar:/Users/elizabethemerson/.m2/repository/commons-fileupload/commons-fileupload/1.5/commons-fileupload-1.5.jar:/Users/elizabethemerson/.m2/repository/commons-io/commons-io/2.11.0/commons-io-2.11.0.jar:/Users/elizabethemerson/.m2/repository/org/springframework/cloud/spring-cloud-commons/4.1.3/spring-cloud-commons-4.1.3.jar:/Users/elizabethemerson/.m2/repository/io/github/openfeign/feign-core/13.2.1/feign-core-13.2.1.jar:/Users/elizabethemerson/.m2/repository/io/github/openfeign/feign-slf4j/13.2.1/feign-slf4j-13.2.1.jar:/Users/elizabethemerson/.m2/repository/org/springdoc/springdoc-openapi-starter-webmvc-ui/2.6.0/springdoc-openapi-starter-webmvc-ui-2.6.0.jar:/Users/elizabethemerson/.m2/repository/org/springdoc/springdoc-openapi-starter-webmvc-api/2.6.0/springdoc-openapi-starter-webmvc-api-2.6.0.jar:/Users/elizabethemerson/.m2/repository/org/springdoc/springdoc-openapi-starter-common/2.6.0/springdoc-openapi-starter-common-2.6.0.jar:/Users/elizabethemerson/.m2/repository/io/swagger/core/v3/swagger-core-jakarta/2.2.22/swagger-core-jakarta-2.2.22.jar:/Users/elizabethemerson/.m2/repository/io/swagger/core/v3/swagger-annotations-jakarta/2.2.22/swagger-annotations-jakarta-2.2.22.jar:/Users/elizabethemerson/.m2/repository/io/swagger/core/v3/swagger-models-jakarta/2.2.22/swagger-models-jakarta-2.2.22.jar:/Users/elizabethemerson/.m2/repository/org/webjars/swagger-ui/5.17.14/swagger-ui-5.17.14.jar:/Users/elizabethemerson/.m2/repository/org/springframework/boot/spring-boot-starter-validation/3.2.8/spring-boot-starter-validation-3.2.8.jar:/Users/elizabethemerson/.m2/repository/org/apache/tomcat/embed/tomcat-embed-el/10.1.26/tomcat-embed-el-10.1.26.jar:/Users/elizabethemerson/.m2/repository/org/hibernate/validator/hibernate-validator/8.0.1.Final/hibernate-validator-8.0.1.Final.jar:/Users/elizabethemerson/.m2/repository/org/jboss/logging/jboss-logging/3.5.3.Final/jboss-logging-3.5.3.Final.jar:/Users/elizabethemerson/.m2/repository/com/fasterxml/classmate/1.6.0/classmate-1.6.0.jar:/Users/elizabethemerson/.m2/repository/org/springframework/ai/spring-ai-openai-spring-boot-starter/1.0.0-M4/spring-ai-openai-spring-boot-starter-1.0.0-M4.jar:/Users/elizabethemerson/.m2/repository/org/springframework/ai/spring-ai-spring-boot-autoconfigure/1.0.0-M4/spring-ai-spring-boot-autoconfigure-1.0.0-M4.jar:/Users/elizabethemerson/.m2/repository/org/springframework/ai/spring-ai-openai/1.0.0-M4/spring-ai-openai-1.0.0-M4.jar:/Users/elizabethemerson/.m2/repository/org/springframework/ai/spring-ai-core/1.0.0-M4/spring-ai-core-1.0.0-M4.jar:/Users/elizabethemerson/.m2/repository/com/fasterxml/jackson/module/jackson-module-jsonSchema/2.15.4/jackson-module-jsonSchema-2.15.4.jar:/Users/elizabethemerson/.m2/repository/javax/validation/validation-api/1.1.0.Final/validation-api-1.1.0.Final.jar:/Users/elizabethemerson/.m2/repository/io/swagger/core/v3/swagger-annotations/2.2.20/swagger-annotations-2.2.20.jar:/Users/elizabethemerson/.m2/repository/com/github/victools/jsonschema-module-swagger-2/4.35.0/jsonschema-module-swagger-2-4.35.0.jar:/Users/elizabethemerson/.m2/repository/org/antlr/ST4/4.3.4/ST4-4.3.4.jar:/Users/elizabethemerson/.m2/repository/org/antlr/antlr-runtime/3.5.3/antlr-runtime-3.5.3.jar:/Users/elizabethemerson/.m2/repository/org/antlr/antlr4-runtime/4.13.1/antlr4-runtime-4.13.1.jar:/Users/elizabethemerson/.m2/repository/io/projectreactor/reactor-core/3.6.8/reactor-core-3.6.8.jar:/Users/elizabethemerson/.m2/repository/org/reactivestreams/reactive-streams/1.0.4/reactive-streams-1.0.4.jar:/Users/elizabethemerson/.m2/repository/io/micrometer/micrometer-core/1.12.8/micrometer-core-1.12.8.jar:/Users/elizabethemerson/.m2/repository/org/latencyutils/LatencyUtils/2.0.3/LatencyUtils-2.0.3.jar:/Users/elizabethemerson/.m2/repository/io/micrometer/context-propagation/1.1.1/context-propagation-1.1.1.jar:/Users/elizabethemerson/.m2/repository/com/knuddels/jtokkit/1.1.0/jtokkit-1.1.0.jar:/Users/elizabethemerson/.m2/repository/org/springframework/ai/spring-ai-retry/1.0.0-M4/spring-ai-retry-1.0.0-M4.jar:/Users/elizabethemerson/.m2/repository/org/springframework/retry/spring-retry/2.0.7/spring-retry-2.0.7.jar:/Users/elizabethemerson/.m2/repository/org/springframework/spring-webflux/6.1.11/spring-webflux-6.1.11.jar:/Users/elizabethemerson/.m2/repository/io/rest-assured/json-path/5.3.2/json-path-5.3.2.jar:/Users/elizabethemerson/.m2/repository/org/apache/groovy/groovy-json/4.0.22/groovy-json-4.0.22.jar:/Users/elizabethemerson/.m2/repository/io/rest-assured/rest-assured-common/5.3.2/rest-assured-common-5.3.2.jar:/Users/elizabethemerson/.m2/repository/com/github/victools/jsonschema-generator/4.31.1/jsonschema-generator-4.31.1.jar:/Users/elizabethemerson/.m2/repository/com/github/victools/jsonschema-module-jackson/4.31.1/jsonschema-module-jackson-4.31.1.jar:/Users/elizabethemerson/.m2/repository/org/springframework/ai/spring-ai-vertex-ai-gemini-spring-boot-starter/1.0.0-M4/spring-ai-vertex-ai-gemini-spring-boot-starter-1.0.0-M4.jar:/Users/elizabethemerson/.m2/repository/org/springframework/ai/spring-ai-vertex-ai-gemini/1.0.0-M4/spring-ai-vertex-ai-gemini-1.0.0-M4.jar:/Users/elizabethemerson/.m2/repository/com/google/cloud/google-cloud-vertexai/1.11.0/google-cloud-vertexai-1.11.0.jar:/Users/elizabethemerson/.m2/repository/com/google/api/grpc/proto-google-cloud-vertexai-v1/1.11.0/proto-google-cloud-vertexai-v1-1.11.0.jar:/Users/elizabethemerson/.m2/repository/com/google/api/grpc/grpc-google-iam-v1/1.40.1/grpc-google-iam-v1-1.40.1.jar:/Users/elizabethemerson/.m2/repository/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/2.15.4/jackson-datatype-jsr310-2.15.4.jar:/Users/elizabethemerson/.m2/repository/com/fasterxml/jackson/core/jackson-annotations/2.15.4/jackson-annotations-2.15.4.jar:/Users/elizabethemerson/.m2/repository/com/fasterxml/jackson/core/jackson-core/2.15.4/jackson-core-2.15.4.jar:/Users/elizabethemerson/.m2/repository/org/springframework/boot/spring-boot-starter-websocket/3.2.8/spring-boot-starter-websocket-3.2.8.jar:/Users/elizabethemerson/.m2/repository/org/springframework/spring-messaging/6.1.11/spring-messaging-6.1.11.jar:/Users/elizabethemerson/.m2/repository/org/springframework/spring-websocket/6.1.11/spring-websocket-6.1.11.jar:/Users/elizabethemerson/.m2/repository/org/projectlombok/lombok/1.18.34/lombok-1.18.34.jar:/Users/elizabethemerson/.m2/repository/com/google/api-client/google-api-client/2.0.0/google-api-client-2.0.0.jar:/Users/elizabethemerson/.m2/repository/com/google/oauth-client/google-oauth-client/1.34.1/google-oauth-client-1.34.1.jar:/Users/elizabethemerson/.m2/repository/com/google/http-client/google-http-client-gson/1.42.1/google-http-client-gson-1.42.1.jar:/Users/elizabethemerson/.m2/repository/com/google/guava/guava/31.1-jre/guava-31.1-jre.jar:/Users/elizabethemerson/.m2/repository/com/google/http-client/google-http-client-apache-v2/1.42.1/google-http-client-apache-v2-1.42.1.jar:/Users/elizabethemerson/.m2/repository/org/apache/httpcomponents/httpcore/4.4.16/httpcore-4.4.16.jar:/Users/elizabethemerson/.m2/repository/com/google/http-client/google-http-client/1.42.1/google-http-client-1.42.1.jar:/Users/elizabethemerson/.m2/repository/com/google/code/gson/gson/2.8.9/gson-2.8.9.jar:/Users/elizabethemerson/.m2/repository/com/google/cloud/google-cloud-dialogflow-cx/0.51.0/google-cloud-dialogflow-cx-0.51.0.jar:/Users/elizabethemerson/.m2/repository/io/grpc/grpc-api/1.62.2/grpc-api-1.62.2.jar:/Users/elizabethemerson/.m2/repository/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar:/Users/elizabethemerson/.m2/repository/com/google/errorprone/error_prone_annotations/2.26.1/error_prone_annotations-2.26.1.jar:/Users/elizabethemerson/.m2/repository/io/grpc/grpc-stub/1.62.2/grpc-stub-1.62.2.jar:/Users/elizabethemerson/.m2/repository/io/grpc/grpc-protobuf/1.62.2/grpc-protobuf-1.62.2.jar:/Users/elizabethemerson/.m2/repository/io/grpc/grpc-protobuf-lite/1.62.2/grpc-protobuf-lite-1.62.2.jar:/Users/elizabethemerson/.m2/repository/com/google/api/api-common/2.29.1/api-common-2.29.1.jar:/Users/elizabethemerson/.m2/repository/com/google/auto/value/auto-value-annotations/1.10.4/auto-value-annotations-1.10.4.jar:/Users/elizabethemerson/.m2/repository/javax/annotation/javax.annotation-api/1.3.2/javax.annotation-api-1.3.2.jar:/Users/elizabethemerson/.m2/repository/com/google/j2objc/j2objc-annotations/3.0.0/j2objc-annotations-3.0.0.jar:/Users/elizabethemerson/.m2/repository/com/google/protobuf/protobuf-java/3.25.2/protobuf-java-3.25.2.jar:/Users/elizabethemerson/.m2/repository/com/google/api/grpc/proto-google-common-protos/2.37.1/proto-google-common-protos-2.37.1.jar:/Users/elizabethemerson/.m2/repository/com/google/api/grpc/grpc-google-common-protos/2.37.1/grpc-google-common-protos-2.37.1.jar:/Users/elizabethemerson/.m2/repository/com/google/guava/failureaccess/1.0.2/failureaccess-1.0.2.jar:/Users/elizabethemerson/.m2/repository/com/google/guava/listenablefuture/9999.0-empty-to-avoid-conflict-with-guava/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar:/Users/elizabethemerson/.m2/repository/org/checkerframework/checker-qual/3.42.0/checker-qual-3.42.0.jar:/Users/elizabethemerson/.m2/repository/com/google/api/grpc/proto-google-cloud-dialogflow-cx-v3beta1/0.51.0/proto-google-cloud-dialogflow-cx-v3beta1-0.51.0.jar:/Users/elizabethemerson/.m2/repository/com/google/api/grpc/proto-google-cloud-dialogflow-cx-v3/0.51.0/proto-google-cloud-dialogflow-cx-v3-0.51.0.jar:/Users/elizabethemerson/.m2/repository/com/google/api/gax/2.46.1/gax-2.46.1.jar:/Users/elizabethemerson/.m2/repository/com/google/auth/google-auth-library-credentials/1.23.0/google-auth-library-credentials-1.23.0.jar:/Users/elizabethemerson/.m2/repository/io/opencensus/opencensus-api/0.31.1/opencensus-api-0.31.1.jar:/Users/elizabethemerson/.m2/repository/io/grpc/grpc-context/1.62.2/grpc-context-1.62.2.jar:/Users/elizabethemerson/.m2/repository/com/google/auth/google-auth-library-oauth2-http/1.23.0/google-auth-library-oauth2-http-1.23.0.jar:/Users/elizabethemerson/.m2/repository/io/opentelemetry/opentelemetry-api/1.31.0/opentelemetry-api-1.31.0.jar:/Users/elizabethemerson/.m2/repository/io/opentelemetry/opentelemetry-context/1.31.0/opentelemetry-context-1.31.0.jar:/Users/elizabethemerson/.m2/repository/com/google/api/gax-grpc/2.46.1/gax-grpc-2.46.1.jar:/Users/elizabethemerson/.m2/repository/io/grpc/grpc-inprocess/1.62.2/grpc-inprocess-1.62.2.jar:/Users/elizabethemerson/.m2/repository/io/grpc/grpc-core/1.62.2/grpc-core-1.62.2.jar:/Users/elizabethemerson/.m2/repository/com/google/android/annotations/4.1.1.4/annotations-4.1.1.4.jar:/Users/elizabethemerson/.m2/repository/org/codehaus/mojo/animal-sniffer-annotations/1.23/animal-sniffer-annotations-1.23.jar:/Users/elizabethemerson/.m2/repository/io/grpc/grpc-alts/1.62.2/grpc-alts-1.62.2.jar:/Users/elizabethemerson/.m2/repository/io/grpc/grpc-grpclb/1.62.2/grpc-grpclb-1.62.2.jar:/Users/elizabethemerson/.m2/repository/org/conscrypt/conscrypt-openjdk-uber/2.5.2/conscrypt-openjdk-uber-2.5.2.jar:/Users/elizabethemerson/.m2/repository/io/grpc/grpc-auth/1.62.2/grpc-auth-1.62.2.jar:/Users/elizabethemerson/.m2/repository/io/grpc/grpc-netty-shaded/1.62.2/grpc-netty-shaded-1.62.2.jar:/Users/elizabethemerson/.m2/repository/io/grpc/grpc-util/1.62.2/grpc-util-1.62.2.jar:/Users/elizabethemerson/.m2/repository/io/perfmark/perfmark-api/0.27.0/perfmark-api-0.27.0.jar:/Users/elizabethemerson/.m2/repository/io/grpc/grpc-googleapis/1.62.2/grpc-googleapis-1.62.2.jar:/Users/elizabethemerson/.m2/repository/io/grpc/grpc-xds/1.62.2/grpc-xds-1.62.2.jar:/Users/elizabethemerson/.m2/repository/io/opencensus/opencensus-proto/0.2.0/opencensus-proto-0.2.0.jar:/Users/elizabethemerson/.m2/repository/io/grpc/grpc-services/1.62.2/grpc-services-1.62.2.jar:/Users/elizabethemerson/.m2/repository/com/google/re2j/re2j/1.7/re2j-1.7.jar:/Users/elizabethemerson/.m2/repository/com/google/api/gax-httpjson/2.46.1/gax-httpjson-2.46.1.jar:/Users/elizabethemerson/.m2/repository/commons-codec/commons-codec/1.16.1/commons-codec-1.16.1.jar:/Users/elizabethemerson/.m2/repository/io/opencensus/opencensus-contrib-http-util/0.31.1/opencensus-contrib-http-util-0.31.1.jar:/Users/elizabethemerson/.m2/repository/org/threeten/threetenbp/1.6.8/threetenbp-1.6.8.jar:/Users/elizabethemerson/.m2/repository/com/google/cloud/functions/functions-framework-api/1.0.4/functions-framework-api-1.0.4.jar:/Users/elizabethemerson/.m2/repository/io/cloudevents/cloudevents-api/2.0.0.RC2/cloudevents-api-2.0.0.RC2.jar:/Users/elizabethemerson/.m2/repository/com/google/protobuf/protobuf-java-util/3.19.1/protobuf-java-util-3.19.1.jar:/Users/elizabethemerson/.m2/repository/mysql/mysql-connector-java/8.0.28/mysql-connector-java-8.0.28.jar:/Users/elizabethemerson/.m2/repository/io/jsonwebtoken/jjwt-api/0.11.5/jjwt-api-0.11.5.jar:/Users/elizabethemerson/.m2/repository/io/jsonwebtoken/jjwt-impl/0.11.5/jjwt-impl-0.11.5.jar:/Users/elizabethemerson/.m2/repository/io/jsonwebtoken/jjwt-jackson/0.11.5/jjwt-jackson-0.11.5.jar:/Users/elizabethemerson/.m2/repository/com/h2database/h2/2.2.224/h2-2.2.224.jar:/Users/elizabethemerson/.m2/repository/org/apache/httpcomponents/httpclient/4.5.13/httpclient-4.5.13.jar:/Users/elizabethemerson/.m2/repository/commons-logging/commons-logging/1.2/commons-logging-1.2.jar:/Users/elizabethemerson/.m2/repository/org/bouncycastle/bcprov-jdk18on/1.78/bcprov-jdk18on-1.78.jar:/Users/elizabethemerson/.m2/repository/org/json/json/20231013/json-20231013.jar:/Users/elizabethemerson/.m2/repository/com/fasterxml/jackson/core/jackson-databind/2.15.4/jackson-databind-2.15.4.jar:/Users/elizabethemerson/.m2/repository/jakarta/persistence/jakarta.persistence-api/3.1.0/jakarta.persistence-api-3.1.0.jar:/Users/elizabethemerson/.m2/repository/jakarta/validation/jakarta.validation-api/3.1.0/jakarta.validation-api-3.1.0.jar:/Users/elizabethemerson/.m2/repository/io/github/cdimascio/dotenv-java/2.2.4/dotenv-java-2.2.4.jar:/Users/elizabethemerson/.m2/repository/org/springframework/boot/spring-boot-starter-logging/3.2.8/spring-boot-starter-logging-3.2.8.jar:/Users/elizabethemerson/.m2/repository/org/apache/logging/log4j/log4j-to-slf4j/2.21.1/log4j-to-slf4j-2.21.1.jar:/Users/elizabethemerson/.m2/repository/org/apache/logging/log4j/log4j-api/2.21.1/log4j-api-2.21.1.jar:/Users/elizabethemerson/.m2/repository/org/slf4j/jul-to-slf4j/2.0.13/jul-to-slf4j-2.0.13.jar:/Users/elizabethemerson/.m2/repository/net/logstash/logback/logstash-logback-encoder/7.3/logstash-logback-encoder-7.3.jar:/Users/elizabethemerson/.m2/repository/org/slf4j/slf4j-api/2.0.0/slf4j-api-2.0.0.jar:/Users/elizabethemerson/.m2/repository/ch/qos/logback/logback-classic/1.4.11/logback-classic-1.4.11.jar:/Users/elizabethemerson/.m2/repository/ch/qos/logback/logback-core/1.4.11/logback-core-1.4.11.jar:/Users/elizabethemerson/.m2/repository/org/elasticsearch/client/elasticsearch-rest-high-level-client/7.17.4/elasticsearch-rest-high-level-client-7.17.4.jar:/Users/elizabethemerson/.m2/repository/org/elasticsearch/elasticsearch/7.17.4/elasticsearch-7.17.4.jar:/Users/elizabethemerson/.m2/repository/org/elasticsearch/elasticsearch-core/7.17.4/elasticsearch-core-7.17.4.jar:/Users/elizabethemerson/.m2/repository/org/elasticsearch/elasticsearch-secure-sm/7.17.4/elasticsearch-secure-sm-7.17.4.jar:/Users/elizabethemerson/.m2/repository/org/elasticsearch/elasticsearch-x-content/7.17.4/elasticsearch-x-content-7.17.4.jar:/Users/elizabethemerson/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-smile/2.15.4/jackson-dataformat-smile-2.15.4.jar:/Users/elizabethemerson/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.15.4/jackson-dataformat-yaml-2.15.4.jar:/Users/elizabethemerson/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/2.15.4/jackson-dataformat-cbor-2.15.4.jar:/Users/elizabethemerson/.m2/repository/org/elasticsearch/elasticsearch-geo/7.17.4/elasticsearch-geo-7.17.4.jar:/Users/elizabethemerson/.m2/repository/org/elasticsearch/elasticsearch-lz4/7.17.4/elasticsearch-lz4-7.17.4.jar:/Users/elizabethemerson/.m2/repository/org/lz4/lz4-java/1.8.0/lz4-java-1.8.0.jar:/Users/elizabethemerson/.m2/repository/org/apache/lucene/lucene-core/8.11.1/lucene-core-8.11.1.jar:/Users/elizabethemerson/.m2/repository/org/apache/lucene/lucene-analyzers-common/8.11.1/lucene-analyzers-common-8.11.1.jar:/Users/elizabethemerson/.m2/repository/org/apache/lucene/lucene-backward-codecs/8.11.1/lucene-backward-codecs-8.11.1.jar:/Users/elizabethemerson/.m2/repository/org/apache/lucene/lucene-grouping/8.11.1/lucene-grouping-8.11.1.jar:/Users/elizabethemerson/.m2/repository/org/apache/lucene/lucene-highlighter/8.11.1/lucene-highlighter-8.11.1.jar:/Users/elizabethemerson/.m2/repository/org/apache/lucene/lucene-join/8.11.1/lucene-join-8.11.1.jar:/Users/elizabethemerson/.m2/repository/org/apache/lucene/lucene-memory/8.11.1/lucene-memory-8.11.1.jar:/Users/elizabethemerson/.m2/repository/org/apache/lucene/lucene-misc/8.11.1/lucene-misc-8.11.1.jar:/Users/elizabethemerson/.m2/repository/org/apache/lucene/lucene-queries/8.11.1/lucene-queries-8.11.1.jar:/Users/elizabethemerson/.m2/repository/org/apache/lucene/lucene-queryparser/8.11.1/lucene-queryparser-8.11.1.jar:/Users/elizabethemerson/.m2/repository/org/apache/lucene/lucene-sandbox/8.11.1/lucene-sandbox-8.11.1.jar:/Users/elizabethemerson/.m2/repository/org/apache/lucene/lucene-spatial3d/8.11.1/lucene-spatial3d-8.11.1.jar:/Users/elizabethemerson/.m2/repository/org/apache/lucene/lucene-suggest/8.11.1/lucene-suggest-8.11.1.jar:/Users/elizabethemerson/.m2/repository/org/elasticsearch/elasticsearch-cli/7.17.4/elasticsearch-cli-7.17.4.jar:/Users/elizabethemerson/.m2/repository/net/sf/jopt-simple/jopt-simple/5.0.2/jopt-simple-5.0.2.jar:/Users/elizabethemerson/.m2/repository/com/carrotsearch/hppc/0.8.1/hppc-0.8.1.jar:/Users/elizabethemerson/.m2/repository/joda-time/joda-time/2.10.10/joda-time-2.10.10.jar:/Users/elizabethemerson/.m2/repository/com/tdunning/t-digest/3.2/t-digest-3.2.jar:/Users/elizabethemerson/.m2/repository/org/hdrhistogram/HdrHistogram/2.1.9/HdrHistogram-2.1.9.jar:/Users/elizabethemerson/.m2/repository/net/java/dev/jna/jna/5.10.0/jna-5.10.0.jar:/Users/elizabethemerson/.m2/repository/org/elasticsearch/elasticsearch-plugin-classloader/7.17.4/elasticsearch-plugin-classloader-7.17.4.jar:/Users/elizabethemerson/.m2/repository/org/elasticsearch/client/elasticsearch-rest-client/8.10.4/elasticsearch-rest-client-8.10.4.jar:/Users/elizabethemerson/.m2/repository/org/apache/httpcomponents/httpasyncclient/4.1.5/httpasyncclient-4.1.5.jar:/Users/elizabethemerson/.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.16/httpcore-nio-4.4.16.jar:/Users/elizabethemerson/.m2/repository/org/elasticsearch/plugin/mapper-extras-client/7.17.4/mapper-extras-client-7.17.4.jar:/Users/elizabethemerson/.m2/repository/org/elasticsearch/plugin/parent-join-client/7.17.4/parent-join-client-7.17.4.jar:/Users/elizabethemerson/.m2/repository/org/elasticsearch/plugin/aggs-matrix-stats-client/7.17.4/aggs-matrix-stats-client-7.17.4.jar:/Users/elizabethemerson/.m2/repository/org/elasticsearch/plugin/rank-eval-client/7.17.4/rank-eval-client-7.17.4.jar:/Users/elizabethemerson/.m2/repository/org/elasticsearch/plugin/lang-mustache-client/7.17.4/lang-mustache-client-7.17.4.jar:/Users/elizabethemerson/.m2/repository/com/github/spullara/mustache/java/compiler/0.9.6/compiler-0.9.6.jar:/Users/elizabethemerson/.m2/repository/io/mongock/mongock-springboot/5.5.0/mongock-springboot-5.5.0.jar:/Users/elizabethemerson/.m2/repository/io/mongock/mongock-springboot-base/5.5.0/mongock-springboot-base-5.5.0.jar:/Users/elizabethemerson/.m2/repository/io/mongock/mongock-spring-base/5.5.0/mongock-spring-base-5.5.0.jar:/Users/elizabethemerson/.m2/repository/io/mongock/mongock-runner-core/5.5.0/mongock-runner-core-5.5.0.jar:/Users/elizabethemerson/.m2/repository/org/reflections/reflections/0.10.1/reflections-0.10.1.jar:/Users/elizabethemerson/.m2/repository/org/apache/maven/maven-artifact/3.6.1/maven-artifact-3.6.1.jar:/Users/elizabethemerson/.m2/repository/org/codehaus/plexus/plexus-utils/3.2.0/plexus-utils-3.2.0.jar:/Users/elizabethemerson/.m2/repository/io/mongock/mongock-utils/5.5.0/mongock-utils-5.5.0.jar:/Users/elizabethemerson/.m2/repository/org/springframework/boot/spring-boot-configuration-processor/3.2.8/spring-boot-configuration-processor-3.2.8.jar:/Users/elizabethemerson/.m2/repository/io/mongock/mongodb-springdata-v4-driver/5.5.0/mongodb-springdata-v4-driver-5.5.0.jar:/Users/elizabethemerson/.m2/repository/io/mongock/mongock-driver-core/5.5.0/mongock-driver-core-5.5.0.jar:/Users/elizabethemerson/.m2/repository/io/mongock/mongock-driver-api/5.5.0/mongock-driver-api-5.5.0.jar:/Users/elizabethemerson/.m2/repository/org/javassist/javassist/3.28.0-GA/javassist-3.28.0-GA.jar:/Users/elizabethemerson/.m2/repository/javax/inject/javax.inject/1/javax.inject-1.jar:/Users/elizabethemerson/.m2/repository/io/mongock/mongock-api/5.5.0/mongock-api-5.5.0.jar:/Users/elizabethemerson/.m2/repository/io/mongock/mongodb-sync-v4-driver/5.5.0/mongodb-sync-v4-driver-5.5.0.jar:/Users/elizabethemerson/.m2/repository/com/opencsv/opencsv/5.9/opencsv-5.9.jar:/Users/elizabethemerson/.m2/repository/org/apache/commons/commons-lang3/3.13.0/commons-lang3-3.13.0.jar:/Users/elizabethemerson/.m2/repository/org/apache/commons/commons-text/1.11.0/commons-text-1.11.0.jar:/Users/elizabethemerson/.m2/repository/commons-beanutils/commons-beanutils/1.9.4/commons-beanutils-1.9.4.jar:/Users/elizabethemerson/.m2/repository/commons-collections/commons-collections/3.2.2/commons-collections-3.2.2.jar:/Users/elizabethemerson/.m2/repository/org/apache/commons/commons-collections4/4.4/commons-collections4-4.4.jar:/Users/elizabethemerson/.m2/repository/org/springframework/boot/spring-boot-starter-test/3.2.8/spring-boot-starter-test-3.2.8.jar:/Users/elizabethemerson/.m2/repository/org/springframework/boot/spring-boot-test/3.2.8/spring-boot-test-3.2.8.jar:/Users/elizabethemerson/.m2/repository/org/springframework/boot/spring-boot-test-autoconfigure/3.2.8/spring-boot-test-autoconfigure-3.2.8.jar:/Users/elizabethemerson/.m2/repository/com/jayway/jsonpath/json-path/2.9.0/json-path-2.9.0.jar:/Users/elizabethemerson/.m2/repository/jakarta/xml/bind/jakarta.xml.bind-api/4.0.2/jakarta.xml.bind-api-4.0.2.jar:/Users/elizabethemerson/.m2/repository/net/minidev/json-smart/2.5.1/json-smart-2.5.1.jar:/Users/elizabethemerson/.m2/repository/net/minidev/accessors-smart/2.5.1/accessors-smart-2.5.1.jar:/Users/elizabethemerson/.m2/repository/org/ow2/asm/asm/9.6/asm-9.6.jar:/Users/elizabethemerson/.m2/repository/org/assertj/assertj-core/3.24.2/assertj-core-3.24.2.jar:/Users/elizabethemerson/.m2/repository/net/bytebuddy/byte-buddy/1.14.18/byte-buddy-1.14.18.jar:/Users/elizabethemerson/.m2/repository/org/awaitility/awaitility/4.2.1/awaitility-4.2.1.jar:/Users/elizabethemerson/.m2/repository/org/hamcrest/hamcrest/2.2/hamcrest-2.2.jar:/Users/elizabethemerson/.m2/repository/org/junit/jupiter/junit-jupiter/5.10.3/junit-jupiter-5.10.3.jar:/Users/elizabethemerson/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.10.3/junit-jupiter-api-5.10.3.jar:/Users/elizabethemerson/.m2/repository/org/junit/jupiter/junit-jupiter-params/5.10.3/junit-jupiter-params-5.10.3.jar:/Users/elizabethemerson/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.10.3/junit-jupiter-engine-5.10.3.jar:/Users/elizabethemerson/.m2/repository/org/mockito/mockito-core/5.7.0/mockito-core-5.7.0.jar:/Users/elizabethemerson/.m2/repository/net/bytebuddy/byte-buddy-agent/1.14.18/byte-buddy-agent-1.14.18.jar:/Users/elizabethemerson/.m2/repository/org/objenesis/objenesis/3.3/objenesis-3.3.jar:/Users/elizabethemerson/.m2/repository/org/mockito/mockito-junit-jupiter/5.7.0/mockito-junit-jupiter-5.7.0.jar:/Users/elizabethemerson/.m2/repository/org/skyscreamer/jsonassert/1.5.3/jsonassert-1.5.3.jar:/Users/elizabethemerson/.m2/repository/com/vaadin/external/google/android-json/0.0.20131108.vaadin1/android-json-0.0.20131108.vaadin1.jar:/Users/elizabethemerson/.m2/repository/org/springframework/spring-test/6.1.11/spring-test-6.1.11.jar:/Users/elizabethemerson/.m2/repository/org/xmlunit/xmlunit-core/2.9.1/xmlunit-core-2.9.1.jar:/Users/elizabethemerson/.m2/repository/org/spockframework/spock-core/2.4-M4-groovy-4.0/spock-core-2.4-M4-groovy-4.0.jar:/Users/elizabethemerson/.m2/repository/org/junit/platform/junit-platform-engine/1.10.3/junit-platform-engine-1.10.3.jar:/Users/elizabethemerson/.m2/repository/org/opentest4j/opentest4j/1.3.0/opentest4j-1.3.0.jar:/Users/elizabethemerson/.m2/repository/org/junit/platform/junit-platform-commons/1.10.3/junit-platform-commons-1.10.3.jar:/Users/elizabethemerson/.m2/repository/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar:/Users/elizabethemerson/.m2/repository/io/leangen/geantyref/geantyref/1.3.15/geantyref-1.3.15.jar:/Users/elizabethemerson/.m2/repository/org/spockframework/spock-spring/2.4-M4-groovy-4.0/spock-spring-2.4-M4-groovy-4.0.jar:/Users/elizabethemerson/.m2/repository/org/apache/groovy/groovy/4.0.23/groovy-4.0.23.jar:/Users/elizabethemerson/.m2/repository/org/testcontainers/testcontainers/1.20.3/testcontainers-1.20.3.jar:/Users/elizabethemerson/.m2/repository/junit/junit/4.13.2/junit-4.13.2.jar:/Users/elizabethemerson/.m2/repository/org/hamcrest/hamcrest-core/2.2/hamcrest-core-2.2.jar:/Users/elizabethemerson/.m2/repository/org/apache/commons/commons-compress/1.24.0/commons-compress-1.24.0.jar:/Users/elizabethemerson/.m2/repository/org/rnorth/duct-tape/duct-tape/1.0.8/duct-tape-1.0.8.jar:/Users/elizabethemerson/.m2/repository/org/jetbrains/annotations/17.0.0/annotations-17.0.0.jar:/Users/elizabethemerson/.m2/repository/com/github/docker-java/docker-java-api/3.4.0/docker-java-api-3.4.0.jar:/Users/elizabethemerson/.m2/repository/com/github/docker-java/docker-java-transport-zerodep/3.4.0/docker-java-transport-zerodep-3.4.0.jar:/Users/elizabethemerson/.m2/repository/com/github/docker-java/docker-java-transport/3.4.0/docker-java-transport-3.4.0.jar:/Users/elizabethemerson/.m2/repository/org/testcontainers/spock/1.20.3/spock-1.20.3.jar:/Users/elizabethemerson/.m2/repository/org/testcontainers/mongodb/1.20.3/mongodb-1.20.3.jar:"/>
+    <property name="sun.cpu.endian" value="little"/>
+    <property name="user.home" value="/Users/elizabethemerson"/>
+    <property name="GOOGLE_CLIENT_ID" value="640415318777-i870nka5iim62jl9d1ml5b9lf9bq76np.apps.googleusercontent.com"/>
+    <property name="user.language" value="en"/>
+    <property name="OLDPWD" value="/Users/elizabethemerson/Desktop/FlomadLabs/AITravelPlannerBackEnd"/>
+    <property name="TMPDIR" value="/var/folders/cv/3fgrjbzs2970l1nh1mxllh8r0000gn/T/"/>
+    <property name="AMADEUS_API_SECRET" value="9GbiOIcx75Ctuj4F"/>
+    <property name="FILE_LOG_CHARSET" value="UTF-8"/>
+    <property name="M2_HOME" value="/Users/elizabethemerson/Downloads/apache-maven-3.9.9"/>
+    <property name="__CF_USER_TEXT_ENCODING" value="0x1F5:0x0:0x0"/>
+    <property name="SPRING_APPLICATION_NAME" value="Flomad-AI-planner"/>
+    <property name="java.awt.headless" value="true"/>
+    <property name="surefire.real.class.path" value="/Users/elizabethemerson/Desktop/FlomadLabs/AITravelPlannerBackEnd/target/surefire/surefirebooter-20250103202005295_3.jar"/>
+    <property name="DOCKER_HOST" value="unix:///Users/elizabethemerson/.docker/run/docker.sock"/>
+    <property name="ftp.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
+    <property name="JAVA_MAIN_CLASS_3187" value="org.codehaus.plexus.classworlds.launcher.Launcher"/>
+    <property name="path.separator" value=":"/>
+    <property name="os.version" value="15.2"/>
+    <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
+    <property name="java.vm.name" value="Java HotSpot(TM) 64-Bit Server VM"/>
+    <property name="XPC_SERVICE_NAME" value="0"/>
+    <property name="MAVEN_CMD_LINE_ARGS" value=" clean test"/>
+    <property name="__CFBundleIdentifier" value="com.jetbrains.intellij"/>
+    <property name="java.vendor.url.bug" value="https://bugreport.java.com/bugreport/"/>
+    <property name="user.dir" value="/Users/elizabethemerson/Desktop/FlomadLabs/AITravelPlannerBackEnd"/>
+    <property name="os.arch" value="x86_64"/>
+    <property name="USER" value="elizabethemerson"/>
+    <property name="SSH_AUTH_SOCK" value="/private/tmp/com.apple.launchd.VsqCBvc9Ua/Listeners"/>
+    <property name="java.vm.info" value="mixed mode, sharing"/>
+    <property name="java.vm.version" value="17.0.1+12-LTS-39"/>
+    <property name="JAVA_MAIN_CLASS_3236" value="org.apache.maven.surefire.booter.ForkedBooter"/>
+    <property name="java.class.version" value="61.0"/>
+    <property name="FREECURRENCY_API_KEY" value="fca_live_VZmEQFaunZoygpY5h3atD5S39hPRewcK7PL5AUXc"/>
+    <property name="HOME" value="/Users/elizabethemerson"/>
+    <property name="FACEBOOK_CLIENT_SECRET" value="4e490e2d54ec70b4b12b6efb7b2d9a81"/>
+    <property name="AMADEUS_API_KEY" value="8MZHzmoKlM1AoyFYUGLDbelapLam3G4S"/>
+  </properties>
+  <testcase name="contextLoads" classname="com.springboot.FlomadAIplanner.FlomadAiPlannerApplicationTests" time="0.018">
+    <error message="Failed to load ApplicationContext for [WebMergedContextConfiguration@35ef158f testClass = com.springboot.FlomadAIplanner.FlomadAiPlannerApplicationTests, locations = [], classes = [com.springboot.FlomadAIplanner.FlomadAiPlannerApplication], contextInitializerClasses = [], activeProfiles = [&quot;test&quot;], propertySourceDescriptors = [], propertySourceProperties = [&quot;org.springframework.boot.test.context.SpringBootTestContextBootstrapper=true&quot;], contextCustomizers = [[ImportsContextCustomizer@59d8a968 key = [com.springboot.FlomadAIplanner.config.MongoDBConfig]], org.springframework.boot.test.context.filter.ExcludeFilterContextCustomizer@5026735c, org.springframework.boot.test.json.DuplicateJsonObjectContextCustomizerFactory$DuplicateJsonObjectContextCustomizer@50dfbc58, org.springframework.boot.test.mock.mockito.MockitoContextCustomizer@0, org.springframework.boot.test.web.client.TestRestTemplateContextCustomizer@258d79be, org.springframework.boot.test.web.reactive.server.WebTestClientContextCustomizer@4f6f416f, org.springframework.boot.test.web.reactor.netty.DisableReactorResourceFactoryGlobalResourcesContextCustomizerFactory$DisableReactorResourceFactoryGlobalResourcesContextCustomizerCustomizer@571c5681, org.springframework.boot.test.autoconfigure.actuate.observability.ObservabilityContextCustomizerFactory$DisableObservabilityContextCustomizer@1f, org.springframework.boot.test.autoconfigure.properties.PropertyMappingContextCustomizer@0, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverContextCustomizer@8e50104, org.spockframework.spring.mock.SpockContextCustomizer@0, org.springframework.boot.test.context.SpringBootTestAnnotation@2f402ed], resourceBasePath = &quot;src/main/webapp&quot;, contextLoader = org.springframework.boot.test.context.SpringBootContextLoader, parent = null]" type="java.lang.IllegalStateException"><![CDATA[java.lang.IllegalStateException: Failed to load ApplicationContext for [WebMergedContextConfiguration@35ef158f testClass = com.springboot.FlomadAIplanner.FlomadAiPlannerApplicationTests, locations = [], classes = [com.springboot.FlomadAIplanner.FlomadAiPlannerApplication], contextInitializerClasses = [], activeProfiles = ["test"], propertySourceDescriptors = [], propertySourceProperties = ["org.springframework.boot.test.context.SpringBootTestContextBootstrapper=true"], contextCustomizers = [[ImportsContextCustomizer@59d8a968 key = [com.springboot.FlomadAIplanner.config.MongoDBConfig]], org.springframework.boot.test.context.filter.ExcludeFilterContextCustomizer@5026735c, org.springframework.boot.test.json.DuplicateJsonObjectContextCustomizerFactory$DuplicateJsonObjectContextCustomizer@50dfbc58, org.springframework.boot.test.mock.mockito.MockitoContextCustomizer@0, org.springframework.boot.test.web.client.TestRestTemplateContextCustomizer@258d79be, org.springframework.boot.test.web.reactive.server.WebTestClientContextCustomizer@4f6f416f, org.springframework.boot.test.web.reactor.netty.DisableReactorResourceFactoryGlobalResourcesContextCustomizerFactory$DisableReactorResourceFactoryGlobalResourcesContextCustomizerCustomizer@571c5681, org.springframework.boot.test.autoconfigure.actuate.observability.ObservabilityContextCustomizerFactory$DisableObservabilityContextCustomizer@1f, org.springframework.boot.test.autoconfigure.properties.PropertyMappingContextCustomizer@0, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverContextCustomizer@8e50104, org.spockframework.spring.mock.SpockContextCustomizer@0, org.springframework.boot.test.context.SpringBootTestAnnotation@2f402ed], resourceBasePath = "src/main/webapp", contextLoader = org.springframework.boot.test.context.SpringBootContextLoader, parent = null]
+	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContext(DefaultCacheAwareContextLoaderDelegate.java:180)
+	at org.springframework.test.context.support.DefaultTestContext.getApplicationContext(DefaultTestContext.java:130)
+	at org.springframework.test.context.web.ServletTestExecutionListener.setUpRequestContextIfNecessary(ServletTestExecutionListener.java:191)
+	at org.springframework.test.context.web.ServletTestExecutionListener.prepareTestInstance(ServletTestExecutionListener.java:130)
+	at org.springframework.test.context.TestContextManager.prepareTestInstance(TestContextManager.java:260)
+	at org.springframework.test.context.junit.jupiter.SpringExtension.postProcessTestInstance(SpringExtension.java:163)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:179)
+	at java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1625)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.StreamSpliterators$WrappingSpliterator.forEachRemaining(StreamSpliterators.java:310)
+	at java.base/java.util.stream.Streams$ConcatSpliterator.forEachRemaining(Streams.java:735)
+	at java.base/java.util.stream.Streams$ConcatSpliterator.forEachRemaining(Streams.java:734)
+	at java.base/java.util.stream.ReferencePipeline$Head.forEach(ReferencePipeline.java:762)
+	at java.base/java.util.Optional.orElseGet(Optional.java:364)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'mongoDBContainer' defined in class path resource [com/springboot/FlomadAIplanner/config/MongoDBConfig.class]: Failed to instantiate [org.testcontainers.containers.MongoDBContainer]: Factory method 'mongoDBContainer' threw exception with message: Could not start MongoDB container
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:648)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:485)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1355)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1185)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:562)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:975)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:971)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:625)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:754)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:456)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:335)
+	at org.springframework.boot.test.context.SpringBootContextLoader.lambda$loadContext$3(SpringBootContextLoader.java:137)
+	at org.springframework.util.function.ThrowingSupplier.get(ThrowingSupplier.java:58)
+	at org.springframework.util.function.ThrowingSupplier.get(ThrowingSupplier.java:46)
+	at org.springframework.boot.SpringApplication.withHook(SpringApplication.java:1463)
+	at org.springframework.boot.test.context.SpringBootContextLoader$ContextLoaderHook.run(SpringBootContextLoader.java:553)
+	at org.springframework.boot.test.context.SpringBootContextLoader.loadContext(SpringBootContextLoader.java:137)
+	at org.springframework.boot.test.context.SpringBootContextLoader.loadContext(SpringBootContextLoader.java:108)
+	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContextInternal(DefaultCacheAwareContextLoaderDelegate.java:225)
+	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContext(DefaultCacheAwareContextLoaderDelegate.java:152)
+	... 17 more
+Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [org.testcontainers.containers.MongoDBContainer]: Factory method 'mongoDBContainer' threw exception with message: Could not start MongoDB container
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:178)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:644)
+	... 41 more
+Caused by: java.lang.IllegalStateException: Could not start MongoDB container
+	at com.springboot.FlomadAIplanner.config.MongoDBConfig.mongoDBContainer(MongoDBConfig.java:26)
+	at com.springboot.FlomadAIplanner.config.MongoDBConfig$$SpringCGLIB$$0.CGLIB$mongoDBContainer$0(<generated>)
+	at com.springboot.FlomadAIplanner.config.MongoDBConfig$$SpringCGLIB$$FastClass$$1.invoke(<generated>)
+	at org.springframework.cglib.proxy.MethodProxy.invokeSuper(MethodProxy.java:258)
+	at org.springframework.context.annotation.ConfigurationClassEnhancer$BeanMethodInterceptor.intercept(ConfigurationClassEnhancer.java:348)
+	at com.springboot.FlomadAIplanner.config.MongoDBConfig$$SpringCGLIB$$0.mongoDBContainer(<generated>)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:146)
+	... 42 more
+Caused by: org.testcontainers.containers.ContainerLaunchException: Container startup failed for image testcontainers/ryuk:0.9.0
+	at org.testcontainers.containers.GenericContainer.doStart(GenericContainer.java:351)
+	at org.testcontainers.containers.GenericContainer.start(GenericContainer.java:322)
+	at org.testcontainers.utility.RyukResourceReaper.maybeStart(RyukResourceReaper.java:78)
+	at org.testcontainers.utility.RyukResourceReaper.init(RyukResourceReaper.java:42)
+	at org.testcontainers.DockerClientFactory.client(DockerClientFactory.java:245)
+	at org.testcontainers.DockerClientFactory$1.getDockerClient(DockerClientFactory.java:108)
+	at com.github.dockerjava.api.DockerClientDelegate.authConfig(DockerClientDelegate.java:109)
+	at org.testcontainers.containers.GenericContainer.start(GenericContainer.java:321)
+	at com.springboot.FlomadAIplanner.config.MongoDBConfig.mongoDBContainer(MongoDBConfig.java:21)
+	... 49 more
+Caused by: org.rnorth.ducttape.RetryCountExceededException: Retry limit hit with exception
+	at org.rnorth.ducttape.unreliables.Unreliables.retryUntilSuccess(Unreliables.java:88)
+	at org.testcontainers.containers.GenericContainer.doStart(GenericContainer.java:336)
+	... 57 more
+Caused by: org.testcontainers.containers.ContainerLaunchException: Could not create/start container
+	at org.testcontainers.containers.GenericContainer.tryStart(GenericContainer.java:555)
+	at org.testcontainers.containers.GenericContainer.lambda$doStart$0(GenericContainer.java:346)
+	at org.rnorth.ducttape.unreliables.Unreliables.retryUntilSuccess(Unreliables.java:81)
+	... 58 more
+Caused by: com.github.dockerjava.api.exception.InternalServerErrorException: Status 500: {"message":"error while creating mount source path '/host_mnt/Users/elizabethemerson/.docker/run/docker.sock': mkdir /host_mnt/Users/elizabethemerson/.docker/run/docker.sock: operation not supported"}
+
+	at org.testcontainers.shaded.com.github.dockerjava.core.DefaultInvocationBuilder.execute(DefaultInvocationBuilder.java:247)
+	at org.testcontainers.shaded.com.github.dockerjava.core.DefaultInvocationBuilder.post(DefaultInvocationBuilder.java:102)
+	at org.testcontainers.shaded.com.github.dockerjava.core.exec.StartContainerCmdExec.execute(StartContainerCmdExec.java:31)
+	at org.testcontainers.shaded.com.github.dockerjava.core.exec.StartContainerCmdExec.execute(StartContainerCmdExec.java:13)
+	at org.testcontainers.shaded.com.github.dockerjava.core.exec.AbstrSyncDockerCmdExec.exec(AbstrSyncDockerCmdExec.java:21)
+	at org.testcontainers.shaded.com.github.dockerjava.core.command.AbstrDockerCmd.exec(AbstrDockerCmd.java:33)
+	at org.testcontainers.shaded.com.github.dockerjava.core.command.StartContainerCmdImpl.exec(StartContainerCmdImpl.java:42)
+	at org.testcontainers.containers.GenericContainer.tryStart(GenericContainer.java:444)
+	... 60 more
+]]></error>
+    <system-out><![CDATA[20:20:07.074 [main] INFO com.springboot.FlomadAIplanner.config.PreInitializationConfig -- Loading environment variables from .env file
+20:20:07.092 [main] INFO com.springboot.FlomadAIplanner.config.PreInitializationConfig -- Environment variables loaded successfully.
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v3.2.8)
+
+2025-01-03T20:20:07.733-0500 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2025-01-03T20:20:07.768-0500 [main] WARN  o.s.b.t.j.DuplicateJsonObjectContextCustomizerFactory$DuplicateJsonObjectContextCustomizer - 
+
+Found multiple occurrences of org.json.JSONObject on the class path:
+
+	jar:file:/Users/elizabethemerson/.m2/repository/org/json/json/20231013/json-20231013.jar!/org/json/JSONObject.class
+	jar:file:/Users/elizabethemerson/.m2/repository/com/vaadin/external/google/android-json/0.0.20131108.vaadin1/android-json-0.0.20131108.vaadin1.jar!/org/json/JSONObject.class
+
+You may wish to exclude one of them to ensure predictable runtime behavior
+
+2025-01-03T20:20:07.801-0500 [main] INFO  c.s.F.FlomadAiPlannerApplicationTests - Starting FlomadAiPlannerApplicationTests using Java 17.0.1 with PID 3236 (started by elizabethemerson in /Users/elizabethemerson/Desktop/FlomadLabs/AITravelPlannerBackEnd)
+2025-01-03T20:20:07.803-0500 [main] INFO  c.s.F.FlomadAiPlannerApplicationTests - The following 1 profile is active: "test"
+2025-01-03T20:20:10.259-0500 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data MongoDB repositories in DEFAULT mode.
+2025-01-03T20:20:10.528-0500 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 264 ms. Found 7 MongoDB repository interfaces.
+2025-01-03T20:20:10.902-0500 [main] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=9c929558-167b-39c1-bc1b-55f87f60c4bc
+2025-01-03T20:20:12.056-0500 [main] INFO  org.mongodb.driver.client - MongoClient with metadata {"driver": {"name": "mongo-java-driver|sync|spring-boot", "version": "4.11.2"}, "os": {"type": "Darwin", "name": "Mac OS X", "architecture": "x86_64", "version": "15.2"}, "platform": "Java/Oracle Corporation/17.0.1+12-LTS-39"} created with settings MongoClientSettings{readPreference=primary, writeConcern=WriteConcern{w=null, wTimeout=null ms, journal=null}, retryWrites=true, retryReads=true, readConcern=ReadConcern{level=null}, credential=null, transportSettings=null, streamFactoryFactory=null, commandListeners=[], codecRegistry=ProvidersCodecRegistry{codecProviders=[ValueCodecProvider{}, BsonValueCodecProvider{}, DBRefCodecProvider{}, DBObjectCodecProvider{}, DocumentCodecProvider{}, CollectionCodecProvider{}, IterableCodecProvider{}, MapCodecProvider{}, GeoJsonCodecProvider{}, GridFSFileCodecProvider{}, Jsr310CodecProvider{}, JsonObjectCodecProvider{}, BsonCodecProvider{}, EnumCodecProvider{}, com.mongodb.client.model.mql.ExpressionCodecProvider@7a587e84, com.mongodb.Jep395RecordCodecProvider@622ba721, com.mongodb.KotlinCodecProvider@6b2f7527]}, loggerSettings=LoggerSettings{maxDocumentLength=1000}, clusterSettings={hosts=[localhost:27017], srvServiceName=mongodb, mode=SINGLE, requiredClusterType=UNKNOWN, requiredReplicaSetName='null', serverSelector='null', clusterListeners='[]', serverSelectionTimeout='30000 ms', localThreshold='15 ms'}, socketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=0, receiveBufferSize=0, proxySettings=ProxySettings{host=null, port=null, username=null, password=null}}, heartbeatSocketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=10000, receiveBufferSize=0, proxySettings=ProxySettings{host=null, port=null, username=null, password=null}}, connectionPoolSettings=ConnectionPoolSettings{maxSize=100, minSize=0, maxWaitTimeMS=120000, maxConnectionLifeTimeMS=0, maxConnectionIdleTimeMS=0, maintenanceInitialDelayMS=0, maintenanceFrequencyMS=60000, connectionPoolListeners=[], maxConnecting=2}, serverSettings=ServerSettings{heartbeatFrequencyMS=10000, minHeartbeatFrequencyMS=500, serverListeners='[]', serverMonitorListeners='[]'}, sslSettings=SslSettings{enabled=false, invalidHostNameAllowed=false, context=null}, applicationName='null', compressorList=[], uuidRepresentation=JAVA_LEGACY, serverApi=null, autoEncryptionSettings=null, dnsClient=null, inetAddressResolver=null, contextProvider=null}
+2025-01-03T20:20:12.094-0500 [cluster-ClusterId{value='67788ccb92f77411fb018eb4', description='null'}-localhost:27017] INFO  org.mongodb.driver.cluster - Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, minWireVersion=0, maxWireVersion=17, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=26269774}
+2025-01-03T20:20:12.870-0500 [main] INFO  c.s.F.s.a.confg.AmadeusClientConfig - Initializing request interceptor for Amadeus API
+2025-01-03T20:20:13.189-0500 [main] INFO  c.s.F.s.g.c.GooglePlacesClientConfig - Initializing request interceptor for Google Maps API
+2025-01-03T20:20:13.251-0500 [main] INFO  c.s.F.s.v.confg.ViatorClientConfig - Using request interceptor for Viator API
+2025-01-03T20:20:13.288-0500 [main] INFO  c.s.F.s.f.config.FreeCurrencyConfig - Initializing request interceptor for Free Currency API
+2025-01-03T20:20:13.481-0500 [main] INFO  c.s.F.ai.factory.AgentFactory - AgentFactory initialized with 4 agents.
+2025-01-03T20:20:13.482-0500 [main] INFO  c.s.F.ai.service.AbstractChatService - Chat service initialized with AI function descriptions.
+2025-01-03T20:20:13.482-0500 [main] INFO  c.s.F.ai.service.ChatCallService - ChatCallService initialized with the necessary AI function descriptions.
+2025-01-03T20:20:13.483-0500 [main] INFO  c.s.F.ai.service.AbstractChatService - Chat service initialized with AI function descriptions.
+2025-01-03T20:20:13.484-0500 [main] INFO  c.s.F.ai.service.ChatStreamService - ChatStreamService initialized with necessary AI function descriptions.
+2025-01-03T20:20:13.488-0500 [main] INFO  c.s.F.ai.factory.ChatClientFactory - ChatClientFactory initialized with chat clients: {OPENAI_MODEL=com.springboot.FlomadAIplanner.ai.client.CustomChatClient@4c25201, GEMINI_MODEL=org.springframework.ai.chat.client.DefaultChatClient@4faaff61}
+2025-01-03T20:20:13.772-0500 [main] INFO  c.s.F.config.MongoDBConfig - Starting MongoDB container with image: mongo:4.4.6
+2025-01-03T20:20:13.824-0500 [main] INFO  o.testcontainers.images.PullPolicy - Image pull policy will be performed by: DefaultPullPolicy()
+2025-01-03T20:20:13.826-0500 [main] INFO  o.t.utility.ImageNameSubstitutor - Image name substitution will be performed by: DefaultImageNameSubstitutor (composite of 'ConfigurationFileImageNameSubstitutor' and 'PrefixingImageNameSubstitutor')
+2025-01-03T20:20:13.837-0500 [main] INFO  o.testcontainers.DockerClientFactory - Testcontainers version: 1.20.3
+2025-01-03T20:20:14.125-0500 [main] INFO  o.t.d.DockerClientProviderStrategy - Loaded org.testcontainers.dockerclient.UnixSocketClientProviderStrategy from ~/.testcontainers.properties, will try it first
+2025-01-03T20:20:14.567-0500 [main] INFO  o.t.d.DockerClientProviderStrategy - Found Docker environment with Environment variables, system properties and defaults. Resolved dockerHost=unix:///Users/elizabethemerson/.docker/run/docker.sock
+2025-01-03T20:20:14.569-0500 [main] INFO  o.testcontainers.DockerClientFactory - Docker host IP address is localhost
+2025-01-03T20:20:14.595-0500 [main] INFO  o.testcontainers.DockerClientFactory - Connected to docker: 
+  Server Version: 27.4.0
+  API Version: 1.47
+  Operating System: Docker Desktop
+  Total Memory: 7839 MB
+  Labels: 
+    com.docker.desktop.address=unix:///Users/elizabethemerson/Library/Containers/com.docker.docker/Data/docker-cli.sock
+2025-01-03T20:20:14.774-0500 [main] INFO  tc.testcontainers/ryuk:0.9.0 - Creating container for image: testcontainers/ryuk:0.9.0
+2025-01-03T20:20:15.250-0500 [main] INFO  tc.testcontainers/ryuk:0.9.0 - Container testcontainers/ryuk:0.9.0 is starting: 6952f9daf9c447c9c08a60a337e91a17cc1eb295c245a82f53ab6d7ef28c836f
+2025-01-03T20:20:15.442-0500 [main] ERROR tc.testcontainers/ryuk:0.9.0 - Could not start container
+com.github.dockerjava.api.exception.InternalServerErrorException: Status 500: {"message":"error while creating mount source path '/host_mnt/Users/elizabethemerson/.docker/run/docker.sock': mkdir /host_mnt/Users/elizabethemerson/.docker/run/docker.sock: operation not supported"}
+
+	at org.testcontainers.shaded.com.github.dockerjava.core.DefaultInvocationBuilder.execute(DefaultInvocationBuilder.java:247)
+	at org.testcontainers.shaded.com.github.dockerjava.core.DefaultInvocationBuilder.post(DefaultInvocationBuilder.java:102)
+	at org.testcontainers.shaded.com.github.dockerjava.core.exec.StartContainerCmdExec.execute(StartContainerCmdExec.java:31)
+	at org.testcontainers.shaded.com.github.dockerjava.core.exec.StartContainerCmdExec.execute(StartContainerCmdExec.java:13)
+	at org.testcontainers.shaded.com.github.dockerjava.core.exec.AbstrSyncDockerCmdExec.exec(AbstrSyncDockerCmdExec.java:21)
+	at org.testcontainers.shaded.com.github.dockerjava.core.command.AbstrDockerCmd.exec(AbstrDockerCmd.java:33)
+	at org.testcontainers.shaded.com.github.dockerjava.core.command.StartContainerCmdImpl.exec(StartContainerCmdImpl.java:42)
+	at org.testcontainers.containers.GenericContainer.tryStart(GenericContainer.java:444)
+	at org.testcontainers.containers.GenericContainer.lambda$doStart$0(GenericContainer.java:346)
+	at org.rnorth.ducttape.unreliables.Unreliables.retryUntilSuccess(Unreliables.java:81)
+	at org.testcontainers.containers.GenericContainer.doStart(GenericContainer.java:336)
+	at org.testcontainers.containers.GenericContainer.start(GenericContainer.java:322)
+	at org.testcontainers.utility.RyukResourceReaper.maybeStart(RyukResourceReaper.java:78)
+	at org.testcontainers.utility.RyukResourceReaper.init(RyukResourceReaper.java:42)
+	at org.testcontainers.DockerClientFactory.client(DockerClientFactory.java:245)
+	at org.testcontainers.DockerClientFactory$1.getDockerClient(DockerClientFactory.java:108)
+	at com.github.dockerjava.api.DockerClientDelegate.authConfig(DockerClientDelegate.java:109)
+	at org.testcontainers.containers.GenericContainer.start(GenericContainer.java:321)
+	at com.springboot.FlomadAIplanner.config.MongoDBConfig.mongoDBContainer(MongoDBConfig.java:21)
+	at com.springboot.FlomadAIplanner.config.MongoDBConfig$$SpringCGLIB$$0.CGLIB$mongoDBContainer$0(<generated>)
+	at com.springboot.FlomadAIplanner.config.MongoDBConfig$$SpringCGLIB$$FastClass$$1.invoke(<generated>)
+	at org.springframework.cglib.proxy.MethodProxy.invokeSuper(MethodProxy.java:258)
+	at org.springframework.context.annotation.ConfigurationClassEnhancer$BeanMethodInterceptor.intercept(ConfigurationClassEnhancer.java:348)
+	at com.springboot.FlomadAIplanner.config.MongoDBConfig$$SpringCGLIB$$0.mongoDBContainer(<generated>)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:146)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:644)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:485)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1355)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1185)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:562)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:975)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:971)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:625)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:754)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:456)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:335)
+	at org.springframework.boot.test.context.SpringBootContextLoader.lambda$loadContext$3(SpringBootContextLoader.java:137)
+	at org.springframework.util.function.ThrowingSupplier.get(ThrowingSupplier.java:58)
+	at org.springframework.util.function.ThrowingSupplier.get(ThrowingSupplier.java:46)
+	at org.springframework.boot.SpringApplication.withHook(SpringApplication.java:1463)
+	at org.springframework.boot.test.context.SpringBootContextLoader$ContextLoaderHook.run(SpringBootContextLoader.java:553)
+	at org.springframework.boot.test.context.SpringBootContextLoader.loadContext(SpringBootContextLoader.java:137)
+	at org.springframework.boot.test.context.SpringBootContextLoader.loadContext(SpringBootContextLoader.java:108)
+	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContextInternal(DefaultCacheAwareContextLoaderDelegate.java:225)
+	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContext(DefaultCacheAwareContextLoaderDelegate.java:152)
+	at org.springframework.test.context.support.DefaultTestContext.getApplicationContext(DefaultTestContext.java:130)
+	at org.springframework.test.context.web.ServletTestExecutionListener.setUpRequestContextIfNecessary(ServletTestExecutionListener.java:191)
+	at org.springframework.test.context.web.ServletTestExecutionListener.prepareTestInstance(ServletTestExecutionListener.java:130)
+	at org.springframework.test.context.TestContextManager.prepareTestInstance(TestContextManager.java:260)
+	at org.springframework.test.context.junit.jupiter.SpringExtension.postProcessTestInstance(SpringExtension.java:163)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$invokeTestInstancePostProcessors$10(ClassBasedTestDescriptor.java:378)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.executeAndMaskThrowable(ClassBasedTestDescriptor.java:383)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$invokeTestInstancePostProcessors$11(ClassBasedTestDescriptor.java:378)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:179)
+	at java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1625)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.StreamSpliterators$WrappingSpliterator.forEachRemaining(StreamSpliterators.java:310)
+	at java.base/java.util.stream.Streams$ConcatSpliterator.forEachRemaining(Streams.java:735)
+	at java.base/java.util.stream.Streams$ConcatSpliterator.forEachRemaining(Streams.java:734)
+	at java.base/java.util.stream.ReferencePipeline$Head.forEach(ReferencePipeline.java:762)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.invokeTestInstancePostProcessors(ClassBasedTestDescriptor.java:377)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$instantiateAndPostProcessTestInstance$6(ClassBasedTestDescriptor.java:290)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.instantiateAndPostProcessTestInstance(ClassBasedTestDescriptor.java:289)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$testInstancesProvider$4(ClassBasedTestDescriptor.java:279)
+	at java.base/java.util.Optional.orElseGet(Optional.java:364)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$testInstancesProvider$5(ClassBasedTestDescriptor.java:278)
+	at org.junit.jupiter.engine.execution.TestInstancesProvider.getTestInstances(TestInstancesProvider.java:31)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$prepare$0(TestMethodTestDescriptor.java:106)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.prepare(TestMethodTestDescriptor.java:105)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.prepare(TestMethodTestDescriptor.java:69)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$prepare$2(NodeTestTask.java:123)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.prepare(NodeTestTask.java:123)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:90)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:35)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:54)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:198)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:169)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:93)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:58)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:141)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:57)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:103)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:85)
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:47)
+	at org.apache.maven.surefire.junitplatform.LazyLauncher.execute(LazyLauncher.java:56)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.execute(JUnitPlatformProvider.java:184)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invokeAllTests(JUnitPlatformProvider.java:148)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invoke(JUnitPlatformProvider.java:122)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:385)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:162)
+	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
+2025-01-03T20:20:15.471-0500 [main] ERROR tc.testcontainers/ryuk:0.9.0 - There are no stdout/stderr logs available for the failed container
+2025-01-03T20:20:15.472-0500 [main] ERROR c.s.F.config.MongoDBConfig - Failed to start MongoDB container
+org.testcontainers.containers.ContainerLaunchException: Container startup failed for image testcontainers/ryuk:0.9.0
+	at org.testcontainers.containers.GenericContainer.doStart(GenericContainer.java:351)
+	at org.testcontainers.containers.GenericContainer.start(GenericContainer.java:322)
+	at org.testcontainers.utility.RyukResourceReaper.maybeStart(RyukResourceReaper.java:78)
+	at org.testcontainers.utility.RyukResourceReaper.init(RyukResourceReaper.java:42)
+	at org.testcontainers.DockerClientFactory.client(DockerClientFactory.java:245)
+	at org.testcontainers.DockerClientFactory$1.getDockerClient(DockerClientFactory.java:108)
+	at com.github.dockerjava.api.DockerClientDelegate.authConfig(DockerClientDelegate.java:109)
+	at org.testcontainers.containers.GenericContainer.start(GenericContainer.java:321)
+	at com.springboot.FlomadAIplanner.config.MongoDBConfig.mongoDBContainer(MongoDBConfig.java:21)
+	at com.springboot.FlomadAIplanner.config.MongoDBConfig$$SpringCGLIB$$0.CGLIB$mongoDBContainer$0(<generated>)
+	at com.springboot.FlomadAIplanner.config.MongoDBConfig$$SpringCGLIB$$FastClass$$1.invoke(<generated>)
+	at org.springframework.cglib.proxy.MethodProxy.invokeSuper(MethodProxy.java:258)
+	at org.springframework.context.annotation.ConfigurationClassEnhancer$BeanMethodInterceptor.intercept(ConfigurationClassEnhancer.java:348)
+	at com.springboot.FlomadAIplanner.config.MongoDBConfig$$SpringCGLIB$$0.mongoDBContainer(<generated>)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:146)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:644)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:485)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1355)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1185)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:562)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:975)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:971)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:625)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:754)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:456)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:335)
+	at org.springframework.boot.test.context.SpringBootContextLoader.lambda$loadContext$3(SpringBootContextLoader.java:137)
+	at org.springframework.util.function.ThrowingSupplier.get(ThrowingSupplier.java:58)
+	at org.springframework.util.function.ThrowingSupplier.get(ThrowingSupplier.java:46)
+	at org.springframework.boot.SpringApplication.withHook(SpringApplication.java:1463)
+	at org.springframework.boot.test.context.SpringBootContextLoader$ContextLoaderHook.run(SpringBootContextLoader.java:553)
+	at org.springframework.boot.test.context.SpringBootContextLoader.loadContext(SpringBootContextLoader.java:137)
+	at org.springframework.boot.test.context.SpringBootContextLoader.loadContext(SpringBootContextLoader.java:108)
+	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContextInternal(DefaultCacheAwareContextLoaderDelegate.java:225)
+	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContext(DefaultCacheAwareContextLoaderDelegate.java:152)
+	at org.springframework.test.context.support.DefaultTestContext.getApplicationContext(DefaultTestContext.java:130)
+	at org.springframework.test.context.web.ServletTestExecutionListener.setUpRequestContextIfNecessary(ServletTestExecutionListener.java:191)
+	at org.springframework.test.context.web.ServletTestExecutionListener.prepareTestInstance(ServletTestExecutionListener.java:130)
+	at org.springframework.test.context.TestContextManager.prepareTestInstance(TestContextManager.java:260)
+	at org.springframework.test.context.junit.jupiter.SpringExtension.postProcessTestInstance(SpringExtension.java:163)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$invokeTestInstancePostProcessors$10(ClassBasedTestDescriptor.java:378)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.executeAndMaskThrowable(ClassBasedTestDescriptor.java:383)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$invokeTestInstancePostProcessors$11(ClassBasedTestDescriptor.java:378)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:179)
+	at java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1625)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.StreamSpliterators$WrappingSpliterator.forEachRemaining(StreamSpliterators.java:310)
+	at java.base/java.util.stream.Streams$ConcatSpliterator.forEachRemaining(Streams.java:735)
+	at java.base/java.util.stream.Streams$ConcatSpliterator.forEachRemaining(Streams.java:734)
+	at java.base/java.util.stream.ReferencePipeline$Head.forEach(ReferencePipeline.java:762)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.invokeTestInstancePostProcessors(ClassBasedTestDescriptor.java:377)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$instantiateAndPostProcessTestInstance$6(ClassBasedTestDescriptor.java:290)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.instantiateAndPostProcessTestInstance(ClassBasedTestDescriptor.java:289)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$testInstancesProvider$4(ClassBasedTestDescriptor.java:279)
+	at java.base/java.util.Optional.orElseGet(Optional.java:364)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$testInstancesProvider$5(ClassBasedTestDescriptor.java:278)
+	at org.junit.jupiter.engine.execution.TestInstancesProvider.getTestInstances(TestInstancesProvider.java:31)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$prepare$0(TestMethodTestDescriptor.java:106)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.prepare(TestMethodTestDescriptor.java:105)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.prepare(TestMethodTestDescriptor.java:69)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$prepare$2(NodeTestTask.java:123)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.prepare(NodeTestTask.java:123)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:90)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:35)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:54)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:198)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:169)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:93)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:58)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:141)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:57)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:103)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:85)
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:47)
+	at org.apache.maven.surefire.junitplatform.LazyLauncher.execute(LazyLauncher.java:56)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.execute(JUnitPlatformProvider.java:184)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invokeAllTests(JUnitPlatformProvider.java:148)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invoke(JUnitPlatformProvider.java:122)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:385)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:162)
+	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
+Caused by: org.rnorth.ducttape.RetryCountExceededException: Retry limit hit with exception
+	at org.rnorth.ducttape.unreliables.Unreliables.retryUntilSuccess(Unreliables.java:88)
+	at org.testcontainers.containers.GenericContainer.doStart(GenericContainer.java:336)
+	... 116 common frames omitted
+Caused by: org.testcontainers.containers.ContainerLaunchException: Could not create/start container
+	at org.testcontainers.containers.GenericContainer.tryStart(GenericContainer.java:555)
+	at org.testcontainers.containers.GenericContainer.lambda$doStart$0(GenericContainer.java:346)
+	at org.rnorth.ducttape.unreliables.Unreliables.retryUntilSuccess(Unreliables.java:81)
+	... 117 common frames omitted
+Caused by: com.github.dockerjava.api.exception.InternalServerErrorException: Status 500: {"message":"error while creating mount source path '/host_mnt/Users/elizabethemerson/.docker/run/docker.sock': mkdir /host_mnt/Users/elizabethemerson/.docker/run/docker.sock: operation not supported"}
+
+	at org.testcontainers.shaded.com.github.dockerjava.core.DefaultInvocationBuilder.execute(DefaultInvocationBuilder.java:247)
+	at org.testcontainers.shaded.com.github.dockerjava.core.DefaultInvocationBuilder.post(DefaultInvocationBuilder.java:102)
+	at org.testcontainers.shaded.com.github.dockerjava.core.exec.StartContainerCmdExec.execute(StartContainerCmdExec.java:31)
+	at org.testcontainers.shaded.com.github.dockerjava.core.exec.StartContainerCmdExec.execute(StartContainerCmdExec.java:13)
+	at org.testcontainers.shaded.com.github.dockerjava.core.exec.AbstrSyncDockerCmdExec.exec(AbstrSyncDockerCmdExec.java:21)
+	at org.testcontainers.shaded.com.github.dockerjava.core.command.AbstrDockerCmd.exec(AbstrDockerCmd.java:33)
+	at org.testcontainers.shaded.com.github.dockerjava.core.command.StartContainerCmdImpl.exec(StartContainerCmdImpl.java:42)
+	at org.testcontainers.containers.GenericContainer.tryStart(GenericContainer.java:444)
+	... 119 common frames omitted
+2025-01-03T20:20:15.477-0500 [main] WARN  o.s.w.c.s.GenericWebApplicationContext - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'mongoDBContainer' defined in class path resource [com/springboot/FlomadAIplanner/config/MongoDBConfig.class]: Failed to instantiate [org.testcontainers.containers.MongoDBContainer]: Factory method 'mongoDBContainer' threw exception with message: Could not start MongoDB container
+2025-01-03T20:20:15.775-0500 [main] WARN  o.s.b.f.s.DisposableBeanAdapter - Invocation of destroy method failed on bean with name 'vertexAiGeminiChat': java.lang.IllegalStateException: java.io.IOException: Your default credentials were not found. To set up Application Default Credentials for your environment, see https://cloud.google.com/docs/authentication/external/set-up-adc.
+2025-01-03T20:20:15.776-0500 [main] WARN  o.s.b.f.s.DisposableBeanAdapter - Invocation of close method failed on bean with name 'vertexAi': java.lang.IllegalStateException: java.io.IOException: Your default credentials were not found. To set up Application Default Credentials for your environment, see https://cloud.google.com/docs/authentication/external/set-up-adc.
+2025-01-03T20:20:15.810-0500 [main] INFO  o.s.b.a.l.ConditionEvaluationReportLogger - 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2025-01-03T20:20:15.844-0500 [main] ERROR o.s.boot.SpringApplication - Application run failed
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'mongoDBContainer' defined in class path resource [com/springboot/FlomadAIplanner/config/MongoDBConfig.class]: Failed to instantiate [org.testcontainers.containers.MongoDBContainer]: Factory method 'mongoDBContainer' threw exception with message: Could not start MongoDB container
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:648)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:485)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1355)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1185)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:562)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:975)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:971)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:625)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:754)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:456)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:335)
+	at org.springframework.boot.test.context.SpringBootContextLoader.lambda$loadContext$3(SpringBootContextLoader.java:137)
+	at org.springframework.util.function.ThrowingSupplier.get(ThrowingSupplier.java:58)
+	at org.springframework.util.function.ThrowingSupplier.get(ThrowingSupplier.java:46)
+	at org.springframework.boot.SpringApplication.withHook(SpringApplication.java:1463)
+	at org.springframework.boot.test.context.SpringBootContextLoader$ContextLoaderHook.run(SpringBootContextLoader.java:553)
+	at org.springframework.boot.test.context.SpringBootContextLoader.loadContext(SpringBootContextLoader.java:137)
+	at org.springframework.boot.test.context.SpringBootContextLoader.loadContext(SpringBootContextLoader.java:108)
+	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContextInternal(DefaultCacheAwareContextLoaderDelegate.java:225)
+	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContext(DefaultCacheAwareContextLoaderDelegate.java:152)
+	at org.springframework.test.context.support.DefaultTestContext.getApplicationContext(DefaultTestContext.java:130)
+	at org.springframework.test.context.web.ServletTestExecutionListener.setUpRequestContextIfNecessary(ServletTestExecutionListener.java:191)
+	at org.springframework.test.context.web.ServletTestExecutionListener.prepareTestInstance(ServletTestExecutionListener.java:130)
+	at org.springframework.test.context.TestContextManager.prepareTestInstance(TestContextManager.java:260)
+	at org.springframework.test.context.junit.jupiter.SpringExtension.postProcessTestInstance(SpringExtension.java:163)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$invokeTestInstancePostProcessors$10(ClassBasedTestDescriptor.java:378)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.executeAndMaskThrowable(ClassBasedTestDescriptor.java:383)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$invokeTestInstancePostProcessors$11(ClassBasedTestDescriptor.java:378)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:179)
+	at java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1625)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.StreamSpliterators$WrappingSpliterator.forEachRemaining(StreamSpliterators.java:310)
+	at java.base/java.util.stream.Streams$ConcatSpliterator.forEachRemaining(Streams.java:735)
+	at java.base/java.util.stream.Streams$ConcatSpliterator.forEachRemaining(Streams.java:734)
+	at java.base/java.util.stream.ReferencePipeline$Head.forEach(ReferencePipeline.java:762)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.invokeTestInstancePostProcessors(ClassBasedTestDescriptor.java:377)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$instantiateAndPostProcessTestInstance$6(ClassBasedTestDescriptor.java:290)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.instantiateAndPostProcessTestInstance(ClassBasedTestDescriptor.java:289)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$testInstancesProvider$4(ClassBasedTestDescriptor.java:279)
+	at java.base/java.util.Optional.orElseGet(Optional.java:364)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$testInstancesProvider$5(ClassBasedTestDescriptor.java:278)
+	at org.junit.jupiter.engine.execution.TestInstancesProvider.getTestInstances(TestInstancesProvider.java:31)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$prepare$0(TestMethodTestDescriptor.java:106)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.prepare(TestMethodTestDescriptor.java:105)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.prepare(TestMethodTestDescriptor.java:69)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$prepare$2(NodeTestTask.java:123)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.prepare(NodeTestTask.java:123)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:90)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:35)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:54)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:198)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:169)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:93)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:58)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:141)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:57)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:103)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:85)
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:47)
+	at org.apache.maven.surefire.junitplatform.LazyLauncher.execute(LazyLauncher.java:56)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.execute(JUnitPlatformProvider.java:184)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invokeAllTests(JUnitPlatformProvider.java:148)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invoke(JUnitPlatformProvider.java:122)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:385)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:162)
+	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
+Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [org.testcontainers.containers.MongoDBContainer]: Factory method 'mongoDBContainer' threw exception with message: Could not start MongoDB container
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:178)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:644)
+	... 97 common frames omitted
+Caused by: java.lang.IllegalStateException: Could not start MongoDB container
+	at com.springboot.FlomadAIplanner.config.MongoDBConfig.mongoDBContainer(MongoDBConfig.java:26)
+	at com.springboot.FlomadAIplanner.config.MongoDBConfig$$SpringCGLIB$$0.CGLIB$mongoDBContainer$0(<generated>)
+	at com.springboot.FlomadAIplanner.config.MongoDBConfig$$SpringCGLIB$$FastClass$$1.invoke(<generated>)
+	at org.springframework.cglib.proxy.MethodProxy.invokeSuper(MethodProxy.java:258)
+	at org.springframework.context.annotation.ConfigurationClassEnhancer$BeanMethodInterceptor.intercept(ConfigurationClassEnhancer.java:348)
+	at com.springboot.FlomadAIplanner.config.MongoDBConfig$$SpringCGLIB$$0.mongoDBContainer(<generated>)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:146)
+	... 98 common frames omitted
+Caused by: org.testcontainers.containers.ContainerLaunchException: Container startup failed for image testcontainers/ryuk:0.9.0
+	at org.testcontainers.containers.GenericContainer.doStart(GenericContainer.java:351)
+	at org.testcontainers.containers.GenericContainer.start(GenericContainer.java:322)
+	at org.testcontainers.utility.RyukResourceReaper.maybeStart(RyukResourceReaper.java:78)
+	at org.testcontainers.utility.RyukResourceReaper.init(RyukResourceReaper.java:42)
+	at org.testcontainers.DockerClientFactory.client(DockerClientFactory.java:245)
+	at org.testcontainers.DockerClientFactory$1.getDockerClient(DockerClientFactory.java:108)
+	at com.github.dockerjava.api.DockerClientDelegate.authConfig(DockerClientDelegate.java:109)
+	at org.testcontainers.containers.GenericContainer.start(GenericContainer.java:321)
+	at com.springboot.FlomadAIplanner.config.MongoDBConfig.mongoDBContainer(MongoDBConfig.java:21)
+	... 108 common frames omitted
+Caused by: org.rnorth.ducttape.RetryCountExceededException: Retry limit hit with exception
+	at org.rnorth.ducttape.unreliables.Unreliables.retryUntilSuccess(Unreliables.java:88)
+	at org.testcontainers.containers.GenericContainer.doStart(GenericContainer.java:336)
+	... 116 common frames omitted
+Caused by: org.testcontainers.containers.ContainerLaunchException: Could not create/start container
+	at org.testcontainers.containers.GenericContainer.tryStart(GenericContainer.java:555)
+	at org.testcontainers.containers.GenericContainer.lambda$doStart$0(GenericContainer.java:346)
+	at org.rnorth.ducttape.unreliables.Unreliables.retryUntilSuccess(Unreliables.java:81)
+	... 117 common frames omitted
+Caused by: com.github.dockerjava.api.exception.InternalServerErrorException: Status 500: {"message":"error while creating mount source path '/host_mnt/Users/elizabethemerson/.docker/run/docker.sock': mkdir /host_mnt/Users/elizabethemerson/.docker/run/docker.sock: operation not supported"}
+
+	at org.testcontainers.shaded.com.github.dockerjava.core.DefaultInvocationBuilder.execute(DefaultInvocationBuilder.java:247)
+	at org.testcontainers.shaded.com.github.dockerjava.core.DefaultInvocationBuilder.post(DefaultInvocationBuilder.java:102)
+	at org.testcontainers.shaded.com.github.dockerjava.core.exec.StartContainerCmdExec.execute(StartContainerCmdExec.java:31)
+	at org.testcontainers.shaded.com.github.dockerjava.core.exec.StartContainerCmdExec.execute(StartContainerCmdExec.java:13)
+	at org.testcontainers.shaded.com.github.dockerjava.core.exec.AbstrSyncDockerCmdExec.exec(AbstrSyncDockerCmdExec.java:21)
+	at org.testcontainers.shaded.com.github.dockerjava.core.command.AbstrDockerCmd.exec(AbstrDockerCmd.java:33)
+	at org.testcontainers.shaded.com.github.dockerjava.core.command.StartContainerCmdImpl.exec(StartContainerCmdImpl.java:42)
+	at org.testcontainers.containers.GenericContainer.tryStart(GenericContainer.java:444)
+	... 119 common frames omitted
+2025-01-03T20:20:15.857-0500 [main] WARN  o.s.test.context.TestContextManager - Caught exception while allowing TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener] to prepare test instance [com.springboot.FlomadAIplanner.FlomadAiPlannerApplicationTests@14cd8dfa]
+java.lang.IllegalStateException: Failed to load ApplicationContext for [WebMergedContextConfiguration@35ef158f testClass = com.springboot.FlomadAIplanner.FlomadAiPlannerApplicationTests, locations = [], classes = [com.springboot.FlomadAIplanner.FlomadAiPlannerApplication], contextInitializerClasses = [], activeProfiles = ["test"], propertySourceDescriptors = [], propertySourceProperties = ["org.springframework.boot.test.context.SpringBootTestContextBootstrapper=true"], contextCustomizers = [[ImportsContextCustomizer@59d8a968 key = [com.springboot.FlomadAIplanner.config.MongoDBConfig]], org.springframework.boot.test.context.filter.ExcludeFilterContextCustomizer@5026735c, org.springframework.boot.test.json.DuplicateJsonObjectContextCustomizerFactory$DuplicateJsonObjectContextCustomizer@50dfbc58, org.springframework.boot.test.mock.mockito.MockitoContextCustomizer@0, org.springframework.boot.test.web.client.TestRestTemplateContextCustomizer@258d79be, org.springframework.boot.test.web.reactive.server.WebTestClientContextCustomizer@4f6f416f, org.springframework.boot.test.web.reactor.netty.DisableReactorResourceFactoryGlobalResourcesContextCustomizerFactory$DisableReactorResourceFactoryGlobalResourcesContextCustomizerCustomizer@571c5681, org.springframework.boot.test.autoconfigure.actuate.observability.ObservabilityContextCustomizerFactory$DisableObservabilityContextCustomizer@1f, org.springframework.boot.test.autoconfigure.properties.PropertyMappingContextCustomizer@0, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverContextCustomizer@8e50104, org.spockframework.spring.mock.SpockContextCustomizer@0, org.springframework.boot.test.context.SpringBootTestAnnotation@2f402ed], resourceBasePath = "src/main/webapp", contextLoader = org.springframework.boot.test.context.SpringBootContextLoader, parent = null]
+	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContext(DefaultCacheAwareContextLoaderDelegate.java:180)
+	at org.springframework.test.context.support.DefaultTestContext.getApplicationContext(DefaultTestContext.java:130)
+	at org.springframework.test.context.web.ServletTestExecutionListener.setUpRequestContextIfNecessary(ServletTestExecutionListener.java:191)
+	at org.springframework.test.context.web.ServletTestExecutionListener.prepareTestInstance(ServletTestExecutionListener.java:130)
+	at org.springframework.test.context.TestContextManager.prepareTestInstance(TestContextManager.java:260)
+	at org.springframework.test.context.junit.jupiter.SpringExtension.postProcessTestInstance(SpringExtension.java:163)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$invokeTestInstancePostProcessors$10(ClassBasedTestDescriptor.java:378)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.executeAndMaskThrowable(ClassBasedTestDescriptor.java:383)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$invokeTestInstancePostProcessors$11(ClassBasedTestDescriptor.java:378)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:179)
+	at java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1625)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.StreamSpliterators$WrappingSpliterator.forEachRemaining(StreamSpliterators.java:310)
+	at java.base/java.util.stream.Streams$ConcatSpliterator.forEachRemaining(Streams.java:735)
+	at java.base/java.util.stream.Streams$ConcatSpliterator.forEachRemaining(Streams.java:734)
+	at java.base/java.util.stream.ReferencePipeline$Head.forEach(ReferencePipeline.java:762)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.invokeTestInstancePostProcessors(ClassBasedTestDescriptor.java:377)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$instantiateAndPostProcessTestInstance$6(ClassBasedTestDescriptor.java:290)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.instantiateAndPostProcessTestInstance(ClassBasedTestDescriptor.java:289)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$testInstancesProvider$4(ClassBasedTestDescriptor.java:279)
+	at java.base/java.util.Optional.orElseGet(Optional.java:364)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$testInstancesProvider$5(ClassBasedTestDescriptor.java:278)
+	at org.junit.jupiter.engine.execution.TestInstancesProvider.getTestInstances(TestInstancesProvider.java:31)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$prepare$0(TestMethodTestDescriptor.java:106)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.prepare(TestMethodTestDescriptor.java:105)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.prepare(TestMethodTestDescriptor.java:69)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$prepare$2(NodeTestTask.java:123)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.prepare(NodeTestTask.java:123)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:90)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:35)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:54)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:198)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:169)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:93)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:58)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:141)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:57)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:103)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:85)
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:47)
+	at org.apache.maven.surefire.junitplatform.LazyLauncher.execute(LazyLauncher.java:56)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.execute(JUnitPlatformProvider.java:184)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invokeAllTests(JUnitPlatformProvider.java:148)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invoke(JUnitPlatformProvider.java:122)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:385)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:162)
+	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'mongoDBContainer' defined in class path resource [com/springboot/FlomadAIplanner/config/MongoDBConfig.class]: Failed to instantiate [org.testcontainers.containers.MongoDBContainer]: Factory method 'mongoDBContainer' threw exception with message: Could not start MongoDB container
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:648)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:485)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1355)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1185)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:562)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:975)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:971)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:625)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:754)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:456)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:335)
+	at org.springframework.boot.test.context.SpringBootContextLoader.lambda$loadContext$3(SpringBootContextLoader.java:137)
+	at org.springframework.util.function.ThrowingSupplier.get(ThrowingSupplier.java:58)
+	at org.springframework.util.function.ThrowingSupplier.get(ThrowingSupplier.java:46)
+	at org.springframework.boot.SpringApplication.withHook(SpringApplication.java:1463)
+	at org.springframework.boot.test.context.SpringBootContextLoader$ContextLoaderHook.run(SpringBootContextLoader.java:553)
+	at org.springframework.boot.test.context.SpringBootContextLoader.loadContext(SpringBootContextLoader.java:137)
+	at org.springframework.boot.test.context.SpringBootContextLoader.loadContext(SpringBootContextLoader.java:108)
+	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContextInternal(DefaultCacheAwareContextLoaderDelegate.java:225)
+	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContext(DefaultCacheAwareContextLoaderDelegate.java:152)
+	... 73 common frames omitted
+Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [org.testcontainers.containers.MongoDBContainer]: Factory method 'mongoDBContainer' threw exception with message: Could not start MongoDB container
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:178)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:644)
+	... 97 common frames omitted
+Caused by: java.lang.IllegalStateException: Could not start MongoDB container
+	at com.springboot.FlomadAIplanner.config.MongoDBConfig.mongoDBContainer(MongoDBConfig.java:26)
+	at com.springboot.FlomadAIplanner.config.MongoDBConfig$$SpringCGLIB$$0.CGLIB$mongoDBContainer$0(<generated>)
+	at com.springboot.FlomadAIplanner.config.MongoDBConfig$$SpringCGLIB$$FastClass$$1.invoke(<generated>)
+	at org.springframework.cglib.proxy.MethodProxy.invokeSuper(MethodProxy.java:258)
+	at org.springframework.context.annotation.ConfigurationClassEnhancer$BeanMethodInterceptor.intercept(ConfigurationClassEnhancer.java:348)
+	at com.springboot.FlomadAIplanner.config.MongoDBConfig$$SpringCGLIB$$0.mongoDBContainer(<generated>)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:146)
+	... 98 common frames omitted
+Caused by: org.testcontainers.containers.ContainerLaunchException: Container startup failed for image testcontainers/ryuk:0.9.0
+	at org.testcontainers.containers.GenericContainer.doStart(GenericContainer.java:351)
+	at org.testcontainers.containers.GenericContainer.start(GenericContainer.java:322)
+	at org.testcontainers.utility.RyukResourceReaper.maybeStart(RyukResourceReaper.java:78)
+	at org.testcontainers.utility.RyukResourceReaper.init(RyukResourceReaper.java:42)
+	at org.testcontainers.DockerClientFactory.client(DockerClientFactory.java:245)
+	at org.testcontainers.DockerClientFactory$1.getDockerClient(DockerClientFactory.java:108)
+	at com.github.dockerjava.api.DockerClientDelegate.authConfig(DockerClientDelegate.java:109)
+	at org.testcontainers.containers.GenericContainer.start(GenericContainer.java:321)
+	at com.springboot.FlomadAIplanner.config.MongoDBConfig.mongoDBContainer(MongoDBConfig.java:21)
+	... 108 common frames omitted
+Caused by: org.rnorth.ducttape.RetryCountExceededException: Retry limit hit with exception
+	at org.rnorth.ducttape.unreliables.Unreliables.retryUntilSuccess(Unreliables.java:88)
+	at org.testcontainers.containers.GenericContainer.doStart(GenericContainer.java:336)
+	... 116 common frames omitted
+Caused by: org.testcontainers.containers.ContainerLaunchException: Could not create/start container
+	at org.testcontainers.containers.GenericContainer.tryStart(GenericContainer.java:555)
+	at org.testcontainers.containers.GenericContainer.lambda$doStart$0(GenericContainer.java:346)
+	at org.rnorth.ducttape.unreliables.Unreliables.retryUntilSuccess(Unreliables.java:81)
+	... 117 common frames omitted
+Caused by: com.github.dockerjava.api.exception.InternalServerErrorException: Status 500: {"message":"error while creating mount source path '/host_mnt/Users/elizabethemerson/.docker/run/docker.sock': mkdir /host_mnt/Users/elizabethemerson/.docker/run/docker.sock: operation not supported"}
+
+	at org.testcontainers.shaded.com.github.dockerjava.core.DefaultInvocationBuilder.execute(DefaultInvocationBuilder.java:247)
+	at org.testcontainers.shaded.com.github.dockerjava.core.DefaultInvocationBuilder.post(DefaultInvocationBuilder.java:102)
+	at org.testcontainers.shaded.com.github.dockerjava.core.exec.StartContainerCmdExec.execute(StartContainerCmdExec.java:31)
+	at org.testcontainers.shaded.com.github.dockerjava.core.exec.StartContainerCmdExec.execute(StartContainerCmdExec.java:13)
+	at org.testcontainers.shaded.com.github.dockerjava.core.exec.AbstrSyncDockerCmdExec.exec(AbstrSyncDockerCmdExec.java:21)
+	at org.testcontainers.shaded.com.github.dockerjava.core.command.AbstrDockerCmd.exec(AbstrDockerCmd.java:33)
+	at org.testcontainers.shaded.com.github.dockerjava.core.command.StartContainerCmdImpl.exec(StartContainerCmdImpl.java:42)
+	at org.testcontainers.containers.GenericContainer.tryStart(GenericContainer.java:444)
+	... 119 common frames omitted
+]]></system-out>
+    <system-err><![CDATA[
+
+
+============================
+CONDITIONS EVALUATION REPORT
+============================
+
+
+Positive matches:
+-----------------
+
+    None
+
+
+Negative matches:
+-----------------
+
+    None
+
+
+Exclusions:
+-----------
+
+    None
+
+
+Unconditional classes:
+----------------------
+
+    None
+
+
+
+]]></system-err>
+  </testcase>
+</testsuite>
