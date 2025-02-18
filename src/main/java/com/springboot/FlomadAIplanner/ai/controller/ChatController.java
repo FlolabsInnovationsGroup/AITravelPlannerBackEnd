@@ -4,9 +4,9 @@ import com.springboot.FlomadAIplanner.ai.dto.AIMessageDTO;
 import com.springboot.FlomadAIplanner.ai.dto.AIMessageResponse;
 import com.springboot.FlomadAIplanner.ai.service.ChatCallService;
 import com.springboot.FlomadAIplanner.ai.service.ChatStreamService;
-import com.springboot.FlomadAIplanner.ai.agents.audio.AudioTranscriptionService;  // ✅ Import transcription service
+import com.springboot.FlomadAIplanner.ai.agents.audio.AudioTranscriptionService;
 import io.swagger.v3.oas.annotations.Operation;
-import lombok.extern.slf4j.Slf4j;  // ✅ Import logging
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,23 +14,22 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Flux;
 
-@Slf4j  // ✅ Enable logging
+@Slf4j
 @RestController
 @RequestMapping("/api/chat")
-@CrossOrigin(origins = "http://localhost:3000")  // ✅ Fix CORS issue
+@CrossOrigin(origins = "http://localhost:3000")
 public class ChatController {
 
     private final ChatCallService chatCallService;
     private final ChatStreamService chatStreamService;
-    private final AudioTranscriptionService audioTranscriptionService;  // ✅ Add this field
+    private final AudioTranscriptionService audioTranscriptionService;
 
-    // ✅ Constructor injection
     @Autowired
     public ChatController(ChatCallService chatCallService, ChatStreamService chatStreamService,
                           AudioTranscriptionService audioTranscriptionService) {
         this.chatCallService = chatCallService;
         this.chatStreamService = chatStreamService;
-        this.audioTranscriptionService = audioTranscriptionService;  // ✅ Inject service
+        this.audioTranscriptionService = audioTranscriptionService;
     }
 
     @Operation(summary = "Process chat message with optional media")
@@ -46,14 +45,18 @@ public class ChatController {
         return chatCallService.processMessage(message);
     }
 
+    @Operation(summary = "Process chat message and return suggestions")
+    @PostMapping(value = "/call/entity", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<AIMessageResponse> handleEntityCall(
+            @RequestBody(required = false) AIMessageDTO message,
+            @RequestPart(value = "file", required = false) MultipartFile file) {
 
-    @Operation(summary = "Process chat message and return suggestions",
-            description = "Handles a chat message and returns the AI response along with suggested next inputs.")
-    @PostMapping(value = "/call/entity", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<AIMessageResponse> handleEntityCall(@ModelAttribute AIMessageDTO message) {
+        log.info("📨 Received entity message with sessionId: {}", message != null ? message.getSessionId() : "No Message");
+
         AIMessageResponse response = chatCallService.processEntityMessage(message, AIMessageResponse.class);
         return ResponseEntity.ok(response);
     }
+
 
     @Operation(summary = "Upload audio file for transcription")
     @PostMapping(value = "/upload-audio", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -67,7 +70,9 @@ public class ChatController {
         }
 
         try {
-            log.info("✅ Received audio file: {} for session: {}", file.getOriginalFilename(), sessionId);
+            log.info("✅ Received audio file: {} for session: {}",
+                    (file.getOriginalFilename() != null ? file.getOriginalFilename() : "unknown"),
+                    sessionId);
 
             String transcription = audioTranscriptionService.transcribeAudio(file);
             log.info("✅ Transcription result: {}", transcription);
@@ -78,5 +83,4 @@ public class ChatController {
             return ResponseEntity.status(500).body("Error processing audio");
         }
     }
-
 }
