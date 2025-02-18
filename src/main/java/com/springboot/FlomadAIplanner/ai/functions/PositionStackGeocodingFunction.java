@@ -2,8 +2,13 @@ package com.springboot.FlomadAIplanner.ai.functions;
 
 import com.fasterxml.jackson.annotation.JsonClassDescription;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.springboot.FlomadAIplanner.dto.google.TextSearchRequest;
 import com.springboot.FlomadAIplanner.dto.positionstack.PositionStackForwardGeocodingRequest;
 import com.springboot.FlomadAIplanner.dto.positionstack.PositionStackResponse.PositionStackData;
+import com.springboot.FlomadAIplanner.exceptions.api.GoogleAPIException;
+import com.springboot.FlomadAIplanner.service.google.GooglePlacesService;
 import com.springboot.FlomadAIplanner.service.positionstack.PositionStackService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
@@ -14,78 +19,76 @@ import org.springframework.context.annotation.Description;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Collections;
 import java.util.function.Function;
 
 /**
- * Replaces the old Google-based place text search with a PositionStack-based geocoding function.
- * <p>
- * Purpose:
- * - Use this function whenever you need to convert textual place names or addresses into
- * latitude/longitude coordinates.
- * - Supports batch requests: send multiple addresses in a single call for efficiency.
- * - If you only need lat/long data for user-provided addresses, call this function instead
- * of more expensive, specialized Google APIs.
- * <p>
- * Typical Usage Scenarios:
- * - Searching for location coordinates to show on a map or to do further distance calculations.
- * - Geocoding addresses from user input (e.g., "Eiffel Tower, Paris") to lat/long.
- * - Any chat flow that references addresses but needs real location data.
- * <p>
- * Output:
- * - A List of PositionStackData items, each containing lat/long and optional metadata
- * (such as 'label', 'region', 'confidence', etc.).
+ * Geocoding function that prioritizes PositionStack and falls back to Google Places API if needed.
  */
 @Slf4j
 @Component
 @Description("""
-        Input Schema must be a JSON Schema of 'type: \\"object\\"', not 'type: \\"None\\"
-        
-        Purpose:
-        Use this function whenever you need to find exact coordinates (latitude and longitude) from text place address.
-        Use it to find one geocoding address in one call.
-        
-        Returns:
-        Latitude and Longitude coordinates for each address.
+        Uses PositionStack to find coordinates from a place name or address.
+        If PositionStack fails, falls back to Google Places API.
         """)
-// Note: Right now batch is not working properly, so we only support single address queries for now
 public class PositionStackGeocodingFunction
-        implements Function<PositionStackForwardGeocodingRequest, List<PositionStackData>> {
+        implements Function<PositionStackForwardGeocodingRequest, List<JsonNode>> {
 
     private final PositionStackService positionStackService;
+    private final GooglePlacesService googlePlacesService;
 
-    // Constructor-based dependency injection
-    public PositionStackGeocodingFunction(PositionStackService positionStackService) {
+    public PositionStackGeocodingFunction(PositionStackService positionStackService, GooglePlacesService googlePlacesService) {
         this.positionStackService = positionStackService;
+        this.googlePlacesService = googlePlacesService;
     }
 
-    /**
-     * Processes the user input of multiple address queries, returns a single list
-     * of geocoding results (lat/long) for each address.
-     */
     @Override
-    public List<PositionStackData> apply(PositionStackForwardGeocodingRequest input) {
-        PositionStackForwardGeocodingRequestsWrapper wrapper = new PositionStackForwardGeocodingRequestsWrapper(List.of(input));
-        log.info("PositionStackGeocodingFunction called with {} queries", wrapper.getRequests().size());
-        return positionStackService.bulkForwardGeocode(wrapper);
+    public List<JsonNode> apply(PositionStackForwardGeocodingRequest input) {
+        log.info("🔍 Geocoding request for: {}", input.getQuery());
+
+        // 🛠 Step 1: Try PositionStack
+        List<PositionStackData> positionStackResults = positionStackService.bulkForwardGeocode(List.of(input));
+
+        if (positionStackResults != null && !positionStackResults.isEmpty()) {
+            log.info("✅ PositionStack returned {} results", positionStackResults.size());
+            return List.of(JsonNodeFactory.instance.pojoNode(positionStackResults));
+        }
+
+        // 🚨 Step 2: Fallback to Google Places if PositionStack failed
+        log.warn("⚠️ PositionStack returned no results, falling back to Google Places API.");
+
+        TextSearchRequest googleRequest = new TextSearchRequest(input.getQuery());
+
+        try {
+            JsonNode googleResponse = googlePlacesService.textSearchPlaces(googleRequest);
+            if (googleResponse != null) {
+                log.info("✅ Google Places returned geocoding results");
+                return List.of(googleResponse);
+            }
+        } catch (GoogleAPIException e) {
+            log.error("❌ Google Places API failed to fetch geocoding data", e);
+        }
+
+        // ❌ Step 3: If both fail, return an explicit error message
+        log.error("❌ Geocoding failed: Both PositionStack and Google Places returned no results.");
+        return List.of(JsonNodeFactory.instance.objectNode().put("error", "Geocoding failed: No results from PositionStack or Google Places."));
     }
 
-    /**
-     * This is the top-level input object that the LLM will parse
-     * and pass into the function.
-     */
     @Data
     @AllArgsConstructor
     @JsonClassDescription("""
-            Wrapper for the PositionStack geocoding requests.
-            JSON Schema of type: 'object'
-            """)
+        Wrapper for multiple PositionStack geocoding requests.
+        JSON Schema of type: 'object'
+        """)
     public static class PositionStackForwardGeocodingRequestsWrapper {
+
         @NotEmpty
         @Valid
         @JsonPropertyDescription("""
-                REQUIRED. Contains a list of address queries for which we want lat/long data.
-                MINIMUM one item.
-                """)
+            REQUIRED. Contains a list of address queries for which we want lat/long data.
+            MINIMUM one item.
+            """)
         private List<PositionStackForwardGeocodingRequest> requests;
     }
+
 }

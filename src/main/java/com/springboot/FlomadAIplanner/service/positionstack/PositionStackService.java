@@ -1,6 +1,5 @@
 package com.springboot.FlomadAIplanner.service.positionstack;
 
-import com.springboot.FlomadAIplanner.ai.functions.PositionStackGeocodingFunction;
 import com.springboot.FlomadAIplanner.dto.positionstack.PositionStackForwardGeocodingRequest;
 import com.springboot.FlomadAIplanner.dto.positionstack.PositionStackResponse;
 import com.springboot.FlomadAIplanner.dto.positionstack.PositionStackResponse.PositionStackData;
@@ -10,9 +9,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
- * Synchronous service for calling PositionStack forward geocoding endpoint.
+ * Service for PositionStack API Geocoding.
  */
 @Slf4j
 @Service
@@ -22,38 +22,42 @@ public class PositionStackService {
     private final PositionStackClient positionStackClient;
 
     /**
-     * Performs a batch forward geocoding: calls the PositionStack API for each request
-     * and returns a single list containing all found geocoding results.
-     *
-     * @param wrapper The wrapper containing multiple textual addresses/queries.
-     * @return A merged list of PositionStackData items across all queries.
+     * Calls PositionStack's forward geocoding API for multiple addresses.
      */
-    public List<PositionStackData> bulkForwardGeocode(PositionStackGeocodingFunction.PositionStackForwardGeocodingRequestsWrapper wrapper) {
-        log.info("Performing bulk forward geocoding for {} requests.", wrapper.getRequests().size());
+    public List<PositionStackData> bulkForwardGeocode(List<PositionStackForwardGeocodingRequest> requests) {
+        if (requests == null || requests.isEmpty()) {
+            log.warn("No requests provided for bulk geocoding.");
+            return new ArrayList<>();
+        }
 
+        log.info("Performing bulk forward geocoding for {} requests.", requests.size());
         List<PositionStackData> allResults = new ArrayList<>();
 
-        for (PositionStackForwardGeocodingRequest req : wrapper.getRequests()) {
+        for (PositionStackForwardGeocodingRequest req : requests) {
+            if (req == null || req.getQuery() == null || req.getQuery().isEmpty()) {
+                log.warn("Skipping invalid geocoding request: {}", req);
+                continue;
+            }
+
             log.info("Forward geocoding address: {}", req.getQuery());
 
-            // If 'output' is null or empty, we can pass "json" or simply let the Feign client default
-            String outputFormat = (req.getOutput() == null || req.getOutput().isEmpty())
-                    ? "json"
-                    : req.getOutput();
+            try {
+                PositionStackResponse response = positionStackClient.forwardGeocode(
+                        req.getQuery(),
+                        req.getLimit() != null ? req.getLimit() : 1,  // Default limit to 1
+                        req.getCountry(),
+                        req.getRegion(),
+                        "json"
+                );
 
-            // Call the Feign client
-            PositionStackResponse response = positionStackClient.forwardGeocode(
-                    req.getQuery(),
-                    req.getLimit(),
-                    req.getCountry(),
-                    req.getRegion(),
-                    outputFormat
-            );
+                if (response != null && response.getData() != null && !response.getData().isEmpty()) {
+                    allResults.addAll(response.getData());
+                } else {
+                    log.warn("No geocoding data returned for query: {}", req.getQuery());
+                }
 
-            if (response != null && response.getData() != null) {
-                allResults.addAll(response.getData());
-            } else {
-                log.warn("No data returned for query: {}", req.getQuery());
+            } catch (Exception e) {
+                log.error("PositionStack API request failed for query: {}", req.getQuery(), e);
             }
         }
 

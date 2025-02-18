@@ -45,6 +45,11 @@ public class LocationService {
         log.info("Deleting location with ID: {}", id);
         locationRepository.deleteById(id);
     }
+    public boolean exists(String id) {
+        log.debug("Checking existence of location by ID: {}", id);
+        return locationRepository.existsById(id);
+    }
+
 
     public void deleteAllBySessionId(String sessionId) {
         log.info("Starting deletion of all locations for session ID: {}", sessionId);

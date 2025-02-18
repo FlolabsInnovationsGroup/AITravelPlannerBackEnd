@@ -12,10 +12,11 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 /**
  * Asynchronous version of PositionStack service.
- * Useful if you want to parallelize calls or not block the main thread.
+ * Uses Spring @Async for non-blocking geocoding requests.
  */
 @Slf4j
 @Service
@@ -27,47 +28,56 @@ public class PositionStackServiceAsync {
     @Async
     public CompletableFuture<List<PositionStackData>> forwardGeocodeSingleQuery(PositionStackForwardGeocodingRequest req) {
         try {
-            String outputFormat = (req.getOutput() == null || req.getOutput().isEmpty()) ? "json" : req.getOutput();
-            PositionStackResponse response = positionStackClient.forwardGeocode(
-                    req.getQuery(),
-                    req.getLimit(),
-                    req.getCountry(),
-                    req.getRegion(),
-                    outputFormat
-            );
+            log.info("Async geocoding request: {}", req.getQuery());
+
+            // Provide default values to prevent NullPointerException in Feign calls
+            String query = req.getQuery();
+            int limit = (req.getLimit() != null) ? req.getLimit() : 1;  // Default: 1 result
+            String country = (req.getCountry() != null) ? req.getCountry() : "";
+            String region = (req.getRegion() != null) ? req.getRegion() : "";
+            String outputFormat = "json";  // Always return JSON
+
+            // Call PositionStack API
+            PositionStackResponse response = positionStackClient.forwardGeocode(query, limit, country, region, outputFormat);
+
+            // Return results if valid, else empty list
             if (response != null && response.getData() != null) {
+                log.info("Async geocoding response received for: {}", query);
                 return CompletableFuture.completedFuture(response.getData());
             }
         } catch (Exception e) {
-            log.error("Error during async geocoding call for query: {}", req.getQuery(), e);
+            log.error("Error during async geocoding call for: {}", req.getQuery(), e);
         }
-        // Return empty list in case of failure
+
+        // Return empty list on failure
         return CompletableFuture.completedFuture(new ArrayList<>());
     }
 
     /**
-     * Bulk geocoding in parallel. Each query is called asynchronously, results combined after all complete.
+     * Bulk geocoding asynchronously. Calls PositionStack for multiple addresses in parallel.
      */
-    public List<PositionStackData> bulkForwardGeocodeAsync(PositionStackGeocodingFunction.PositionStackForwardGeocodingRequestsWrapper wrapper) {
-        // Start tasks for each request
-        List<CompletableFuture<List<PositionStackData>>> tasks = wrapper.getRequests().stream()
+    public CompletableFuture<List<PositionStackData>> bulkForwardGeocodeAsync(
+            PositionStackGeocodingFunction.PositionStackForwardGeocodingRequestsWrapper wrapper) {
+        log.info("Starting async bulk geocoding for {} queries", wrapper.getRequests().size());
+
+        // Run all requests asynchronously
+        List<CompletableFuture<List<PositionStackData>>> futureTasks = wrapper.getRequests().stream()
                 .map(this::forwardGeocodeSingleQuery)
-                .toList();
+                .collect(Collectors.toList());
 
-        // Wait until all tasks finish
-        CompletableFuture.allOf(tasks.toArray(new CompletableFuture[0])).join();
-
-        // Combine results
-        List<PositionStackData> combined = new ArrayList<>();
-        tasks.forEach(task -> {
-            try {
-                combined.addAll(task.get());
-            } catch (Exception e) {
-                log.error("Exception in async result retrieval", e);
-            }
-        });
-
-        log.info("Async forward geocoding completed. Total results: {}", combined.size());
-        return combined;
+        // Combine all async results once all complete
+        return CompletableFuture.allOf(futureTasks.toArray(new CompletableFuture[0]))
+                .thenApply(voidResult -> {
+                    List<PositionStackData> combinedResults = new ArrayList<>();
+                    futureTasks.forEach(task -> {
+                        try {
+                            combinedResults.addAll(task.get());  // Collect results from completed tasks
+                        } catch (Exception e) {
+                            log.error("Error retrieving async geocoding result", e);
+                        }
+                    });
+                    log.info("Async bulk geocoding completed. Total results: {}", combinedResults.size());
+                    return combinedResults;
+                });
     }
 }

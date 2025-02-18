@@ -39,12 +39,21 @@ public class ReadLocationsFunction implements Function<ReadLocationsFunction.Rea
     @Override
     public List<Location> apply(ReadLocationsRequest request) {
         try {
-            String sessionId = requestService.getParameterFromRequest(AIMessageDTO.class.getDeclaredField("sessionId").getName());
-            log.info("Starting ReadLocationsFunction for sessionId: {}", sessionId);
+            // Simplified sessionId extraction
+            String sessionId = requestService.getParameterFromRequest("sessionId");
+            log.info("🔍 Extracted sessionId: {}", sessionId);
 
-            return locationService.findAllBySessionId(sessionId);
+            if (sessionId == null || sessionId.isEmpty()) {
+                log.error("❌ Failed to retrieve sessionId. ReadLocationsFunction cannot proceed.");
+                return List.of();
+            }
+
+            List<Location> locations = locationService.findAllBySessionId(sessionId);
+            log.info("📍 ReadLocationsFunction returning {} locations for session {}", locations.size(), sessionId);
+
+            return locations;
         } catch (Exception e) {
-            log.error("Error in ReadLocationsFunction: {}", e.getMessage(), e);
+            log.error("❌ Error in ReadLocationsFunction: {}", e.getMessage(), e);
             return List.of();
         }
     }

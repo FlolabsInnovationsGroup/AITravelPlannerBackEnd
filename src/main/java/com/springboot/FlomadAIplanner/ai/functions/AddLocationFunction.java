@@ -21,7 +21,7 @@ import java.util.function.Function;
 @Component
 @Description("""
         Function to add a new location to the Map.
-        It will display/show this place on the map to User on the UI interface immediately after you call this Function.
+        It will display/show this place on the map to the User on the UI interface immediately after you call this Function.
         
         Purpose:
         Use this function to add a new location (dot) to the map associated with a chat session.
@@ -43,22 +43,36 @@ public class AddLocationFunction implements Function<AddLocationFunction.AddLoca
 
     @Override
     public String apply(AddLocationRequest request) {
-        log.info("Starting AddLocationFunction with request: {}", request);
+        log.info("🚀 Starting AddLocationFunction with request: {}", request);
 
         try {
-            String sessionId = requestService.getParameterFromRequest(AIMessageDTO.class.getDeclaredField("sessionId").getName());
+            // Retrieve sessionId safely
+            String sessionId = requestService.getParameterFromRequest("sessionId");
+            log.info("🔍 Extracted sessionId: {}", sessionId);
+
+            if (sessionId == null || sessionId.isEmpty()) {
+                log.error("❌ Session ID is missing. Cannot proceed with adding location.");
+                return "Error: Missing session ID.";
+            }
+
             Location location = Location.builder()
                     .sessionId(sessionId)
                     .latitude(request.getLatitude())
                     .longitude(request.getLongitude())
                     .name(request.getName())
-//                    .type(request.getType())
                     .build();
+
+            // Save the location to the database
             locationService.save(location);
+            log.info("📍 Location saved: {}", location);
+
+            // Notify the frontend via WebSocket
             webSocketService.sendLocationUpdate(location);
-            return "Location added successfully.";
+            log.info("📡 WebSocket update sent for location: {}", location.getName());
+
+            return "✅ Location added successfully: " + location.getName();
         } catch (Exception e) {
-            log.error("Error in AddLocationFunction: {}", e.getMessage(), e);
+            log.error("❌ Error in AddLocationFunction: {}", e.getMessage(), e);
             return "Error adding location: " + e.getMessage();
         }
     }
@@ -79,8 +93,5 @@ public class AddLocationFunction implements Function<AddLocationFunction.AddLoca
 
         @JsonPropertyDescription("Optional. Name or description of the location.")
         private String name;
-
-//        @JsonPropertyDescription("Optional. Type of the location (e.g., 'cafe', 'hotel').")
-//        private String type;
     }
 }
