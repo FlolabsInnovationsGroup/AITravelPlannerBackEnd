@@ -73,11 +73,12 @@ public class WebSecurityConfig {
                         .requestMatchers(
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
+                                "actuator/health",
                                 "/swagger-ui.html"
                         ).permitAll()
                         .requestMatchers("/users/current").authenticated() // Allow authenticated users
                         .requestMatchers("/users/**").hasRole("ADMIN") // Restrict user management to ADMIN
-                        .requestMatchers("/api/chat", "/api/stream").hasAnyRole("ADMIN", "USER")
+//                        .requestMatchers("/api/chat", "/api/stream").hasAnyRole("ADMIN", "USER")
                         .anyRequest().authenticated()
                 )
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable)) // Updated with method reference
