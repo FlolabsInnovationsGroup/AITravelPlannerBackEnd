@@ -17,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Slf4j
 @RestController
 @RequestMapping("/api/chat")
-@CrossOrigin(origins = "http://localhost:3000")
 public class ChatController {
 
     private final ChatCallService chatCallService;
