@@ -43,6 +43,21 @@ public class WebSecurityConfig {
         this.customAuthenticationFailureHandler = customAuthenticationFailureHandler;
     }
 
+    private static final List<String> PUBLIC_URLS = List.of(
+            "/api/audio/transcribe",
+            "/api/auth/signup",
+            "/api/auth/signin",
+            "/api/auth/verify",
+            "/api/auth/guest-token",
+            "/api/chat/call",
+            "/api/chat/stream",
+            "/api/chat/entity",
+            "/sessions",
+            "/oauth2/**",
+            "/login/oauth2/**",
+            "/ws/**"
+    );
+
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
         AuthenticationManagerBuilder builder =
@@ -68,24 +83,7 @@ public class WebSecurityConfig {
 
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(
-                                "/api/audio/transcribe",
-                                "/api/chat/call/entity" // ✅ Make chat API public
-                        ).permitAll()
-                        .requestMatchers(
-                                "/api/auth/signup",
-                                "/api/auth/signin",
-                                "/api/auth/verify",
-                                "/api/auth/guest-token",
-                                "/api/chat/call",
-                                "/api/chat/stream",
-                                "/api/audio/transcribe",
-                                "/api/chat/entity",
-                                "/sessions",
-                                "/oauth2/**",
-                                "/login/oauth2/**",
-                                "/ws/**"
-                        ).permitAll()
+                        .requestMatchers(PUBLIC_URLS.toArray(new String[0])).permitAll() // ✅ Now uses the list
                         .requestMatchers(
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
@@ -107,7 +105,4 @@ public class WebSecurityConfig {
 
         return http.build();
     }
-
-
-
 }

@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.List;
 
 @Slf4j
 @Component
@@ -26,16 +25,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     private final CustomUserDetailsService customUserDetailsService;
     private final JwtUtil jwtUtil;
 
-
-
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getRequestURI();
-        return path.startsWith("/ws");
+        return path.startsWith("/ws") || path.startsWith("/api/audio/transcribe"); // ✅ Exclude audio transcription
     }
-
-
-
 
     @Override
     @SuppressWarnings("NullableProblems")
@@ -60,7 +54,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 UserDetails userDetails = this.customUserDetailsService.loadUserByUsername(username);
 
                 if (jwtUtil.validateToken(jwt, userDetails)) {
-
                     var usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
                             userDetails, null, userDetails.getAuthorities());
                     usernamePasswordAuthenticationToken
