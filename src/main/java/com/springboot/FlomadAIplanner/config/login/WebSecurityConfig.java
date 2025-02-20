@@ -74,7 +74,10 @@ public class WebSecurityConfig {
         http
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
-                    config.setAllowedOrigins(List.of("http://localhost:3000")); // ✅ Allow frontend
+                    config.setAllowedOrigins(List.of(
+                            "https://www.flomadtravel.com", // ✅ Allow production frontend
+                            "http://localhost:3000"         // ✅ Keep localhost for development
+                    )); // ✅ Allow frontend
                     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     config.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept", "Origin"));
                     config.setAllowCredentials(true);
