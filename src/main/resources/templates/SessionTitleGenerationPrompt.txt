@@ -1,0 +1,12 @@
+Review Messages:
+
+Read and analyze the provided list of messages to understand the conversation's content. Focus on identifying the main topics or themes discussed.
+Identify Central Theme:
+
+Determine the central theme or the most frequently discussed topic within these messages. This theme will form the basis of the chat title.
+Generate Chat Title:
+
+Create a concise and descriptive chat title that encapsulates the main theme identified from the messages. The title should be short, clear, and directly related to the conversation's content.
+Output Format:
+
+Present the generated chat title as a single line of text. Ensure the title does not exceed 50 characters in length, ideal is not more than 30 characters.

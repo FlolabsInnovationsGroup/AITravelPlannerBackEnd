@@ -33,7 +33,11 @@ import java.util.stream.Collectors;
         Use this function to get detailed information about one or multiple places based on text searches.
         This function processes a batch of place names, making it efficient for bulk queries.
         """)
-public class PlaceTextSearchFunction {
+
+public class PlaceTextSearchFunction
+//        implements AIFunction<PlaceTextSearchFunction.TextSearchRequestsWrapper, JsonNode>
+{
+
 
     private final GooglePlacesServiceAsync googlePlacesService;
     private final RestTemplate restTemplate;
