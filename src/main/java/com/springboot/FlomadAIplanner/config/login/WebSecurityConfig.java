@@ -16,6 +16,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -40,6 +43,21 @@ public class WebSecurityConfig {
         this.customAuthenticationFailureHandler = customAuthenticationFailureHandler;
     }
 
+    private static final List<String> PUBLIC_URLS = List.of(
+            "/api/audio/transcribe",
+            "/api/auth/signup",
+            "/api/auth/signin",
+            "/api/auth/verify",
+            "/api/auth/guest-token",
+            "/api/chat/call",
+            "/api/chat/stream",
+            "/api/chat/entity",
+            "/sessions",
+            "/oauth2/**",
+            "/login/oauth2/**",
+            "/ws/**"
+    );
+
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
         AuthenticationManagerBuilder builder =
@@ -54,43 +72,39 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .cors(cors -> cors.configurationSource(request -> {
+                    CorsConfiguration config = new CorsConfiguration();
+                    config.setAllowedOrigins(List.of("http://localhost:3000")); // ✅ Allow frontend
+                    config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                    config.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept", "Origin"));
+                    config.setAllowCredentials(true);
+                    return config;
+                }))
+
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(
-                                "/api/auth/signup",
-                                "/api/auth/signin",
-                                "/api/auth/verify",
-                                "/api/auth/guest-token",
-                                "/api/chat/call",
-                                "/api/chat/stream",
-                                "/api/audio/transcribe",
-                                "/api/chat/entity",
-                                "/sessions",
-                                "/oauth2/**",
-                                "/login/oauth2/**",
-                                "/ws/**" // WebSocket endpoint
-                        ).permitAll()
+                        .requestMatchers(PUBLIC_URLS.toArray(new String[0])).permitAll() // ✅ Now uses the list
                         .requestMatchers(
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "actuator/health",
                                 "/swagger-ui.html"
                         ).permitAll()
-                        .requestMatchers("/users/current").authenticated() // Allow authenticated users
-                        .requestMatchers("/users/**").hasRole("ADMIN") // Restrict user management to ADMIN
-//                        .requestMatchers("/api/chat", "/api/stream").hasAnyRole("ADMIN", "USER")
+
+                        .requestMatchers("/users/current").authenticated()
+                        .requestMatchers("/users/**").hasRole("ADMIN")
+                        .requestMatchers("/api/chat", "/api/stream").hasAnyRole("ADMIN", "USER")
+
                         .anyRequest().authenticated()
                 )
-                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable)) // Updated with method reference
+                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .oauth2Login(oauth2 -> oauth2
-                        .authorizationEndpoint(authorization -> authorization
-                                .baseUri("/oauth2/authorization")
-                        )
+                        .authorizationEndpoint(authorization -> authorization.baseUri("/oauth2/authorization"))
                         .successHandler(customAuthenticationSuccessHandler)
                         .failureHandler(customAuthenticationFailureHandler)
                 )
-                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class) // execution order of these filters is essential
-                .addFilterBefore(userLastActiveUpdateFilter, JwtRequestFilter.class); // execution order of these filters is essential
+                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(userLastActiveUpdateFilter, JwtRequestFilter.class);
 
         return http.build();
     }

@@ -53,6 +53,11 @@ public class Message extends Model implements org.springframework.ai.chat.messag
     }
 
     @Override
+    public String getText() {
+        return content;
+    }
+
+    @Override
     public Map<String, Object> getMetadata() {
         return metadata;
     }

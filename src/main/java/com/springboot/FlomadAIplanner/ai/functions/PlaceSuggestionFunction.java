@@ -28,10 +28,14 @@ import java.util.function.Function;
         This function is useful for providing place suggestions to the user based on their location and preferences.
         Should be called after the CurrentLocationFunction to get the user's current location.
         P.S. If you have the accurate location details from the chat history,
-        you can directly call this function to get place suggestions.""")
-public class PlaceSuggestionFunction
-//        implements Function<PlaceSuggestionFunction.NearbyPlacesRequestWrapper, List<JsonNode>>
-{
+        you can directly call this function to get place suggestions.
+        
+        IMPORTANT:
+        ALWAYS INCLUDE required "includedTypes" in the request to filter the types of places to suggest.
+        """)
+public class PlaceSuggestionFunction implements Function<PlaceSuggestionFunction.NearbyPlacesRequestWrapper, List<JsonNode>> {
+
+
     private final GooglePlacesService googlePlacesService;
 
     @Autowired

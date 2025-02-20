@@ -27,9 +27,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        // Skip filtering for WebSocket requests
         String path = request.getRequestURI();
-        return path.startsWith("/ws");
+        return path.startsWith("/ws") || path.startsWith("/api/audio/transcribe"); // ✅ Exclude audio transcription
     }
 
     @Override
@@ -55,7 +54,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 UserDetails userDetails = this.customUserDetailsService.loadUserByUsername(username);
 
                 if (jwtUtil.validateToken(jwt, userDetails)) {
-
                     var usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
                             userDetails, null, userDetails.getAuthorities());
                     usernamePasswordAuthenticationToken
