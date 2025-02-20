@@ -90,11 +90,14 @@ public class WebSecurityConfig {
                         .requestMatchers(
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
+                                "actuator/health",
                                 "/swagger-ui.html"
                         ).permitAll()
+
                         .requestMatchers("/users/current").authenticated()
                         .requestMatchers("/users/**").hasRole("ADMIN")
                         .requestMatchers("/api/chat", "/api/stream").hasAnyRole("ADMIN", "USER")
+
                         .anyRequest().authenticated()
                 )
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))

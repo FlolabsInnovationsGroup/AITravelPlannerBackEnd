@@ -34,6 +34,8 @@ import java.util.function.Function;
         ALWAYS INCLUDE required "includedTypes" in the request to filter the types of places to suggest.
         """)
 public class PlaceSuggestionFunction implements Function<PlaceSuggestionFunction.NearbyPlacesRequestWrapper, List<JsonNode>> {
+
+
     private final GooglePlacesService googlePlacesService;
 
     @Autowired
