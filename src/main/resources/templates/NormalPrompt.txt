@@ -15,8 +15,8 @@ You are now going to respond to the user's last message according to their speci
 Your response should follow this format:
 ```plaintext
 "Your human-like response here."
-Important Notes:
 
+Important Notes:
 Do not use JSON formatting or structured data in your response.
 Your answer should be conversational and adapted to the user's request.
 Example Responses
