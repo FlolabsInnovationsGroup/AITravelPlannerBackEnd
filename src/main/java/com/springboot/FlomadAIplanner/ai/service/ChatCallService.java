@@ -5,7 +5,11 @@ import com.springboot.FlomadAIplanner.ai.dto.AIMessageDTO;
 import com.springboot.FlomadAIplanner.ai.factory.AgentFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
+
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +22,11 @@ import java.util.Map;
 public class ChatCallService extends AbstractChatService {
 
     private final AgentFactory agentFactory;
+
+    @Value("google.places.api.key")
+    private String googlePlacesAPIkey;
+    private final RestTemplate restTemplate = new RestTemplate();
+
 
     @Autowired
     public ChatCallService(AgentFactory agentFactory,
@@ -64,6 +73,20 @@ public class ChatCallService extends AbstractChatService {
         } catch (Exception e) {
             log.error("Error occurred while processing entity message: {}", e.getMessage(), e);
             throw new RuntimeException("Error processing entity-based chat message", e);
+        }
+    }
+
+    public String promptSearch(String query, double lattitude, double longitude, int radius) {
+        try {
+            String googlePlacesApiUrl = String.format("https://maps.googleapis.com/maps/api/place/textsearch/json?query=%s&location%f,%f&radius=%d&key=%s",
+                    query.replace(" ", "+"), lattitude,longitude,googlePlacesAPIkey);
+            log.info("Calling google Places API :{}", googlePlacesApiUrl);
+            String response = restTemplate.getForObject(googlePlacesApiUrl, String.class);
+            log.info("Received response from google API :{}", response);
+            return response;
+        } catch (RestClientException e) {
+            log.info("Error proxying google places search :{}", e.getMessage());
+            return "{\"error\": \"Failed to retrieve search results.\", \"details\": \"" + e.getMessage() + "\"}";
         }
     }
 }
