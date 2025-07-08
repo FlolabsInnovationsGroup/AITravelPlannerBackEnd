@@ -55,7 +55,11 @@ public class ChatController {
         AIMessageResponse response = chatCallService.processEntityMessage(message, AIMessageResponse.class);
         return ResponseEntity.ok(response);
     }
-
+    //api/chat/places/search
+    @GetMapping("/places/search")
+    public String placeSearch(@RequestParam String query, @RequestParam double lattitude, @RequestParam double longitude, @RequestParam int radius){
+      return chatCallService.promptSearch(query,lattitude,longitude, radius);
+    }
 
     @Operation(summary = "Upload audio file for transcription")
     @PostMapping(value = "/upload-audio", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
