@@ -3,6 +3,7 @@ package com.springboot.FlomadAIplanner.util;
 import com.springboot.FlomadAIplanner.model.entities.login.User;
 import com.springboot.FlomadAIplanner.service.model.UserService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,21 +12,20 @@ import org.springframework.stereotype.Component;
 @Component
 public class CurrentUserUtil {
 
-    private final JwtUtil jwtUtil;
     private final UserService userService;
 
-    public CurrentUserUtil(JwtUtil jwtUtil, UserService userService) {
-        this.jwtUtil = jwtUtil;
+    public CurrentUserUtil(UserService userService) {
         this.userService = userService;
     }
 
     @SuppressWarnings("unused")
-    public User getCurrentUsernameFromRequest(HttpServletRequest request) {
-        final String authorizationHeader = request.getHeader("Authorization");
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            String jwt = authorizationHeader.substring(7);
-            String username = jwtUtil.extractUsername(jwt);
-            return userService.findByUsernameOrEmail(username);
+    public User getCurrentUserFromRequest(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            String userId = (String) session.getAttribute("userId");
+            if (userId != null) {
+                return userService.findById(userId);
+            }
         }
         return null;
     }
@@ -36,6 +36,22 @@ public class CurrentUserUtil {
         if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
             String username = ((UserDetails) authentication.getPrincipal()).getUsername();
             return userService.findByUsernameOrEmail(username);
+        }
+        return null;
+    }
+
+    public String getCurrentUserIdFromSession(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            return (String) session.getAttribute("userId");
+        }
+        return null;
+    }
+
+    public String getCurrentUsernameFromSession(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            return (String) session.getAttribute("username");
         }
         return null;
     }

@@ -39,7 +39,12 @@ public class SessionService implements CrudService<Session, String> {
         log.info("Saving session: {}", session);
         if (session.getUserId() == null) {
             User user = currentUserUtil.getCurrentUserFromSecurityContext();
-            session.setUserId(user.getId());
+            if (user != null) {
+                session.setUserId(user.getId());
+            } else {
+                log.error("No authenticated user found for session creation");
+                throw new RuntimeException("No authenticated user found for session creation");
+            }
         }
         return sessionRepository.save(session);
     }

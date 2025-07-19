@@ -1,6 +1,5 @@
 package com.springboot.FlomadAIplanner.config.login;
 
-import com.springboot.FlomadAIplanner.filter.JwtRequestFilter;
 import com.springboot.FlomadAIplanner.filter.UserLastActiveUpdateFilter;
 import com.springboot.FlomadAIplanner.handler.login.CustomAuthenticationFailureHandler;
 import com.springboot.FlomadAIplanner.handler.login.CustomAuthenticationSuccessHandler;
@@ -24,19 +23,17 @@ import java.util.List;
 @EnableWebSecurity
 public class WebSecurityConfig {
     private final UserDetailsService userDetailsService;
-    private final JwtRequestFilter jwtRequestFilter;
     private final UserLastActiveUpdateFilter userLastActiveUpdateFilter;
     private final PasswordEncoder passwordEncoder;
     private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
     private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
 
     public WebSecurityConfig(UserDetailsService userDetailsService,
-                             JwtRequestFilter jwtRequestFilter, UserLastActiveUpdateFilter userLastActiveUpdateFilter,
+                             UserLastActiveUpdateFilter userLastActiveUpdateFilter,
                              PasswordEncoder passwordEncoder,
                              CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler,
                              CustomAuthenticationFailureHandler customAuthenticationFailureHandler) {
         this.userDetailsService = userDetailsService;
-        this.jwtRequestFilter = jwtRequestFilter;
         this.userLastActiveUpdateFilter = userLastActiveUpdateFilter;
         this.passwordEncoder = passwordEncoder;
         this.customAuthenticationSuccessHandler = customAuthenticationSuccessHandler;
@@ -48,7 +45,7 @@ public class WebSecurityConfig {
             "/api/auth/signup",
             "/api/auth/signin",
             "/api/auth/verify",
-            "/api/auth/guest-token",
+            "/api/auth/session-state",
             "/api/chat/call",
             "/api/chat/stream",
             "/api/chat/entity",
@@ -64,7 +61,7 @@ public class WebSecurityConfig {
                 http.getSharedObject(AuthenticationManagerBuilder.class);
 
         builder.userDetailsService(userDetailsService)
-                .passwordEncoder(passwordEncoder); // Use the injected PasswordEncoder
+                .passwordEncoder(passwordEncoder);
 
         return builder.build();
     }
@@ -77,16 +74,21 @@ public class WebSecurityConfig {
                     config.setAllowedOrigins(List.of(
                             "https://www.flomadtravel.com", // ✅ Allow production frontend
                             "http://localhost:3000"         // ✅ Keep localhost for development
-                    )); // ✅ Allow frontend
+                    ));
                     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-                    config.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept", "Origin"));
+                    config.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept", "Origin", "Cookie"));
+                    config.setExposedHeaders(List.of("Set-Cookie"));
                     config.setAllowCredentials(true);
                     return config;
                 }))
 
                 .csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(session -> session
+                        .maximumSessions(1)
+                        .expiredUrl("/api/auth/session-state")
+                )
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(PUBLIC_URLS.toArray(new String[0])).permitAll() // ✅ Now uses the list
+                        .requestMatchers(PUBLIC_URLS.toArray(new String[0])).permitAll()
                         .requestMatchers(
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
@@ -94,6 +96,7 @@ public class WebSecurityConfig {
                                 "/swagger-ui.html"
                         ).permitAll()
 
+                        .requestMatchers("/api/auth/session-state").permitAll()
                         .requestMatchers("/users/current").authenticated()
                         .requestMatchers("/users/**").hasRole("ADMIN")
                         .requestMatchers("/api/chat", "/api/stream").hasAnyRole("ADMIN", "USER")
@@ -106,8 +109,7 @@ public class WebSecurityConfig {
                         .successHandler(customAuthenticationSuccessHandler)
                         .failureHandler(customAuthenticationFailureHandler)
                 )
-                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(userLastActiveUpdateFilter, JwtRequestFilter.class);
+                .addFilterBefore(userLastActiveUpdateFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
