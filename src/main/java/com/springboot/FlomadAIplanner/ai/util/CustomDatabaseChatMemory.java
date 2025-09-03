@@ -2,6 +2,8 @@ package com.springboot.FlomadAIplanner.ai.util;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.messages.Message;
+import org.springframework.ai.chat.messages.UserMessage;
+import org.springframework.ai.chat.messages.AssistantMessage;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,29 +35,42 @@ public class CustomDatabaseChatMemory implements ChatMemory {
         if (!DEFAULT_CONVERSATION_ID.equals(conversationId)) {
             log.info("Adding {} messages to conversation: {}", messages.size(), conversationId);
 
-            // Add only the most recent messages
-            int start = Math.max(0, messages.size() - maxMessages);
-            List<Message> recentMessages = messages.subList(start, messages.size());
-            this.messages.addAll(recentMessages);
+            synchronized (this.messages) {
+                // Clean up first if we're about to exceed the limit
+                if (this.messages.size() + messages.size() > maxMessages) {
+                    cleanupOldMessages();
+                }
 
-            // Keep only the last maxMessages
-            if (this.messages.size() > maxMessages) {
-                this.messages.subList(0, this.messages.size() - maxMessages).clear();
+                // Add only the most recent messages
+                int start = Math.max(0, messages.size() - maxMessages);
+                List<Message> recentMessages = messages.subList(start, messages.size());
+                
+                // Truncate long messages to prevent token limit issues
+                for (int i = 0; i < recentMessages.size(); i++) {
+                    Message msg = recentMessages.get(i);
+                    String content = msg.toString();
+                    if (content.length() > 1000) {
+                        String truncated = content.substring(0, 1000) + "... [truncated]";
+                        recentMessages.set(i, new UserMessage(truncated));
+                    }
+                }
+
+                this.messages.addAll(recentMessages);
+                log.info("Added {} messages. Current size: {}", recentMessages.size(), this.messages.size());
             }
-
-            // Clean up old messages periodically
-            cleanupOldMessages();
         } else {
             log.info("Not adding message to 'default' conversation");
         }
     }
 
     private void cleanupOldMessages() {
-        if (messages.size() > maxMessages * 2) {
+        if (messages.size() > maxMessages) {
             synchronized (messages) {
-                if (messages.size() > maxMessages * 2) {
+                if (messages.size() > maxMessages) {
+                    // Keep only the most recent messages
                     int excess = messages.size() - maxMessages;
                     messages.subList(0, excess).clear();
+                    log.info("Cleaned up {} old messages. Current size: {}", excess, messages.size());
                 }
             }
         }
