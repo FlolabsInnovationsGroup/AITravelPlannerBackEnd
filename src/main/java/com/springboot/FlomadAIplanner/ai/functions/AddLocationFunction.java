@@ -60,6 +60,7 @@ public class AddLocationFunction implements Function<AddLocationFunction.AddLoca
                     .latitude(request.getLatitude())
                     .longitude(request.getLongitude())
                     .name(request.getName())
+                    .type(request.getType() != null ? request.getType() : "attraction")
                     .build();
 
             // Save the location to the database
@@ -93,5 +94,8 @@ public class AddLocationFunction implements Function<AddLocationFunction.AddLoca
 
         @JsonPropertyDescription("Optional. Name or description of the location.")
         private String name;
+
+        @JsonPropertyDescription("Optional. Type of location (hotel, restaurant, cafe, transport, attraction). Defaults to 'attraction' if not specified.")
+        private String type;
     }
 }

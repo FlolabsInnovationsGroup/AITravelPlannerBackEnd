@@ -32,7 +32,7 @@ public class GooglePlacesClientConfig {
         log.info("Initializing request interceptor for Google Maps API");
         return requestTemplate -> {
             log.info("Using Google API key");
-            requestTemplate.header("X-Goog-Api-Key", apiKey);
+            requestTemplate.query("key", apiKey);
         };
     }
 }

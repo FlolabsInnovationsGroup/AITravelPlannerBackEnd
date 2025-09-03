@@ -20,9 +20,6 @@ public class GooglePlacesService {
 
     private final GooglePlacesClient googlePlacesClient;
 
-    @Value("${google.api.key}")
-    private String googleApiKey;
-
     @Value("${google.places.fieldMask}")
     private String placesFieldMask;
 
@@ -43,10 +40,18 @@ public class GooglePlacesService {
     public JsonNode searchNearbyPlaces(NearbyPlacesRequest request) throws GoogleAPIException {
         log.info("Searching Google nearby places with request: {}", request);
         try {
+            String location = String.format("%f,%f", 
+                request.getLocationRestriction().getCircle().getCenter().getLatitude(),
+                request.getLocationRestriction().getCircle().getCenter().getLongitude());
+            int radius = (int) request.getLocationRestriction().getCircle().getRadius();
+            String type = String.join("|", request.getIncludedTypes());
+            
             JsonNode response = googlePlacesClient.searchNearbyPlaces(
-                    "Bearer " + googleApiKey,  // ✅ Fix: API Key should be first
-                    placesFieldMask,           // ✅ Fix: FieldMask should be second
-                    request                    // ✅ Fix: Request should be last
+                    "",                     // Empty string since interceptor handles auth
+                    location,               // Latitude,longitude
+                    radius,                 // Search radius in meters
+                    type,                   // Place types
+                    placesFieldMask         // Field mask
             );
             log.info("Received response from Google Places API: {}", response);
             return response;
@@ -67,9 +72,9 @@ public class GooglePlacesService {
         log.info("Searching Google places with request: {}", request);
         try {
             JsonNode response = googlePlacesClient.textSearchPlaces(
-                    "Bearer " + googleApiKey,  // ✅ Correct
-                    textSearchFieldMask,       // ✅ Correct
-                    request                    // ✅ Correct
+                    "",                     // Empty string since interceptor handles auth
+                    textSearchFieldMask,
+                    request
             );
             log.info("Received response from Google Places API: {}", response);
             return response;
@@ -92,9 +97,9 @@ public class GooglePlacesService {
         for (TextSearchRequest request : requests) {
             try {
                 JsonNode searchResult = googlePlacesClient.textSearchPlaces(
-                        "Bearer " + googleApiKey,  // ✅ Correct
-                        textSearchFieldMask,       // ✅ Correct
-                        request                    // ✅ Correct
+                        "",                 // Empty string since interceptor handles auth
+                        textSearchFieldMask,
+                        request
                 );
                 results.add(searchResult);
             } catch (Exception e) {
