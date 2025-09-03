@@ -1,15 +1,10 @@
 package com.springboot.FlomadAIplanner.ai.util;
 
-import com.springboot.FlomadAIplanner.converter.Converter;
-import com.springboot.FlomadAIplanner.model.entities.Message;
-import com.springboot.FlomadAIplanner.service.model.MessageService;
-import com.springboot.FlomadAIplanner.service.model.SessionService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
+import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,66 +13,52 @@ import java.util.List;
 @Component("customDatabaseChatMemory")
 public class CustomDatabaseChatMemory implements ChatMemory {
     private final static String DEFAULT_CONVERSATION_ID = "default";
-    private final Converter<org.springframework.ai.chat.messages.Message, Message> messageConverter;
-    private final Converter<Message, org.springframework.ai.chat.messages.Message> messageRevertConverter;
-    private final MessageService messageService;
-    private final SessionService sessionService;
+    private final static int DEFAULT_MAX_MESSAGES = 5;
+    private final List<Message> messages = new ArrayList<>();
 
-    public CustomDatabaseChatMemory(
-            Converter<org.springframework.ai.chat.messages.Message, Message> messageConverter,
-            Converter<Message, org.springframework.ai.chat.messages.Message> messageRevertConverter,
-            MessageService messageService,
-            SessionService sessionService) {
-        this.messageConverter = messageConverter;
-        this.messageRevertConverter = messageRevertConverter;
-        this.messageService = messageService;
-        this.sessionService = sessionService;
+    public CustomDatabaseChatMemory() {
     }
 
-
     @Override
-    public void add(String conversationId, List<org.springframework.ai.chat.messages.Message> messages) {
+    public void add(String conversationId, List<Message> messages) {
+        if (messages.isEmpty()) {
+            return;
+        }
+
         if (!DEFAULT_CONVERSATION_ID.equals(conversationId)) {
-            sessionService.checkGuestUserLimitations(conversationId, messages.size());
+            log.info("Adding {} messages to conversation: {}", messages.size(), conversationId);
+            
+            // Add only the most recent messages
+            int start = Math.max(0, messages.size() - DEFAULT_MAX_MESSAGES);
+            List<Message> recentMessages = messages.subList(start, messages.size());
+            this.messages.addAll(recentMessages);
 
-            List<Message> newMessages = new ArrayList<>();
-            for (org.springframework.ai.chat.messages.Message message : messages) {
-                log.info("Adding message: \"{}\",  to conversation: {}",
-                        StringUtils.substring(message.getContent(), 0, 50), conversationId);
-
-                Message entity = this.messageConverter.convert(message);
-                entity.setCreatedAt(LocalDateTime.now());
-                entity.setSessionId(conversationId);
-
-                newMessages.add(entity);
+            // Keep only the last maxMessages
+            if (this.messages.size() > DEFAULT_MAX_MESSAGES) {
+                this.messages.subList(0, this.messages.size() - DEFAULT_MAX_MESSAGES).clear();
             }
-
-            this.messageService.saveAll(newMessages);
         } else {
             log.info("Not adding message to 'default' conversation");
         }
     }
 
     @Override
-    public List<org.springframework.ai.chat.messages.Message> get(String conversationId, int lastN) {
+    public List<Message> get(String conversationId, int lastN) {
         log.info("Retrieving last {} messages from conversation: {}", lastN, conversationId);
 
-        List<Message> foundMessages;
-        if (lastN > 0) {
-            foundMessages = messageService.getMessagesBySessionIdWithLimit(conversationId, lastN);
-        } else {
-            foundMessages = Collections.emptyList();
+        if (lastN <= 0) {
+            return Collections.emptyList();
         }
 
-        log.info("Found {} messages", foundMessages.size());
-        return foundMessages.stream()
-                .map(messageRevertConverter::convert)
-                .toList();
+        int start = Math.max(0, messages.size() - lastN);
+        List<Message> result = messages.subList(start, messages.size());
+        log.info("Found {} messages", result.size());
+        return result;
     }
 
     @Override
     public void clear(String conversationId) {
-        messageService.deleteBySessionId(conversationId);
+        messages.clear();
     }
 
 }
