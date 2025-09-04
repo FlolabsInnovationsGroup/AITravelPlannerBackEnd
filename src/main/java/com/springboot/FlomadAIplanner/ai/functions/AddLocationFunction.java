@@ -6,7 +6,6 @@ import com.springboot.FlomadAIplanner.ai.dto.AIMessageDTO;
 import com.springboot.FlomadAIplanner.model.entities.Location;
 import com.springboot.FlomadAIplanner.service.model.LocationService;
 import com.springboot.FlomadAIplanner.service.socket.WebSocketService;
-import com.springboot.FlomadAIplanner.util.RequestService;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -33,12 +32,10 @@ import java.util.function.Function;
 public class AddLocationFunction implements Function<AddLocationFunction.AddLocationRequest, String> {
     private final LocationService locationService;
     private final WebSocketService webSocketService;
-    private final RequestService requestService;
 
-    public AddLocationFunction(LocationService locationService, WebSocketService webSocketService, RequestService requestService) {
+    public AddLocationFunction(LocationService locationService, WebSocketService webSocketService) {
         this.locationService = locationService;
         this.webSocketService = webSocketService;
-        this.requestService = requestService;
     }
 
     @Override
@@ -46,13 +43,13 @@ public class AddLocationFunction implements Function<AddLocationFunction.AddLoca
         log.info("🚀 Starting AddLocationFunction with request: {}", request);
 
         try {
-            // Retrieve sessionId safely
-            String sessionId = requestService.getParameterFromRequest("sessionId");
-            log.info("🔍 Extracted sessionId: {}", sessionId);
+            // Get sessionId from request
+            String sessionId = request.getSessionId();
+            log.info("🔍 Using sessionId from request: {}", sessionId);
 
             if (sessionId == null || sessionId.isEmpty()) {
-                log.error("❌ Session ID is missing. Cannot proceed with adding location.");
-                return "Error: Missing session ID.";
+                log.error("❌ Session ID is missing in request. Cannot proceed with adding location.");
+                return "Error: Missing session ID in request.";
             }
 
             Location location = Location.builder()
@@ -97,5 +94,9 @@ public class AddLocationFunction implements Function<AddLocationFunction.AddLoca
 
         @JsonPropertyDescription("Optional. Type of location (hotel, restaurant, cafe, transport, attraction). Defaults to 'attraction' if not specified.")
         private String type;
+        
+        @NotNull(message = "Session ID cannot be null.")
+        @JsonPropertyDescription("Required. The ID of the chat session this location belongs to.")
+        private String sessionId;
     }
 }

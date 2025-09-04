@@ -19,7 +19,7 @@ public class LocationController {
     private final WebSocketService webSocketService;
 
     @PostMapping("/add")
-    public ResponseEntity<String> addLocation(@RequestBody LocationDTO request) {
+    public ResponseEntity<Location> addLocation(@RequestBody LocationDTO request) {
         try {
             // Step 1: Save location
             Location location = Location.builder()
@@ -34,9 +34,9 @@ public class LocationController {
             // Step 2: Notify clients via WebSocket
             webSocketService.sendLocationUpdate(location);
 
-            return ResponseEntity.ok("Location added successfully.");
+            return ResponseEntity.ok(location);
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error adding location: " + e.getMessage());
+            return ResponseEntity.status(500).body(null);
         }
     }
 
@@ -53,7 +53,13 @@ public class LocationController {
     @DeleteMapping("/remove/{id}")
     public ResponseEntity<String> removeLocation(@PathVariable String id) {
         try {
+            Location location = locationService.findById(id);
+            if (location == null) {
+                return ResponseEntity.notFound().build();
+            }
+            String sessionId = location.getSessionId();
             locationService.delete(id);
+            webSocketService.sendLocationRemoved(sessionId, id);
             return ResponseEntity.ok("Location removed successfully.");
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error removing location: " + e.getMessage());

@@ -17,8 +17,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @Component("customDatabaseChatMemory")
 public class CustomDatabaseChatMemory implements ChatMemory {
     private final static String DEFAULT_CONVERSATION_ID = "default";
+    private final static int MAX_TOKENS_PER_MESSAGE = 800; // Conservative limit to prevent overflow
+    private final static int ESTIMATED_TOKENS_PER_CHAR = 4; // Conservative estimate
     
-    @Value("${chat.memory.max-messages:5}")
+    @Value("${chat.memory.max-messages:2}")
     private int maxMessages;
     
     private final List<Message> messages = new CopyOnWriteArrayList<>();
@@ -45,13 +47,17 @@ public class CustomDatabaseChatMemory implements ChatMemory {
                 int start = Math.max(0, messages.size() - maxMessages);
                 List<Message> recentMessages = messages.subList(start, messages.size());
                 
-                // Truncate long messages to prevent token limit issues
+                // Truncate messages to prevent token limit issues
                 for (int i = 0; i < recentMessages.size(); i++) {
                     Message msg = recentMessages.get(i);
                     String content = msg.toString();
-                    if (content.length() > 1000) {
-                        String truncated = content.substring(0, 1000) + "... [truncated]";
+                    int estimatedTokens = content.length() / ESTIMATED_TOKENS_PER_CHAR;
+                    
+                    if (estimatedTokens > MAX_TOKENS_PER_MESSAGE) {
+                        int maxChars = MAX_TOKENS_PER_MESSAGE * ESTIMATED_TOKENS_PER_CHAR;
+                        String truncated = content.substring(0, Math.min(content.length(), maxChars)) + "... [truncated]";
                         recentMessages.set(i, new UserMessage(truncated));
+                        log.info("Truncated message from {} tokens to {} tokens", estimatedTokens, MAX_TOKENS_PER_MESSAGE);
                     }
                 }
 

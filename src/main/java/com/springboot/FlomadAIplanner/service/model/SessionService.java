@@ -73,7 +73,8 @@ public class SessionService implements CrudService<Session, String> {
         log.info("Updating session: {}", id);
 
         String title = updatedSession.getTitle();
-        String userId = updatedSession.getUserId();
+        User currentUser = currentUserUtil.getCurrentUserFromSecurityContext();
+        String userId = currentUser.getId();
 
         Session session = sessionRepository.findByIdAndUserId(id, userId);
         if (session != null) {
@@ -81,7 +82,7 @@ public class SessionService implements CrudService<Session, String> {
             session.setUpdatedAt(LocalDateTime.now());
             return sessionRepository.save(session);
         } else {
-            log.error("Session not found");
+            log.error("Session not found for id: {} and userId: {}", id, userId);
             throw new RuntimeException("Session not found");
         }
     }
