@@ -7,6 +7,7 @@ import com.springboot.FlomadAIplanner.service.socket.WebSocketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -19,7 +20,7 @@ public class LocationController {
     private final WebSocketService webSocketService;
 
     @PostMapping("/add")
-    public ResponseEntity<Location> addLocation(@RequestBody LocationDTO request) {
+    public ResponseEntity<Location> addLocation(@Valid @RequestBody LocationDTO request) {
         try {
             // Step 1: Save location
             Location location = Location.builder()

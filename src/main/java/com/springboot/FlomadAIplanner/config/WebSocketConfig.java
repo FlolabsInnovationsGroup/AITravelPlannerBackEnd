@@ -18,11 +18,10 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws")
-                .setAllowedOriginPatterns("*")
-                .setAllowedOrigins(allowedOriginUrls)
+                .setAllowedOrigins(allowedOriginUrls) // ✅ SECURITY FIX: Only allow specific origins
                 .withSockJS()
                 .setClientLibraryUrl("https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js")
-                .setSessionCookieNeeded(true)
+                .setSessionCookieNeeded(false) // ✅ SECURITY: Disable session cookies for WebSocket
                 .setWebSocketEnabled(true)
                 .setHeartbeatTime(25000)
                 .setDisconnectDelay(5000);
