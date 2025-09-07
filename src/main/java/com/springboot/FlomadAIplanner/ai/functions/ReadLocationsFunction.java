@@ -22,11 +22,17 @@ import java.util.function.Function;
         Purpose:
         Use this function to retrieve all dots on the map for a given chat session.
         You MUST Use this Function BEFORE adding new locations to the map to avoid duplicates.
-        You MUST Use this Function BEFORE removing locations from the map to receive
-        the Ids of the existing locations to understand which one you need to remove.
+        
+        IMPORTANT: For removing locations by name, use RemoveLocationByNameFunction instead 
+        of manually calling this function followed by RemoveLocationFunction.
+        
+        Use this function when:
+        - You need to see what's currently on the map
+        - You want to check for duplicates before adding
+        - You need location IDs for advanced operations
         
         Output:
-        Returns a list of locations.
+        Returns a list of locations with their IDs, names, coordinates, and other details.
         """)
 public class ReadLocationsFunction implements Function<ReadLocationsFunction.ReadLocationsRequest, List<Location>> {
     private final LocationService locationService;

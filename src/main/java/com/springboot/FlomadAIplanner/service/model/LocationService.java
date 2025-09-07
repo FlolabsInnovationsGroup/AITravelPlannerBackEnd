@@ -55,7 +55,7 @@ public class LocationService {
         log.info("Starting deletion of all locations for session ID: {}", sessionId);
 
         try {
-            // Fetch all locations associated with the session ID
+            // First check if there are any locations to delete (more efficient)
             List<Location> locations = locationRepository.findBySessionId(sessionId);
 
             if (locations == null || locations.isEmpty()) {
@@ -66,8 +66,8 @@ public class LocationService {
             // Log the count of locations being deleted for debugging purposes
             log.info("Found {} locations to delete for session ID: {}", locations.size(), sessionId);
 
-            // Use the repository to delete all locations
-            locationRepository.deleteAll(locations);
+            // Use the more efficient deleteBySessionId method from repository
+            locationRepository.deleteBySessionId(sessionId);
 
             // Log the successful deletion
             log.info("Successfully deleted all {} locations for session ID: {}", locations.size(), sessionId);

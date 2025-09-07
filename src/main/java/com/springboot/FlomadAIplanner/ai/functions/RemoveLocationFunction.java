@@ -19,14 +19,18 @@ import java.util.function.Function;
 @Slf4j
 @Component
 @Description("""
-        Function to remove a specific location by ID.
+        Function to remove a specific location by its exact ID.
         
         Purpose:
-        Use this function to remove a dot from the map.
-        Use this function If this object is no longer discussed in the context of the dialogue and its display on the map will only interfere and confuse the user. Only relevant objects that are discussed should be displayed on the map.
+        Use this function ONLY when you have the exact location ID to remove.
+        This is a low-level function typically used by other functions or when you already know the specific ID.
+        
+        IMPORTANT: If a user asks to remove a location by name (like "Eiffel Tower"), 
+        use RemoveLocationByNameFunction instead, which handles the name-to-ID lookup automatically.
         
         Notes:
         You MUST Use this Function AFTER reading all locations to understand which one you need to remove.
+        For user requests like "remove the Eiffel Tower", use RemoveLocationByNameFunction instead.
         
         Output:
         Returns a confirmation message.
