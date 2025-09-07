@@ -2,10 +2,10 @@ package com.springboot.FlomadAIplanner.ai.functions;
 
 import com.fasterxml.jackson.annotation.JsonClassDescription;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
-import com.springboot.FlomadAIplanner.ai.dto.AIMessageDTO;
 import com.springboot.FlomadAIplanner.model.entities.Location;
 import com.springboot.FlomadAIplanner.service.model.LocationService;
 import com.springboot.FlomadAIplanner.service.socket.WebSocketService;
+import com.springboot.FlomadAIplanner.util.SessionContextHolder;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -43,13 +43,18 @@ public class AddLocationFunction implements Function<AddLocationFunction.AddLoca
         log.info("🚀 Starting AddLocationFunction with request: {}", request);
 
         try {
-            // Get sessionId from request
+            // Get sessionId from request first, then fall back to context
             String sessionId = request.getSessionId();
-            log.info("🔍 Using sessionId from request: {}", sessionId);
+            if (sessionId == null || sessionId.isEmpty()) {
+                sessionId = SessionContextHolder.getSessionId();
+                log.info("🔍 Using sessionId from context: {}", sessionId);
+            } else {
+                log.info("🔍 Using sessionId from request: {}", sessionId);
+            }
 
             if (sessionId == null || sessionId.isEmpty()) {
-                log.error("❌ Session ID is missing in request. Cannot proceed with adding location.");
-                return "Error: Missing session ID in request.";
+                log.error("❌ Session ID is missing in both request and context. Cannot proceed with adding location.");
+                return "Error: Missing session ID in request and context.";
             }
 
             Location location = Location.builder()
@@ -95,8 +100,7 @@ public class AddLocationFunction implements Function<AddLocationFunction.AddLoca
         @JsonPropertyDescription("Optional. Type of location (hotel, restaurant, cafe, transport, attraction). Defaults to 'attraction' if not specified.")
         private String type;
         
-        @NotNull(message = "Session ID cannot be null.")
-        @JsonPropertyDescription("Required. The ID of the chat session this location belongs to.")
+        @JsonPropertyDescription("Optional. The ID of the chat session this location belongs to. If not provided, will be retrieved from context.")
         private String sessionId;
     }
 }

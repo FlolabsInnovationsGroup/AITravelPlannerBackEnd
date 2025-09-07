@@ -5,6 +5,7 @@ import com.springboot.FlomadAIplanner.ai.dto.AIMessageDTO;
 import com.springboot.FlomadAIplanner.model.entities.Location;
 import com.springboot.FlomadAIplanner.service.model.LocationService;
 import com.springboot.FlomadAIplanner.util.RequestService;
+import com.springboot.FlomadAIplanner.util.SessionContextHolder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Description;
@@ -39,12 +40,12 @@ public class ReadLocationsFunction implements Function<ReadLocationsFunction.Rea
     @Override
     public List<Location> apply(ReadLocationsRequest request) {
         try {
-            // Simplified sessionId extraction
-            String sessionId = requestService.getParameterFromRequest("sessionId");
-            log.info("🔍 Extracted sessionId: {}", sessionId);
+            // Get sessionId from context
+            String sessionId = SessionContextHolder.getSessionId();
+            log.info("🔍 Extracted sessionId from context: {}", sessionId);
 
             if (sessionId == null || sessionId.isEmpty()) {
-                log.error("❌ Failed to retrieve sessionId. ReadLocationsFunction cannot proceed.");
+                log.error("❌ Failed to retrieve sessionId from context. ReadLocationsFunction cannot proceed.");
                 return List.of();
             }
 

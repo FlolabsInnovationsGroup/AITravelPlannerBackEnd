@@ -5,6 +5,7 @@ import com.springboot.FlomadAIplanner.ai.dto.AIMessageDTO;
 import com.springboot.FlomadAIplanner.service.model.LocationService;
 import com.springboot.FlomadAIplanner.service.socket.WebSocketService;
 import com.springboot.FlomadAIplanner.util.RequestService;
+import com.springboot.FlomadAIplanner.util.SessionContextHolder;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -53,9 +54,9 @@ public class RemoveLocationFunction implements Function<RemoveLocationFunction.R
                 return "Location not found.";
             }
 
-            // Get session ID
-            String sessionId = requestService.getParameterFromRequest(AIMessageDTO.class.getDeclaredField("sessionId").getName());
-            log.info("📌 Session ID retrieved: {}", sessionId);
+            // Get session ID from context
+            String sessionId = SessionContextHolder.getSessionId();
+            log.info("📌 Session ID retrieved from context: {}", sessionId);
 
             // Delete location
             log.info("🗑 Deleting location ID: {}", request.getLocationId());
