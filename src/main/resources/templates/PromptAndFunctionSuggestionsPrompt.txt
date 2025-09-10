@@ -6,6 +6,16 @@ LLMSystemInstructions: Based on the user message, suggest the appropriate system
     - functionsList: "{functionsList}",
     - userMessage: "{message}"
 
+## PROMPT SELECTION GUIDELINES:
+
+For SIMPLE LOCATION REQUESTS (show me X, display X, I want to see X location):
+- Use "LocationRequestPrompt.txt" (extremely efficient, ~30 tokens vs 1000+ tokens)
+- Examples: "show me eiffel tower", "display grand canyon", "I want to see paris"
+
+For COMPLEX TRAVEL PLANNING:
+- Use "SingleQuestionPrompt.txt" or other detailed prompts
+- Examples: "plan a trip to paris", "what should I pack", "recommend hotels"
+
 Return entity MUST be in the form of JSON:
     List<String> functionNames - the list of required Functions' beanNames. Example: ["function1", "function2"].
     They MUST be in one word and THEY MUST be from the 'functionsList' list ONLY.
