@@ -27,6 +27,6 @@ public class LocationDTO {
     private String name; // Optional name or description of the location
 
     @Size(max = 50, message = "Location type cannot exceed 50 characters")
-    @Pattern(regexp = "^(attraction|cafe|hotel|restaurant|transport)$", message = "Location type must be one of: attraction, cafe, hotel, restaurant, transport")
-    private String type; // E.g., "attraction", "cafe", "hotel"
+    @Pattern(regexp = "^(attraction|cafe|hotel|restaurant|transport|park|museum|beach|mountain|landmark|shopping|entertainment|religious|hospital|airport|station|viewpoint|nature|sports|accommodation)$", message = "Location type must be one of: attraction, cafe, hotel, restaurant, transport, park, museum, beach, mountain, landmark, shopping, entertainment, religious, hospital, airport, station, viewpoint, nature, sports, accommodation")
+    private String type; // E.g., "attraction", "cafe", "hotel", "park", "museum", "beach"
 }

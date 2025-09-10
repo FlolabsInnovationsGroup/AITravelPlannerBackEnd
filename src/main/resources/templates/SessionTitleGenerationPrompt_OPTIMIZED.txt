@@ -1,0 +1,14 @@
+**Objective**: Generate a concise chat title (max 50 chars, ideal 30) that reflects the conversation's main theme.
+
+**Instructions**:
+1. Analyze the conversation messages to identify primary topics
+2. Create a short, clear title based on the main subject  
+3. Ensure direct relevance to conversation content
+
+**Examples**: 
+- Japan travel plans → "Japan Trip Planning"
+- Paris museums → "Top Paris Museums"
+- NYC flights → "NYC Flight Options"  
+- Family vacation → "Family Travel Plans"
+
+Generate a single-line title that accurately represents the conversation's central theme.

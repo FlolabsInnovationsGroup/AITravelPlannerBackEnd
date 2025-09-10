@@ -21,21 +21,30 @@ import java.util.function.Function;
 @Slf4j
 @Component
 @Description("""
-        Function to add a new location to the EXISTING MAP (accumulative).
-        It will display/show this place on the map to the User on the UI interface immediately after you call this Function.
+        Adds locations to existing map display, building cumulative travel itineraries. Each location appears 
+        as a visual marker on the user interface immediately after calling this function.
         
-        Purpose:
-        Use this function to ADD a new location (dot) to the map while keeping existing locations.
-        Use this when the user wants to ADD multiple locations or build an itinerary.
+        CORE PURPOSE: Accumulative location building - adds to existing map without clearing previous locations
         
-        IMPORTANT USAGE GUIDELINES:
-        - Use for "Add Paris to the map", "Also show Rome", "Include London"
-        - Use when building multi-destination itineraries
-        - DO NOT use for single location requests like "Show me Paris" (use ShowLocationFunction instead)
-        - DO NOT call this function multiple times for the same user request
+        PERFECT FOR:
+        - Multi-destination itineraries: "Add Paris, then Rome, then London"
+        - Progressive trip planning: "Also include Barcelona" 
+        - Building comprehensive travel routes
+        - Accumulating must-visit destinations
         
-        Output:
-        Returns a confirmation message.
+        WHEN TO USE vs ShowLocationFunction:
+        ✅ Use AddLocationFunction: "Add Paris to my itinerary", "Also show Rome", "Include London too"
+        ❌ Don't use for: Single location requests like "Show me Paris" (use ShowLocationFunction)
+        
+        SMART FEATURES:
+        - Duplicate request prevention (30-second timeout)
+        - Real-time UI updates via WebSocket
+        - Session context awareness
+        - Immediate visual feedback to users
+        
+        USAGE RULE: Do NOT call multiple times for same user request - consolidate locations into single call
+        
+        Returns: Confirmation message of successful location addition to map
         """)
 public class AddLocationFunction implements Function<AddLocationFunction.AddLocationRequest, String> {
     private final LocationService locationService;
@@ -209,7 +218,7 @@ public class AddLocationFunction implements Function<AddLocationFunction.AddLoca
         @JsonPropertyDescription("Optional. Name or description of the location.")
         private String name;
 
-        @JsonPropertyDescription("Optional. Type of location (hotel, restaurant, cafe, transport, attraction). Defaults to 'attraction' if not specified.")
+        @JsonPropertyDescription("Optional. Type of location (attraction, cafe, hotel, restaurant, transport, park, museum, beach, mountain, landmark, shopping, entertainment, religious, hospital, airport, station, viewpoint, nature, sports, accommodation). Defaults to 'attraction' if not specified.")
         private String type;
         
         @JsonPropertyDescription("Optional. The ID of the chat session this location belongs to. If not provided, will be retrieved from context.")

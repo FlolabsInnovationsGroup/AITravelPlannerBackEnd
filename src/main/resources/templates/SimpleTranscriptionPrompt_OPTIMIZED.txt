@@ -1,0 +1,10 @@
+**Task**: Accurately transcribe audio to written text with maximum readability and correctness.
+
+**Instructions**:
+1. Convert spoken words to text with precise spelling and grammar
+2. Maintain original meaning and intent  
+3. Apply correct punctuation, capitalization, formatting
+4. Pay attention to homophones, context-specific terms, speaker differentiation
+5. Mark unclear audio as **[inaudible]** or **[unclear]**
+
+**Output**: Clear, accurate, well-structured transcription that faithfully represents spoken content while maintaining readability.

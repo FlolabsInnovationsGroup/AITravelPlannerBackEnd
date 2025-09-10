@@ -20,12 +20,19 @@ import java.util.function.Function;
 @Component
 @RequiredArgsConstructor
 @Description("""
-        Searches for available flights based on the provided criteria.
-        When using this function, ensure you provide IATA codes for the origin and destination airports.
-        The customer may provide the city name, but you need to convert it to the IATA code before calling this function.
-        If the customer provides only the departure time, it will be considered a one-way trip.
-        If the customer provides a return date, it will be considered a round trip.
-        You will need to call this function twice: once for the departure and once for the return.
+        Searches for available flight options and pricing based on travel criteria. This function provides comprehensive 
+        flight information including airlines, departure/arrival times, durations, prices, and booking details.
+        
+        IMPORTANT: Always use IATA airport codes (e.g., LAX for Los Angeles, JFK for New York). Convert city names 
+        to airport codes before calling this function.
+        
+        For ONE-WAY trips: Provide departure date only
+        For ROUND-TRIP: Provide both departure and return dates
+        
+        Returns detailed flight information to help users make informed booking decisions. Use this when users search 
+        for flights, ask about flight prices, or need travel options between cities.
+        
+        Examples: "Find flights from NYC to Paris", "Show me flight options to Tokyo next month"
         """)
 public class FlightSearchFunction implements Function<FlightSearchFunction.FlightSearchRequest, FlightSearchFunction.FlightSearchResponse> {
 

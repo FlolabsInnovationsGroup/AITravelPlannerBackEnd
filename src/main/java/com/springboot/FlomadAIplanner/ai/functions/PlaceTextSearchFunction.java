@@ -29,9 +29,12 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 @Description("""
-        Provides place information based on a list of text queries.
-        Use this function to get detailed information about one or multiple places based on text searches.
-        This function processes a batch of place names, making it efficient for bulk queries.
+        Searches for detailed place information using text queries. This function finds exact locations, coordinates, 
+        and details for places like restaurants, hotels, landmarks, or addresses. Perfect for location verification, 
+        getting coordinates, and finding detailed place information. Use when users ask about specific places or 
+        need location details for trip planning. Can process multiple place queries efficiently in a single request.
+        
+        Examples: "Find details for Eiffel Tower", "Get coordinates for Central Park", "Search for Times Square info"
         """)
 
 public class PlaceTextSearchFunction

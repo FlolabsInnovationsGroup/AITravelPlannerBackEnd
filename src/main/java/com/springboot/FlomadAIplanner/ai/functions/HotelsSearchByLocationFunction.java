@@ -21,12 +21,23 @@ import java.util.function.Function;
 @Slf4j
 @Component
 @Description("""
-        Use this function to perform geocode-based searches for hotels.
-        This function accepts longitude and latitude details and other optional parameters to find hotels.
-        Before calling this function, use the "PlaceTextSearchFunction" to get the exact location (longitude and latitude) of a required place.
-        Geocode search allows specifying exact geographical points using latitude and longitude, and filters based on proximity, amenities, ratings, and hotel sources.
-        This method provides a way to discover hotels that are precisely tailored to geographical and preference-based needs.
-        To get the exact location (Google Maps link) for each of the found hotels, YOU MUST use the PlaceTextSearchFunction for EVERY found hotel separately.""")
+        Searches for hotels based on geographic location coordinates. This function finds hotels near specific 
+        latitude/longitude coordinates with detailed information including amenities, ratings, and pricing.
+        
+        WORKFLOW: First use PlaceTextSearchFunction to get exact coordinates, then use this function to find nearby hotels.
+        
+        Features:
+        - Geographic precision using latitude/longitude coordinates
+        - Filter by proximity, amenities, ratings, and hotel sources  
+        - Detailed hotel information including facilities and pricing
+        - Integration with multiple hotel booking sources
+        
+        IMPORTANT: After finding hotels, use PlaceTextSearchFunction for each hotel to get exact locations and Google Maps links.
+        
+        Use when users search for hotels in specific areas, need accommodation near landmarks, or want location-based hotel recommendations.
+        
+        Examples: "Find hotels near Central Park", "Show me hotels in downtown Paris", "Hotels within 5km of airport"
+        """)
 public class HotelsSearchByLocationFunction implements Function<HotelsSearchByLocationFunction.HotelSearchRequestWrapper, List<HotelSearchByGeocodeResponse>> {
 
     private final AmadeusHotelsSearchService amadeusHotelsSearchService;
