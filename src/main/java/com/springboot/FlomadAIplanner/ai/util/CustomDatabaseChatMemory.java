@@ -45,7 +45,7 @@ public class CustomDatabaseChatMemory implements ChatMemory {
 
                 // Add only the most recent messages
                 int start = Math.max(0, messages.size() - maxMessages);
-                List<Message> recentMessages = messages.subList(start, messages.size());
+                List<Message> recentMessages = new ArrayList<>(messages.subList(start, messages.size()));
                 
                 // Truncate messages to prevent token limit issues
                 for (int i = 0; i < recentMessages.size(); i++) {

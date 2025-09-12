@@ -61,7 +61,15 @@ public class FlightSearchFunction implements Function<FlightSearchFunction.Fligh
     @Data
     public static class FlightSearchRequest {
         @JsonPropertyDescription("A list of flight offer requests, each containing the criteria for searching flights, such as origin, destination, and dates.")
-        private final List<FlightOffersPostRequest> requests;
+        private List<FlightOffersPostRequest> requests;
+        
+        // No-args constructor for Jackson
+        public FlightSearchRequest() {}
+        
+        // Constructor with parameters
+        public FlightSearchRequest(List<FlightOffersPostRequest> requests) {
+            this.requests = requests;
+        }
     }
 
     @Data

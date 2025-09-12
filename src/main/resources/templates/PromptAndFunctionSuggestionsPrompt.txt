@@ -6,6 +6,18 @@ LLMSystemInstructions: Based on the user message, suggest the appropriate system
     - functionsList: "{functionsList}",
     - userMessage: "{message}"
 
+## CRITICAL PRIORITY RULES (CHECK FIRST):
+
+### EMERGENCY DETECTION (ABSOLUTE PRIORITY #1):
+- If user message contains ANY of: "stranded", "lost", "help", "emergency", "urgent", "need assistance", "trouble", "problem", "medical", "cancelled"
+- ALWAYS use "EmergencyAssistancePrompt.txt" immediately
+- Examples: "I'm stranded", "lost passport", "need help", "emergency assistance", "flight cancelled"
+
+### BUDGET DETECTION (HIGH PRIORITY #2):
+- If user message contains ANY of: "cheap", "budget", "affordable", "save money", "cost-effective", "economical", "low cost", "find cheap"
+- ALWAYS use "BudgetOptimizationPrompt.txt" 
+- Examples: "Find cheap flights", "budget travel", "affordable hotels", "save money"
+
 ## PROMPT SELECTION GUIDELINES:
 
 For SIMPLE LOCATION REQUESTS (show me X, display X, I want to see X location):
@@ -15,12 +27,15 @@ For SIMPLE LOCATION REQUESTS (show me X, display X, I want to see X location):
 - DO NOT use other prompts for simple location requests to avoid duplicate function calls
 
 For FLIGHT/HOTEL/TOUR SEARCHES and BOOKING GUIDANCE:
-- Use "BookingConfirmationPrompt.txt" when users need reservation information
+- Use "BookingConfirmationPrompt.txt" when users need reservation information WITHOUT budget concerns
 - Examples: "find flights to paris", "search hotels in tokyo", "book tour of rome"
+- NOTE: If budget keywords (cheap, affordable, budget) are present, use BudgetOptimizationPrompt.txt instead
 
-For EMERGENCY SITUATIONS:
-- Use "EmergencyAssistancePrompt.txt" for urgent travel help
-- Examples: "lost passport", "flight cancelled", "medical emergency", "need help"
+For EMERGENCY SITUATIONS (HIGHEST PRIORITY):
+- Use "EmergencyAssistancePrompt.txt" for urgent travel help and distress situations
+- Keywords: "stranded", "lost", "help", "emergency", "urgent", "need assistance", "trouble", "problem", "cancelled"
+- Examples: "lost passport", "flight cancelled", "medical emergency", "I'm stranded", "need help", "emergency", "urgent assistance"
+- CRITICAL: Emergency situations take ABSOLUTE PRIORITY over all other prompts
 
 For TRAVEL DOCUMENTS:
 - Use "TravelDocumentPrompt.txt" for visa/passport questions
@@ -34,9 +49,11 @@ For LANGUAGE/CULTURAL HELP:
 - Use "MultiLanguagePrompt.txt" for communication support
 - Examples: "translate phrases", "cultural customs", "language help"
 
-For BUDGET CONCERNS:
-- Use "BudgetOptimizationPrompt.txt" for cost saving
-- Examples: "cheaper alternatives", "budget travel", "save money"
+For BUDGET CONCERNS (HIGH PRIORITY):
+- Use "BudgetOptimizationPrompt.txt" for ANY cost-saving or budget-related requests
+- Keywords: "cheap", "budget", "affordable", "save money", "cost-effective", "economical", "low cost", "find cheap"
+- Examples: "cheaper alternatives", "budget travel", "save money", "find cheap flights", "affordable hotels"
+- IMPORTANT: Budget optimization takes PRIORITY over booking guidance when budget keywords are present
 
 For GROUP COORDINATION:
 - Use "GroupTravelPrompt.txt" for multiple travelers

@@ -2,10 +2,8 @@ package com.springboot.FlomadAIplanner.ai.functions;
 
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.springboot.FlomadAIplanner.dto.google.TextSearchRequest;
-import com.springboot.FlomadAIplanner.exceptions.api.GoogleAPIException;
 import com.springboot.FlomadAIplanner.service.google.GooglePlacesServiceAsync;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -16,11 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Description;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -37,23 +35,20 @@ import java.util.stream.Collectors;
         Examples: "Find details for Eiffel Tower", "Get coordinates for Central Park", "Search for Times Square info"
         """)
 
-public class PlaceTextSearchFunction
-//        implements AIFunction<PlaceTextSearchFunction.TextSearchRequestsWrapper, JsonNode>
-{
+public class PlaceTextSearchFunction implements Function<PlaceTextSearchFunction.TextSearchRequestsWrapper, JsonNode> {
 
 
     private final GooglePlacesServiceAsync googlePlacesService;
-    private final RestTemplate restTemplate;
 
     @Value("${google.api.key}") // ✅ Reads API Key from application.properties
     private String googleApiKey;
 
     @Autowired
-    public PlaceTextSearchFunction(GooglePlacesServiceAsync googlePlacesService, RestTemplate restTemplate) {
+    public PlaceTextSearchFunction(GooglePlacesServiceAsync googlePlacesService) {
         this.googlePlacesService = googlePlacesService;
-        this.restTemplate = restTemplate;
     }
 
+    @Override
     @Valid
     public JsonNode apply(TextSearchRequestsWrapper requestsWrapper) {
         log.info("🔎 Performing text search for {} queries...", requestsWrapper.getRequests().size());
