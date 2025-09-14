@@ -35,9 +35,10 @@ public class AgentConfig {
     @Qualifier("openAiAgent")
     public TextAgent<String, Flux<String>> openAiAgent(@Qualifier("openAiChatClient") ChatClient openAiChatClient,
                                                        @Qualifier("aiFunctionDescriptions") List<String> allFunctionDescriptions,
-                                                       @Qualifier("templatePrompts") Map<String, String> promptsList) {
+                                                       @Qualifier("templatePrompts") Map<String, String> promptsList,
+                                                       @Qualifier("promptMetadata") Map<String, String> promptMetadata) {
         return new TextAgentImpl<>(openAiChatClient, allFunctionDescriptions,
-                callMessageProcessingStrategy, streamMessageProcessingStrategy, promptsList);
+                callMessageProcessingStrategy, streamMessageProcessingStrategy, promptsList, promptMetadata);
     }
 
     /**
@@ -47,9 +48,10 @@ public class AgentConfig {
     @Qualifier("geminiAiAgent")
     public TextAgent<String, Flux<String>> geminiAiAgent(@Qualifier("geminiChatClient") ChatClient geminiChatClient,
                                                          @Qualifier("aiFunctionDescriptions") List<String> allFunctionDescriptions,
-                                                         @Qualifier("templatePrompts") Map<String, String> promptsList) {
+                                                         @Qualifier("templatePrompts") Map<String, String> promptsList,
+                                                         @Qualifier("promptMetadata") Map<String, String> promptMetadata) {
         return new TextAgentImpl<>(geminiChatClient, allFunctionDescriptions,
-                callMessageProcessingStrategy, streamMessageProcessingStrategy, promptsList);
+                callMessageProcessingStrategy, streamMessageProcessingStrategy, promptsList, promptMetadata);
     }
 
     /**
