@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.function.Function;
 
 @Slf4j
-@Component
+@Component("flightSearchFunction")
 @RequiredArgsConstructor
 @Description("""
         Searches for available flight options and pricing based on travel criteria. This function provides comprehensive 
