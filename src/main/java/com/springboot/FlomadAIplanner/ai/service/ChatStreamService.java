@@ -4,6 +4,7 @@ import com.springboot.FlomadAIplanner.ai.agents.Agent;
 import com.springboot.FlomadAIplanner.ai.dto.AIMessageDTO;
 import com.springboot.FlomadAIplanner.ai.factory.AgentFactory;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
@@ -26,7 +27,7 @@ public class ChatStreamService extends AbstractChatService {
      * @param promptsList            Map of prompt file names and their content
      */
     public ChatStreamService(AgentFactory agentFactory, List<String> aiFunctionDescriptions,
-                             Map<String, String> promptsList) {
+                             @Qualifier("templatePrompts") Map<String, String> promptsList) {
         super(agentFactory, aiFunctionDescriptions, promptsList);
         log.info("ChatStreamService initialized with necessary AI function descriptions.");
     }

@@ -26,7 +26,7 @@ public class JwtUtil {
 
     @Value("UeFAFJHgl8ZimyjRCiuq88PgIvti/LyaeaVdYbIvSYw=")
     private String SECRET_KEY;
-    @Value("3600000")
+    @Value("86400000") // 24 hours in milliseconds
     private long expirationTime;
 
     private SecretKey secretKey;

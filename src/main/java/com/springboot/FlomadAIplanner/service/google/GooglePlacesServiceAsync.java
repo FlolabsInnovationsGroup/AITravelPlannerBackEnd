@@ -41,10 +41,18 @@ public class GooglePlacesServiceAsync {
         log.info("Searching Google nearby places with request: {}", request);
         return CompletableFuture.supplyAsync(() -> {
             try {
+                String location = String.format("%f,%f", 
+                    request.getLocationRestriction().getCircle().getCenter().getLatitude(),
+                    request.getLocationRestriction().getCircle().getCenter().getLongitude());
+                int radius = (int) request.getLocationRestriction().getCircle().getRadius();
+                String type = String.join("|", request.getIncludedTypes());
+                
                 return googlePlacesClient.searchNearbyPlaces(
-                        "Bearer " + googleApiKey,  // ✅ Fix: API Key should be first
-                        placesFieldMask,           // ✅ Fix: FieldMask should be second
-                        request                    // ✅ Fix: Request should be last
+                        googleApiKey,              // API key as query parameter
+                        location,                  // Latitude,longitude
+                        radius,                    // Search radius in meters
+                        type,                      // Place types
+                        placesFieldMask            // Field mask
                 );
             } catch (Exception e) {
                 log.error("Error while searching nearby places", e);

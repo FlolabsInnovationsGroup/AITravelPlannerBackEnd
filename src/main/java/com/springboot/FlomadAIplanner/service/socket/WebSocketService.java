@@ -30,9 +30,13 @@ public class WebSocketService {
 
         try {
             messagingTemplate.convertAndSend(destination, message);
-            log.debug("LOCATION_ADDED message sent successfully.");
+            log.debug("LOCATION_ADDED message sent successfully to session: {}", location.getSessionId());
         } catch (Exception e) {
-            log.error("Failed to send LOCATION_ADDED message for sessionId: {} to {}: {}", location.getSessionId(), destination, e.getMessage());
+            log.error("Failed to send LOCATION_ADDED message for sessionId: {} to destination: {}. Error: {}", 
+                     location.getSessionId(), destination, e.getMessage(), e);
+            
+            // Attempt retry with exponential backoff
+            retryMessage(destination, message, 1, 3);
         }
     }
 
@@ -49,9 +53,13 @@ public class WebSocketService {
 
         try {
             messagingTemplate.convertAndSend(destination, message);
-            log.debug("MAP_CLEARED message sent successfully.");
+            log.debug("MAP_CLEARED message sent successfully to session: {}", sessionId);
         } catch (Exception e) {
-            log.error("Failed to send MAP_CLEARED message for sessionId: {} to {}: {}", sessionId, destination, e.getMessage());
+            log.error("Failed to send MAP_CLEARED message for sessionId: {} to destination: {}. Error: {}", 
+                     sessionId, destination, e.getMessage(), e);
+                     
+            // Attempt retry with exponential backoff
+            retryMessage(destination, message, 1, 3);
         }
     }
 
@@ -70,10 +78,39 @@ public class WebSocketService {
 
         try {
             messagingTemplate.convertAndSend(destination, message);
-            log.debug("LOCATION_REMOVED message sent successfully.");
+            log.debug("LOCATION_REMOVED message sent successfully to session: {}", sessionId);
         } catch (Exception e) {
-            log.error("Failed to send LOCATION_REMOVED message for sessionId: {}, locationId: {} to {}: {}", sessionId, locationId, destination, e.getMessage());
+            log.error("Failed to send LOCATION_REMOVED message for sessionId: {}, locationId: {} to destination: {}. Error: {}", 
+                     sessionId, locationId, destination, e.getMessage(), e);
+                     
+            // Attempt retry with exponential backoff
+            retryMessage(destination, message, 1, 3);
         }
+    }
+
+    // Retry mechanism for failed WebSocket messages
+    private void retryMessage(String destination, Map<String, Object> message, int attempt, int maxAttempts) {
+        if (attempt > maxAttempts) {
+            log.error("Failed to send WebSocket message after {} attempts to destination: {}", maxAttempts, destination);
+            return;
+        }
+
+        // Exponential backoff: 1s, 2s, 4s...
+        long delay = (long) Math.pow(2, attempt - 1) * 1000;
+        
+        log.info("Retrying WebSocket message to {} in {}ms (attempt {}/{})", destination, delay, attempt, maxAttempts);
+        
+        // Use a separate thread for retry to avoid blocking
+        new Thread(() -> {
+            try {
+                Thread.sleep(delay);
+                messagingTemplate.convertAndSend(destination, message);
+                log.info("WebSocket message retry successful for destination: {} on attempt {}", destination, attempt);
+            } catch (Exception e) {
+                log.warn("WebSocket message retry failed for destination: {} on attempt {}: {}", destination, attempt, e.getMessage());
+                retryMessage(destination, message, attempt + 1, maxAttempts);
+            }
+        }).start();
     }
 
     private Map<String, Object> createMessage(String type, Object payload) {

@@ -6,10 +6,8 @@ import com.springboot.FlomadAIplanner.dto.google.TextSearchRequest;
 import com.springboot.FlomadAIplanner.service.google.confg.GooglePlacesClientConfig;
 import feign.FeignException;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 
 /**
  * Feign client for interacting with the Google Places API.
@@ -38,11 +36,13 @@ public interface GooglePlacesClient {
      * The specific structure of the response depends on the requested fields.
      * @throws FeignException If an error occurs during the API call.
      */
-    @PostMapping(value = "/v1/places:searchNearby", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping("/nearbysearch/json")
     JsonNode searchNearbyPlaces(
-            @RequestHeader("Authorization") String apiKey, // ✅ Correct order: First
-            @RequestHeader("X-Goog-FieldMask") String fieldMask, // ✅ Correct order: Second
-            @RequestBody NearbyPlacesRequest request // ✅ Request body should always be last
+            @RequestParam("key") String apiKey,
+            @RequestParam("location") String location,
+            @RequestParam("radius") int radius,
+            @RequestParam("type") String type,
+            @RequestParam(value = "fields", required = false) String fieldMask
     );
 
 

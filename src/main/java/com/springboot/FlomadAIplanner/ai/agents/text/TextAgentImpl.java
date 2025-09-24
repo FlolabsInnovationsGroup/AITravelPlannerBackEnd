@@ -22,8 +22,9 @@ public class TextAgentImpl<S, F extends Flux<?>> extends AbstractTextAgent<S, F>
     public TextAgentImpl(ChatClient chatClient, List<String> permittedFunctions,
                          MessageProcessingStrategy<MessageProcessingStrategyDTO, S> callMessageProcessingStrategy,
                          MessageProcessingStrategy<MessageProcessingStrategyDTO, F> streamMessageProcessingStrategy,
-                         Map<String, String> promptsList) {
-        super(chatClient, permittedFunctions, callMessageProcessingStrategy, streamMessageProcessingStrategy, promptsList);
+                         Map<String, String> promptsList,
+                         Map<String, String> promptMetadata) {
+        super(chatClient, permittedFunctions, callMessageProcessingStrategy, streamMessageProcessingStrategy, promptsList, promptMetadata);
     }
 
     @Override

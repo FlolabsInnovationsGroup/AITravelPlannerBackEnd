@@ -1,0 +1,16 @@
+Select system prompt and functions for user message.
+
+Available prompts: {promptMetadata}
+Available functions: {functionsList} 
+User message: {message}
+
+Rules:
+- Emergency words -> EmergencyAssistancePrompt.txt
+- Budget words -> BudgetOptimizationPrompt.txt
+- Location requests -> LocationRequestPrompt.txt  
+- Booking requests -> BookingConfirmationPrompt.txt
+- Trip planning -> UnifiedPlanningPrompt.txt
+- Default -> SingleQuestionPrompt.txt
+
+Return JSON only:
+{{"systemPrompt": "LocationRequestPrompt.txt", "functionNames": ["addLocationFunction"]}}

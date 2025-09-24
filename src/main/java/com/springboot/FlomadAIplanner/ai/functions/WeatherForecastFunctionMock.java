@@ -1,40 +1,45 @@
 package com.springboot.FlomadAIplanner.ai.functions;
 
+import com.fasterxml.jackson.annotation.JsonPropertyDescription;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Description;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Function;
 
 @Slf4j
 @Component
-@Description("Provides weather forecasts for a list of locations and dates.")
-public class WeatherForecastFunctionMock implements Function<List<WeatherForecastFunctionMock.WeatherForecastRequest>, List<WeatherForecastFunctionMock.WeatherForecastResponse>> {
+@Description("Provides weather forecasts for a location and date.")
+public class WeatherForecastFunctionMock implements Function<WeatherForecastFunctionMock.WeatherForecastRequest, WeatherForecastFunctionMock.WeatherForecastResponse> {
 
     @Override
-    public List<WeatherForecastResponse> apply(List<WeatherForecastRequest> requests) {
-        List<WeatherForecastResponse> responses = new ArrayList<>();
-        for (WeatherForecastRequest request : requests) {
-            log.info("Fetching weather forecast for location: {} on date: {}", request.getLocation(), request.getDate());
-            // Mock implementation for each request
-            WeatherForecastResponse response = new WeatherForecastResponse("Sunny", 25);
-            responses.add(response);
-        }
-        return responses;
+    public WeatherForecastResponse apply(WeatherForecastRequest request) {
+        log.info("Fetching weather forecast for location: {} on date: {}", request.getLocation(), request.getDate());
+        // Mock implementation
+        return new WeatherForecastResponse("Sunny", 25, "Clear skies expected throughout the day");
     }
 
     @Data
     public static class WeatherForecastRequest {
+        @JsonPropertyDescription("The location to get weather forecast for (e.g., 'Paris, France')")
         private String location;
+        
+        @JsonPropertyDescription("The date for the forecast in YYYY-MM-DD format")
         private String date;
     }
 
     @Data
+    @AllArgsConstructor
     public static class WeatherForecastResponse {
-        private final String weather;
-        private final int temperature;
+        @JsonPropertyDescription("The weather condition (e.g., 'Sunny', 'Rainy', 'Cloudy')")
+        private String weather;
+        
+        @JsonPropertyDescription("The temperature in Celsius")
+        private int temperature;
+        
+        @JsonPropertyDescription("Additional weather details and recommendations")
+        private String description;
     }
 }

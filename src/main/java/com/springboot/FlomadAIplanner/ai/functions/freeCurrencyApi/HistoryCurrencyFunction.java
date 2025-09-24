@@ -18,11 +18,32 @@ import java.util.function.Function;
 
 @Slf4j
 @Component
-@Description("Retrieves the historical currencies exchange rate conversion for base currency against currencies list" +
-        "Use this function to retrieve the historical currencies exchange rate conversion on a certain date. " +
-        "Use this function whenever customer asks about currency exchange on a specific date. " +
-        "If the base currency is not provided in currencies list, you should add base currency into currencies list." +
-        "If this function returns errors node, Do not proceed this function with the same input again.")
+@Description("""
+        Retrieves historical exchange rates for specific dates, enabling travelers to analyze currency trends 
+        and make informed decisions about timing their currency exchanges.
+        
+        CORE PURPOSE: Historical currency rate analysis for strategic travel planning
+        
+        KEY FEATURES:
+        - Historical exchange rates for specific dates
+        - Currency trend analysis capability
+        - Base currency to multiple targets on past dates
+        - Travel timing optimization support
+        
+        AUTOMATIC OPTIMIZATION: If base currency not in currencies list, it will be automatically added
+        
+        PERFECT FOR:
+        - "What was the USD to EUR rate last month?"
+        - "Show me exchange rates for my travel dates" 
+        - Currency trend analysis for travel timing
+        - Historical budget planning and comparisons
+        
+        ERROR HANDLING: If function returns error node, do NOT retry with same input parameters
+        
+        USAGE PATTERN: Use when travelers ask about past exchange rates, currency trends, or specific date conversions
+        
+        Examples: Historical rate inquiries, travel timing decisions, currency trend analysis for past periods
+        """)
 public class HistoryCurrencyFunction implements Function<HistoryCurrencyFunction.HistoryCurrencyRequest, JsonNode> {
 
     private final FreeCurrencyService freeCurrencyService;

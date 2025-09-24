@@ -1,6 +1,5 @@
 package com.springboot.FlomadAIplanner.ai.config;
 
-import com.springboot.FlomadAIplanner.ai.client.CustomChatClient;
 import com.springboot.FlomadAIplanner.ai.config.cnst.AIModel;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.PromptChatMemoryAdvisor;

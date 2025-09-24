@@ -5,6 +5,7 @@ import com.springboot.FlomadAIplanner.ai.dto.AIMessageDTO;
 import com.springboot.FlomadAIplanner.service.model.LocationService;
 import com.springboot.FlomadAIplanner.service.socket.WebSocketService;
 import com.springboot.FlomadAIplanner.util.RequestService;
+import com.springboot.FlomadAIplanner.util.SessionContextHolder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Description;
@@ -49,11 +50,11 @@ public class ClearLocationsFunction implements Function<ClearLocationsFunction.C
     public String apply(ClearLocationsRequest request) {
         String sessionId;
         try {
-            // Retrieve session ID
-            log.info("Attempting to retrieve sessionId...");
-            sessionId = requestService.getParameterFromRequest(AIMessageDTO.class.getDeclaredField("sessionId").getName());
+            // Retrieve session ID from context
+            log.info("Attempting to retrieve sessionId from context...");
+            sessionId = SessionContextHolder.getSessionId();
             if (sessionId == null || sessionId.isEmpty()) {
-                log.error("Session ID is null or empty. Aborting clear operation.");
+                log.error("Session ID is null or empty in context. Aborting clear operation.");
                 return "Error: Session ID is missing or invalid.";
             }
             log.info("Starting ClearLocationsFunction for sessionId: {}", sessionId);
@@ -77,9 +78,6 @@ public class ClearLocationsFunction implements Function<ClearLocationsFunction.C
             }
 
             return "All locations cleared successfully.";
-        } catch (NoSuchFieldException e) {
-            log.error("Field 'sessionId' not found: {}", e.getMessage());
-            return "Error: 'sessionId' field is missing.";
         } catch (Exception e) {
             log.error("Error in ClearLocationsFunction: {}", e.getMessage(), e);
             return "Error clearing locations: " + e.getMessage();

@@ -5,6 +5,7 @@ import com.springboot.FlomadAIplanner.ai.dto.AIMessageDTO;
 import com.springboot.FlomadAIplanner.model.entities.Location;
 import com.springboot.FlomadAIplanner.service.model.LocationService;
 import com.springboot.FlomadAIplanner.util.RequestService;
+import com.springboot.FlomadAIplanner.util.SessionContextHolder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Description;
@@ -16,16 +17,33 @@ import java.util.function.Function;
 @Slf4j
 @Component
 @Description("""
-        Function to retrieve all locations associated with a specific session.
+        Retrieves all locations currently displayed on the user's map for the active session. Essential 
+        for understanding current itinerary state and preventing duplicate additions.
         
-        Purpose:
-        Use this function to retrieve all dots on the map for a given chat session.
-        You MUST Use this Function BEFORE adding new locations to the map to avoid duplicates.
-        You MUST Use this Function BEFORE removing locations from the map to receive
-        the Ids of the existing locations to understand which one you need to remove.
+        CORE PURPOSE: Map state awareness and duplicate prevention
         
-        Output:
-        Returns a list of locations.
+        CRITICAL WORKFLOW: ALWAYS call BEFORE adding new locations to avoid duplicates and understand current map state
+        
+        KEY FEATURES:
+        - Complete session location inventory
+        - Location details (IDs, names, coordinates)
+        - Duplicate prevention support
+        - Current map state analysis
+        
+        PERFECT FOR:
+        - "What's currently on my map?"
+        - Pre-addition duplicate checking
+        - Itinerary state verification
+        - Session location management
+        
+        OPTIMIZATION NOTE: For location removal by name, use RemoveLocationByNameFunction directly instead of calling this + RemoveLocationFunction
+        
+        SMART USAGE:
+        - Check current map state before modifications
+        - Verify location existence before operations
+        - Maintain session location awareness
+        
+        Returns: Complete list of locations with IDs, names, coordinates, and session details
         """)
 public class ReadLocationsFunction implements Function<ReadLocationsFunction.ReadLocationsRequest, List<Location>> {
     private final LocationService locationService;
@@ -39,12 +57,12 @@ public class ReadLocationsFunction implements Function<ReadLocationsFunction.Rea
     @Override
     public List<Location> apply(ReadLocationsRequest request) {
         try {
-            // Simplified sessionId extraction
-            String sessionId = requestService.getParameterFromRequest("sessionId");
-            log.info("🔍 Extracted sessionId: {}", sessionId);
+            // Get sessionId from context
+            String sessionId = SessionContextHolder.getSessionId();
+            log.info("🔍 Extracted sessionId from context: {}", sessionId);
 
             if (sessionId == null || sessionId.isEmpty()) {
-                log.error("❌ Failed to retrieve sessionId. ReadLocationsFunction cannot proceed.");
+                log.error("❌ Failed to retrieve sessionId from context. ReadLocationsFunction cannot proceed.");
                 return List.of();
             }
 
