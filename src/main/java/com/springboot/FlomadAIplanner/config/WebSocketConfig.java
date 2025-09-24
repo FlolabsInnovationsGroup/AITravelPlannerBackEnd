@@ -23,15 +23,15 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 .setClientLibraryUrl("https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js")
                 .setSessionCookieNeeded(false) // ✅ SECURITY: Disable session cookies for WebSocket
                 .setWebSocketEnabled(true)
-                .setHeartbeatTime(25000)
-                .setDisconnectDelay(5000);
+                .setHeartbeatTime(60000)
+                .setDisconnectDelay(30000);
     }
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         ThreadPoolTaskScheduler taskScheduler = createTaskScheduler();
         registry.enableSimpleBroker("/topic")
-               .setHeartbeatValue(new long[]{10000, 10000})
+               .setHeartbeatValue(new long[]{30000, 30000})
                .setTaskScheduler(taskScheduler);
         registry.setApplicationDestinationPrefixes("/app");
         registry.setPreservePublishOrder(true);
