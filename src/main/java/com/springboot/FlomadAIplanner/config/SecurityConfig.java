@@ -26,9 +26,17 @@ public class SecurityConfig {
             )
             .oauth2Login(oauth2 -> oauth2
                 .successHandler((request, response, authentication) -> {
-                    response.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+                    // Determine redirect URL based on environment
+                    String redirectUrl = request.getRequestURL().toString().contains("api.flomadtravel.com") 
+                        ? "https://www.flomadtravel.com/chat" 
+                        : "http://localhost:3000/chat";
+                    
+                    response.setHeader("Access-Control-Allow-Origin", 
+                        redirectUrl.startsWith("https://www.flomadtravel.com") 
+                            ? "https://www.flomadtravel.com" 
+                            : "http://localhost:3000");
                     response.setHeader("Access-Control-Allow-Credentials", "true");
-                    response.sendRedirect("http://localhost:3000/chat");
+                    response.sendRedirect(redirectUrl);
                 })
             );
         
@@ -38,7 +46,12 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+        // Allow both local development and production domains
+        configuration.setAllowedOrigins(Arrays.asList(
+            "http://localhost:3000",
+            "https://www.flomadtravel.com",
+            "https://flomadtravel.com"
+        ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
