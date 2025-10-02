@@ -51,8 +51,10 @@ public class WebSecurityConfig {
             "/api/auth/guest-token",
             "/api/chat/call",
             "/api/chat/stream",
-            "/api/chat/entity",
-            "/sessions",
+            "/api/chat/call/entity",
+            "/api/locations/**",
+            "/users/current",
+            "/sessions/**",
             "/oauth2/**",
             "/login/oauth2/**",
             "/ws/**"
@@ -94,7 +96,6 @@ public class WebSecurityConfig {
                                 "/swagger-ui.html"
                         ).permitAll()
 
-                        .requestMatchers("/users/current").authenticated()
                         .requestMatchers("/users/**").hasRole("ADMIN")
                         .requestMatchers("/api/chat", "/api/stream").hasAnyRole("ADMIN", "USER")
 

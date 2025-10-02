@@ -11,17 +11,30 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 
-@Configuration
-@EnableWebSecurity
+//@Configuration
+//@EnableWebSecurity
 public class SecurityConfig {
 
-    @Bean
+    //@Bean(name = "oauthSecurityFilterChain")
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/sessions/**", "/login", "/error", "/oauth2/**").permitAll()
+                .requestMatchers(
+                    "/login",
+                    "/error",
+                    "/oauth2/**",
+                    "/api/auth/**",
+                    "/api/chat/**",
+                    "/api/locations/**",
+                    "/users/current",
+                    "/sessions/**",
+                    "/ws/**",
+                    "/v3/api-docs/**",
+                    "/swagger-ui/**",
+                    "/swagger-ui.html"
+                ).permitAll()
                 .anyRequest().authenticated()
             )
             .oauth2Login(oauth2 -> oauth2
@@ -43,7 +56,7 @@ public class SecurityConfig {
         return http.build();
     }
 
-    @Bean
+    //@Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         // Allow both local development and production domains
