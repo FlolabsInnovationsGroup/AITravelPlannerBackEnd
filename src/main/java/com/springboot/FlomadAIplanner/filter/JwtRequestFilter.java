@@ -16,6 +16,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 @Slf4j
 @Component
@@ -25,10 +27,35 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     private final CustomUserDetailsService customUserDetailsService;
     private final JwtUtil jwtUtil;
 
+    // List of public endpoints that should skip JWT validation
+    private static final List<String> PUBLIC_ENDPOINTS = Arrays.asList(
+            "/api/auth/signup",
+            "/api/auth/signin",
+            "/api/auth/verify",
+            "/api/auth/guest-token",
+            "/api/chat/call",
+            "/api/chat/stream",
+            "/api/chat/call/entity",
+            "/api/audio/transcribe",
+            "/api/locations",
+            "/ws",
+            "/oauth2",
+            "/login/oauth2"
+    );
+
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getRequestURI();
-        return path.startsWith("/ws") || path.startsWith("/api/audio/transcribe"); // ✅ Exclude audio transcription
+        
+        // Check if path matches any public endpoint
+        boolean isPublic = PUBLIC_ENDPOINTS.stream()
+                .anyMatch(endpoint -> path.startsWith(endpoint));
+        
+        if (isPublic) {
+            log.debug("Skipping JWT filter for public endpoint: {}", path);
+        }
+        
+        return isPublic;
     }
 
     @Override
