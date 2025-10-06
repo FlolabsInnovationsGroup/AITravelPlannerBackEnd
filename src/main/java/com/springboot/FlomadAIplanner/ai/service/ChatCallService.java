@@ -4,7 +4,6 @@ import com.springboot.FlomadAIplanner.ai.agents.Agent;
 import com.springboot.FlomadAIplanner.ai.dto.AIMessageDTO;
 import com.springboot.FlomadAIplanner.ai.factory.AgentFactory;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -20,7 +19,6 @@ public class ChatCallService extends AbstractChatService {
 
     private final AgentFactory agentFactory;
 
-    @Autowired
     public ChatCallService(AgentFactory agentFactory,
                            List<String> aiFunctionDescriptions,
                            @Qualifier("templatePrompts") Map<String, String> promptsList) {

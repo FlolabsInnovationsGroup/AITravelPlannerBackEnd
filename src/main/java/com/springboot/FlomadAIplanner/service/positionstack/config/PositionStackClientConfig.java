@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class PositionStackClientConfig {
 
-    @Value("${positionstack.api.key}")
+    @Value("${position-stack.api.key}")
     private String apiKey;
 
     @Bean

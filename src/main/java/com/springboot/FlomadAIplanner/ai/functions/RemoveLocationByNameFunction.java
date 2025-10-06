@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.springboot.FlomadAIplanner.model.entities.Location;
 import com.springboot.FlomadAIplanner.service.model.LocationService;
 import com.springboot.FlomadAIplanner.service.socket.WebSocketService;
-import com.springboot.FlomadAIplanner.util.RequestService;
 import com.springboot.FlomadAIplanner.util.SessionContextHolder;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -44,12 +43,10 @@ public class RemoveLocationByNameFunction implements Function<RemoveLocationByNa
 
     private final LocationService locationService;
     private final WebSocketService webSocketService;
-    private final RequestService requestService;
 
-    public RemoveLocationByNameFunction(LocationService locationService, WebSocketService webSocketService, RequestService requestService) {
+    public RemoveLocationByNameFunction(LocationService locationService, WebSocketService webSocketService) {
         this.locationService = locationService;
         this.webSocketService = webSocketService;
-        this.requestService = requestService;
     }
 
     @Override

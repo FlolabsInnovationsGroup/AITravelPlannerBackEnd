@@ -29,8 +29,8 @@ public class AudioTranscriptionService {
     public String transcribeAudio(MultipartFile audioFile) throws IOException {
         Resource audioResource = convertMultipartFileToResource(audioFile);
         OpenAiAudioTranscriptionOptions transcriptionOptions = OpenAiAudioTranscriptionOptions.builder()
-                .withPrompt(transcriptionPrompt)
-                .withResponseFormat(TranscriptResponseFormat.TEXT)
+                .prompt(transcriptionPrompt)
+                .responseFormat(TranscriptResponseFormat.TEXT)
                 .build();
         AudioTranscriptionPrompt prompt = new AudioTranscriptionPrompt(audioResource, transcriptionOptions);
         AudioTranscriptionResponse response = transcriptionModel.call(prompt);

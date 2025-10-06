@@ -305,10 +305,6 @@ class EnhancedChatCallServiceTest {
 
     private Object createMockEntityResponse() {
         return new Object() {
-            public String getMessage() {
-                return "Entity response message";
-            }
-            
             @Override
             public String toString() {
                 return "EntityResponse{message='Entity response message'}";

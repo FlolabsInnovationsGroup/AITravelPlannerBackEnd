@@ -3,7 +3,6 @@ package com.springboot.FlomadAIplanner.ai.factory;
 import com.springboot.FlomadAIplanner.ai.agents.Agent;
 import com.springboot.FlomadAIplanner.ai.dto.AIMessageDTO;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +25,6 @@ public class AgentFactory {
      * @param agents       A list of available agents that implement the Agent interface.
      * @param defaultAgent The default agent to be used when no specific agent is selected.
      */
-    @Autowired
     public AgentFactory(List<Agent> agents, @Qualifier("openAiAgent") Agent defaultAgent) {
         log.info("AgentFactory initialized with {} agents.", agents.size());
         this.agents = agents;

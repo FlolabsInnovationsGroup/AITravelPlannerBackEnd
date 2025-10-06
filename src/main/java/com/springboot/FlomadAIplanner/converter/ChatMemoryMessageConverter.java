@@ -15,10 +15,10 @@ public class ChatMemoryMessageConverter implements Converter<org.springframework
             log.info("Source message is 'null'");
             return null;
         }
-        log.info("Converting message to entity: {}", StringUtils.substring(source.getContent(), 0, 50));
+        log.info("Converting message to entity: {}", StringUtils.substring(source.getText(), 0, 50));
 
         return Message.builder()
-                .content(source.getContent())
+                .content(source.getText())
                 .messageType(source.getMessageType())
                 .metadata(source.getMetadata())
                 .build();

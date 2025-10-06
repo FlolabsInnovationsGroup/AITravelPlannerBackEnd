@@ -8,7 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Description;
 import org.springframework.stereotype.Component;
 
@@ -48,7 +47,6 @@ public class HistoryCurrencyFunction implements Function<HistoryCurrencyFunction
 
     private final FreeCurrencyService freeCurrencyService;
 
-    @Autowired
     public HistoryCurrencyFunction(FreeCurrencyService freeCurrencyService) {
         this.freeCurrencyService = freeCurrencyService;
     }

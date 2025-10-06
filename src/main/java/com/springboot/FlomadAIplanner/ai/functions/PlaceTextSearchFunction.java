@@ -10,7 +10,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Description;
 import org.springframework.stereotype.Component;
@@ -43,7 +42,6 @@ public class PlaceTextSearchFunction implements Function<PlaceTextSearchFunction
     @Value("${google.api.key}") // ✅ Reads API Key from application.properties
     private String googleApiKey;
 
-    @Autowired
     public PlaceTextSearchFunction(GooglePlacesServiceAsync googlePlacesService) {
         this.googlePlacesService = googlePlacesService;
     }

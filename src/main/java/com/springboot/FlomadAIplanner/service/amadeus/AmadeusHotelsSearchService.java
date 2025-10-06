@@ -6,7 +6,6 @@ import com.springboot.FlomadAIplanner.dto.amadeus.HotelSearchByGeocodeRequest;
 import com.springboot.FlomadAIplanner.dto.amadeus.HotelSearchByGeocodeResponse;
 import com.springboot.FlomadAIplanner.exceptions.api.AmadeusAPIException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,7 +16,6 @@ public class AmadeusHotelsSearchService {
 
     private final AmadeusClient amadeusClient;
 
-    @Autowired
     public AmadeusHotelsSearchService(AmadeusClient amadeusClient) {
         this.amadeusClient = amadeusClient;
     }
