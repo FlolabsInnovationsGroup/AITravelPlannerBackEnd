@@ -1,10 +1,8 @@
 package com.springboot.FlomadAIplanner.ai.functions;
 
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
-import com.springboot.FlomadAIplanner.ai.dto.AIMessageDTO;
 import com.springboot.FlomadAIplanner.model.entities.Location;
 import com.springboot.FlomadAIplanner.service.model.LocationService;
-import com.springboot.FlomadAIplanner.util.RequestService;
 import com.springboot.FlomadAIplanner.util.SessionContextHolder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -47,11 +45,9 @@ import java.util.function.Function;
         """)
 public class ReadLocationsFunction implements Function<ReadLocationsFunction.ReadLocationsRequest, List<Location>> {
     private final LocationService locationService;
-    private final RequestService requestService;
 
-    public ReadLocationsFunction(LocationService locationService, RequestService requestService) {
+    public ReadLocationsFunction(LocationService locationService) {
         this.locationService = locationService;
-        this.requestService = requestService;
     }
 
     @Override

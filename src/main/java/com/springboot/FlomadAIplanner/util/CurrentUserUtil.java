@@ -19,7 +19,6 @@ public class CurrentUserUtil {
         this.userService = userService;
     }
 
-    @SuppressWarnings("unused")
     public User getCurrentUsernameFromRequest(HttpServletRequest request) {
         final String authorizationHeader = request.getHeader("Authorization");
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
@@ -30,7 +29,6 @@ public class CurrentUserUtil {
         return null;
     }
 
-    @SuppressWarnings("unused")
     public User getCurrentUserFromSecurityContext() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {

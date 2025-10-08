@@ -38,9 +38,10 @@ public class PromptsConfig {
         Resource[] resources = resolver.getResources("classpath:/templates/general-instructions-variants/*.*");
 
         for (Resource resource : resources) {
-            String content = new BufferedReader(new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8))
-                    .lines()
-                    .collect(Collectors.joining("\n"));
+            String content;
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8))) {
+                content = reader.lines().collect(Collectors.joining("\n"));
+            }
             content = OPEN_DELIMITER.concat(content).concat(CLOSE_DELIMITER);
 
             String fileName = resource.getFilename();

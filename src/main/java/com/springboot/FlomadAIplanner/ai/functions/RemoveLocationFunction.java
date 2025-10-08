@@ -1,10 +1,8 @@
 package com.springboot.FlomadAIplanner.ai.functions;
 
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
-import com.springboot.FlomadAIplanner.ai.dto.AIMessageDTO;
 import com.springboot.FlomadAIplanner.service.model.LocationService;
 import com.springboot.FlomadAIplanner.service.socket.WebSocketService;
-import com.springboot.FlomadAIplanner.util.RequestService;
 import com.springboot.FlomadAIplanner.util.SessionContextHolder;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -39,12 +37,10 @@ public class RemoveLocationFunction implements Function<RemoveLocationFunction.R
 
     private final LocationService locationService;
     private final WebSocketService webSocketService;
-    private final RequestService requestService;
 
-    public RemoveLocationFunction(LocationService locationService, WebSocketService webSocketService, RequestService requestService) {
+    public RemoveLocationFunction(LocationService locationService, WebSocketService webSocketService) {
         this.locationService = locationService;
         this.webSocketService = webSocketService;
-        this.requestService = requestService;
     }
 
     @Override

@@ -122,12 +122,6 @@ public class UserService implements CrudService<User, String> {
         log.info("User verified successfully with ID: {}", user.getId());
     }
 
-    @SuppressWarnings("unused")
-    public User findUserByUsername(String username) {
-        log.debug("Finding user by username: {}", username);
-        return userRepository.findByUsername(username);
-    }
-
     public User findByUsernameOrEmail(String identifier) {
         log.debug("Finding user by username or email: {}", identifier);
         return userRepository.findByUsernameOrEmail(identifier);

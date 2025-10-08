@@ -3,11 +3,9 @@ package com.springboot.FlomadAIplanner.ai.controller;
 import com.springboot.FlomadAIplanner.ai.dto.AIMessageDTO;
 import com.springboot.FlomadAIplanner.ai.dto.AIMessageResponse;
 import com.springboot.FlomadAIplanner.ai.service.ChatCallService;
-import com.springboot.FlomadAIplanner.ai.service.ChatStreamService;
 import com.springboot.FlomadAIplanner.ai.agents.audio.AudioTranscriptionService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,14 +18,10 @@ import org.springframework.web.multipart.MultipartFile;
 public class ChatController {
 
     private final ChatCallService chatCallService;
-    private final ChatStreamService chatStreamService;
     private final AudioTranscriptionService audioTranscriptionService;
 
-    @Autowired
-    public ChatController(ChatCallService chatCallService, ChatStreamService chatStreamService,
-                          AudioTranscriptionService audioTranscriptionService) {
+    public ChatController(ChatCallService chatCallService, AudioTranscriptionService audioTranscriptionService) {
         this.chatCallService = chatCallService;
-        this.chatStreamService = chatStreamService;
         this.audioTranscriptionService = audioTranscriptionService;
     }
 
@@ -53,6 +47,12 @@ public class ChatController {
         log.info("📨 Received entity message with sessionId: {}", message != null ? message.getSessionId() : "No Message");
 
         AIMessageResponse response = chatCallService.processEntityMessage(message, AIMessageResponse.class);
+        
+        // Debug logging to track response
+        log.info("🔍 Debug - AI Response object: {}", response);
+        log.info("🔍 Debug - Response message: {}", response != null ? response.getMessage() : "null");
+        log.info("🔍 Debug - Response suggestions: {}", response != null ? response.getSuggestions() : "null");
+        
         return ResponseEntity.ok(response);
     }
 

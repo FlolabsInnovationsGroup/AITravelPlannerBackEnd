@@ -92,7 +92,7 @@ public class WebSecurityConfig {
                         .requestMatchers(
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
-                                "actuator/health",
+                                "/actuator/health",
                                 "/swagger-ui.html"
                         ).permitAll()
 

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.springboot.FlomadAIplanner.dto.amadeus.*;
 import com.springboot.FlomadAIplanner.exceptions.api.AmadeusAPIException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -13,7 +12,6 @@ public class AmadeusFlightsService {
 
     private final AmadeusClient amadeusClient;
 
-    @Autowired
     public AmadeusFlightsService(AmadeusClient amadeusClient) {
         this.amadeusClient = amadeusClient;
     }
@@ -30,7 +28,6 @@ public class AmadeusFlightsService {
         }
     }
 
-    @SuppressWarnings("unused")
     public JsonNode getFlightDestinations(FlightDestinationsRequest request) throws AmadeusAPIException {
         log.info("Getting flight destinations from origin: {} with max price: {}", request.getOrigin(), request.getMaxPrice());
         try {

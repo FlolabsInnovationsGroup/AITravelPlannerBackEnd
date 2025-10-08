@@ -1,0 +1,342 @@
+{
+  "properties": [
+    {
+      "name": "application.cors.allowed.origins",
+      "type": "java.lang.String",
+      "description": "Comma-separated list of allowed CORS origins for the application."
+    },
+    {
+      "name": "application.cors.allowed.methods",
+      "type": "java.lang.String",
+      "description": "Comma-separated list of allowed HTTP methods for CORS."
+    },
+    {
+      "name": "application.cors.allowed.headers",
+      "type": "java.lang.String",
+      "description": "Comma-separated list of allowed headers for CORS."
+    },
+    {
+      "name": "application.cors.allow.credentials",
+      "type": "java.lang.Boolean",
+      "description": "Whether to allow credentials in CORS requests."
+    },
+    {
+      "name": "application.guest-message-limit",
+      "type": "java.lang.Integer",
+      "description": "Maximum number of messages allowed for guest users."
+    },
+    {
+      "name": "application.email.confirmation.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether email confirmation is enabled for user registration."
+    },
+    {
+      "name": "google.api.key",
+      "type": "java.lang.String",
+      "description": "Google API key for accessing Google services."
+    },
+    {
+      "name": "google.api.baseurl",
+      "type": "java.lang.String",
+      "description": "Base URL for Google API requests."
+    },
+    {
+      "name": "google.places.fieldMask",
+      "type": "java.lang.String",
+      "description": "Field mask for Google Places API responses."
+    },
+    {
+      "name": "google.textSearch.fieldMask",
+      "type": "java.lang.String",
+      "description": "Field mask for Google Text Search API responses."
+    },
+    {
+      "name": "google.places.max-results",
+      "type": "java.lang.Integer",
+      "description": "Maximum number of results to return from Google Places API."
+    },
+    {
+      "name": "viator.api.key",
+      "type": "java.lang.String",
+      "description": "Viator API key for accessing Viator services."
+    },
+    {
+      "name": "viator.api.partnerKey",
+      "type": "java.lang.String",
+      "description": "Viator partner key for API authentication."
+    },
+    {
+      "name": "viator.api.baseurl",
+      "type": "java.lang.String",
+      "description": "Base URL for Viator API requests."
+    },
+    {
+      "name": "amadeus.api.key",
+      "type": "java.lang.String",
+      "description": "Amadeus API key for flight and travel data."
+    },
+    {
+      "name": "amadeus.api.secret",
+      "type": "java.lang.String",
+      "description": "Amadeus API secret for authentication."
+    },
+    {
+      "name": "amadeus.api.oauth2.url",
+      "type": "java.lang.String",
+      "description": "OAuth2 URL for Amadeus API authentication."
+    },
+    {
+      "name": "amadeus.api.baseurl",
+      "type": "java.lang.String",
+      "description": "Base URL for Amadeus API requests."
+    },
+    {
+      "name": "freeCurrency.api.baseurl",
+      "type": "java.lang.String",
+      "description": "Base URL for FreeCurrency API requests."
+    },
+    {
+      "name": "freeCurrency.api.key",
+      "type": "java.lang.String",
+      "description": "FreeCurrency API key for currency exchange data."
+    },
+    {
+      "name": "positionstack.api.baseurl",
+      "type": "java.lang.String",
+      "description": "Base URL for PositionStack API requests."
+    },
+    {
+      "name": "positionstack.api.key",
+      "type": "java.lang.String",
+      "description": "PositionStack API key for geocoding services."
+    },
+    {
+      "name": "jwt.secret",
+      "type": "java.lang.String",
+      "description": "Secret key for JWT token signing and validation."
+    },
+    {
+      "name": "jwt.expiration",
+      "type": "java.lang.Long",
+      "description": "JWT token expiration time in milliseconds."
+    },
+    {
+      "name": "chat.memory.max-messages",
+      "type": "java.lang.Integer",
+      "description": "Maximum number of messages to keep in chat memory."
+    }
+  ],
+  "hints": [
+    {
+      "name": "spring.web.cors.allowed-origins",
+      "providers": [
+        {
+          "name": "any"
+        }
+      ]
+    },
+    {
+      "name": "spring.web.cors.allowed-origin-patterns",
+      "providers": [
+        {
+          "name": "any"
+        }
+      ]
+    },
+    {
+      "name": "spring.web.cors.allowed-methods",
+      "values": [
+        {
+          "value": "GET",
+          "description": "HTTP GET method."
+        },
+        {
+          "value": "POST",
+          "description": "HTTP POST method."
+        },
+        {
+          "value": "PUT",
+          "description": "HTTP PUT method."
+        },
+        {
+          "value": "DELETE",
+          "description": "HTTP DELETE method."
+        },
+        {
+          "value": "OPTIONS",
+          "description": "HTTP OPTIONS method."
+        },
+        {
+          "value": "PATCH",
+          "description": "HTTP PATCH method."
+        }
+      ]
+    },
+    {
+      "name": "spring.web.cors.allowed-headers",
+      "providers": [
+        {
+          "name": "any"
+        }
+      ]
+    },
+    {
+      "name": "spring.web.cors.exposed-headers",
+      "providers": [
+        {
+          "name": "any"
+        }
+      ]
+    },
+    {
+      "name": "spring.web.cors.allow-credentials",
+      "values": [
+        {
+          "value": "true",
+          "description": "Allow credentials in CORS requests."
+        },
+        {
+          "value": "false",
+          "description": "Do not allow credentials in CORS requests."
+        }
+      ]
+    },
+    {
+      "name": "spring.web.cors.max-age",
+      "providers": [
+        {
+          "name": "any"
+        }
+      ]
+    },
+    {
+      "name": "spring.websocket.path",
+      "providers": [
+        {
+          "name": "any"
+        }
+      ]
+    },
+    {
+      "name": "spring.websocket.allowed-origins",
+      "providers": [
+        {
+          "name": "any"
+        }
+      ]
+    },
+    {
+      "name": "spring.websocket.allowed-origin-patterns",
+      "providers": [
+        {
+          "name": "any" 
+        }
+      ]
+    },
+    {
+      "name": "spring.websocket.cors.enabled",
+      "values": [
+        {
+          "value": "true",
+          "description": "Enable CORS for WebSocket connections."
+        },
+        {
+          "value": "false",
+          "description": "Disable CORS for WebSocket connections."
+        }
+      ]
+    },
+    {
+      "name": "spring.websocket.cors.allow-credentials",
+      "values": [
+        {
+          "value": "true",
+          "description": "Allow credentials in WebSocket CORS requests."
+        },
+        {
+          "value": "false",
+          "description": "Do not allow credentials in WebSocket CORS requests."
+        }
+      ]
+    },
+    {
+      "name": "spring.websocket.heartbeat.time",
+      "providers": [
+        {
+          "name": "any"
+        }
+      ]
+    },
+    {
+      "name": "spring.websocket.heartbeat.enabled",
+      "values": [
+        {
+          "value": "true",
+          "description": "Enable WebSocket heartbeat."
+        },
+        {
+          "value": "false",
+          "description": "Disable WebSocket heartbeat."
+        }
+      ]
+    },
+    {
+      "name": "spring.websocket.sockjs.client-library-url",
+      "providers": [
+        {
+          "name": "any"
+        }
+      ]
+    },
+    {
+      "name": "spring.websocket.sockjs.websocket-enabled",
+      "values": [
+        {
+          "value": "true",
+          "description": "Enable WebSocket transport for SockJS."
+        },
+        {
+          "value": "false",
+          "description": "Disable WebSocket transport for SockJS."
+        }
+      ]
+    },
+    {
+      "name": "spring.websocket.sockjs.session-cookie-needed",
+      "values": [
+        {
+          "value": "true",
+          "description": "Require session cookie for SockJS."
+        },
+        {
+          "value": "false",
+          "description": "Do not require session cookie for SockJS."
+        }
+      ]
+    },
+    {
+      "name": "spring.ai.openai.chat.functions.memory-message-limit",
+      "providers": [
+        {
+          "name": "any"
+        }
+      ]
+    },
+    {
+      "name": "spring.ai.openai.chat.options.max-messages",
+      "providers": [
+        {
+          "name": "any"
+        }
+      ]
+    },
+    {
+      "name": "spring.ai.vertex.ai.api-key",
+      "providers": [
+        {
+          "name": "any"
+        }
+      ]
+    }
+  ]
+}

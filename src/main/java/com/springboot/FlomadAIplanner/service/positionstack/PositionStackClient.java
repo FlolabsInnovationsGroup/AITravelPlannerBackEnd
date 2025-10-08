@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(
         name = "positionStackClient",
-        url = "${positionstack.api.baseurl}",
+        url = "${position-stack.api.baseurl}",
         configuration = PositionStackClientConfig.class
 )
 public interface PositionStackClient {

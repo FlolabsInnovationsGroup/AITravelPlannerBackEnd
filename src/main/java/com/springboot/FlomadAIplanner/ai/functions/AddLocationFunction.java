@@ -86,10 +86,13 @@ public class AddLocationFunction implements Function<AddLocationFunction.AddLoca
                 return "Error: Missing session ID in request and context.";
             }
 
-            // Validate coordinates
+            // Validate coordinates - if missing, we can't proceed with this function
             if (request.getLatitude() == null || request.getLongitude() == null) {
                 log.error("❌ Invalid coordinates: lat={}, lng={}", request.getLatitude(), request.getLongitude());
-                return "Error: Latitude and longitude are required.";
+                if (request.getName() != null && !request.getName().isEmpty()) {
+                    return String.format("Error: Coordinates required for location '%s'. Please use placeTextSearchFunction first to get coordinates.", request.getName());
+                }
+                return "Error: Latitude and longitude are required for addLocationFunction.";
             }
 
             if (request.getLatitude() < -90 || request.getLatitude() > 90) {
@@ -111,6 +114,11 @@ public class AddLocationFunction implements Function<AddLocationFunction.AddLoca
                 );
                 if (distance < 100) { // 100 meters threshold
                     log.warn("⚠️ Location too close to existing location '{}' ({}m away)", existing.getName(), Math.round(distance));
+                    // If it's the exact same location, return success to avoid confusion
+                    if (distance < 10 && existing.getName() != null && existing.getName().equalsIgnoreCase(request.getName())) {
+                        log.info("📍 Exact same location already exists, returning success: {}", existing.getName());
+                        return "✅ " + existing.getName() + " is already on your map!";
+                    }
                     return String.format("Location is too close to existing location '%s' (%.0fm away). " +
                         "Locations must be at least 100 meters apart.", existing.getName(), distance);
                 }

@@ -12,7 +12,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,7 +26,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class AmadeusFlightOfferController {
     private final AmadeusFlightsService amadeusFlightsService;
 
-    @Autowired
     public AmadeusFlightOfferController(AmadeusFlightsService amadeusFlightsService) {
         this.amadeusFlightsService = amadeusFlightsService;
     }

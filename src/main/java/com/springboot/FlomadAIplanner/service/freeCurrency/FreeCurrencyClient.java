@@ -7,7 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name = "freeCurrencyClient", url = "${freeCurrency.api.baseurl}",
+@FeignClient(name = "freeCurrencyClient", url = "${free-currency.api.baseurl}",
         configuration = FreeCurrencyConfig.class)
 public interface FreeCurrencyClient {
 

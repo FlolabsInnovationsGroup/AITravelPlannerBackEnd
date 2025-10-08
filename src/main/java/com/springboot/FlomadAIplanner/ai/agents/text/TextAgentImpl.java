@@ -1,6 +1,5 @@
 package com.springboot.FlomadAIplanner.ai.agents.text;
 
-import com.springboot.FlomadAIplanner.ai.agents.Agent;
 import com.springboot.FlomadAIplanner.ai.agents.MessageProcessingStrategy;
 import com.springboot.FlomadAIplanner.ai.agents.text.strategies.EntityReturnProcessingStrategy;
 import com.springboot.FlomadAIplanner.ai.dto.AIMessageDTO;
@@ -17,7 +16,7 @@ import java.util.Map;
 import java.util.Objects;
 
 @Slf4j
-public class TextAgentImpl<S, F extends Flux<?>> extends AbstractTextAgent<S, F> implements Agent {
+public class TextAgentImpl<S, F extends Flux<?>> extends AbstractTextAgent<S, F> {
 
     public TextAgentImpl(ChatClient chatClient, List<String> permittedFunctions,
                          MessageProcessingStrategy<MessageProcessingStrategyDTO, S> callMessageProcessingStrategy,

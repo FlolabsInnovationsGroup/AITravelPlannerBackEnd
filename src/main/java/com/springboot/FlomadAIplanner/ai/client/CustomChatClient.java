@@ -680,7 +680,7 @@ public class CustomChatClient implements ChatClient {
                 public Flux<AdvisedResponse> aroundStream(AdvisedRequest advisedRequest, StreamAroundAdvisorChain chain) {
                     return chatModel.stream(advisedRequest.toPrompt())
                             .map(chatResponse -> new AdvisedResponse(chatResponse, Collections.unmodifiableMap(advisedRequest.adviseContext())))
-                            .publishOn(Schedulers.boundedElastic()); // TODO add option to disable.
+                            .publishOn(Schedulers.boundedElastic()); // Use bounded elastic scheduler for I/O operations
                 }
             });
             // @formatter:on
