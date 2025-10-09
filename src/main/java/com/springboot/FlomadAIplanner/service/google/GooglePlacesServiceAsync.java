@@ -73,7 +73,6 @@ public class GooglePlacesServiceAsync {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 return googlePlacesClient.textSearchPlaces(
-                        "Bearer " + googleApiKey,  // ✅ Correct
                         textSearchFieldMask,       // ✅ Correct
                         request                    // ✅ Correct
                 );

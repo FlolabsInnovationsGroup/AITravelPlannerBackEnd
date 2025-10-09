@@ -1,10 +1,10 @@
 LLMSystemInstructions: Based on the user message, suggest the appropriate system prompt and functions to use for processing the message in the best possible way.,
   parameters:
-    - promptsList: "{promptsList}", // comment: it is going to be a MAP<String, String>
+    - promptsList: "PROMPTS_LIST_PARAMETER", // comment: it is going to be a MAP<String, String>
     where the key is a filename and the value is the content of the file.
     File content will be surrounded by open '[[[' and close ']]]' delimiters.
-    - functionsList: "{functionsList}",
-    - userMessage: "{message}"
+    - functionsList: "FUNCTIONS_LIST_PARAMETER",
+    - userMessage: "USER_MESSAGE_PARAMETER"
 
 ## CRITICAL PRIORITY RULES (CHECK FIRST):
 
@@ -67,9 +67,11 @@ For LEGAL/COMPLIANCE:
 - Use "LocalRegulationsPrompt.txt" for local law guidance
 - Examples: "customs rules", "local laws", "what can I bring"
 
-For COMPREHENSIVE TRIP PLANNING:
-- Use "UnifiedPlanningPrompt.txt" for detailed itineraries and multi-day trips
-- Examples: "plan a trip to paris", "create itinerary", "recommend activities"
+For COMPREHENSIVE TRIP PLANNING (HIGH PRIORITY):
+- Use "UnifiedPlanningPrompt.txt" for detailed itineraries, vacation planning, and multi-day trips
+- Keywords: "plan", "trip", "vacation", "getaway", "honeymoon", "romantic", "itinerary", "visit", "explore", "dream", "adventure", "experience", "journey", "travel to"
+- Examples: "plan a trip to paris", "create itinerary", "recommend activities", "plan my dream romantic getaway", "romantic vacation", "honeymoon destination", "adventure trip"
+- CRITICAL: Vacation planning requests should use addLocationFunction for multiple locations, NOT single location display
 
 For WEATHER & SAFETY CONCERNS:
 - Use "WeatherSafetyPrompt.txt" for weather-related travel guidance

@@ -82,7 +82,6 @@ public class GooglePlacesService {
                 throw new GoogleAPIException("Rate limit exceeded. Please try again later.");
             }
             JsonNode response = googlePlacesClient.textSearchPlaces(
-                    "",                     // Empty string since interceptor handles auth
                     textSearchFieldMask,
                     request
             );
@@ -107,7 +106,6 @@ public class GooglePlacesService {
         for (TextSearchRequest request : requests) {
             try {
                 JsonNode searchResult = googlePlacesClient.textSearchPlaces(
-                        "",                 // Empty string since interceptor handles auth
                         textSearchFieldMask,
                         request
                 );

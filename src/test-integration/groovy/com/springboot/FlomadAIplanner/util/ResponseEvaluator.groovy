@@ -51,10 +51,14 @@ class ResponseEvaluator {
      */
     boolean isResponseRelevant(String query, String response) {
         try {
+            // Apply Spring AI 1.0.0-M5 StringTemplate curly brace workaround
+            String escapedQuery = query.replace("{", "\\{").replace("}", "\\}")
+            String escapedResponse = response.replace("{", "\\{").replace("}", "\\}")
+            
             String evaluationResult = chatClient.prompt()
                     .user(u -> u.text(EVALUATION_PROMPT_TEMPLATE)
-                            .param("query", query)
-                            .param("response", response))
+                            .param("query", escapedQuery)
+                            .param("response", escapedResponse))
                     .call()
                     .content()
                     .trim()
