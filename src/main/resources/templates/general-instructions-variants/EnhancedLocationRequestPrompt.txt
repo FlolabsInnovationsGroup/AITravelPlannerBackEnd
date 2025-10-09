@@ -88,7 +88,7 @@ You MUST ALWAYS respond with ONLY pure JSON. NO EMOJIS, TEXT, OR CHARACTERS BEFO
 
 EXACT REQUIRED FORMAT - Start immediately with opening brace:
 {
-  "message": "Your complete travel assistant response here",
+  "message": "[Your actual detailed travel response with location details, recommendations, and travel tips]",
   "suggestions": ["suggestion 1", "suggestion 2", "suggestion 3", "suggestion 4"]
 }
 

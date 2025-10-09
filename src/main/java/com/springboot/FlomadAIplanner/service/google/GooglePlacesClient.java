@@ -51,14 +51,12 @@ public interface GooglePlacesClient {
      *
      * This method sends a POST request to the Google Places APIs `/v1/places:searchText` endpoint.
      *
-     * @param apiKey    The API key for authentication, passed as a Bearer token in the Authorization header.
      * @param fieldMask A comma-separated list of fields to request in the response.
      * @param request   A {@link TextSearchRequest} object containing the text query to search for.
      * @return A JSON response containing place search results based on text input.
      */
     @PostMapping(value = "/v1/places:searchText", consumes = MediaType.APPLICATION_JSON_VALUE)
     JsonNode textSearchPlaces(
-            @RequestHeader("Authorization") String apiKey,
             @RequestHeader("X-Goog-FieldMask") String fieldMask,
             @RequestBody TextSearchRequest request);
 }

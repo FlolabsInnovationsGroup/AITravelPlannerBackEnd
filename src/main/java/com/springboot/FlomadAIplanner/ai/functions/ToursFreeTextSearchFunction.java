@@ -37,7 +37,13 @@ import java.util.function.Function;
         USAGE STRATEGY: Search for tours in ALL required places in ONE call rather than separate calls per destination.
         Minimum: 1 search term, Maximum: unlimited search terms per call
         
-        Examples: "Paris Eiffel Tower tours", "Tokyo food experiences", "Adventure activities Bali", "Historical tours Rome"
+        Examples: ["Paris Eiffel Tower tours"], ["Tokyo food experiences"], ["Adventure activities Bali"], ["Historical tours Rome"]
+        
+        CRITICAL: searchTerms must be single-element array with combined location+activity term.
+        RIGHT: ["Paris romantic tours"] - WRONG: ["romantic tours", "Paris"]
+        
+        AUTOMATIC MAP INTEGRATION: This function automatically extracts locations mentioned in tour results 
+        and adds them to the user's map for immediate visualization. No additional function calls needed.
         
         Perfect for comprehensive itinerary planning when travelers need activities across multiple destinations.
         
@@ -51,9 +57,12 @@ import java.util.function.Function;
 public class ToursFreeTextSearchFunction implements Function<ToursFreeTextSearchFunction.FreeTextSearchRequestWrapper, List<FreeTextSearchResponse>> {
 
     private final ViatorAuxiliaryServiceAsync viatorAuxiliaryService;
+    private final AutoLocationExtractionFunction autoLocationExtractionFunction;
 
-    public ToursFreeTextSearchFunction(ViatorAuxiliaryServiceAsync viatorAuxiliaryService) {
+    public ToursFreeTextSearchFunction(ViatorAuxiliaryServiceAsync viatorAuxiliaryService, 
+                                     AutoLocationExtractionFunction autoLocationExtractionFunction) {
         this.viatorAuxiliaryService = viatorAuxiliaryService;
+        this.autoLocationExtractionFunction = autoLocationExtractionFunction;
     }
 
     @Override
@@ -63,10 +72,54 @@ public class ToursFreeTextSearchFunction implements Function<ToursFreeTextSearch
         try {
             List<FreeTextSearchResponse> response = viatorAuxiliaryService.bulkSearchFreeText(requestWrapper.getAcceptLanguage(), requestWrapper.getRequest());
             log.info("Received free text search response from Viator. Response length: {}", response.toString().length());
+            
+            // Automatically extract locations from tour results and add to map
+            extractLocationsFromTourResults(response);
+            
             return response;
         } catch (ViatorAPIException e) {
             log.error("Error performing free text search", e);
             return Collections.singletonList(FreeTextSearchResponse.builder().errorMessage(e.getMessage()).build());
+        }
+    }
+    
+    private void extractLocationsFromTourResults(List<FreeTextSearchResponse> responses) {
+        try {
+            StringBuilder locationMessage = new StringBuilder();
+            
+            for (FreeTextSearchResponse response : responses) {
+                if (response.getProducts() != null && response.getProducts().getResults() != null) {
+                    for (FreeTextSearchResponse.ProductSummary product : response.getProducts().getResults()) {
+                        if (product.getTitle() != null) {
+                            locationMessage.append(product.getTitle()).append(". ");
+                        }
+                    }
+                }
+                
+                // Extract from attractions as well
+                if (response.getAttractions() != null && response.getAttractions().getResults() != null) {
+                    for (FreeTextSearchResponse.AttractionResult attraction : response.getAttractions().getResults()) {
+                        if (attraction.getName() != null) {
+                            locationMessage.append(attraction.getName()).append(". ");
+                        }
+                        if (attraction.getDestinationName() != null) {
+                            locationMessage.append(attraction.getDestinationName()).append(". ");
+                        }
+                    }
+                }
+            }
+            
+            if (locationMessage.length() > 0) {
+                log.info("Auto-extracting locations from tour results: {}", locationMessage.toString());
+                AutoLocationExtractionFunction.LocationExtractionRequest request = 
+                    new AutoLocationExtractionFunction.LocationExtractionRequest(locationMessage.toString(), null);
+                String extractionResult = autoLocationExtractionFunction.apply(request);
+                log.info("Auto-extraction completed: {}", extractionResult);
+            }
+            
+        } catch (Exception e) {
+            log.warn("Failed to auto-extract locations from tour results: {}", e.getMessage());
+            // Don't fail the main tour search if location extraction fails
         }
     }
 

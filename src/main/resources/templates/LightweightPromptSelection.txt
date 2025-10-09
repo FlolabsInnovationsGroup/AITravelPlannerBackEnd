@@ -5,12 +5,13 @@ Available functions: {functionsList}
 User message: {message}
 
 Rules:
-- Emergency words -> EmergencyAssistancePrompt.txt
-- Budget words -> BudgetOptimizationPrompt.txt
+- Emergency words -> general-instructions-variants/EmergencyAssistancePrompt.txt
+- Budget words -> general-instructions-variants/BudgetOptimizationPrompt.txt
 - Location requests -> LocationRequestPrompt.txt  
-- Booking requests -> BookingConfirmationPrompt.txt
+- Booking requests -> general-instructions-variants/BookingConfirmationPrompt.txt
 - Trip planning -> UnifiedPlanningPrompt.txt
-- Default -> SingleQuestionPrompt.txt
+- Default -> general-instructions-variants/SingleQuestionPrompt.txt
 
-Return JSON only:
-{{"systemPrompt": "LocationRequestPrompt.txt", "functionNames": ["addLocationFunction"]}}
+Return JSON with systemPrompt and functionNames fields.
+Example: {"systemPrompt": "UnifiedPlanningPrompt.txt", "functionNames": ["addLocationFunction"]}
+Format response as valid JSON only.

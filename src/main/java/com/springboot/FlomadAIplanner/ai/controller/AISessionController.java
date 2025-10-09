@@ -65,7 +65,7 @@ public class AISessionController {
 
         // updating the session title
         Session session = sessionService.findById(sessionId);
-        session.setTitle(messagesCombinedText);
+        session.setTitle(sessionTitle);
         sessionService.save(session);
         log.info("Session title updated in the DB.");
 
