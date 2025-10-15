@@ -74,11 +74,13 @@ public class UserController {
 
     @GetMapping("/current")
     public ResponseEntity<UserDTO> getCurrentUser() {
+        log.info("Getting current user from security context");
         User user = currentUserUtil.getCurrentUserFromSecurityContext();
         if (user != null) {
             log.info("Retrieving current user: {}", user.getUsername());
             return ResponseEntity.ok(userConverter.convert(user));
         }
+        log.warn("Current user is null, returning 404");
         return ResponseEntity.notFound().build();
     }
 }
