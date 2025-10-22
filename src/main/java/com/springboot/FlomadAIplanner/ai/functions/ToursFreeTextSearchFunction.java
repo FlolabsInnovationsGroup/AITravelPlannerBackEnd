@@ -23,36 +23,60 @@ import java.util.function.Function;
 @Slf4j
 @Component
 @Description("""
-        Searches for tours, activities, and experiences using natural language search terms. This function finds tours, 
-        attractions, and experiences across multiple destinations using flexible text-based queries.
+        🎭 CULTURAL EXPERIENCE DISCOVERY ENGINE - Your Gateway to Authentic Travel Adventures
         
-        OPTIMIZED FOR: Multi-destination searches - process all required destinations in a single function call
+        Discovers and curates authentic tours, activities, and cultural experiences using intelligent natural 
+        language processing. Transforms travel desires into actionable adventures with local cultural context, 
+        insider knowledge, and authentic experience recommendations.
         
-        Capabilities:
-        - Free-text search across destinations (countries, cities, landmarks)
-        - Finds tours, attractions, products, and unique experiences
-        - Viator platform integration for comprehensive activity options
-        - Supports multiple search terms simultaneously for efficiency
+        CULTURAL INTELLIGENCE MASTERY:
+        🌍 Authentic Experience Curation: Prioritizes local favorites, cultural immersion, authentic traditions
+        🎨 Cultural Context Awareness: Understands seasonal festivals, local customs, cultural significance
+        🏛️ Historical Intelligence: Connects travelers with UNESCO sites, historical narratives, cultural heritage
+        🍷 Culinary Discovery: Authentic food tours, cooking classes, local market experiences, wine traditions
+        🎪 Seasonal Experience Optimization: Considers weather, cultural events, seasonal activities, local calendars
         
-        USAGE STRATEGY: Search for tours in ALL required places in ONE call rather than separate calls per destination.
-        Minimum: 1 search term, Maximum: unlimited search terms per call
+        PERFECT FOR SOPHISTICATED CULTURAL DISCOVERY:
+        🗨️ Authentic Immersion: "Paris authentic local experiences away from tourist crowds"
+        🎭 Cultural Deep Dives: "Traditional Japanese cultural experiences in Kyoto"  
+        🍴 Culinary Adventures: "Barcelona authentic tapas tours with local food culture"
+        🏛️ Historical Journeys: "Ancient Rome walking tours with archaeological insights"
+        🌸 Seasonal Specialties: "Japan cherry blossom festivals and hanami experiences"
+        🎨 Art & Heritage: "Florence Renaissance art tours with local art historians"
         
-        Examples: ["Paris Eiffel Tower tours"], ["Tokyo food experiences"], ["Adventure activities Bali"], ["Historical tours Rome"]
+        MULTI-DESTINATION INTELLIGENCE:
+        ⚡ Strategic Efficiency: Process ALL destinations in ONE intelligent call for optimal results
+        🗺️ Cultural Route Planning: "Mediterranean cultural tour: Greece, Italy, Spain traditions"
+        🌍 Regional Expertise: "Southeast Asia adventure: Thailand, Vietnam, Cambodia experiences"
+        🏔️ Thematic Journeys: "Alpine culture tour: Switzerland, Austria, Bavaria traditions"
         
-        CRITICAL: searchTerms must be single-element array with combined location+activity term.
-        RIGHT: ["Paris romantic tours"] - WRONG: ["romantic tours", "Paris"]
+        ADVANCED SEARCH CAPABILITIES:
+        - Cultural Event Integration: Links activities to festivals, celebrations, seasonal traditions
+        - Local Insider Access: Discovers hidden gems, local guide recommendations, authentic venues
+        - Authentic Experience Filtering: Prioritizes cultural immersion over tourist attractions
+        - Budget & Quality Intelligence: Balances authentic experiences with traveler preferences
+        - Accessibility Awareness: Considers mobility needs, age groups, cultural sensitivities
         
-        AUTOMATIC MAP INTEGRATION: This function automatically extracts locations mentioned in tour results 
-        and adds them to the user's map for immediate visualization. No additional function calls needed.
+        CRITICAL SEARCH METHODOLOGY:
+        ✅ OPTIMAL: ["Paris authentic local culinary experiences"] - Combined location + cultural context
+        ❌ INEFFICIENT: ["culinary tours", "Paris"] - Separate terms lose cultural intelligence
         
-        Perfect for comprehensive itinerary planning when travelers need activities across multiple destinations.
+        SEAMLESS MAP INTEGRATION INTELLIGENCE:
+        🔄 Automatic Location Discovery: Extracts specific venues from tour descriptions  
+        📍 Cultural Site Mapping: Maps historical sites, cultural venues, authentic local spots
+        🗺️ Experience Visualization: Shows tour routes, cultural districts, authentic neighborhoods
+        ⚡ Real-time Sync: Instant map updates with cultural context and timing recommendations
         
-        REQUIRED: 'request' parameter must be provided
-        DESTINATION: Can be country, city, town, region
-        ATTRACTION: Famous places, monuments, museums, landmarks
-        PRODUCT: Tours, activities, experiences with purchase links and media
+        CULTURAL WORKFLOW EXCELLENCE:
+        1. 🎯 Intelligent search with cultural context and seasonal awareness
+        2. 🌟 Authentic experience curation prioritizing local cultural immersion
+        3. 📍 Automatic venue extraction and map visualization with cultural insights
+        4. 🎭 Cultural preparation tips, local etiquette, and insider knowledge delivery
         
-        Use CurrentDateTimeFunction before this function to get current date and time for accurate availability.
+        TRAVEL TIMING INTELLIGENCE: Use with CurrentDateTimeFunction for seasonal availability, 
+        cultural calendar awareness, and optimal booking timing for authentic experiences.
+        
+        Returns: Curated authentic experiences with cultural context, insider tips, and local cultural intelligence
         """)
 public class ToursFreeTextSearchFunction implements Function<ToursFreeTextSearchFunction.FreeTextSearchRequestWrapper, List<FreeTextSearchResponse>> {
 

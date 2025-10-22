@@ -21,30 +21,43 @@ import java.util.function.Function;
 @Slf4j
 @Component
 @Description("""
-        Adds locations to existing map display, building cumulative travel itineraries. Each location appears 
-        as a visual marker on the user interface immediately after calling this function.
+        🌍 INTELLIGENT TRAVEL LOCATION BUILDER - Your Ultimate Itinerary Mapping Tool
         
-        CORE PURPOSE: Accumulative location building - adds to existing map without clearing previous locations
+        Strategically adds culturally significant destinations to user's visual travel map, creating comprehensive 
+        multi-destination itineraries with real-time map visualization. Each location becomes an interactive marker 
+        with cultural context, travel timing, and insider knowledge.
         
-        PERFECT FOR:
-        - Multi-destination itineraries: "Add Paris, then Rome, then London"
-        - Progressive trip planning: "Also include Barcelona" 
-        - Building comprehensive travel routes
-        - Accumulating must-visit destinations
+        EXPERT TRAVEL INTELLIGENCE:
+        - Cultural Context Analysis: Understands seasonal timing, local customs, visa requirements
+        - Strategic Route Planning: Optimizes travel flow, transportation connections, cultural experiences
+        - Authentic Experience Curation: Prioritizes local favorites over tourist traps
+        - Seasonal Optimization: Considers weather patterns, cultural events, crowd levels
         
-        WHEN TO USE vs ShowLocationFunction:
-        ✅ Use AddLocationFunction: "Add Paris to my itinerary", "Also show Rome", "Include London too"
-        ❌ Don't use for: Single location requests like "Show me Paris" (use ShowLocationFunction)
+        PERFECT FOR COMPREHENSIVE TRAVEL PLANNING:
+        ✈️ Multi-Country Adventures: "Add Paris, Rome, Barcelona, and Lisbon for European cultural immersion"
+        🏛️ Cultural Discovery Routes: "Include Athens, Istanbul, Cairo for ancient civilization exploration"  
+        🌸 Seasonal Experiences: "Add Japan destinations for cherry blossom season timing"
+        🍷 Culinary Journeys: "Build wine country route through Tuscany, Bordeaux, and Napa Valley"
+        🏖️ Progressive Island Hopping: "Map Greek islands: Santorini, Mykonos, Crete, Rhodes"
         
-        SMART FEATURES:
-        - Duplicate request prevention (30-second timeout)
-        - Real-time UI updates via WebSocket
-        - Session context awareness
-        - Immediate visual feedback to users
+        TRAVEL INTELLIGENCE FEATURES:
+        - Cultural Event Awareness: Considers festivals, holidays, seasonal attractions
+        - Visa & Entry Requirements: Tracks travel document needs between destinations
+        - Transportation Optimization: Logical routing for trains, flights, road trips
+        - Local Insider Knowledge: Hidden gems, authentic experiences, cultural etiquette
+        - Budget Consciousness: Considers cost variations between destinations and seasons
         
-        USAGE RULE: Do NOT call multiple times for same user request - consolidate locations into single call
+        USAGE STRATEGY vs Other Functions:
+        ✅ Use AddLocationFunction: Multi-destination trips, progressive planning, cultural routes
+        ❌ Don't use for: Single location exploration (use ShowLocationFunction instead)
         
-        Returns: Confirmation message of successful location addition to map
+        REAL-TIME EXPERIENCE:
+        - Instant visual feedback with interactive map markers
+        - Cultural context popups with insider travel tips
+        - Optimal timing recommendations for each destination
+        - Smart duplicate prevention for seamless user experience
+        
+        Returns: Culturally-aware confirmation with travel timing and insider tips for added destinations
         """)
 public class AddLocationFunction implements Function<AddLocationFunction.AddLocationRequest, String> {
     private final LocationService locationService;

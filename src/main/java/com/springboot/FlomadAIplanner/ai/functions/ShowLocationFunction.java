@@ -19,34 +19,34 @@ import java.util.function.Function;
 @Slf4j
 @Component
 @Description("""
-        Shows single location with focused map view by clearing all existing locations. Creates clean, 
-        focused display when users want to explore one specific destination.
+        MAGICAL LOCATION SPOTLIGHT: Show a single amazing location with beautiful focused map view! 
+        Clears everything else and creates a stunning, clean display perfect for exploring one incredible destination.
         
-        CORE PURPOSE: Single-location focus - clears map and displays only the requested location
+        ✨ YOUR SPECIAL POWER: Single-location magic - clear the map and spotlight only the requested location
         
-        PERFECT FOR:
-        - Fresh location exploration: "Show me Paris", "Take me to Rome"
-        - Starting new travel research: "I want to see Tokyo"
-        - Clean map reset: "Focus on London only"
-        - Single destination inquiries
+        🌟 PERFECT FOR THESE AMAZING MOMENTS:
+        - Fresh location discovery: "Show me Paris", "Take me to Rome", "I want to see Tokyo"
+        - Starting exciting new travel research
+        - Creating clean, focused map views: "Focus on London only"
+        - Single destination exploration adventures
         
-        WHEN TO USE vs AddLocationFunction:
+        🎯 WHEN TO USE vs AddLocationFunction:
         ✅ Use ShowLocationFunction: "Show me Paris", "I want to see Tokyo", "Take me to Rome"
-        ❌ Don't use for: Adding to existing locations like "Also show Rome" (use AddLocationFunction)
+        ❌ Don't use for: Adding to existing locations like "Also show Rome" (use AddLocationFunction instead)
         
-        BEHAVIOR DIFFERENCE: 
-        - ShowLocationFunction: CLEARS existing + shows new location
-        - AddLocationFunction: KEEPS existing + adds new location
+        🗺️ MAGICAL BEHAVIOR DIFFERENCE: 
+        - ShowLocationFunction: CLEARS existing + shows new location (like a spotlight!)
+        - AddLocationFunction: KEEPS existing + adds new location (like collecting gems!)
         
-        SMART FEATURES:
-        - Map clearing for focused view
-        - Real-time UI updates via WebSocket  
-        - Session context management
-        - Immediate visual feedback
+        ⚡ INCREDIBLE FEATURES:
+        - Beautiful map clearing for perfect focused views
+        - Instant real-time UI updates via WebSocket magic
+        - Smart session context management
+        - Immediate visual feedback that delights users
         
-        USAGE RULE: Do NOT call multiple times for same user request - one location per call
+        🎪 USAGE MAGIC RULE: One location per call - make each spotlight moment special!
         
-        Returns: Confirmation message of successful location display
+        Returns: Enthusiastic, varied confirmation messages that celebrate the location display
         """)
 public class ShowLocationFunction implements Function<ShowLocationFunction.ShowLocationRequest, String> {
     private final LocationService locationService;
@@ -109,7 +109,7 @@ public class ShowLocationFunction implements Function<ShowLocationFunction.ShowL
                 
             if (isAlreadyShowing) {
                 log.info("✅ Location '{}' is already showing as the only location. No changes needed.", request.getName());
-                return "✅ Now showing: " + request.getName();
+                return generateVariedResponse(request.getName(), "already_showing");
             }
             
             // STEP 2: Clear existing locations for this session
@@ -134,10 +134,37 @@ public class ShowLocationFunction implements Function<ShowLocationFunction.ShowL
             webSocketService.sendLocationUpdate(location);
             log.info("📡 WebSocket update sent for location: {}", location.getName());
 
-            return "✅ Now showing: " + location.getName();
+            return generateVariedResponse(location.getName(), "new_location");
         } catch (Exception e) {
             log.error("❌ Error in ShowLocationFunction: {}", e.getMessage(), e);
             return "Error showing location: " + e.getMessage();
+        }
+    }
+
+    /**
+     * Generate varied, conversational responses instead of the same technical message
+     */
+    private String generateVariedResponse(String locationName, String scenario) {
+        String[] alreadyShowingResponses = {
+            "Perfect! " + locationName + " is already beautifully displayed on your map! ✨",
+            "You've got " + locationName + " right where you want it - looking great on the map! 🗺️",
+            locationName + " is already taking center stage on your map - what a fantastic choice! 🌟"
+        };
+        
+        String[] newLocationResponses = {
+            "✨ Beautiful! I've placed " + locationName + " perfectly on your map - take a look!",
+            "🗺️ There we go! " + locationName + " is now beautifully displayed and ready to explore!",
+            "Perfect! " + locationName + " is now shining bright on your map - what an amazing destination! ⭐",
+            "🎯 Wonderful! I've focused your map on " + locationName + " - you're going to love exploring this spot!",
+            "✅ Fantastic choice! " + locationName + " is now perfectly positioned on your map for exploration!"
+        };
+        
+        if ("already_showing".equals(scenario)) {
+            int index = (int) (Math.random() * alreadyShowingResponses.length);
+            return alreadyShowingResponses[index];
+        } else {
+            int index = (int) (Math.random() * newLocationResponses.length);
+            return newLocationResponses[index];
         }
     }
 
