@@ -25,7 +25,17 @@ public class CorsConfig {
         
         // Configure CORS settings
         config.setAllowCredentials(true);
-        config.setAllowedOriginPatterns(Collections.singletonList("*"));
+        
+        // Use configured allowed origins instead of wildcard
+        if (allowedOrigins != null && allowedOrigins.length > 0) {
+            config.setAllowedOrigins(Arrays.asList(allowedOrigins));
+            System.out.println("🔧 CORS configured with origins: " + Arrays.toString(allowedOrigins));
+        } else {
+            // Fallback to wildcard pattern if no origins configured
+            config.setAllowedOriginPatterns(Collections.singletonList("*"));
+            System.out.println("⚠️ CORS fallback to wildcard pattern");
+        }
+        
         config.setAllowedHeaders(Arrays.asList(
             "Origin", 
             "Content-Type", 
@@ -59,28 +69,41 @@ public class CorsConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
+                // Use configured origins or fallback to wildcard
+                String[] origins = (allowedOrigins != null && allowedOrigins.length > 0) 
+                    ? allowedOrigins 
+                    : new String[]{"*"};
+                
                 // Configure for API endpoints
                 registry.addMapping("/api/**")
-                    .allowedOriginPatterns("*")
+                    .allowedOrigins(origins)
                     .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
                     .allowedHeaders("*")
-                    .allowCredentials(true)
+                    .allowCredentials(allowedOrigins != null && allowedOrigins.length > 0)
+                    .maxAge(3600);
+                
+                // Configure for all user endpoints (including /users/*)
+                registry.addMapping("/users/**")
+                    .allowedOrigins(origins)
+                    .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
+                    .allowedHeaders("*")
+                    .allowCredentials(allowedOrigins != null && allowedOrigins.length > 0)
                     .maxAge(3600);
                 
                 // Configure for WebSocket endpoints
                 registry.addMapping("/ws/**")
-                    .allowedOriginPatterns("*")
+                    .allowedOrigins(origins)
                     .allowedMethods("GET", "POST", "OPTIONS")
                     .allowedHeaders("*")
-                    .allowCredentials(true)
+                    .allowCredentials(allowedOrigins != null && allowedOrigins.length > 0)
                     .maxAge(3600);
                 
                 // Configure for WebSocket info endpoint
                 registry.addMapping("/ws/info")
-                    .allowedOriginPatterns("*")
+                    .allowedOrigins(origins)
                     .allowedMethods("GET", "OPTIONS")
                     .allowedHeaders("*")
-                    .allowCredentials(true)
+                    .allowCredentials(allowedOrigins != null && allowedOrigins.length > 0)
                     .maxAge(3600);
             }
         };
