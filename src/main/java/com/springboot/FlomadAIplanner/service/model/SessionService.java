@@ -73,8 +73,23 @@ public class SessionService implements CrudService<Session, String> {
         log.info("Updating session: {}", id);
 
         String title = updatedSession.getTitle();
-        User currentUser = currentUserUtil.getCurrentUserFromSecurityContext();
-        String userId = currentUser.getId();
+        String userId = updatedSession.getUserId(); // Use userId from the session object first
+        
+        // Fallback to current user from security context if userId not provided
+        if (userId == null || userId.isEmpty()) {
+            try {
+                User currentUser = currentUserUtil.getCurrentUserFromSecurityContext();
+                if (currentUser != null) {
+                    userId = currentUser.getId();
+                } else {
+                    log.error("No user ID provided and no authenticated user found for session update: {}", id);
+                    throw new RuntimeException("No user context available for session update");
+                }
+            } catch (Exception e) {
+                log.error("Failed to get current user for session update: {}", e.getMessage());
+                throw new RuntimeException("User authentication required for session update");
+            }
+        }
 
         Session session = sessionRepository.findByIdAndUserId(id, userId);
         if (session != null) {

@@ -35,6 +35,8 @@ public class GooglePlacesClientConfig {
             // For new Places API, use API key in header AND query parameter
             requestTemplate.query("key", apiKey);
             requestTemplate.header("X-Goog-Api-Key", apiKey);
+            // Add referer header to avoid 403 errors
+            requestTemplate.header("Referer", "http://localhost:8080");
         };
     }
 }

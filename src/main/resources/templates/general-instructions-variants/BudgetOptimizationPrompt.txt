@@ -39,17 +39,17 @@ USE ALL SYSTEM INSTRUCTIONS STRICTLY, DO NOT DEVIATE FROM THEM.
 ```
 DESTINATION BUDGET COMPARISON
 
-Primary Choice: [Destination A]
-Alternative Options: [Destinations B, C, D]
+Primary Choice: {Destination A}
+Alternative Options: {Destinations B, C, D}
 
 Daily Budget Breakdown:
-Accommodation: $[Amount] vs $[Alternative amounts]
-Meals: $[Amount] vs $[Alternative amounts]  
-Transportation: $[Amount] vs $[Alternative amounts]
-Activities: $[Amount] vs $[Alternative amounts]
-TOTAL DAILY: $[Amount] vs $[Alternative totals]
+Accommodation: ${Amount} vs ${Alternative amounts}
+Meals: ${Amount} vs ${Alternative amounts}  
+Transportation: ${Amount} vs ${Alternative amounts}
+Activities: ${Amount} vs ${Alternative amounts}
+TOTAL DAILY: ${Amount} vs ${Alternative totals}
 
-7-Day Trip Difference: $[Savings amount]
+7-Day Trip Difference: ${Savings amount}
 ```
 
 **Value Destinations by Budget Level:**
@@ -81,20 +81,20 @@ TOTAL DAILY: $[Amount] vs $[Alternative totals]
 ```
 📊 BUDGET TRACKER
 
-Daily Budget: $[Amount]
-Current Spending: $[Amount]
-Remaining: $[Amount]
+Daily Budget: ${Amount}
+Current Spending: ${Amount}
+Remaining: ${Amount}
 Status: ON TRACK / OVER BUDGET / UNDER BUDGET
 
 Category Breakdown:
-□ Accommodation: $[Spent] / $[Budgeted]
-□ Food: $[Spent] / $[Budgeted]  
-□ Transport: $[Spent] / $[Budgeted]
-□ Activities: $[Spent] / $[Budgeted]
-□ Shopping: $[Spent] / $[Budgeted]
+□ Accommodation: ${Spent} / ${Budgeted}
+□ Food: ${Spent} / ${Budgeted}  
+□ Transport: ${Spent} / ${Budgeted}
+□ Activities: ${Spent} / ${Budgeted}
+□ Shopping: ${Spent} / ${Budgeted}
 
 ⚠️ ALERTS:
-[Budget warnings and adjustment suggestions]
+{Budget warnings and adjustment suggestions}
 ```
 
 #### **5. EMERGENCY BUDGET STRATEGIES**
@@ -145,14 +145,14 @@ Category Breakdown:
 ```
 💰 BUDGET OPTIMIZATION ANALYSIS
 
-Current Budget: $[Amount]
-Optimized Budget: $[Amount]
-Potential Savings: $[Amount] ([Percentage]%)
+Current Budget: ${Amount}
+Optimized Budget: ${Amount}
+Potential Savings: ${Amount} ({Percentage}%)
 
 OPTIMIZATION STRATEGIES:
-1. [Strategy with specific savings amount]
-2. [Strategy with specific savings amount] 
-3. [Strategy with specific savings amount]
+1. {Strategy with specific savings amount}
+2. {Strategy with specific savings amount} 
+3. {Strategy with specific savings amount}
 
 ALTERNATIVE RECOMMENDATIONS:
 - Similar destinations with lower costs

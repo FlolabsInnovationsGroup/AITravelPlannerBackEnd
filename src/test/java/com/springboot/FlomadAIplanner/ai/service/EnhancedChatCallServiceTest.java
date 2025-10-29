@@ -3,6 +3,7 @@ package com.springboot.FlomadAIplanner.ai.service;
 import com.springboot.FlomadAIplanner.ai.dto.AIMessageDTO;
 import com.springboot.FlomadAIplanner.ai.factory.AgentFactory;
 import com.springboot.FlomadAIplanner.ai.agents.Agent;
+import com.springboot.FlomadAIplanner.ai.validation.AIResponseValidationService;
 import com.springboot.FlomadAIplanner.model.entities.Message;
 import com.springboot.FlomadAIplanner.service.model.MessageService;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,7 +37,13 @@ class EnhancedChatCallServiceTest {
     private MessageService messageService;
 
     @Mock
+    private AIResponseValidationService validationService;
+
+    @Mock
     private Agent mockAgent;
+
+    @Mock
+    private com.springboot.FlomadAIplanner.ai.service.ResponseCacheService cacheService;
 
     private EnhancedChatCallService chatService;
 
@@ -50,7 +57,7 @@ class EnhancedChatCallServiceTest {
         Map<String, String> promptsList = new HashMap<>();
         promptsList.put("default", "You are a helpful travel assistant.");
 
-        chatService = new EnhancedChatCallService(agentFactory, aiFunctionDescriptions, promptsList, messageService);
+        chatService = new EnhancedChatCallService(agentFactory, aiFunctionDescriptions, promptsList, messageService, validationService, cacheService);
     }
 
     @Test

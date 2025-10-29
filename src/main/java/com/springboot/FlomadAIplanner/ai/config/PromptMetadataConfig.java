@@ -63,7 +63,10 @@ public class PromptMetadataConfig {
         metadata.put("LocalRegulationsPrompt.txt", 
             "Customs rules, local laws, legal compliance, what to bring/avoid");
         
-        // General Questions
+        // General Questions & Travel Planning
+        metadata.put("DefaultPrompt.txt", 
+            "Complete travel planning assistance, destination advice, competitive detailed responses, enthusiastic personalized travel support");
+        
         metadata.put("SingleQuestionPrompt.txt", 
             "Simple travel questions, general advice, basic inquiries without functions");
         

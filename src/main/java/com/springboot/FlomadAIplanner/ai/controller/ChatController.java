@@ -2,7 +2,9 @@ package com.springboot.FlomadAIplanner.ai.controller;
 
 import com.springboot.FlomadAIplanner.ai.dto.AIMessageDTO;
 import com.springboot.FlomadAIplanner.ai.dto.AIMessageResponse;
-import com.springboot.FlomadAIplanner.ai.service.ChatCallService;
+import com.springboot.FlomadAIplanner.ai.service.EnhancedChatCallService;
+import com.springboot.FlomadAIplanner.ai.service.FastAIService;
+import com.springboot.FlomadAIplanner.ai.service.LightweightAIService;
 import com.springboot.FlomadAIplanner.ai.agents.audio.AudioTranscriptionService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
@@ -17,15 +19,23 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/api/chat")
 public class ChatController {
 
-    private final ChatCallService chatCallService;
+    private final EnhancedChatCallService enhancedChatCallService;
+    private final FastAIService fastAIService;
+    private final LightweightAIService lightweightAIService;
     private final AudioTranscriptionService audioTranscriptionService;
 
-    public ChatController(ChatCallService chatCallService, AudioTranscriptionService audioTranscriptionService) {
-        this.chatCallService = chatCallService;
+    public ChatController(EnhancedChatCallService enhancedChatCallService, 
+                         FastAIService fastAIService,
+                         LightweightAIService lightweightAIService,
+                         AudioTranscriptionService audioTranscriptionService) {
+        this.enhancedChatCallService = enhancedChatCallService;
+        this.fastAIService = fastAIService;
+        this.lightweightAIService = lightweightAIService;
         this.audioTranscriptionService = audioTranscriptionService;
+        log.info("🚀 ChatController initialized with LIGHTNING AI performance optimization");
     }
 
-    @Operation(summary = "Process chat message with optional media")
+    @Operation(summary = "Process chat message with PERFORMANCE OPTIMIZATION")
     @PostMapping(value = "/call", consumes = MediaType.APPLICATION_JSON_VALUE)
     public String handleCall(@RequestBody AIMessageDTO message) {
         log.info("🔎 Received AIMessage: {}; sessionId: {}", message.getMessage(), message.getSessionId());
@@ -35,7 +45,37 @@ public class ChatController {
             return "No text message provided.";
         }
 
-        return chatCallService.processMessage(message);
+        // PERFORMANCE OPTIMIZATION: Use FastAIService for speed-critical requests
+        long startTime = System.currentTimeMillis();
+        
+        try {
+            String response;
+            
+            // LIGHTNING MODE: Use ultra-lightweight service for maximum speed
+            boolean isSimpleQuery = isSimpleTravelQuery(message.getMessage());
+            if (isSimpleQuery) {
+                log.info("⚡ Using LIGHTNING mode for sub-2s response");
+                response = lightweightAIService.processUltraFast(message);
+            } else if (fastAIService.shouldUseFastMode(message.getMessage())) {
+                log.info("🚀 Using FastAI for performance optimization");
+                response = fastAIService.processWithTimeout(message);
+            } else {
+                log.info("🔄 Using standard processing for complex request");
+                response = enhancedChatCallService.processCallMessage(message);
+            }
+            
+            long totalTime = System.currentTimeMillis() - startTime;
+            log.info("⚡ Response completed in {}ms - Performance: {}", 
+                totalTime, 
+                totalTime < 2000 ? "🏆 EXCELLENT" : totalTime < 5000 ? "✅ GOOD" : "⚠️ NEEDS IMPROVEMENT");
+                
+            return response;
+            
+        } catch (Exception e) {
+            long errorTime = System.currentTimeMillis() - startTime;
+            log.error("❌ Chat processing error after {}ms: {}", errorTime, e.getMessage());
+            return "I apologize, but I'm experiencing technical difficulties. Please try rephrasing your question, and I'll do my best to help you plan your trip!";
+        }
     }
 
     @Operation(summary = "Process chat message and return suggestions")
@@ -46,7 +86,7 @@ public class ChatController {
 
         log.info("📨 Received entity message with sessionId: {}", message != null ? message.getSessionId() : "No Message");
 
-        AIMessageResponse response = chatCallService.processEntityMessage(message, AIMessageResponse.class);
+        AIMessageResponse response = enhancedChatCallService.processEntityMessage(message, AIMessageResponse.class);
         
         // Debug logging to track response
         log.info("🔍 Debug - AI Response object: {}", response);
@@ -81,5 +121,19 @@ public class ChatController {
             log.error("❌ Error transcribing audio: ", e);
             return ResponseEntity.status(500).body("Error processing audio");
         }
+    }
+    
+    /**
+     * Determines if a query is simple enough for lightning-fast processing
+     */
+    private boolean isSimpleTravelQuery(String message) {
+        String lower = message.toLowerCase();
+        
+        // Simple travel queries that don't need function calls
+        return lower.matches(".*(restaurant|hotel|flight|recommend|where to|what to|best|top).*") &&
+               !lower.contains("complex") &&
+               !lower.contains("detailed") &&
+               !lower.contains("itinerary") &&
+               message.length() < 200; // Keep it simple
     }
 }

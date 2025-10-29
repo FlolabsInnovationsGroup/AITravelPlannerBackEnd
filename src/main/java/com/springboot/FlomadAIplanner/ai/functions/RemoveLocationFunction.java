@@ -18,14 +18,14 @@ import java.util.function.Function;
 @Component
 @Description("""
         Function to remove a specific location by its exact ID.
-        
+
         Purpose:
         Use this function ONLY when you have the exact location ID to remove.
         This is a low-level function typically used by other functions or when you already know the specific ID.
-        
-        IMPORTANT: If a user asks to remove a location by name (like "Eiffel Tower"), 
+
+        IMPORTANT: If a user asks to remove a location by name (like "Eiffel Tower"),
         use RemoveLocationByNameFunction instead, which handles the name-to-ID lookup automatically.
-        
+
         Notes:
         You MUST Use this Function AFTER reading all locations to understand which one you need to remove.
         For user requests like "remove the Eiffel Tower", use RemoveLocationByNameFunction instead.
