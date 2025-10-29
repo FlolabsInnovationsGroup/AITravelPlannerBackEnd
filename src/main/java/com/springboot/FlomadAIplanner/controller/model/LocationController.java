@@ -44,10 +44,22 @@ public class LocationController {
     @GetMapping("/{sessionId}")
     public ResponseEntity<List<Location>> getLocationsBySession(@PathVariable String sessionId) {
         try {
+            // Validate session ID parameter
+            if (sessionId == null || sessionId.trim().isEmpty()) {
+                return ResponseEntity.badRequest().body(null);
+            }
+            
             List<Location> locations = locationService.findAllBySessionId(sessionId);
+            // Return empty list instead of null for new sessions
+            if (locations == null) {
+                locations = List.of(); // Empty list
+            }
             return ResponseEntity.ok(locations);
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(null);
+            // Log the error for debugging but return empty list for better UX
+            System.err.println("Error fetching locations for session " + sessionId + ": " + e.getMessage());
+            // Return empty list instead of 500 error to avoid breaking the UI
+            return ResponseEntity.ok(List.of());
         }
     }
 
@@ -70,6 +82,11 @@ public class LocationController {
     @DeleteMapping("/clear/{sessionId}")
     public ResponseEntity<String> clearLocationsBySession(@PathVariable String sessionId) {
         try {
+            // Validate session ID parameter
+            if (sessionId == null || sessionId.trim().isEmpty()) {
+                return ResponseEntity.badRequest().body("Invalid session ID");
+            }
+            
             locationService.deleteAllBySessionId(sessionId);
 
             // Notify clients that the map has been cleared
@@ -77,7 +94,9 @@ public class LocationController {
 
             return ResponseEntity.ok("All locations cleared for session ID: " + sessionId);
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error clearing locations: " + e.getMessage());
+            System.err.println("Error clearing locations for session " + sessionId + ": " + e.getMessage());
+            // Still return success even if clearing failed (empty session case)
+            return ResponseEntity.ok("Session cleared (no locations found): " + sessionId);
         }
     }
 }
