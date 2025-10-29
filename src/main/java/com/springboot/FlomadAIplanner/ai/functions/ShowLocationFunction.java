@@ -19,25 +19,24 @@ import java.util.function.Function;
 @Slf4j
 @Component
 @Description("""
-        MAGICAL LOCATION SPOTLIGHT: Show a single amazing location with beautiful focused map view! 
+        MAGICAL LOCATION SPOTLIGHT: Show a single amazing location with beautiful focused map view!
         Clears everything else and creates a stunning, clean display perfect for exploring one incredible destination.
-        
+
         ✨ YOUR SPECIAL POWER: Single-location magic - clear the map and spotlight only the requested location
-        
+
         🌟 PERFECT FOR THESE AMAZING MOMENTS:
         - Fresh location discovery: "Show me Paris", "Take me to Rome", "I want to see Tokyo"
         - Starting exciting new travel research
         - Creating clean, focused map views: "Focus on London only"
         - Single destination exploration adventures
-        
+
         🎯 WHEN TO USE vs AddLocationFunction:
         ✅ Use ShowLocationFunction: "Show me Paris", "I want to see Tokyo", "Take me to Rome"
         ❌ Don't use for: Adding to existing locations like "Also show Rome" (use AddLocationFunction instead)
-        
-        🗺️ MAGICAL BEHAVIOR DIFFERENCE: 
+
+        🗺️ MAGICAL BEHAVIOR DIFFERENCE:
         - ShowLocationFunction: CLEARS existing + shows new location (like a spotlight!)
         - AddLocationFunction: KEEPS existing + adds new location (like collecting gems!)
-        
         ⚡ INCREDIBLE FEATURES:
         - Beautiful map clearing for perfect focused views
         - Instant real-time UI updates via WebSocket magic

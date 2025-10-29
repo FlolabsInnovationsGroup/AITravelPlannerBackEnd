@@ -15,7 +15,6 @@ import java.util.function.Function;
 @Component
 @Description("""
         Function to CLEAR ALL locations.
-        
         Purpose:
         This function MUST be used to remove ALL markers or points from the map
         whenever a user explicitly REQUESTS to clear the map OR when the CHAT CONTEXT REQUIRES resetting map locations.

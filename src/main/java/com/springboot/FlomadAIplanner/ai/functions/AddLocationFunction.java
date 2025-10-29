@@ -22,9 +22,8 @@ import java.util.function.Function;
 @Component
 @Description("""
         🌍 INTELLIGENT TRAVEL LOCATION BUILDER - Your Ultimate Itinerary Mapping Tool
-        
-        Strategically adds culturally significant destinations to user's visual travel map, creating comprehensive 
-        multi-destination itineraries with real-time map visualization. Each location becomes an interactive marker 
+        Strategically adds culturally significant destinations to user's visual travel map, creating comprehensive
+        multi-destination itineraries with real-time map visualization. Each location becomes an interactive marker
         with cultural context, travel timing, and insider knowledge.
         
         EXPERT TRAVEL INTELLIGENCE:

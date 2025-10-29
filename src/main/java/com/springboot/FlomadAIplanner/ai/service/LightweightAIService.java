@@ -20,7 +20,7 @@ public class LightweightAIService {
     private final ChatClient chatClient;
     private final ConcurrentHashMap<String, String> responseCache = new ConcurrentHashMap<>();
     
-    @Value("${spring.ai.openai.chat.options.model:gpt-3.5-turbo}")
+    @Value("${spring.ai.openai.chat.options.model:gpt-4o}")
     private String model;
     
     public LightweightAIService(ChatModel chatModel) {
@@ -48,7 +48,7 @@ public class LightweightAIService {
                 .system("Professional travel advisor. Provide specific recommendations with exact names, accurate pricing, and practical booking advice. Format: 🎯 Restaurant Name (Location) - Price Range 💡 Essential tip. Max 60 words, be precise and helpful.")
                 .user(aiMessage.getMessage())
                 .options(OpenAiChatOptions.builder()
-                    .model("gpt-3.5-turbo")
+                    .model("gpt-4o")
                     .maxTokens(120)
                     .temperature(0.3)
                     .build())

@@ -16,10 +16,10 @@ import java.util.ArrayList;
 @Slf4j
 public class TokenCountingService {
 
-    // OpenAI's gpt-3.5-turbo has a 16,385 token limit
-    private static final int MAX_TOKENS = 16385;
-    // Reserve tokens for response and safety margin
-    private static final int SAFETY_MARGIN = 1000;
+    // OpenAI's gpt-4o has a 128,000 token limit (significantly higher than gpt-3.5-turbo)
+    private static final int MAX_TOKENS = 128000;
+    // Reserve tokens for response and safety margin (increased for larger context)
+    private static final int SAFETY_MARGIN = 4000;
     private static final int MAX_INPUT_TOKENS = MAX_TOKENS - SAFETY_MARGIN;
     
     // Approximate characters per token (rough estimation)

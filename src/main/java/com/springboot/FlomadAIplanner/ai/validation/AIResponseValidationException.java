@@ -8,6 +8,8 @@ import java.util.Set;
  * Exception thrown when AI response validation fails
  */
 public class AIResponseValidationException extends Exception {
+    
+    private static final long serialVersionUID = 1L;
 
     private final Set<? extends ConstraintViolation<?>> violations;
 

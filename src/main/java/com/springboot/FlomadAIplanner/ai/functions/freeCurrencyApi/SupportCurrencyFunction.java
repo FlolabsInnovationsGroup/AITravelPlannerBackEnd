@@ -17,9 +17,8 @@ import java.util.function.Function;
 @Slf4j
 @Component
 @Description("""
-        Retrieves comprehensive list of supported currencies available for exchange rate conversion. 
+        Retrieves comprehensive list of supported currencies available for exchange rate conversion.
         Essential for showing travelers what currencies are available for their budget planning.
-        
         CORE PURPOSE: Currency availability reference for travel planning
         
         KEY FEATURES:

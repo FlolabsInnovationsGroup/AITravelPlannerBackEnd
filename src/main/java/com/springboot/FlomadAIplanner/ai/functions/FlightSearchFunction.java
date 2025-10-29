@@ -22,16 +22,16 @@ import java.util.function.Function;
 @Description("""
         Searches for available flight options and pricing based on travel criteria. This function provides comprehensive 
         flight information including airlines, departure/arrival times, durations, prices, and booking details.
-        
-        IMPORTANT: Always use IATA airport codes (e.g., LAX for Los Angeles, JFK for New York). Convert city names 
+
+        IMPORTANT: Always use IATA airport codes (e.g., LAX for Los Angeles, JFK for New York). Convert city names
         to airport codes before calling this function.
-        
+
         For ONE-WAY trips: Provide departure date only
         For ROUND-TRIP: Provide both departure and return dates
-        
-        Returns detailed flight information to help users make informed booking decisions. Use this when users search 
+
+        Returns detailed flight information to help users make informed booking decisions. Use this when users search
         for flights, ask about flight prices, or need travel options between cities.
-        
+
         Examples: "Find flights from NYC to Paris", "Show me flight options to Tokyo next month"
         """)
 public class FlightSearchFunction implements Function<FlightSearchFunction.FlightSearchRequest, FlightSearchFunction.FlightSearchResponse> {

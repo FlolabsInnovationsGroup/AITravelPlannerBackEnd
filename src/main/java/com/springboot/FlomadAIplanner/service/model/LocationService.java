@@ -3,6 +3,8 @@ package com.springboot.FlomadAIplanner.service.model;
 import com.springboot.FlomadAIplanner.model.entities.Location;
 import com.springboot.FlomadAIplanner.model.repository.LocationRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -24,11 +26,13 @@ public class LocationService {
         return locationRepository.save(location);
     }
 
+    @Cacheable(value = "location-cache", key = "#id")
     public Location findById(String id) {
         log.debug("Finding location by ID: {}", id);
         return locationRepository.findById(id).orElse(null);
     }
 
+    @Cacheable(value = "location-cache", key = "#sessionId")
     public List<Location> findAllBySessionId(String sessionId) {
         log.debug("Finding all locations by session ID: {}", sessionId);
         return locationRepository.findBySessionId(sessionId);
@@ -41,6 +45,7 @@ public class LocationService {
         return locationRepository.save(updatedEntity);
     }
 
+    @CacheEvict(value = "location-cache", key = "#id")
     public void delete(String id) {
         log.info("Deleting location with ID: {}", id);
         locationRepository.deleteById(id);

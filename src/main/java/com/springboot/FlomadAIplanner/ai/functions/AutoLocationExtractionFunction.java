@@ -19,9 +19,8 @@ import java.util.function.Function;
 @Component
 @Description("""
         🧠 INTELLIGENT LOCATION DISCOVERY ENGINE - Your AI Travel Conversation Parser
-        
-        Revolutionizes travel planning by automatically detecting, analyzing, and mapping every location mention 
-        in natural conversation. Transforms casual travel chat into comprehensive visual itineraries with 
+        Revolutionizes travel planning by automatically detecting, analyzing, and mapping every location mention
+        in natural conversation. Transforms casual travel chat into comprehensive visual itineraries with
         cultural intelligence and precise geographic coordination.
         
         ADVANCED TRAVEL INTELLIGENCE:

@@ -14,6 +14,9 @@ import java.time.LocalDateTime;
 @Builder
 @Document(collection = "locations")
 public class Location extends Model {
+    
+    private static final long serialVersionUID = 1L;
+    
     @Field("sessionId")
     @NotBlank
     private String sessionId; // Associates the location with a chat/session

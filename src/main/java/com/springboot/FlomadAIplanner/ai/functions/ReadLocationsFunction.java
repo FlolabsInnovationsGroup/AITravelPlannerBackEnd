@@ -15,27 +15,26 @@ import java.util.function.Function;
 @Slf4j
 @Component
 @Description("""
-        Retrieves all locations currently displayed on the user's map for the active session. Essential 
+        Retrieves all locations currently displayed on the user's map for the active session. Essential
         for understanding current itinerary state and preventing duplicate additions.
-        
+
         CORE PURPOSE: Map state awareness and duplicate prevention
-        
+
         CRITICAL WORKFLOW: ALWAYS call BEFORE adding new locations to avoid duplicates and understand current map state
-        
+
         KEY FEATURES:
         - Complete session location inventory
         - Location details (IDs, names, coordinates)
         - Duplicate prevention support
         - Current map state analysis
-        
         PERFECT FOR:
         - "What's currently on my map?"
         - Pre-addition duplicate checking
         - Itinerary state verification
         - Session location management
-        
+
         OPTIMIZATION NOTE: For location removal by name, use RemoveLocationByNameFunction directly instead of calling this + RemoveLocationFunction
-        
+
         SMART USAGE:
         - Check current map state before modifications
         - Verify location existence before operations

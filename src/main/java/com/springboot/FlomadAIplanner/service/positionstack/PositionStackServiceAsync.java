@@ -66,7 +66,7 @@ public class PositionStackServiceAsync {
                 .collect(Collectors.toList());
 
         // Combine all async results once all complete
-        CompletableFuture<?>[] futures = futureTasks.toArray(new CompletableFuture[0]);
+        CompletableFuture<?>[] futures = futureTasks.toArray(new CompletableFuture<?>[0]);
         return CompletableFuture.allOf(futures)
                 .thenApply(voidResult -> {
                     List<PositionStackData> combinedResults = new ArrayList<>();

@@ -22,17 +22,16 @@ import java.util.function.Function;
 @Description("""
         Searches for hotels based on geographic location coordinates. This function finds hotels near specific 
         latitude/longitude coordinates with detailed information including amenities, ratings, and pricing.
-        
+
         WORKFLOW: First use PlaceTextSearchFunction to get exact coordinates, then use this function to find nearby hotels.
-        
+
         Features:
         - Geographic precision using latitude/longitude coordinates
-        - Filter by proximity, amenities, ratings, and hotel sources  
+        - Filter by proximity, amenities, ratings, and hotel sources
         - Detailed hotel information including facilities and pricing
         - Integration with multiple hotel booking sources
-        
+
         IMPORTANT: After finding hotels, use PlaceTextSearchFunction for each hotel to get exact locations and Google Maps links.
-        
         Use when users search for hotels in specific areas, need accommodation near landmarks, or want location-based hotel recommendations.
         
         Examples: "Find hotels near Central Park", "Show me hotels in downtown Paris", "Hotels within 5km of airport"

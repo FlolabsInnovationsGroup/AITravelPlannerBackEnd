@@ -5,12 +5,14 @@ import io.mongock.runner.springboot.EnableMongock;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @Slf4j
 @SpringBootApplication
 @EnableMongock
 @EnableFeignClients
+@EnableCaching
 public class FlomadAiPlannerApplication {
     public static void main(String[] args) {
         PreInitializationConfig.loadEnvVariables();

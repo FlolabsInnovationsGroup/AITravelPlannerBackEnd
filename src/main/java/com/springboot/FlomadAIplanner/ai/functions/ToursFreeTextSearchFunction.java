@@ -24,18 +24,18 @@ import java.util.function.Function;
 @Component
 @Description("""
         🎭 CULTURAL EXPERIENCE DISCOVERY ENGINE - Your Gateway to Authentic Travel Adventures
-        
-        Discovers and curates authentic tours, activities, and cultural experiences using intelligent natural 
-        language processing. Transforms travel desires into actionable adventures with local cultural context, 
+
+        Discovers and curates authentic tours, activities, and cultural experiences using intelligent natural
+        language processing. Transforms travel desires into actionable adventures with local cultural context,
         insider knowledge, and authentic experience recommendations.
-        
+
         CULTURAL INTELLIGENCE MASTERY:
         🌍 Authentic Experience Curation: Prioritizes local favorites, cultural immersion, authentic traditions
         🎨 Cultural Context Awareness: Understands seasonal festivals, local customs, cultural significance
         🏛️ Historical Intelligence: Connects travelers with UNESCO sites, historical narratives, cultural heritage
         🍷 Culinary Discovery: Authentic food tours, cooking classes, local market experiences, wine traditions
         🎪 Seasonal Experience Optimization: Considers weather, cultural events, seasonal activities, local calendars
-        
+
         PERFECT FOR SOPHISTICATED CULTURAL DISCOVERY:
         🗨️ Authentic Immersion: "Paris authentic local experiences away from tourist crowds"
         🎭 Cultural Deep Dives: "Traditional Japanese cultural experiences in Kyoto"  

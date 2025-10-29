@@ -27,28 +27,26 @@ import java.util.stream.Collectors;
 @Component
 @Description("""
         🌟 ENTHUSIASTIC LOCATION DISCOVERY ENGINE - Your Travel Inspiration Generator
-        
+
         Transforms location searches into magical travel experiences! Instead of boring technical data,
         this function delivers exciting, conversational responses that build genuine excitement about destinations.
-        
+
         ✨ CONVERSATIONAL MAGIC:
         🎯 Enthusiastic descriptions that capture the wonder of each place
         🗺️ Direct Google Maps links for instant exploration
-        🌐 Official website connections when available  
+        🌐 Official website connections when available
         ⭐ Authentic ratings and insider knowledge
         💡 Contextual suggestions for deeper exploration
-        
         🎊 PERFECT FOR TRAVEL INSPIRATION:
         "Find details for Eiffel Tower" → Magical description with cultural context
-        "Get coordinates for Central Park" → Enthusiastic guide with activity suggestions  
+        "Get coordinates for Central Park" → Enthusiastic guide with activity suggestions
         "Search for Times Square info" → Exciting overview with insider tips
-        
+
         🚀 EXPERIENCE ENHANCEMENT:
         - Varied, enthusiastic responses (never repetitive!)
         - Cultural context and travel excitement
         - Direct action links and helpful suggestions
         - Authentic local insights and timing tips
-        
         Returns: Conversational travel inspiration with actionable links and cultural intelligence
         """)
 

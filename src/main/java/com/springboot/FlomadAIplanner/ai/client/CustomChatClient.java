@@ -83,8 +83,8 @@ public class CustomChatClient implements ChatClient {
             Message lastMessage = messages.get(messages.size() - 1);
             if (lastMessage.getMessageType() == MessageType.USER) {
                 UserMessage userMessage = (UserMessage) lastMessage;
-                if (StringUtils.hasText(userMessage.getContent())) {
-                    userText = lastMessage.getContent();
+                if (StringUtils.hasText(userMessage.getText())) {
+                    userText = lastMessage.getText();
                 }
                 Collection<Media> messageMedia = userMessage.getMedia();
                 if (!CollectionUtils.isEmpty(messageMedia)) {

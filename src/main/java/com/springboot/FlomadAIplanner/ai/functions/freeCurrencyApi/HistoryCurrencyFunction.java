@@ -18,9 +18,8 @@ import java.util.function.Function;
 @Slf4j
 @Component
 @Description("""
-        Retrieves historical exchange rates for specific dates, enabling travelers to analyze currency trends 
+        Retrieves historical exchange rates for specific dates, enabling travelers to analyze currency trends
         and make informed decisions about timing their currency exchanges.
-        
         CORE PURPOSE: Historical currency rate analysis for strategic travel planning
         
         KEY FEATURES:

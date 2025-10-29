@@ -18,9 +18,8 @@ import java.util.function.Function;
 @Slf4j
 @Component
 @Description("""
-        Retrieves current exchange rates for currency conversion calculations. Provides real-time conversion 
+        Retrieves current exchange rates for currency conversion calculations. Provides real-time conversion
         rates between base currency and multiple target currencies for travel budgeting.
-        
         CORE PURPOSE: Real-time currency exchange rate conversion for travel planning
         
         KEY FEATURES:

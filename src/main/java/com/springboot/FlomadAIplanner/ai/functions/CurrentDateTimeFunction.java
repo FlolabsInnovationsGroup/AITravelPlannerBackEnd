@@ -22,15 +22,15 @@ import java.util.function.Function;
         operations like flight searches, tour availability, and booking deadlines.
         
         CRITICAL FIRST STEP: Must be called BEFORE any time-dependent functions to establish current context
-        
+
         Features:
         - Real-time date/time retrieval
         - Customizable format specification
         - UTC and local time zone support
         - Essential for AI temporal awareness
-        
+
         DEPENDENCY PATTERN: CurrentDateTimeFunction → Other time-sensitive functions
-        
+
         Required for functions needing temporal context:
         - Flight searches (departure/arrival times)
         - Tour availability (seasonal offerings)  
