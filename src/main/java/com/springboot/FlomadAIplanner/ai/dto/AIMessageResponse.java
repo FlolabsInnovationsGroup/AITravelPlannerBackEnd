@@ -6,6 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import java.util.List;
 
 /**
@@ -24,17 +27,22 @@ import java.util.List;
 public class AIMessageResponse {
 
 
+    @NotNull(message = "AI response message cannot be null")
+    @NotEmpty(message = "AI response message cannot be empty")
+    @Size(min = 10, max = 5000, message = "AI response message must be between 10 and 5000 characters")
     @JsonPropertyDescription("Required. " +
             "TRAVEL ASSISTANT response to the USER input. This message will be displayed to the user." +
             "Must be a complete friendly answer, based on the input. While generating this value imagine that 'suggestions' don't exist at all.")
     private String message;
 
+    @NotNull(message = "Suggestions list cannot be null")
+    @Size(min = 3, max = 5, message = "Must provide between 3 and 5 suggestions")
     @JsonPropertyDescription("Required." +
             "List of suggested next requests USER can logically send to TRAVEL ASSISTANT in the current chat context, and You MUST also think about the future flow of the dialogue." +
             "Keep in mind that one of these suggestions will be a message from USER (client) to the TRAVEL ASSISTANT." +
             "Suggestions must be really useful." +
             "Must be 4 items.")
-    private List<String> suggestions;
+    private List<@NotEmpty(message = "Each suggestion cannot be empty") @Size(min = 5, max = 200, message = "Each suggestion must be between 5 and 200 characters") String> suggestions;
 
 }
 

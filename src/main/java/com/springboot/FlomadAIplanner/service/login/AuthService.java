@@ -132,7 +132,6 @@ public class AuthService extends AbstractAuthService {
 
     private boolean isUserAuthenticated() {
         User user = currentUserUtil.getCurrentUserFromSecurityContext();
-        System.err.println("User: " + user);
         return user != null;
     }
 
