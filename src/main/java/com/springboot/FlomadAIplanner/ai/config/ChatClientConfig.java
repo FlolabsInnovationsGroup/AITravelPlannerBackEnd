@@ -43,6 +43,8 @@ public class ChatClientConfig {
         return chatModel;
     }
 
+    // Vertex AI Gemini temporarily disabled to resolve bean conflicts
+    /*
     @Bean
     public ChatClient geminiChatClient(@Qualifier("vertexAiGeminiChat") ChatModel chatModel,
                                        @Qualifier("customDatabaseChatMemory") ChatMemory chatMemory) {
@@ -51,15 +53,15 @@ public class ChatClientConfig {
                 .defaultAdvisors(new PromptChatMemoryAdvisor(chatMemory))
                 .build();
     }
+    */
 
     @Bean
     @Qualifier("chatClients")
     public Map<AIModel, ChatClient> chatClients(
-            @Qualifier("openAiChatClient") ChatClient openAiChatClient,
-            @Qualifier("geminiChatClient") ChatClient geminiChatClient) {
+            @Qualifier("openAiChatClient") ChatClient openAiChatClient) {
         return Map.of(
-                AIModel.OPENAI_MODEL, openAiChatClient,
-                AIModel.GEMINI_MODEL, geminiChatClient
+                AIModel.OPENAI_MODEL, openAiChatClient
+                // AIModel.GEMINI_MODEL, geminiChatClient // Disabled temporarily
         );
     }
 

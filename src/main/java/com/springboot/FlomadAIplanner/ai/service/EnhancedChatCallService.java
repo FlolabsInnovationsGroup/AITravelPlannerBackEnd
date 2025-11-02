@@ -102,6 +102,17 @@ public class EnhancedChatCallService extends AbstractChatService {
      * @return The AI response of the specified type
      */
     public <T> T processEntityMessage(AIMessageDTO aiMessage, Class<T> returnClassType) {
+        // Add null check for aiMessage
+        if (aiMessage == null) {
+            log.error("❌ AIMessageDTO is null - cannot process message");
+            throw new IllegalArgumentException("AIMessageDTO cannot be null");
+        }
+        
+        if (aiMessage.getMessage() == null || aiMessage.getMessage().trim().isEmpty()) {
+            log.error("❌ Message content is null or empty - cannot process");
+            throw new IllegalArgumentException("Message content cannot be null or empty");
+        }
+        
         log.info("🔵 Processing entity message with suggestions: {}; sessionId: {}", aiMessage.getMessage(), aiMessage.getSessionId());
 
         try {

@@ -5,6 +5,7 @@ import io.github.bucket4j.Bucket;
 import io.github.bucket4j.Refill;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -13,6 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Rate limiting service using Bucket4j for token bucket algorithm.
  * Provides different rate limits for different user types and API endpoints.
+ * Uses configuration properties for development flexibility.
  */
 @Service
 public class RateLimitService {
@@ -21,6 +23,25 @@ public class RateLimitService {
     
     // Cache for user-specific buckets
     private final ConcurrentHashMap<String, Bucket> userBuckets = new ConcurrentHashMap<>();
+    
+    // Configuration properties for rate limits
+    @Value("${app.rate-limit.chat-requests-per-minute:10000}")
+    private int chatRequestsPerMinute;
+    
+    @Value("${app.rate-limit.chat-requests-per-hour:100000}")
+    private int chatRequestsPerHour;
+    
+    @Value("${app.rate-limit.guest-requests-per-minute:10000}")
+    private int guestRequestsPerMinute;
+    
+    @Value("${app.rate-limit.guest-requests-per-hour:100000}")
+    private int guestRequestsPerHour;
+    
+    @Value("${app.rate-limit.auth-requests-per-minute:10000}")
+    private int authRequestsPerMinute;
+    
+    @Value("${app.rate-limit.auth-requests-per-hour:100000}")
+    private int authRequestsPerHour;
     
     /**
      * Rate limit types for different endpoints
@@ -83,18 +104,23 @@ public class RateLimitService {
             case GUEST_USER:
                 return createGuestUserBucket();
             case AUTH_USER:
-                return createAuthUserBucket();
+                return createAuthenticatedUserBucket();
             default:
                 return createDefaultBucket();
         }
     }
     
     /**
-     * Chat API bucket: 10 requests per minute, 100 per hour
+     * Chat API bucket: Uses configured limits for development flexibility
      */
     private Bucket createChatApiBucket() {
-        Bandwidth minuteLimit = Bandwidth.classic(10, Refill.greedy(10, Duration.ofMinutes(1)));
-        Bandwidth hourLimit = Bandwidth.classic(100, Refill.greedy(100, Duration.ofHours(1)));
+        Bandwidth minuteLimit = Bandwidth.classic(chatRequestsPerMinute, 
+            Refill.greedy(chatRequestsPerMinute, Duration.ofMinutes(1)));
+        Bandwidth hourLimit = Bandwidth.classic(chatRequestsPerHour, 
+            Refill.greedy(chatRequestsPerHour, Duration.ofHours(1)));
+        
+        logger.debug("Created chat API bucket with {} requests/minute, {} requests/hour", 
+            chatRequestsPerMinute, chatRequestsPerHour);
         
         return Bucket.builder()
             .addLimit(minuteLimit)
@@ -129,11 +155,16 @@ public class RateLimitService {
     }
     
     /**
-     * Guest user bucket: 5 requests per minute, 50 per hour
+     * Guest user bucket: Uses configured limits for development flexibility
      */
     private Bucket createGuestUserBucket() {
-        Bandwidth minuteLimit = Bandwidth.classic(5, Refill.greedy(5, Duration.ofMinutes(1)));
-        Bandwidth hourLimit = Bandwidth.classic(50, Refill.greedy(50, Duration.ofHours(1)));
+        Bandwidth minuteLimit = Bandwidth.classic(guestRequestsPerMinute, 
+            Refill.greedy(guestRequestsPerMinute, Duration.ofMinutes(1)));
+        Bandwidth hourLimit = Bandwidth.classic(guestRequestsPerHour, 
+            Refill.greedy(guestRequestsPerHour, Duration.ofHours(1)));
+        
+        logger.debug("Created guest user bucket with {} requests/minute, {} requests/hour", 
+            guestRequestsPerMinute, guestRequestsPerHour);
         
         return Bucket.builder()
             .addLimit(minuteLimit)
@@ -142,11 +173,16 @@ public class RateLimitService {
     }
     
     /**
-     * Authenticated user bucket: 20 requests per minute, 200 per hour
+     * Authenticated user bucket: Uses configured limits for development flexibility
      */
-    private Bucket createAuthUserBucket() {
-        Bandwidth minuteLimit = Bandwidth.classic(20, Refill.greedy(20, Duration.ofMinutes(1)));
-        Bandwidth hourLimit = Bandwidth.classic(200, Refill.greedy(200, Duration.ofHours(1)));
+    private Bucket createAuthenticatedUserBucket() {
+        Bandwidth minuteLimit = Bandwidth.classic(authRequestsPerMinute, 
+            Refill.greedy(authRequestsPerMinute, Duration.ofMinutes(1)));
+        Bandwidth hourLimit = Bandwidth.classic(authRequestsPerHour, 
+            Refill.greedy(authRequestsPerHour, Duration.ofHours(1)));
+        
+        logger.debug("Created authenticated user bucket with {} requests/minute, {} requests/hour", 
+            authRequestsPerMinute, authRequestsPerHour);
         
         return Bucket.builder()
             .addLimit(minuteLimit)

@@ -97,7 +97,8 @@ public class WebSecurityConfig {
                         ).permitAll()
 
                         .requestMatchers("/users/**").hasRole("ADMIN")
-                        .requestMatchers("/api/chat", "/api/stream").hasAnyRole("ADMIN", "USER")
+                        // ⚠️ Fix: Change to exact paths to avoid conflicting with PUBLIC_URLS /api/chat/call/entity
+                        .requestMatchers("/api/chat", "/api/stream", "/api/chat/history/**").hasAnyRole("ADMIN", "USER")
 
                         .anyRequest().authenticated()
                 )
@@ -106,6 +107,20 @@ public class WebSecurityConfig {
                         .authorizationEndpoint(authorization -> authorization.baseUri("/oauth2/authorization"))
                         .successHandler(customAuthenticationSuccessHandler)
                         .failureHandler(customAuthenticationFailureHandler)
+                )
+                .exceptionHandling(exceptions -> exceptions
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            // For API requests, return JSON 401 instead of redirecting to login page
+                            String requestURI = request.getRequestURI();
+                            if (requestURI.startsWith("/api/")) {
+                                response.setContentType("application/json");
+                                response.setStatus(401);
+                                response.getWriter().write("{\"error\":\"Unauthorized\",\"message\":\"Authentication required\"}");
+                            } else {
+                                // For web requests, redirect to login
+                                response.sendRedirect("/login");
+                            }
+                        })
                 )
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(userLastActiveUpdateFilter, JwtRequestFilter.class);
