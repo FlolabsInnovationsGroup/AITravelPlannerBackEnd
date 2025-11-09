@@ -10,7 +10,6 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.Base64;
 
 @Component
 public class AESEncryption {
@@ -29,6 +28,7 @@ public class AESEncryption {
         byte[] encryptedData = encrypt(fileContent, secretKey, iv);
 
         // Encryption completed successfully
+        System.out.println("File encrypted successfully. Encrypted data size: " + encryptedData.length + " bytes");
         // You can store the secretKey and iv securely if needed
     }
 

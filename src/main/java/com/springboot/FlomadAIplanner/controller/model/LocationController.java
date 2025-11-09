@@ -7,9 +7,13 @@ import com.springboot.FlomadAIplanner.service.socket.WebSocketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.validation.FieldError;
 import jakarta.validation.Valid;
 
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 @RestController
 @RequestMapping("/api/locations")
@@ -20,8 +24,15 @@ public class LocationController {
     private final WebSocketService webSocketService;
 
     @PostMapping("/add")
-    public ResponseEntity<Location> addLocation(@Valid @RequestBody LocationDTO request) {
+    public ResponseEntity<?> addLocation(@Valid @RequestBody LocationDTO request) {
         try {
+            // Validate sessionId explicitly
+            if (request.getSessionId() == null || request.getSessionId().trim().isEmpty()) {
+                return ResponseEntity.badRequest()
+                    .body(Map.of("error", "Session ID is required", 
+                                "message", "A valid session ID must be provided to add a location"));
+            }
+            
             // Step 1: Save location
             Location location = Location.builder()
                     .sessionId(request.getSessionId())
@@ -37,7 +48,15 @@ public class LocationController {
 
             return ResponseEntity.ok(location);
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(null);
+            // Log the error for debugging
+            System.err.println("Error adding location: " + e.getMessage());
+            e.printStackTrace();
+            
+            // Return detailed error information
+            return ResponseEntity.status(500)
+                .body(Map.of("error", "Failed to add location", 
+                            "message", e.getMessage(),
+                            "details", "Please check that all required fields are provided and valid"));
         }
     }
 
@@ -98,5 +117,24 @@ public class LocationController {
             // Still return success even if clearing failed (empty session case)
             return ResponseEntity.ok("Session cleared (no locations found): " + sessionId);
         }
+    }
+
+    // Handle validation errors
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, Object>> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        Map<String, Object> errors = new HashMap<>();
+        Map<String, String> fieldErrors = new HashMap<>();
+        
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            fieldErrors.put(fieldName, errorMessage);
+        });
+        
+        errors.put("error", "Validation failed");
+        errors.put("message", "Please check the provided data");
+        errors.put("fieldErrors", fieldErrors);
+        
+        return ResponseEntity.badRequest().body(errors);
     }
 }
