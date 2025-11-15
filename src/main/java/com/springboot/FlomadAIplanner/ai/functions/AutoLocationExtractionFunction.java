@@ -109,13 +109,14 @@ public class AutoLocationExtractionFunction implements Function<AutoLocationExtr
                     String displayName = locationName;
                     String locationType = "tourist_attraction";
                     boolean foundCoordinates = false;
+                    com.fasterxml.jackson.databind.JsonNode searchResult = null;
                     
                     try {
                         // First try Google Places API
                         TextSearchRequest searchRequest = new TextSearchRequest();
                         searchRequest.setTextQuery(locationName);
                         
-                        var searchResult = googlePlacesService.asyncTextSearchPlaces(searchRequest).join();
+                        searchResult = googlePlacesService.asyncTextSearchPlaces(searchRequest).join();
                         
                         if (searchResult != null && searchResult.has("places") && 
                             searchResult.get("places").isArray() && 
@@ -137,6 +138,7 @@ public class AutoLocationExtractionFunction implements Function<AutoLocationExtr
                         }
                     } catch (Exception apiException) {
                         log.warn("⚠️ Google Places API failed for {}: {}", locationName, apiException.getMessage());
+                        searchResult = null; // Clear result on failure
                     }
                     
                     // If Google Places API failed, try fallback coordinates
@@ -153,10 +155,21 @@ public class AutoLocationExtractionFunction implements Function<AutoLocationExtr
                     }
                     
                     if (foundCoordinates) {
-                        // Create AddLocationRequest
+                        // Create AddLocationRequest with rich data
                         AddLocationFunction.AddLocationRequest addRequest = 
-                            new AddLocationFunction.AddLocationRequest(
-                                latitude, longitude, displayName, locationType, sessionId);
+                            new AddLocationFunction.AddLocationRequest();
+                        addRequest.setLatitude(latitude);
+                        addRequest.setLongitude(longitude);
+                        addRequest.setName(displayName);
+                        addRequest.setType(locationType);
+                        addRequest.setSessionId(sessionId);
+                        
+                        // Extract rich data from Google Places API response if available
+                        if (searchResult != null && searchResult.has("places") && 
+                            searchResult.get("places").isArray() && 
+                            searchResult.get("places").size() > 0) {
+                            extractRichDataFromPlace(searchResult.get("places").get(0), addRequest);
+                        }
                         
                         // Add the location using AddLocationFunction
                         String addResult = addLocationFunction.apply(addRequest);
@@ -543,6 +556,108 @@ public class AutoLocationExtractionFunction implements Function<AutoLocationExtr
         }
         
         return null; // No fallback found
+    }
+
+    /**
+     * Extract rich data fields from Google Places API response
+     */
+    private void extractRichDataFromPlace(com.fasterxml.jackson.databind.JsonNode place, 
+                                         AddLocationFunction.AddLocationRequest addRequest) {
+        try {
+            // Extract rating
+            if (place.has("rating")) {
+                addRequest.setRating(place.get("rating").asDouble());
+            }
+            
+            // Extract user ratings total
+            if (place.has("userRatingCount")) {
+                addRequest.setUserRatingsTotal(place.get("userRatingCount").asInt());
+            }
+            
+            // Extract price level
+            if (place.has("priceLevel")) {
+                String priceLevel = place.get("priceLevel").asText();
+                // Convert Google Places price level text to integer
+                if ("PRICE_LEVEL_FREE".equals(priceLevel)) addRequest.setPriceLevel(1);
+                else if ("PRICE_LEVEL_INEXPENSIVE".equals(priceLevel)) addRequest.setPriceLevel(1);
+                else if ("PRICE_LEVEL_MODERATE".equals(priceLevel)) addRequest.setPriceLevel(2);
+                else if ("PRICE_LEVEL_EXPENSIVE".equals(priceLevel)) addRequest.setPriceLevel(3);
+                else if ("PRICE_LEVEL_VERY_EXPENSIVE".equals(priceLevel)) addRequest.setPriceLevel(4);
+            }
+            
+            // Extract phone number
+            if (place.has("nationalPhoneNumber")) {
+                addRequest.setPhoneNumber(place.get("nationalPhoneNumber").asText());
+            } else if (place.has("internationalPhoneNumber")) {
+                addRequest.setPhoneNumber(place.get("internationalPhoneNumber").asText());
+            }
+            
+            // Extract website
+            if (place.has("websiteUri")) {
+                addRequest.setWebsite(place.get("websiteUri").asText());
+            }
+            
+            // Extract vicinity/address
+            if (place.has("formattedAddress")) {
+                addRequest.setVicinity(place.get("formattedAddress").asText());
+            } else if (place.has("shortFormattedAddress")) {
+                addRequest.setVicinity(place.get("shortFormattedAddress").asText());
+            }
+            
+            // Extract place ID
+            if (place.has("id")) {
+                addRequest.setPlaceId(place.get("id").asText());
+            }
+            
+            // Extract photos
+            if (place.has("photos") && place.get("photos").isArray()) {
+                java.util.List<String> photos = new java.util.ArrayList<>();
+                var photosArray = place.get("photos");
+                for (int i = 0; i < Math.min(photosArray.size(), 5); i++) { // Limit to 5 photos
+                    var photo = photosArray.get(i);
+                    if (photo.has("name")) {
+                        // Construct photo URL using Google Places Photo API
+                        String photoName = photo.get("name").asText();
+                        String photoUrl = String.format(
+                            "https://places.googleapis.com/v1/%s/media?maxHeightPx=400&maxWidthPx=400&key=%s",
+                            photoName, System.getenv("GOOGLE_PLACES_API_KEY")
+                        );
+                        photos.add(photoUrl);
+                    }
+                }
+                if (!photos.isEmpty()) {
+                    addRequest.setPhotos(photos);
+                }
+            }
+            
+            // Extract opening hours status
+            if (place.has("regularOpeningHours")) {
+                var openingHours = place.get("regularOpeningHours");
+                if (openingHours.has("openNow")) {
+                    addRequest.setIsOpen(openingHours.get("openNow").asBoolean());
+                }
+                if (openingHours.has("weekdayDescriptions") && 
+                    openingHours.get("weekdayDescriptions").isArray()) {
+                    java.util.List<String> weekdayText = new java.util.ArrayList<>();
+                    var weekdayArray = openingHours.get("weekdayDescriptions");
+                    for (int i = 0; i < weekdayArray.size(); i++) {
+                        weekdayText.add(weekdayArray.get(i).asText());
+                    }
+                    if (!weekdayText.isEmpty()) {
+                        addRequest.setWeekdayText(weekdayText);
+                    }
+                }
+            }
+            
+            log.info("✨ Extracted rich data for {}: rating={}, photos={}, phone={}", 
+                    addRequest.getName(), 
+                    addRequest.getRating(),
+                    addRequest.getPhotos() != null ? addRequest.getPhotos().size() : 0,
+                    addRequest.getPhoneNumber() != null);
+                    
+        } catch (Exception e) {
+            log.warn("⚠️ Failed to extract rich data for {}: {}", addRequest.getName(), e.getMessage());
+        }
     }
 
     @Data

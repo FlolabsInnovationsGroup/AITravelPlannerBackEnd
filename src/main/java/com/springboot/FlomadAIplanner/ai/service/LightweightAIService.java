@@ -50,7 +50,6 @@ public class LightweightAIService {
                 .options(OpenAiChatOptions.builder()
                     .model("gpt-4o")
                     .maxTokens(120)
-                    .temperature(0.3)
                     .build())
                 .call()
                 .content();

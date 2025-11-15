@@ -142,6 +142,17 @@ public class AddLocationFunction implements Function<AddLocationFunction.AddLoca
                     .longitude(request.getLongitude())
                     .name(request.getName())
                     .type(request.getType() != null ? request.getType() : "attraction")
+                    // Rich data fields for enhanced UX
+                    .photos(request.getPhotos())
+                    .rating(request.getRating())
+                    .userRatingsTotal(request.getUserRatingsTotal())
+                    .priceLevel(request.getPriceLevel())
+                    .phoneNumber(request.getPhoneNumber())
+                    .website(request.getWebsite())
+                    .vicinity(request.getVicinity())
+                    .placeId(request.getPlaceId())
+                    .isOpen(request.getIsOpen())
+                    .weekdayText(request.getWeekdayText())
                     .build();
 
             // Save the location to the database
@@ -243,5 +254,45 @@ public class AddLocationFunction implements Function<AddLocationFunction.AddLoca
         
         @JsonPropertyDescription("Optional. The ID of the chat session this location belongs to. If not provided, will be retrieved from context.")
         private String sessionId;
+
+        // Enhanced rich data fields for better UX
+        @JsonPropertyDescription("Optional. List of photo URLs from Google Places API.")
+        private java.util.List<String> photos;
+
+        @JsonPropertyDescription("Optional. Google Places rating (0-5 scale).")
+        private Double rating;
+
+        @JsonPropertyDescription("Optional. Total number of user ratings.")
+        private Integer userRatingsTotal;
+
+        @JsonPropertyDescription("Optional. Google Places price level (1-4 scale).")
+        private Integer priceLevel;
+
+        @JsonPropertyDescription("Optional. Business phone number.")
+        private String phoneNumber;
+
+        @JsonPropertyDescription("Optional. Business website URL.")
+        private String website;
+
+        @JsonPropertyDescription("Optional. Business address or vicinity.")
+        private String vicinity;
+
+        @JsonPropertyDescription("Optional. Google Places ID for detailed lookups.")
+        private String placeId;
+
+        @JsonPropertyDescription("Optional. Current open status.")
+        private Boolean isOpen;
+
+        @JsonPropertyDescription("Optional. Opening hours text.")
+        private java.util.List<String> weekdayText;
+
+        // Constructors for backward compatibility
+        public AddLocationRequest(Double latitude, Double longitude, String name, String type, String sessionId) {
+            this.latitude = latitude;
+            this.longitude = longitude;
+            this.name = name;
+            this.type = type;
+            this.sessionId = sessionId;
+        }
     }
 }

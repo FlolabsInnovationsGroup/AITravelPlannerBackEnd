@@ -1,13 +1,14 @@
 # AI Travel Planner Backend - Copilot Instructions
 
 ## Project Overview
-This is the **Spring Boot 3.4.0 backend** for the AI Travel Planner, featuring **Spring AI integration**, **GPT-4o-mini function calling**, **WebSocket real-time communication**, and comprehensive **travel intelligence APIs**. The system provides 9+ AI functions with enterprise-grade security, rate limiting, and MongoDB persistence.
+This is the **Spring Boot 3.4.0 backend** for the AI Travel Planner, featuring **Spring AI integration**, **GPT-4o-mini function calling**, **WebSocket real-time communication**, and comprehensive **travel intelligence APIs**. The system provides 15+ AI functions with enterprise-grade security, rate limiting, and MongoDB persistence.
 
 ## Architecture & Tech Stack
 
 ### Backend Framework (Spring Boot 3.4.0)
 - **Spring AI**: 1.0.0-M5 with OpenAI GPT-4o-mini integration
-- **Function Calling**: 9+ AI functions with auto-discovery and registration
+- **Function Calling**: 15+ AI functions with auto-discovery and registration
+- **Rich Location Data**: Enhanced Google Places integration with photos, ratings, hours, contact info
 - **Database**: MongoDB with Mongock migrations and chat memory persistence  
 - **WebSocket**: STOMP messaging for real-time location synchronization
 - **Security**: JWT + OAuth2 (Google, LinkedIn, Facebook) + guest token system
@@ -22,9 +23,10 @@ This is the **Spring Boot 3.4.0 backend** for the AI Travel Planner, featuring *
 
 ### Quality & Testing
 - **Testing**: 11/11 integration tests passing with comprehensive function validation
-- **Memory Management**: Optimized chat memory with automatic cleanup
+- **Memory Management**: Optimized chat memory with automatic cleanup (30-message limit, 8192 tokens)
 - **Error Handling**: Robust exception handling with graceful degradation
 - **Monitoring**: Comprehensive logging and performance metrics
+- **Production Ready**: Clean console logging, performance optimizations, enterprise-grade configuration
 
 ## Key Development Patterns
 
@@ -64,6 +66,27 @@ public class EmergencyAssistanceFunction implements Function<EmergencyAssistance
 ```
 
 **Convention**: All AI functions use `@Component` with descriptive names, implement `Function<RequestType, String>`, and include detailed `@Description` annotations for GPT function calling.
+
+### Enhanced AI Function Categories - UPDATED
+
+#### **A. Location Management Functions (6 functions)**
+- `AddLocationFunction`: Rich Google Places data integration with photos, ratings, hours
+- `RemoveLocationFunction`, `RemoveLocationByNameFunction`: Precise location removal
+- `ClearLocationsFunction`: Bulk location clearing with WebSocket broadcast
+- `ReadLocationsFunction`, `ShowLocationFunction`: Location retrieval and display
+
+#### **B. Travel Intelligence Functions (5+ functions)**
+- `EmergencyAssistanceFunction`: Crisis support with medical/safety protocols
+- `BudgetOptimizationFunction`: Cost analysis and money-saving recommendations
+- `AccessibilityFunction`: Accessibility-focused travel planning
+- `FlightSearchFunction`: Amadeus API integration for flight booking
+- `PlaceTextSearchFunction`: Google Places advanced search capabilities
+
+#### **C. Utility & Support Functions (4+ functions)**
+- `CurrentDateTimeFunction`: Temporal context for travel planning
+- `PositionStackGeocodingFunction`: Address to coordinate conversion
+- `DistanceCalculatorFunction`: Route and distance calculations
+- `AutoLocationExtractionFunction`: Intelligent location detection from text
 
 ### 2. Request DTO Pattern with JSON Schema Validation
 ```java
@@ -498,6 +521,31 @@ public class AIResponseValidationService {
 - **AI Function Throughput**: 100+ function calls per minute
 - **Memory Usage**: < 2GB heap with 30-message chat memory
 - **Database Performance**: < 1000ms for complex location queries
+
+## Service Layer Architecture
+```java
+// Enhanced service classes with retry mechanisms and proper error handling
+export class MapService {
+  private wsRetryManager = new WebSocketRetryManager(5, 1000);
+  private connectionStatus: 'disconnected' | 'connecting' | 'connected' = 'disconnected';
+  
+  // Production-ready error handling - no console.log pollution
+  private logError(context: string, error: any) {
+    // Clean logging for production - console cleanup implemented
+    if (process.env.NODE_ENV === 'development') {
+      console.warn(`MapService[${context}]:`, error);
+    }
+  }
+}
+```
+
+**Convention**: Use service classes for external integrations, implement retry mechanisms, clean up console logs for production.
+
+## Console Logging Standards
+- **Development**: Use `console.warn()` for non-critical issues that are expected (e.g., missing optional data)
+- **Production**: All console logs are cleaned up - use conditional logging based on `NODE_ENV`
+- **Testing**: Console output is expected in tests - mock console methods when needed
+- **Service Classes**: Implement `logError()` methods with environment checks
 
 ## When Working on This Backend
 

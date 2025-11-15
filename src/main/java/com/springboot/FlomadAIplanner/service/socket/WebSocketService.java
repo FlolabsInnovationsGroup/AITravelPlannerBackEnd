@@ -13,6 +13,9 @@ import java.util.Map;
 public class WebSocketService {
     private static final String LOCATION_DESTINATION = "/topic/locations/";
     private final SimpMessagingTemplate messagingTemplate;
+    
+    // Track sessions with paused broadcasting to prevent race conditions
+    private final Map<String, Boolean> pausedSessions = new HashMap<>();
 
     public WebSocketService(SimpMessagingTemplate messagingTemplate) {
         this.messagingTemplate = messagingTemplate;
@@ -23,6 +26,13 @@ public class WebSocketService {
             log.warn("Invalid location or sessionId for LOCATION_ADDED event.");
             return;
         }
+        
+        // Check if broadcasting is paused for this session (race condition prevention)
+        if (isBroadcastingPaused(location.getSessionId())) {
+            log.info("🚫 Skipping LOCATION_ADDED broadcast for sessionId {} - broadcasting is paused", location.getSessionId());
+            return;
+        }
+        
         String destination = LOCATION_DESTINATION + location.getSessionId();
         log.info("Sending LOCATION_ADDED to destination: {}", destination);
 
@@ -86,6 +96,33 @@ public class WebSocketService {
             // Attempt retry with exponential backoff
             retryMessage(destination, message, 1, 3);
         }
+    }
+
+    /**
+     * Pause WebSocket broadcasting for a session to prevent race conditions during clearing operations
+     */
+    public void pauseBroadcasting(String sessionId) {
+        if (isValidSessionId(sessionId)) {
+            pausedSessions.put(sessionId, true);
+            log.info("🚫 Paused broadcasting for sessionId: {}", sessionId);
+        }
+    }
+
+    /**
+     * Resume WebSocket broadcasting for a session after clearing operations complete
+     */
+    public void resumeBroadcasting(String sessionId) {
+        if (isValidSessionId(sessionId)) {
+            pausedSessions.remove(sessionId);
+            log.info("✅ Resumed broadcasting for sessionId: {}", sessionId);
+        }
+    }
+
+    /**
+     * Check if broadcasting is paused for a session
+     */
+    private boolean isBroadcastingPaused(String sessionId) {
+        return pausedSessions.getOrDefault(sessionId, false);
     }
 
     // Retry mechanism for failed WebSocket messages

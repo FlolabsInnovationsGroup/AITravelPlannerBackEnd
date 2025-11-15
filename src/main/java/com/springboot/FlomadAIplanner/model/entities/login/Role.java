@@ -16,7 +16,7 @@ import java.io.Serial;
 @Document(collection = "roles")
 public class Role extends Model {
     @Serial
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -2156729485039174628L;
 
     @Field("name")
     @EqualsAndHashCode.Include

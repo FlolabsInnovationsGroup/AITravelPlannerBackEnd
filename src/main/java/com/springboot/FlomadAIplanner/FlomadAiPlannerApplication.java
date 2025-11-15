@@ -9,7 +9,9 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @Slf4j
-@SpringBootApplication
+@SpringBootApplication(exclude = {
+    org.springframework.ai.autoconfigure.vertexai.gemini.VertexAiGeminiAutoConfiguration.class
+})
 @EnableMongock
 @EnableFeignClients
 @EnableCaching
