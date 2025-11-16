@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Description;
 import org.springframework.stereotype.Component;
 
@@ -66,6 +67,9 @@ public class AutoLocationExtractionFunction implements Function<AutoLocationExtr
     
     private final GooglePlacesServiceAsync googlePlacesService;
     private final AddLocationFunction addLocationFunction;
+    
+    @Value("${google.api.key}")
+    private String googleApiKey;
 
     public AutoLocationExtractionFunction(GooglePlacesServiceAsync googlePlacesService, 
                                         AddLocationFunction addLocationFunction) {
@@ -620,7 +624,7 @@ public class AutoLocationExtractionFunction implements Function<AutoLocationExtr
                         String photoName = photo.get("name").asText();
                         String photoUrl = String.format(
                             "https://places.googleapis.com/v1/%s/media?maxHeightPx=400&maxWidthPx=400&key=%s",
-                            photoName, System.getenv("GOOGLE_PLACES_API_KEY")
+                            photoName, googleApiKey
                         );
                         photos.add(photoUrl);
                     }
