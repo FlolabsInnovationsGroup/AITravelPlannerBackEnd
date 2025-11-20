@@ -5,6 +5,7 @@ import com.springboot.FlomadAIplanner.model.entities.Location;
 import com.springboot.FlomadAIplanner.service.model.LocationService;
 import com.springboot.FlomadAIplanner.service.socket.WebSocketService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/locations")
 @RequiredArgsConstructor
@@ -49,8 +51,7 @@ public class LocationController {
             return ResponseEntity.ok(location);
         } catch (Exception e) {
             // Log the error for debugging
-            System.err.println("Error adding location: " + e.getMessage());
-            e.printStackTrace();
+            log.error("Error adding location: {}", e.getMessage(), e);
             
             // Return detailed error information
             return ResponseEntity.status(500)

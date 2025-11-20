@@ -34,10 +34,10 @@ public class AgentConfig {
     @Bean
     @Qualifier("openAiAgent")
     public TextAgent<String, Flux<String>> openAiAgent(@Qualifier("openAiChatClient") ChatClient openAiChatClient,
-                                                       @Qualifier("aiFunctionDescriptions") List<String> allFunctionDescriptions,
+                                                       @Qualifier("aiFunctionBeanNames") List<String> allFunctionBeanNames,
                                                        @Qualifier("templatePrompts") Map<String, String> promptsList,
                                                        @Qualifier("promptMetadata") Map<String, String> promptMetadata) {
-        return new TextAgentImpl<>(openAiChatClient, allFunctionDescriptions,
+        return new TextAgentImpl<>(openAiChatClient, allFunctionBeanNames,
                 callMessageProcessingStrategy, streamMessageProcessingStrategy, promptsList, promptMetadata);
     }
 

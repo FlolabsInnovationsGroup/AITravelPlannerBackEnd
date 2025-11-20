@@ -50,6 +50,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleException(HttpServletRequest request, Exception e) {
         log.error("Exception caught: ", e);
 
+        // TEMPORARY FIX: Disabled LLM error explanation due to GPT-5 temperature compatibility issues
+        // Return simple error message instead of calling chatClient
+        String errorMessage = "An error occurred: " + e.getMessage();
+        return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
+        
+        /* DISABLED - Causes recursive temperature=0.7 error with GPT-5
         String sessionId = request.getSession().getId();
 
         // Send stack trace to LLM
@@ -65,6 +71,7 @@ public class GlobalExceptionHandler {
 
         // Return the response
         return new ResponseEntity<>(response.customerErrorMessage(), response.httpStatus());
+        */
     }
 
 }

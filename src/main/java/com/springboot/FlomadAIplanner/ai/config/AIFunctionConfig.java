@@ -26,4 +26,15 @@ public class AIFunctionConfig {
                         .toArray(Class[]::new));
     }
 
+    /**
+     * Extracts ONLY bean names (without descriptions) for Spring AI function registration
+     */
+    @Bean(name = "aiFunctionBeanNames")
+    public List<String> aiFunctionBeanNames() {
+        return functionAnnotationUtils.extractBeanNames
+                (aiFunctions.stream()
+                        .map(Function::getClass)
+                        .toArray(Class[]::new));
+    }
+
 }

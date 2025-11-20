@@ -1,15 +1,12 @@
 package com.springboot.FlomadAIplanner.ai.service;
 
 import com.springboot.FlomadAIplanner.ai.dto.AIMessageDTO;
-import com.springboot.FlomadAIplanner.chatmemory.CustomDatabaseChatMemory;
+import com.springboot.FlomadAIplanner.ai.util.CustomDatabaseChatMemory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.PromptChatMemoryAdvisor;
-import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
@@ -20,14 +17,55 @@ import java.util.List;
  * Streaming chat service providing real-time AI responses with progressive rendering.
  * Implements ChatGPT-style streaming for instant feel and better UX.
  * 
- * Architecture:
- * - Uses Spring AI ChatClient.stream() for reactive responses
- * - Integrates with CustomDatabaseChatMemory for conversation persistence
- * - Supports function calling with streaming responses
- * - Compatible with frontend ReadableStream consumption
+ * <h2>Architecture Overview:</h2>
+ * <ul>
+ *   <li>Uses Spring AI ChatClient.stream() for reactive responses</li>
+ *   <li>Integrates with CustomDatabaseChatMemory for conversation persistence</li>
+ *   <li>Supports function calling with streaming responses</li>
+ *   <li>Compatible with frontend ReadableStream consumption</li>
+ * </ul>
+ * 
+ * <h2>Streaming Flow:</h2>
+ * <pre>
+ * 1. Frontend calls GET /api/chat/stream?message=X&sessionId=Y
+ * 2. StreamingChatService.streamResponse() invoked
+ * 3. Conversation history retrieved from CustomDatabaseChatMemory
+ * 4. ChatClient builds prompt with system instructions + user message + history
+ * 5. OpenAI GPT-4o-mini processes request and streams response
+ * 6. Each text chunk emitted to Flux&lt;String&gt;
+ * 7. Spring WebFlux sends chunks as Server-Sent Events (SSE)
+ * 8. Frontend ReadableStream receives chunks and updates UI progressively
+ * </pre>
+ * 
+ * <h2>Function Calling During Streaming:</h2>
+ * All 15+ AI functions remain available during streaming:
+ * <ul>
+ *   <li>Location management: AddLocationFunction, RemoveLocationFunction, etc.</li>
+ *   <li>Route planning: DirectionsFunction (NEW)</li>
+ *   <li>Travel intelligence: EmergencyAssistanceFunction, BudgetOptimizationFunction</li>
+ *   <li>Search & booking: PlaceTextSearchFunction, FlightSearchFunction</li>
+ *   <li>Utilities: CurrentDateTimeFunction, DistanceCalculatorFunction</li>
+ * </ul>
+ * 
+ * <h2>Error Handling:</h2>
+ * <ul>
+ *   <li>60-second timeout prevents hanging connections</li>
+ *   <li>onErrorResume provides graceful error messages to users</li>
+ *   <li>Comprehensive logging for debugging production issues</li>
+ * </ul>
+ * 
+ * <h2>Memory Management:</h2>
+ * <ul>
+ *   <li>Session-scoped conversations via sessionId</li>
+ *   <li>10-message context window for optimal token usage</li>
+ *   <li>Automatic conversation persistence via PromptChatMemoryAdvisor</li>
+ * </ul>
  * 
  * @see ChatClient
  * @see CustomDatabaseChatMemory
+ * @see PromptChatMemoryAdvisor
+ * @author AI Travel Planner Team
+ * @since November 20, 2025
  */
 @Service
 @Slf4j
@@ -35,9 +73,6 @@ public class StreamingChatService {
 
     private final ChatClient chatClient;
     private final CustomDatabaseChatMemory chatMemory;
-
-    @Value("classpath:/prompts/system-prompt.txt")
-    private Resource systemPromptResource;
 
     public StreamingChatService(
             @Qualifier("openAiChatClient") ChatClient chatClient,
@@ -50,12 +85,14 @@ public class StreamingChatService {
     /**
      * Stream AI responses progressively with Server-Sent Events (SSE).
      * 
-     * Flow:
-     * 1. Retrieve conversation history from memory
-     * 2. Build prompt with system instructions + user message + history
-     * 3. Stream response chunks via Flux<String>
-     * 4. Each chunk is sent immediately to frontend
-     * 5. Final response is saved to memory
+     * <h3>Flow:</h3>
+     * <ol>
+     *   <li>Retrieve conversation history from memory (10 messages)</li>
+     *   <li>Build prompt with system instructions + user message + history</li>
+     *   <li>Stream response chunks via Flux&lt;String&gt;</li>
+     *   <li>Each chunk is sent immediately to frontend via SSE</li>
+     *   <li>Final response is saved to memory automatically</li>
+     * </ol>
      * 
      * @param messageDTO User message with sessionId
      * @return Flux<String> Progressive response stream

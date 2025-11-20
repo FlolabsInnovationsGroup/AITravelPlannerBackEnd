@@ -3,6 +3,7 @@ package com.springboot.FlomadAIplanner.ai.service;
 import com.springboot.FlomadAIplanner.ai.dto.AIMessageDTO;
 import com.springboot.FlomadAIplanner.ai.factory.AgentFactory;
 import com.springboot.FlomadAIplanner.ai.agents.Agent;
+import com.springboot.FlomadAIplanner.ai.functions.AutoLocationExtractionFunction;
 import com.springboot.FlomadAIplanner.ai.validation.AIResponseValidationService;
 import com.springboot.FlomadAIplanner.model.entities.Message;
 import com.springboot.FlomadAIplanner.service.model.MessageService;
@@ -44,6 +45,9 @@ class EnhancedChatCallServiceTest {
 
     @Mock
     private com.springboot.FlomadAIplanner.ai.service.ResponseCacheService cacheService;
+    
+    @Mock
+    private AutoLocationExtractionFunction autoLocationExtractionFunction;
 
     private EnhancedChatCallService chatService;
 
@@ -57,7 +61,7 @@ class EnhancedChatCallServiceTest {
         Map<String, String> promptsList = new HashMap<>();
         promptsList.put("default", "You are a helpful travel assistant.");
 
-        chatService = new EnhancedChatCallService(agentFactory, aiFunctionDescriptions, promptsList, messageService, validationService, cacheService);
+        chatService = new EnhancedChatCallService(agentFactory, aiFunctionDescriptions, promptsList, messageService, validationService, cacheService, autoLocationExtractionFunction);
     }
 
     @Test
