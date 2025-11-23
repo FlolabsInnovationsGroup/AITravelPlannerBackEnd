@@ -1,10 +1,10 @@
 package com.springboot.FlomadAIplanner.ai.service;
 
 import com.springboot.FlomadAIplanner.ai.dto.AIMessageDTO;
-import com.springboot.FlomadAIplanner.ai.util.CustomDatabaseChatMemory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.PromptChatMemoryAdvisor;
+import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -72,11 +72,11 @@ import java.util.List;
 public class StreamingChatService {
 
     private final ChatClient chatClient;
-    private final CustomDatabaseChatMemory chatMemory;
+    private final ChatMemory chatMemory;
 
     public StreamingChatService(
             @Qualifier("openAiChatClient") ChatClient chatClient,
-            @Qualifier("customDatabaseChatMemory") CustomDatabaseChatMemory chatMemory) {
+            @Qualifier("customDatabaseChatMemoryFixed") ChatMemory chatMemory) {
         this.chatClient = chatClient;
         this.chatMemory = chatMemory;
         log.info("🌊 StreamingChatService initialized with reactive streaming support");
