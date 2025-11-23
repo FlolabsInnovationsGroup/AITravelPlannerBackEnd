@@ -32,7 +32,7 @@ public class ChatClientConfig {
 
     @Bean
     public ChatClient openAiChatClient(ChatModel chatModel,
-                                       @Qualifier("customDatabaseChatMemory") ChatMemory chatMemory) {
+                                       @Qualifier("customDatabaseChatMemoryFixed") ChatMemory chatMemory) {
         // GPT-4o compatible options
         OpenAiChatOptions options = OpenAiChatOptions.builder()
                 .model("gpt-4o")
