@@ -106,14 +106,11 @@ public class StreamingChatService {
                  userMessage.substring(0, Math.min(50, userMessage.length())));
 
         try {
-            // 1. Build prompt with memory context
-            List<Message> conversationHistory = chatMemory.get(sessionId, 10);
-            
-            // 2. Stream response using ChatClient
+            // Stream response using ChatClient with memory advisor
             Flux<String> responseStream = chatClient
                 .prompt()
                 .user(userMessage)
-                .advisors(new PromptChatMemoryAdvisor(chatMemory, sessionId, 10))
+                .advisors(new PromptChatMemoryAdvisor(chatMemory, sessionId))
                 .stream()
                 .content();
 
@@ -161,14 +158,12 @@ public class StreamingChatService {
             return chatClient
                 .prompt()
                 .user(userMessage)
-                .advisors(new PromptChatMemoryAdvisor(chatMemory, sessionId, 10))
+                .advisors(new PromptChatMemoryAdvisor(chatMemory, sessionId))
                 .stream()
                 .chatResponse()
                 .doOnNext(response -> {
                     if (log.isDebugEnabled()) {
-                        log.debug("📦 ChatResponse chunk: finish={}, metadata={}", 
-                                 response.getMetadata() != null ? response.getMetadata().getFinishReason() : "null",
-                                 response.getMetadata());
+                        log.debug("📦 ChatResponse chunk received for session: {}", sessionId);
                     }
                 })
                 .doOnComplete(() -> {
@@ -206,7 +201,7 @@ public class StreamingChatService {
             ChatClient.ChatClientRequestSpec requestSpec = chatClient
                 .prompt()
                 .user(userMessage)
-                .advisors(new PromptChatMemoryAdvisor(chatMemory, sessionId, 10));
+                .advisors(new PromptChatMemoryAdvisor(chatMemory, sessionId));
 
             // Note: Function filtering would be implemented here
             // Spring AI 1.0.0-M5 function selection mechanism
