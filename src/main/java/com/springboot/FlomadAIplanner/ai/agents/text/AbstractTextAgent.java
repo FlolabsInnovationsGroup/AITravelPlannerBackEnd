@@ -64,6 +64,10 @@ public abstract class AbstractTextAgent<C, S extends Flux<?>> implements TextAge
         this.streamMessageProcessingStrategy = streamMessageProcessingStrategy;
         this.promptsList = promptsList;
         this.promptMetadata = promptMetadata;
+        
+        // Log injected function names for debugging
+        log.info("📋 AbstractTextAgent initialized with {} permitted functions", permittedFunctions.size());
+        log.debug("📋 Function names: {}", permittedFunctions);
     }
 
     /**
@@ -221,10 +225,12 @@ public abstract class AbstractTextAgent<C, S extends Flux<?>> implements TextAge
             
         } catch (Exception e) {
             log.error("Error in lightweight prompt selection, falling back to default: {}", e.getMessage());
-            // Fallback to a safe default
+            // Fallback to DefaultPrompt.txt with ALL functions enabled for comprehensive travel assistance
             ChatClientSuggestedProperties fallback = new ChatClientSuggestedProperties();
-            fallback.setSystemPrompt(promptsList.get("SingleQuestionPrompt.txt"));
-            fallback.setFunctionNames(List.of());
+            fallback.setSystemPrompt(promptsList.get("DefaultPrompt.txt"));
+            fallback.setFunctionNames(permittedFunctions);  // Enable all functions including addLocationFunction
+            log.info("🔄 Fallback: Using DefaultPrompt.txt with {} functions", permittedFunctions.size());
+            log.debug("🔍 Function names being passed to Spring AI: {}", permittedFunctions);
             return fallback;
         }
     }

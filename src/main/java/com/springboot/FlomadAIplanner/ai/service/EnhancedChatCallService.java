@@ -2,7 +2,9 @@ package com.springboot.FlomadAIplanner.ai.service;
 
 import com.springboot.FlomadAIplanner.ai.agents.Agent;
 import com.springboot.FlomadAIplanner.ai.dto.AIMessageDTO;
+import com.springboot.FlomadAIplanner.ai.dto.AIMessageResponse;
 import com.springboot.FlomadAIplanner.ai.factory.AgentFactory;
+import com.springboot.FlomadAIplanner.ai.functions.AutoLocationExtractionFunction;
 import com.springboot.FlomadAIplanner.ai.validation.AIResponseValidationService;
 import com.springboot.FlomadAIplanner.ai.validation.ValidationResult;
 import com.springboot.FlomadAIplanner.service.model.MessageService;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * Enhanced ChatCallService that explicitly saves user and assistant messages to database
@@ -25,17 +28,26 @@ public class EnhancedChatCallService extends AbstractChatService {
     private final MessageService messageService;
     private final AIResponseValidationService validationService;
     private final ResponseCacheService cacheService;
+    private final AutoLocationExtractionFunction autoLocationExtractionFunction;
+    
+    // Pattern to detect tour/itinerary requests that should trigger location extraction
+    private static final Pattern TOUR_PATTERN = Pattern.compile(
+        "\\b(tour|itinerary|trip|journey|visit|travel to|explore|foodie|cultural|day trip|multi-city)\\b",
+        Pattern.CASE_INSENSITIVE
+    );
 
     public EnhancedChatCallService(AgentFactory agentFactory, 
                                   List<String> aiFunctionDescriptions,
                                   @Qualifier("templatePrompts") Map<String, String> promptsList,
                                   MessageService messageService,
                                   AIResponseValidationService validationService,
-                                  ResponseCacheService cacheService) {
+                                  ResponseCacheService cacheService,
+                                  AutoLocationExtractionFunction autoLocationExtractionFunction) {
         super(agentFactory, aiFunctionDescriptions, promptsList);
         this.messageService = messageService;
         this.validationService = validationService;
         this.cacheService = cacheService;
+        this.autoLocationExtractionFunction = autoLocationExtractionFunction;
         log.info("✅ EnhancedChatCallService initialized with validation and caching support");
     }
 
@@ -135,6 +147,13 @@ public class EnhancedChatCallService extends AbstractChatService {
                     // Log validation issues but don't fail the request to maintain user experience
                     // In production, consider implementing fallback responses or retry logic
                 }
+                
+                // 🚀 AUTOMATIC LOCATION EXTRACTION FOR TOUR/ITINERARY REQUESTS
+                // If user message contains tour/itinerary keywords, automatically call location extraction
+                if (shouldTriggerLocationExtraction(aiMessage.getMessage())) {
+                    AIMessageResponse messageResponse = (AIMessageResponse) aiResponse;
+                    triggerAutomaticLocationExtraction(messageResponse.getMessage(), aiMessage.getSessionId());
+                }
             }
 
             log.info("✅ Successfully processed entity message for session: {}", aiMessage.getSessionId());
@@ -159,6 +178,49 @@ public class EnhancedChatCallService extends AbstractChatService {
         } catch (Exception e) {
             log.error("❌ Error getting message count for session {}: {}", sessionId, e.getMessage());
             return 0;
+        }
+    }
+    
+    /**
+     * Determines if the user message should trigger automatic location extraction.
+     * Detects tour/itinerary/travel planning keywords.
+     */
+    private boolean shouldTriggerLocationExtraction(String message) {
+        if (message == null || message.trim().isEmpty()) {
+            return false;
+        }
+        
+        boolean matches = TOUR_PATTERN.matcher(message).find();
+        if (matches) {
+            log.info("🎯 Detected tour/itinerary request - will trigger automatic location extraction");
+        }
+        return matches;
+    }
+    
+    /**
+     * Automatically triggers the location extraction function after AI generates a response.
+     * This bypasses the need for GPT to call the function - we do it programmatically.
+     */
+    private void triggerAutomaticLocationExtraction(String aiResponseMessage, String sessionId) {
+        try {
+            log.info("🗺️ AUTOMATIC TRIGGER: Calling autoLocationExtractionFunction for session: {}", sessionId);
+            log.info("🗺️ Extracting locations from AI response (length: {} chars)", 
+                aiResponseMessage != null ? aiResponseMessage.length() : 0);
+            
+            // Create the request object for the function
+            AutoLocationExtractionFunction.LocationExtractionRequest request = 
+                new AutoLocationExtractionFunction.LocationExtractionRequest();
+            request.setMessage(aiResponseMessage);
+            request.setSessionId(sessionId);
+            
+            // Call the function directly
+            String extractionResult = autoLocationExtractionFunction.apply(request);
+            
+            log.info("✅ Location extraction completed: {}", extractionResult);
+            
+        } catch (Exception e) {
+            log.error("❌ Error during automatic location extraction: {}", e.getMessage(), e);
+            // Don't fail the entire request - location extraction is supplementary
         }
     }
 }

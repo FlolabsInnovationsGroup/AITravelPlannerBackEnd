@@ -38,6 +38,19 @@ public class FunctionAnnotationUtils {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Extracts ONLY bean names (without descriptions) for Spring AI function registration
+     */
+    public List<String> extractBeanNames(Class<?>... aiFunctions) {
+        List<Class<?>> aiFunctionList = Arrays.asList(aiFunctions);
+        Map<Class<?>, String> classToBeanNameMap = mapClassToBeanName(aiFunctionList);
+
+        return Arrays.stream(aiFunctions)
+                .map(classToBeanNameMap::get)
+                .filter(beanName -> beanName != null)
+                .collect(Collectors.toList());
+    }
+
     private Map<Class<?>, String> mapClassToBeanName(List<Class<?>> aiFunctions) {
         return aiFunctions.stream()
                 .collect(Collectors.toMap(

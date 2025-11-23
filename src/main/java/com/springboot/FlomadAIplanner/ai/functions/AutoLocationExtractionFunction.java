@@ -115,11 +115,16 @@ public class AutoLocationExtractionFunction implements Function<AutoLocationExtr
                     boolean foundCoordinates = false;
                     com.fasterxml.jackson.databind.JsonNode searchResult = null;
                     
+                    // Extract country context from the original message for better geocoding
+                    String countryContext = extractCountryContext(request.getMessage());
+                    String enhancedQuery = countryContext != null ? locationName + ", " + countryContext : locationName;
+                    
                     try {
-                        // First try Google Places API
+                        // First try Google Places API with country context
                         TextSearchRequest searchRequest = new TextSearchRequest();
-                        searchRequest.setTextQuery(locationName);
+                        searchRequest.setTextQuery(enhancedQuery);
                         
+                        log.info("🔍 Searching Google Places for: {}", enhancedQuery);
                         searchResult = googlePlacesService.asyncTextSearchPlaces(searchRequest).join();
                         
                         if (searchResult != null && searchResult.has("places") && 
@@ -212,21 +217,57 @@ public class AutoLocationExtractionFunction implements Function<AutoLocationExtr
     }
 
     /**
+     * Extract country context from message for better geocoding accuracy
+     */
+    private String extractCountryContext(String message) {
+        String lowerMessage = message.toLowerCase();
+        
+        // Map of countries and their common variations
+        java.util.Map<String, String[]> countryPatterns = new java.util.HashMap<>();
+        countryPatterns.put("Italy", new String[]{"italy", "italian"});
+        countryPatterns.put("France", new String[]{"france", "french", "paris"});
+        countryPatterns.put("Spain", new String[]{"spain", "spanish", "barcelona", "madrid"});
+        countryPatterns.put("Japan", new String[]{"japan", "japanese", "tokyo"});
+        countryPatterns.put("United Kingdom", new String[]{"uk", "united kingdom", "england", "london", "britain", "british"});
+        countryPatterns.put("United States", new String[]{"usa", "united states", "america", "american"});
+        countryPatterns.put("Germany", new String[]{"germany", "german", "berlin"});
+        countryPatterns.put("Greece", new String[]{"greece", "greek", "athens"});
+        
+        for (java.util.Map.Entry<String, String[]> entry : countryPatterns.entrySet()) {
+            for (String pattern : entry.getValue()) {
+                if (lowerMessage.contains(pattern)) {
+                    log.info("🌍 Detected country context: {} from keyword: {}", entry.getKey(), pattern);
+                    return entry.getKey();
+                }
+            }
+        }
+        
+        return null;
+    }
+
+    /**
      * Extract potential location names from user message
      */
     private String[] extractLocationNames(String message) {
         java.util.List<String> locations = new java.util.ArrayList<>();
         String normalizedMessage = message.toLowerCase().trim();
         
-        // Check for known landmarks and locations with fuzzy matching
+        // Enhanced known locations with Italian regions and cities
         String[] knownLocations = {
+            // Italian locations
+            "piedmont", "alba", "emilia-romagna", "emilia romagna", "bologna", "modena",
+            "tuscany", "toscana", "florence", "firenze", "chianti", "rome", "roma",
+            "sicily", "sicilia", "palermo", "naples", "napoli", "venice", "venezia",
+            "milan", "milano", "turin", "torino", "pisa", "siena", "verona",
+            // French locations
             "eiffel tower", "eiffel", "tower", "paris", "louvre", "champs elysees", "champs-elysees",
             "arc de triomphe", "triomphe", "notre dame", "notre-dame", "sacre coeur", "sacre-coeur",
             "trocadero", "versailles", "montmartre", "seine", "marais", "latin quarter",
+            // Other major cities
             "london", "big ben", "tower bridge", "buckingham palace", "westminster", "thames",
             "tokyo", "shibuya", "harajuku", "shinjuku", "ginza", "akihabara", "sensoji",
             "new york", "nyc", "manhattan", "brooklyn", "times square", "central park", "statue of liberty",
-            "rome", "colosseum", "vatican", "trevi fountain", "spanish steps", "pantheon",
+            "colosseum", "vatican", "trevi fountain", "spanish steps", "pantheon",
             "barcelona", "sagrada familia", "park guell", "las ramblas", "gothic quarter"
         };
         

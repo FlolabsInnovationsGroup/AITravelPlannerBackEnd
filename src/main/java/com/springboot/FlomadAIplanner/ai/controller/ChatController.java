@@ -5,6 +5,7 @@ import com.springboot.FlomadAIplanner.ai.dto.AIMessageResponse;
 import com.springboot.FlomadAIplanner.ai.service.EnhancedChatCallService;
 import com.springboot.FlomadAIplanner.ai.service.FastAIService;
 import com.springboot.FlomadAIplanner.ai.service.LightweightAIService;
+import com.springboot.FlomadAIplanner.ai.service.StreamingChatService;
 import com.springboot.FlomadAIplanner.ai.agents.audio.AudioTranscriptionService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import reactor.core.publisher.Flux;
 
 
 @Slf4j
@@ -23,16 +25,19 @@ public class ChatController {
     private final FastAIService fastAIService;
     private final LightweightAIService lightweightAIService;
     private final AudioTranscriptionService audioTranscriptionService;
+    private final StreamingChatService streamingChatService;
 
     public ChatController(EnhancedChatCallService enhancedChatCallService, 
                          FastAIService fastAIService,
                          LightweightAIService lightweightAIService,
-                         AudioTranscriptionService audioTranscriptionService) {
+                         AudioTranscriptionService audioTranscriptionService,
+                         StreamingChatService streamingChatService) {
         this.enhancedChatCallService = enhancedChatCallService;
         this.fastAIService = fastAIService;
         this.lightweightAIService = lightweightAIService;
         this.audioTranscriptionService = audioTranscriptionService;
-        log.info("🚀 ChatController initialized with LIGHTNING AI performance optimization");
+        this.streamingChatService = streamingChatService;
+        log.info("🚀 ChatController initialized with LIGHTNING AI performance optimization + STREAMING SUPPORT");
     }
 
     @Operation(summary = "Process chat message with PERFORMANCE OPTIMIZATION")
@@ -75,6 +80,45 @@ public class ChatController {
             long errorTime = System.currentTimeMillis() - startTime;
             log.error("❌ Chat processing error after {}ms: {}", errorTime, e.getMessage());
             return "I apologize, but I'm experiencing technical difficulties. Please try rephrasing your question, and I'll do my best to help you plan your trip!";
+        }
+    }
+
+    @Operation(summary = "Stream chat message with progressive rendering (SSE)")
+    @GetMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<String> handleStreamingCall(
+            @RequestParam String message,
+            @RequestParam String sessionId) {
+        
+        log.info("🌊 Received streaming request - sessionId: {}, message: '{}'", 
+                 sessionId, 
+                 message.substring(0, Math.min(50, message.length())));
+
+        if (message == null || message.isEmpty()) {
+            log.warn("⚠️ No text message received for streaming.");
+            return Flux.just("❌ No message provided.");
+        }
+
+        try {
+            // Create AIMessageDTO for service layer
+            AIMessageDTO messageDTO = new AIMessageDTO();
+            messageDTO.setMessage(message);
+            messageDTO.setSessionId(sessionId);
+
+            // Stream response using reactive service
+            return streamingChatService.streamResponse(messageDTO)
+                .doOnSubscribe(subscription -> {
+                    log.info("🎬 Streaming subscription started for session: {}", sessionId);
+                })
+                .doOnComplete(() -> {
+                    log.info("✅ Streaming response completed for session: {}", sessionId);
+                })
+                .doOnError(error -> {
+                    log.error("❌ Streaming error for session {}: {}", sessionId, error.getMessage(), error);
+                });
+
+        } catch (Exception e) {
+            log.error("❌ Error initiating stream for session {}: {}", sessionId, e.getMessage(), e);
+            return Flux.just("❌ Failed to initiate streaming response. Please try the standard chat endpoint.");
         }
     }
 
