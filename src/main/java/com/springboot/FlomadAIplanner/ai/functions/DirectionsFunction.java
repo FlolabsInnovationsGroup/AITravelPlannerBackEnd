@@ -82,7 +82,7 @@ import java.util.stream.Collectors;
         """)
 public class DirectionsFunction implements Function<DirectionsFunction.DirectionsRequest, String> {
 
-    @Value("${google.places.api.key}")
+    @Value("${google.api.key}")
     private String apiKey;
 
     private final LocationService locationService;
