@@ -79,7 +79,7 @@ public class ChatController {
         } catch (Exception e) {
             long errorTime = System.currentTimeMillis() - startTime;
             log.error("❌ Chat processing error after {}ms: {}", errorTime, e.getMessage());
-            return "I apologize, but I'm experiencing technical difficulties. Please try rephrasing your question, and I'll do my best to help you plan your trip!";
+            return "😊 Whoops! I hit a small snag there. No problem though - I'm still here to help! Try asking your question in a different way, or let me know what you're looking to plan. I absolutely love helping people discover amazing destinations! ✈️\n\nSome things I'm great at:\n• Finding the perfect destination for your vibe\n• Creating detailed itineraries\n• Recommending hotels, restaurants, and activities\n• Budget planning and travel tips\n\nWhat adventure are you dreaming about?";
         }
     }
 
