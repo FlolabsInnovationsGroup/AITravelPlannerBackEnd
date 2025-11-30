@@ -1,7 +1,6 @@
 package com.springboot.FlomadAIplanner.ai.config;
 
 import com.springboot.FlomadAIplanner.ai.util.FunctionAnnotationUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -14,7 +13,6 @@ public class AIFunctionConfig {
     private final List<Function<?, ?>> aiFunctions;
     private final FunctionAnnotationUtils functionAnnotationUtils;
 
-    @Autowired
     public AIFunctionConfig(List<Function<?, ?>> aiFunctions, FunctionAnnotationUtils functionAnnotationUtils) {
         this.aiFunctions = aiFunctions;
         this.functionAnnotationUtils = functionAnnotationUtils;
@@ -23,6 +21,17 @@ public class AIFunctionConfig {
     @Bean
     public List<String> aiFunctionDescriptions() {
         return functionAnnotationUtils.extractBeanNamesAndDescriptions
+                (aiFunctions.stream()
+                        .map(Function::getClass)
+                        .toArray(Class[]::new));
+    }
+
+    /**
+     * Extracts ONLY bean names (without descriptions) for Spring AI function registration
+     */
+    @Bean(name = "aiFunctionBeanNames")
+    public List<String> aiFunctionBeanNames() {
+        return functionAnnotationUtils.extractBeanNames
                 (aiFunctions.stream()
                         .map(Function::getClass)
                         .toArray(Class[]::new));

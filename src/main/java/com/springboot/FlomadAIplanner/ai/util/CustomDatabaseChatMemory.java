@@ -1,83 +1,101 @@
 package com.springboot.FlomadAIplanner.ai.util;
 
-import com.springboot.FlomadAIplanner.converter.Converter;
-import com.springboot.FlomadAIplanner.model.entities.Message;
-import com.springboot.FlomadAIplanner.service.model.MessageService;
-import com.springboot.FlomadAIplanner.service.model.SessionService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
+import org.springframework.ai.chat.messages.Message;
+import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.memory.ChatMemory;
-import org.springframework.stereotype.Component;
+// import org.springframework.stereotype.Component; // Removed unused import
+import org.springframework.beans.factory.annotation.Value;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @Slf4j
-@Component("customDatabaseChatMemory")
+// @Component("customDatabaseChatMemory") - Disabled to avoid bean conflicts, using CustomDatabaseChatMemoryFixed instead
 public class CustomDatabaseChatMemory implements ChatMemory {
     private final static String DEFAULT_CONVERSATION_ID = "default";
-    private final Converter<org.springframework.ai.chat.messages.Message, Message> messageConverter;
-    private final Converter<Message, org.springframework.ai.chat.messages.Message> messageRevertConverter;
-    private final MessageService messageService;
-    private final SessionService sessionService;
+    private final static int MAX_TOKENS_PER_MESSAGE = 800; // Conservative limit to prevent overflow
+    private final static int ESTIMATED_TOKENS_PER_CHAR = 4; // Conservative estimate
+    
+    @Value("${chat.memory.max-messages:2}")
+    private int maxMessages;
+    
+    private final List<Message> messages = new CopyOnWriteArrayList<>();
 
-    public CustomDatabaseChatMemory(
-            Converter<org.springframework.ai.chat.messages.Message, Message> messageConverter,
-            Converter<Message, org.springframework.ai.chat.messages.Message> messageRevertConverter,
-            MessageService messageService,
-            SessionService sessionService) {
-        this.messageConverter = messageConverter;
-        this.messageRevertConverter = messageRevertConverter;
-        this.messageService = messageService;
-        this.sessionService = sessionService;
+    public CustomDatabaseChatMemory() {
     }
 
-
     @Override
-    public void add(String conversationId, List<org.springframework.ai.chat.messages.Message> messages) {
+    public void add(String conversationId, List<Message> messages) {
+        if (messages.isEmpty()) {
+            return;
+        }
+
         if (!DEFAULT_CONVERSATION_ID.equals(conversationId)) {
-            sessionService.checkGuestUserLimitations(conversationId, messages.size());
+            log.info("Adding {} messages to conversation: {}", messages.size(), conversationId);
 
-            List<Message> newMessages = new ArrayList<>();
-            for (org.springframework.ai.chat.messages.Message message : messages) {
-                log.info("Adding message: \"{}\",  to conversation: {}",
-                        StringUtils.substring(message.getContent(), 0, 50), conversationId);
+            synchronized (this.messages) {
+                // Clean up first if we're about to exceed the limit
+                if (this.messages.size() + messages.size() > maxMessages) {
+                    cleanupOldMessages();
+                }
 
-                Message entity = this.messageConverter.convert(message);
-                entity.setCreatedAt(LocalDateTime.now());
-                entity.setSessionId(conversationId);
+                // Add only the most recent messages
+                int start = Math.max(0, messages.size() - maxMessages);
+                List<Message> recentMessages = new ArrayList<>(messages.subList(start, messages.size()));
+                
+                // Truncate messages to prevent token limit issues
+                for (int i = 0; i < recentMessages.size(); i++) {
+                    Message msg = recentMessages.get(i);
+                    String content = msg.toString();
+                    int estimatedTokens = content.length() / ESTIMATED_TOKENS_PER_CHAR;
+                    
+                    if (estimatedTokens > MAX_TOKENS_PER_MESSAGE) {
+                        int maxChars = MAX_TOKENS_PER_MESSAGE * ESTIMATED_TOKENS_PER_CHAR;
+                        String truncated = content.substring(0, Math.min(content.length(), maxChars)) + "... [truncated]";
+                        recentMessages.set(i, new UserMessage(truncated));
+                        log.info("Truncated message from {} tokens to {} tokens", estimatedTokens, MAX_TOKENS_PER_MESSAGE);
+                    }
+                }
 
-                newMessages.add(entity);
+                this.messages.addAll(recentMessages);
+                log.info("Added {} messages. Current size: {}", recentMessages.size(), this.messages.size());
             }
-
-            this.messageService.saveAll(newMessages);
         } else {
             log.info("Not adding message to 'default' conversation");
         }
     }
 
-    @Override
-    public List<org.springframework.ai.chat.messages.Message> get(String conversationId, int lastN) {
+    private void cleanupOldMessages() {
+        if (messages.size() > maxMessages) {
+            synchronized (messages) {
+                if (messages.size() > maxMessages) {
+                    // Keep only the most recent messages
+                    int excess = messages.size() - maxMessages;
+                    messages.subList(0, excess).clear();
+                    log.info("Cleaned up {} old messages. Current size: {}", excess, messages.size());
+                }
+            }
+        }
+    }    @Override
+    public List<Message> get(String conversationId, int lastN) {
         log.info("Retrieving last {} messages from conversation: {}", lastN, conversationId);
 
-        List<Message> foundMessages;
-        if (lastN > 0) {
-            foundMessages = messageService.getMessagesBySessionIdWithLimit(conversationId, lastN);
-        } else {
-            foundMessages = Collections.emptyList();
+        if (lastN <= 0) {
+            return Collections.emptyList();
         }
 
-        log.info("Found {} messages", foundMessages.size());
-        return foundMessages.stream()
-                .map(messageRevertConverter::convert)
-                .toList();
+        int start = Math.max(0, messages.size() - lastN);
+        List<Message> result = messages.subList(start, messages.size());
+        log.info("Found {} messages", result.size());
+        return result;
     }
 
     @Override
     public void clear(String conversationId) {
-        messageService.deleteBySessionId(conversationId);
+        messages.clear();
     }
 
 }

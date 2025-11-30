@@ -34,23 +34,25 @@ public class AgentConfig {
     @Bean
     @Qualifier("openAiAgent")
     public TextAgent<String, Flux<String>> openAiAgent(@Qualifier("openAiChatClient") ChatClient openAiChatClient,
-                                                       @Qualifier("aiFunctionDescriptions") List<String> allFunctionDescriptions,
-                                                       @Qualifier("templatePrompts") Map<String, String> promptsList) {
-        return new TextAgentImpl<>(openAiChatClient, allFunctionDescriptions,
-                callMessageProcessingStrategy, streamMessageProcessingStrategy, promptsList);
+                                                       @Qualifier("aiFunctionBeanNames") List<String> allFunctionBeanNames,
+                                                       @Qualifier("templatePrompts") Map<String, String> promptsList,
+                                                       @Qualifier("promptMetadata") Map<String, String> promptMetadata) {
+        return new TextAgentImpl<>(openAiChatClient, allFunctionBeanNames,
+                callMessageProcessingStrategy, streamMessageProcessingStrategy, promptsList, promptMetadata);
     }
 
-    /**
-     * Agent for Gemini (Text Agent)
-     */
+    // Vertex AI Gemini temporarily disabled to resolve bean conflicts
+    /*
     @Bean
     @Qualifier("geminiAiAgent")
     public TextAgent<String, Flux<String>> geminiAiAgent(@Qualifier("geminiChatClient") ChatClient geminiChatClient,
                                                          @Qualifier("aiFunctionDescriptions") List<String> allFunctionDescriptions,
-                                                         @Qualifier("templatePrompts") Map<String, String> promptsList) {
+                                                         @Qualifier("templatePrompts") Map<String, String> promptsList,
+                                                         @Qualifier("promptMetadata") Map<String, String> promptMetadata) {
         return new TextAgentImpl<>(geminiChatClient, allFunctionDescriptions,
-                callMessageProcessingStrategy, streamMessageProcessingStrategy, promptsList);
+                callMessageProcessingStrategy, streamMessageProcessingStrategy, promptsList, promptMetadata);
     }
+    */
 
     /**
      * Agent for Audio Processing (Audio Agent)
@@ -65,9 +67,8 @@ public class AgentConfig {
     @Bean
     @Qualifier("chatAgents")
     public List<Agent> agents(@Qualifier("openAiAgent") Agent openAiAgent,
-                              @Qualifier("geminiAiAgent") Agent geminiAiAgent,
                               @Qualifier("audioAgent") Agent audioAgent) {
-        return List.of(openAiAgent, geminiAiAgent, audioAgent);
+        return List.of(openAiAgent, audioAgent); // Gemini agent disabled temporarily
     }
 
 }

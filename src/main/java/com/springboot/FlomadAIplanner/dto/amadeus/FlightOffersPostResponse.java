@@ -20,6 +20,7 @@ import java.util.List;
 public class FlightOffersPostResponse {
 
     @JsonPropertyDescription("Warnings related to the request.")
+    @Builder.Default
     private List<Issue> warnings = new ArrayList<>();
 
     // @JsonPropertyDescription("Metadata for the collection.")

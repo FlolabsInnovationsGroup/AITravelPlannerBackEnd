@@ -10,7 +10,6 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.Base64;
 
 @Component
 public class AESEncryption {
@@ -28,14 +27,9 @@ public class AESEncryption {
         byte[] iv = generateIV();
         byte[] encryptedData = encrypt(fileContent, secretKey, iv);
 
-        // You can store the secretKey and iv securely
-        String encodedSecretKey = Base64.getEncoder().encodeToString(secretKey.getEncoded());
-        String encodedIV = Base64.getEncoder().encodeToString(iv);
-        String encodedData = Base64.getEncoder().encodeToString(encryptedData);
-
-        System.out.println("Encrypted Data: " + encodedData);
-        System.out.println("Secret Key: " + encodedSecretKey);
-        System.out.println("IV: " + encodedIV);
+        // Encryption completed successfully
+        System.out.println("File encrypted successfully. Encrypted data size: " + encryptedData.length + " bytes");
+        // You can store the secretKey and iv securely if needed
     }
 
     public static SecretKey generateSecretKey() throws Exception {

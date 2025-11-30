@@ -29,10 +29,14 @@ public class GooglePlacesClientConfig {
     @Bean("googleRequestInterceptor")
     @Qualifier("googleRequestInterceptor")
     public RequestInterceptor requestInterceptor() {
-        log.info("Initializing request interceptor for Google Maps API");
+        log.info("Initializing request interceptor for Google Places API");
         return requestTemplate -> {
             log.info("Using Google API key");
+            // For new Places API, use API key in header AND query parameter
+            requestTemplate.query("key", apiKey);
             requestTemplate.header("X-Goog-Api-Key", apiKey);
+            // Add referer header to avoid 403 errors
+            requestTemplate.header("Referer", "http://localhost:8080");
         };
     }
 }

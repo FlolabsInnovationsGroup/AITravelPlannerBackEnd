@@ -8,7 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Description;
 import org.springframework.stereotype.Component;
 
@@ -17,14 +16,33 @@ import java.util.function.Function;
 
 @Slf4j
 @Component
-@Description("Retrieves supported currencies available for exchange rate conversion. " +
-        "Use this function to retrieve selected supported currencies available for exchange rate conversion. " +
-        "It is essential to call this function when people ask what currencies are available for exchange. ")
+@Description("""
+        Retrieves comprehensive list of supported currencies available for exchange rate conversion.
+        Essential for showing travelers what currencies are available for their budget planning.
+        CORE PURPOSE: Currency availability reference for travel planning
+        
+        KEY FEATURES:
+        - Complete list of supported currencies
+        - Currency codes and names
+        - Exchange rate availability confirmation
+        - Travel destination currency support
+        
+        ESSENTIAL TRIGGER: Call when travelers ask about currency availability or supported currencies
+        
+        PERFECT FOR:
+        - "What currencies can I convert?"
+        - "Is Thai Baht supported?"  
+        - "Show me all available currencies"
+        - Pre-conversion currency validation
+        
+        WORKFLOW INTEGRATION: Use before LatestCurrencyFunction or HistoryCurrencyFunction to validate currency codes
+        
+        Examples: Currency availability inquiries, supported currency lists, travel destination currency validation
+        """)
 public class SupportCurrencyFunction implements Function<SupportCurrencyFunction.SupportCurrencyRequest, JsonNode> {
 
     private final FreeCurrencyService freeCurrencyService;
 
-    @Autowired
     public SupportCurrencyFunction(FreeCurrencyService freeCurrencyService) {
         this.freeCurrencyService = freeCurrencyService;
     }

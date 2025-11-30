@@ -3,8 +3,10 @@ package com.springboot.FlomadAIplanner.service.amadeus;
 import com.springboot.FlomadAIplanner.exceptions.api.AmadeusAPIException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -48,7 +50,12 @@ public class AmadeusAuthService {
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(requestBody, headers);
 
         try {
-            ResponseEntity<Map> responseEntity = restTemplate.postForEntity(amadeusOauthApiUrl, requestEntity, Map.class);
+            ResponseEntity<Map<String, Object>> responseEntity = restTemplate.exchange(
+                amadeusOauthApiUrl, 
+                HttpMethod.POST, 
+                requestEntity, 
+                new ParameterizedTypeReference<Map<String, Object>>() {}
+            );
             Map<String, Object> responseBody = responseEntity.getBody();
             if (responseBody != null && responseBody.containsKey("access_token")) {
                 String accessToken = responseBody.get("access_token").toString();

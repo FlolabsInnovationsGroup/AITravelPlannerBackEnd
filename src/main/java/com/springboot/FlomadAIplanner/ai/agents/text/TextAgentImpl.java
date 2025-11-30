@@ -1,6 +1,5 @@
 package com.springboot.FlomadAIplanner.ai.agents.text;
 
-import com.springboot.FlomadAIplanner.ai.agents.Agent;
 import com.springboot.FlomadAIplanner.ai.agents.MessageProcessingStrategy;
 import com.springboot.FlomadAIplanner.ai.agents.text.strategies.EntityReturnProcessingStrategy;
 import com.springboot.FlomadAIplanner.ai.dto.AIMessageDTO;
@@ -17,13 +16,14 @@ import java.util.Map;
 import java.util.Objects;
 
 @Slf4j
-public class TextAgentImpl<S, F extends Flux<?>> extends AbstractTextAgent<S, F> implements Agent {
+public class TextAgentImpl<S, F extends Flux<?>> extends AbstractTextAgent<S, F> {
 
     public TextAgentImpl(ChatClient chatClient, List<String> permittedFunctions,
                          MessageProcessingStrategy<MessageProcessingStrategyDTO, S> callMessageProcessingStrategy,
                          MessageProcessingStrategy<MessageProcessingStrategyDTO, F> streamMessageProcessingStrategy,
-                         Map<String, String> promptsList) {
-        super(chatClient, permittedFunctions, callMessageProcessingStrategy, streamMessageProcessingStrategy, promptsList);
+                         Map<String, String> promptsList,
+                         Map<String, String> promptMetadata) {
+        super(chatClient, permittedFunctions, callMessageProcessingStrategy, streamMessageProcessingStrategy, promptsList, promptMetadata);
     }
 
     @Override
@@ -86,6 +86,42 @@ public class TextAgentImpl<S, F extends Flux<?>> extends AbstractTextAgent<S, F>
         // Check if the agent supports the given message
         return inputMessage != null && inputMessage.getMessage() != null
                 && Objects.isNull(inputMessage.getMedia());
+    }
+
+    @Override
+    protected ChatClientSuggestedProperties getSuggestedChatClientProperties(String message) {
+        log.debug("Getting required properties for message with competitive enhancement override: {}", message);
+        
+        // Check if this is a travel-related query that should use our enhanced DefaultPrompt.txt
+        String lowerMessage = message.toLowerCase();
+        boolean isTravelQuery = lowerMessage.contains("plan") || lowerMessage.contains("trip") || 
+                               lowerMessage.contains("travel") || lowerMessage.contains("vacation") ||
+                               lowerMessage.contains("romantic") || lowerMessage.contains("family") ||
+                               lowerMessage.contains("adventure") || lowerMessage.contains("destination") ||
+                               lowerMessage.contains("paris") || lowerMessage.contains("tokyo") ||
+                               lowerMessage.contains("new zealand") || lowerMessage.contains("hotel") ||
+                               lowerMessage.contains("flight") || lowerMessage.contains("tour");
+        
+        if (isTravelQuery) {
+            log.info("🎯 PERFORMANCE OPTIMIZED: Using enhanced DefaultPrompt.txt for travel query: {}", message);
+            // Force use of our enhanced DefaultPrompt.txt with optimized function selection
+            ChatClientSuggestedProperties properties = new ChatClientSuggestedProperties();
+            String enhancedPrompt = getPromptsList().get("DefaultPrompt.txt");
+            if (enhancedPrompt != null) {
+                properties.setSystemPrompt(enhancedPrompt);
+                // Optimized function list - only essential functions for performance
+                properties.setFunctionNames(List.of(
+                    "addLocationFunction", "showLocationFunction", 
+                    "flightSearchFunction", "hotelsSearchByLocationFunction", 
+                    "toursFreeTextSearchFunction"
+                ));
+                log.info("✅ Performance-optimized function selection applied");
+                return properties;
+            }
+        }
+        
+        // Fallback to original logic for non-travel queries
+        return super.getSuggestedChatClientProperties(message);
     }
 
 }

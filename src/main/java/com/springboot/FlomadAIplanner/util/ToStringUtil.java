@@ -24,7 +24,7 @@ public class ToStringUtil {
         try {
             return objectMapper.writeValueAsString(obj);
         } catch (Exception e) {
-            System.err.println("Error converting object to JSON string: " + e.getMessage());
+            // JSON conversion failed, fall back to toString
             return toString(obj);
         }
     }

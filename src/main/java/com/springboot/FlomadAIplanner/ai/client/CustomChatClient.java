@@ -83,8 +83,8 @@ public class CustomChatClient implements ChatClient {
             Message lastMessage = messages.get(messages.size() - 1);
             if (lastMessage.getMessageType() == MessageType.USER) {
                 UserMessage userMessage = (UserMessage) lastMessage;
-                if (StringUtils.hasText(userMessage.getContent())) {
-                    userText = lastMessage.getContent();
+                if (StringUtils.hasText(userMessage.getText())) {
+                    userText = lastMessage.getText();
                 }
                 Collection<Media> messageMedia = userMessage.getMedia();
                 if (!CollectionUtils.isEmpty(messageMedia)) {
@@ -680,7 +680,7 @@ public class CustomChatClient implements ChatClient {
                 public Flux<AdvisedResponse> aroundStream(AdvisedRequest advisedRequest, StreamAroundAdvisorChain chain) {
                     return chatModel.stream(advisedRequest.toPrompt())
                             .map(chatResponse -> new AdvisedResponse(chatResponse, Collections.unmodifiableMap(advisedRequest.adviseContext())))
-                            .publishOn(Schedulers.boundedElastic()); // TODO add option to disable.
+                            .publishOn(Schedulers.boundedElastic()); // Use bounded elastic scheduler for I/O operations
                 }
             });
             // @formatter:on

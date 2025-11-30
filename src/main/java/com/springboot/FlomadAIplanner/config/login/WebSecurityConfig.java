@@ -1,5 +1,6 @@
 package com.springboot.FlomadAIplanner.config.login;
 
+import com.springboot.FlomadAIplanner.filter.JwtRequestFilter;
 import com.springboot.FlomadAIplanner.filter.UserLastActiveUpdateFilter;
 import com.springboot.FlomadAIplanner.handler.login.CustomAuthenticationFailureHandler;
 import com.springboot.FlomadAIplanner.handler.login.CustomAuthenticationSuccessHandler;
@@ -23,17 +24,20 @@ import java.util.List;
 @EnableWebSecurity
 public class WebSecurityConfig {
     private final UserDetailsService userDetailsService;
+    private final JwtRequestFilter jwtRequestFilter;
     private final UserLastActiveUpdateFilter userLastActiveUpdateFilter;
     private final PasswordEncoder passwordEncoder;
     private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
     private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
 
     public WebSecurityConfig(UserDetailsService userDetailsService,
+                             JwtRequestFilter jwtRequestFilter,
                              UserLastActiveUpdateFilter userLastActiveUpdateFilter,
                              PasswordEncoder passwordEncoder,
                              CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler,
                              CustomAuthenticationFailureHandler customAuthenticationFailureHandler) {
         this.userDetailsService = userDetailsService;
+        this.jwtRequestFilter = jwtRequestFilter;
         this.userLastActiveUpdateFilter = userLastActiveUpdateFilter;
         this.passwordEncoder = passwordEncoder;
         this.customAuthenticationSuccessHandler = customAuthenticationSuccessHandler;
@@ -48,8 +52,10 @@ public class WebSecurityConfig {
             "/api/auth/session-state",
             "/api/chat/call",
             "/api/chat/stream",
-            "/api/chat/entity",
-            "/sessions",
+            "/api/chat/call/entity",
+            "/api/locations/**",
+            "/users/current",
+            "/sessions/**",
             "/oauth2/**",
             "/login/oauth2/**",
             "/ws/**"
@@ -92,14 +98,16 @@ public class WebSecurityConfig {
                         .requestMatchers(
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
-                                "actuator/health",
+                                "/actuator/health",
                                 "/swagger-ui.html"
                         ).permitAll()
 
                         .requestMatchers("/api/auth/session-state").permitAll()
+                        .requestMatchers("/api/auth/guest-token").permitAll()
                         .requestMatchers("/users/current").authenticated()
                         .requestMatchers("/users/**").hasRole("ADMIN")
-                        .requestMatchers("/api/chat", "/api/stream").hasAnyRole("ADMIN", "USER")
+                        // ⚠️ Fix: Change to exact paths to avoid conflicting with PUBLIC_URLS /api/chat/call/entity
+                        .requestMatchers("/api/chat", "/api/stream", "/api/chat/history/**").hasAnyRole("ADMIN", "USER", "GUEST")
 
                         .anyRequest().authenticated()
                 )
@@ -109,7 +117,22 @@ public class WebSecurityConfig {
                         .successHandler(customAuthenticationSuccessHandler)
                         .failureHandler(customAuthenticationFailureHandler)
                 )
-                .addFilterBefore(userLastActiveUpdateFilter, UsernamePasswordAuthenticationFilter.class);
+                .exceptionHandling(exceptions -> exceptions
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            // For API requests, return JSON 401 instead of redirecting to login page
+                            String requestURI = request.getRequestURI();
+                            if (requestURI.startsWith("/api/")) {
+                                response.setContentType("application/json");
+                                response.setStatus(401);
+                                response.getWriter().write("{\"error\":\"Unauthorized\",\"message\":\"Authentication required\"}");
+                            } else {
+                                // For web requests, redirect to login
+                                response.sendRedirect("/login");
+                            }
+                        })
+                )
+                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(userLastActiveUpdateFilter, JwtRequestFilter.class);
 
         return http.build();
     }

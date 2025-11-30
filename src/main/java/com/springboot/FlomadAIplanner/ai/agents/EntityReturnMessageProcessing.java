@@ -14,6 +14,5 @@ public interface EntityReturnMessageProcessing {
      * @param <T>        the return type
      * @return the entity
      */
-    @SuppressWarnings("unused")
     <T> T processEntityMessage(AIMessageDTO aiMessage, Class<T> returnType);
 }

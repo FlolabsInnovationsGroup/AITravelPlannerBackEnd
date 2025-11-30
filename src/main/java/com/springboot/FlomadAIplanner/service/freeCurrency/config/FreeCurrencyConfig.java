@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Bean;
 
 @Slf4j
 public class FreeCurrencyConfig {
-    @Value("${freeCurrency.api.key}")
+    @Value("${free-currency.api.key}")
     private String apiKey;
 
     @Bean("freeCurrencyRequestInterceptor")

@@ -8,7 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Description;
 import org.springframework.stereotype.Component;
 
@@ -18,16 +17,35 @@ import java.util.function.Function;
 
 @Slf4j
 @Component
-@Description("Retrieves the latest currencies exchange rate conversion for base currency against currencies list" +
-        "Use this function to retrieve the latest currencies exchange rate conversion. " +
-        "Use this function whenever customer asks about currency exchange. " +
-        "If the base currency is not provided in currencies list, you should add base currency into currencies list." +
-        "If this function returns errors node, Do not proceed this function with the same input again.")
+@Description("""
+        Retrieves current exchange rates for currency conversion calculations. Provides real-time conversion
+        rates between base currency and multiple target currencies for travel budgeting.
+        CORE PURPOSE: Real-time currency exchange rate conversion for travel planning
+        
+        KEY FEATURES:
+        - Latest market exchange rates
+        - Base currency to multiple target currencies
+        - Travel budgeting support
+        - Multi-currency comparison
+        
+        AUTOMATIC OPTIMIZATION: If base currency not in currencies list, it will be automatically added
+        
+        PERFECT FOR:
+        - "Convert 500 USD to EUR, GBP, JPY"  
+        - "What's the current exchange rate for USD to EUR?"
+        - Travel budget planning across destinations
+        - Multi-currency price comparisons
+        
+        ERROR HANDLING: If function returns error node, do NOT retry with same input parameters
+        
+        USAGE PATTERN: Use whenever travelers ask about currency exchange, conversion rates, or budget planning
+        
+        Examples: Currency exchange inquiries, travel budget calculations, price conversions for international trips
+        """)
 public class LatestCurrencyFunction implements Function<LatestCurrencyFunction.LatestCurrencyRequest, JsonNode> {
 
     private final FreeCurrencyService freeCurrencyService;
 
-    @Autowired
     public LatestCurrencyFunction(FreeCurrencyService freeCurrencyService) {
         this.freeCurrencyService = freeCurrencyService;
     }

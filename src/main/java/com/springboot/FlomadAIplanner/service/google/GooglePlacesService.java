@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.springboot.FlomadAIplanner.dto.google.NearbyPlacesRequest;
 import com.springboot.FlomadAIplanner.dto.google.TextSearchRequest;
 import com.springboot.FlomadAIplanner.exceptions.api.GoogleAPIException;
+import io.github.bucket4j.Bucket;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -19,9 +20,7 @@ import java.util.List;
 public class GooglePlacesService {
 
     private final GooglePlacesClient googlePlacesClient;
-
-    @Value("${google.api.key}")
-    private String googleApiKey;
+    private final Bucket rateLimiter;
 
     @Value("${google.places.fieldMask}")
     private String placesFieldMask;
@@ -29,8 +28,9 @@ public class GooglePlacesService {
     @Value("${google.textSearch.fieldMask}")
     private String textSearchFieldMask;
 
-    public GooglePlacesService(GooglePlacesClient googlePlacesClient) {
+    public GooglePlacesService(GooglePlacesClient googlePlacesClient, Bucket googlePlacesRateLimiter) {
         this.googlePlacesClient = googlePlacesClient;
+        this.rateLimiter = googlePlacesRateLimiter;
     }
 
     /**
@@ -43,10 +43,22 @@ public class GooglePlacesService {
     public JsonNode searchNearbyPlaces(NearbyPlacesRequest request) throws GoogleAPIException {
         log.info("Searching Google nearby places with request: {}", request);
         try {
+            if (!rateLimiter.tryConsume(1)) {
+                throw new GoogleAPIException("Rate limit exceeded. Please try again later.");
+            }
+
+            String location = String.format("%f,%f", 
+                request.getLocationRestriction().getCircle().getCenter().getLatitude(),
+                request.getLocationRestriction().getCircle().getCenter().getLongitude());
+            int radius = (int) request.getLocationRestriction().getCircle().getRadius();
+            String type = String.join("|", request.getIncludedTypes());
+            
             JsonNode response = googlePlacesClient.searchNearbyPlaces(
-                    "Bearer " + googleApiKey,  // ✅ Fix: API Key should be first
-                    placesFieldMask,           // ✅ Fix: FieldMask should be second
-                    request                    // ✅ Fix: Request should be last
+                    "",                     // Empty string since interceptor handles auth
+                    location,               // Latitude,longitude
+                    radius,                 // Search radius in meters
+                    type,                   // Place types
+                    placesFieldMask         // Field mask
             );
             log.info("Received response from Google Places API: {}", response);
             return response;
@@ -66,10 +78,12 @@ public class GooglePlacesService {
     public JsonNode textSearchPlaces(TextSearchRequest request) throws GoogleAPIException {
         log.info("Searching Google places with request: {}", request);
         try {
+            if (!rateLimiter.tryConsume(1)) {
+                throw new GoogleAPIException("Rate limit exceeded. Please try again later.");
+            }
             JsonNode response = googlePlacesClient.textSearchPlaces(
-                    "Bearer " + googleApiKey,  // ✅ Correct
-                    textSearchFieldMask,       // ✅ Correct
-                    request                    // ✅ Correct
+                    textSearchFieldMask,
+                    request
             );
             log.info("Received response from Google Places API: {}", response);
             return response;
@@ -92,9 +106,8 @@ public class GooglePlacesService {
         for (TextSearchRequest request : requests) {
             try {
                 JsonNode searchResult = googlePlacesClient.textSearchPlaces(
-                        "Bearer " + googleApiKey,  // ✅ Correct
-                        textSearchFieldMask,       // ✅ Correct
-                        request                    // ✅ Correct
+                        textSearchFieldMask,
+                        request
                 );
                 results.add(searchResult);
             } catch (Exception e) {

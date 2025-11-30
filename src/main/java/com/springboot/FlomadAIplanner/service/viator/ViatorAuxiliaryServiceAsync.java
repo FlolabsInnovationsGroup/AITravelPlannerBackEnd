@@ -88,7 +88,7 @@ public class ViatorAuxiliaryServiceAsync {
         List<FreeTextSearchResponse> results = new ArrayList<>();
 
         // Wait for all async operations to complete
-        CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
+        CompletableFuture.allOf(futures.toArray(new CompletableFuture<?>[0])).join();
 
         // Collect results from each future
         futures.forEach(f -> {

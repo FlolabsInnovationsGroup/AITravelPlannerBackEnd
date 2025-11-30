@@ -1,6 +1,6 @@
 # Running the Application Locally
 
-This guide will help you set up and run the application on your local machine.
+This guide will help you set up and run the AI Travel Planner application on your local machine.
 
 ## Prerequisites
 

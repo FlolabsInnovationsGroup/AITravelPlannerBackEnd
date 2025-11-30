@@ -18,10 +18,29 @@ import java.util.function.Function;
 @Slf4j
 @Component
 @Description("""
-        Retrieves the current date and time.
-        Use this function to get the current date and time in a specified format.
-        This function is useful for getting context to AI model about the current date and time in the real world.
-        MUST be called BEFORE any other function that requires date and time parameter.""")
+        Retrieves current date and time in real-world context for travel planning. Essential for time-sensitive 
+        operations like flight searches, tour availability, and booking deadlines.
+        
+        CRITICAL FIRST STEP: Must be called BEFORE any time-dependent functions to establish current context
+
+        Features:
+        - Real-time date/time retrieval
+        - Customizable format specification
+        - UTC and local time zone support
+        - Essential for AI temporal awareness
+
+        DEPENDENCY PATTERN: CurrentDateTimeFunction → Other time-sensitive functions
+
+        Required for functions needing temporal context:
+        - Flight searches (departure/arrival times)
+        - Tour availability (seasonal offerings)  
+        - Hotel booking (check-in/out dates)
+        - Currency rates (current exchange rates)
+        
+        Examples: "What's today's date?", "Current time for booking", "Today's date for flight search"
+        
+        WORKFLOW: Always call this function first when users mention dates, times, or time-sensitive searches.
+        """)
 public class CurrentDateTimeFunction implements Function<CurrentDateTimeFunction.CurrentDateTimeRequest, JsonNode> {
 
     @Override
