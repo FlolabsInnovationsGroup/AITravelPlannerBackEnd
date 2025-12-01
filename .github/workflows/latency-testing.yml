@@ -23,10 +23,6 @@ jobs:
           - springboot-mongo-network
         volumes:
           - mongo-data:/data/db
-
-      springboot:
-        ports: 
-          - 4000:4000
           
     steps:
       - name: Checkout code
