@@ -2,7 +2,7 @@ name: FloTravel - Latency Testing
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "master" ]
 
 jobs:
   perf-test:
