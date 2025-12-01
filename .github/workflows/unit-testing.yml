@@ -67,7 +67,6 @@ jobs:
     # ---------------------------------------------------
 
     - name: Calculate Latency Percentiles
-      id: Unit Test Stats
       run: |
         python3 << 'EOF'
         import numpy as np
