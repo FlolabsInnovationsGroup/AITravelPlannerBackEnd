@@ -1,6 +1,6 @@
-# Latency/Unit/End-to-End Testing
+# Latency/Unit/End-to-End/Security Testing
 
-[![FloTravel - Latency Testing](https://github.com/FlomadLabsRD/AITravelPlannerBackEnd/actions/workflows/latency-testing.yml/badge.svg)](https://github.com/FlomadLabsRD/AITravelPlannerBackEnd/actions/workflows/latency-testing.yml)
+[![FloTravel - Latency Testing](https://github.com/FlomadLabsRD/AITravelPlannerBackEnd/actions/workflows/latency-testing.yml/badge.svg)](https://github.com/FlomadLabsRD/AITravelPlannerBackEnd/actions/workflows/latency-testing.yml) [![FloTravel - Unit/Integration Testing](https://github.com/FlomadLabsRD/AITravelPlannerBackEnd/actions/workflows/unit-testing.yml/badge.svg)](https://github.com/FlomadLabsRD/AITravelPlannerBackEnd/actions/workflows/unit-testing.yml)
 
 # Running the Application Locally
 
