@@ -1,0 +1,87 @@
+name: Java Spring Boot Backend - Build, Test & Latency Benchmark
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+
+jobs:
+  build-test-benchmark:
+    runs-on: ubuntu-latest
+
+    steps:
+    # ---------------------------------------------------
+    # 1. Checkout Code
+    # ---------------------------------------------------
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    # ---------------------------------------------------
+    # 2. Set up Java (17 or 21 depending on your app)
+    # ---------------------------------------------------
+    - name: Set up JDK
+      uses: actions/setup-java@v4
+      with:
+        distribution: "temurin"
+        java-version: "17"
+
+    # ---------------------------------------------------
+    # 3. Cache Maven Dependencies (Performance Increase)
+    # ---------------------------------------------------
+    - name: Cache Maven packages
+      uses: actions/cache@v4
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-m2-
+
+    # ---------------------------------------------------
+    # 4. Build with Maven (compile + test)
+    # ---------------------------------------------------
+    - name: Build & test with Maven
+      run: mvn -B clean verify
+
+    # ---------------------------------------------------
+    # 5. Upload Test Results (JUnit XML reports)
+    # ---------------------------------------------------
+    - name: Upload JUnit Test Reports
+      uses: actions/upload-artifact@v4
+      with:
+        name: junit-test-results
+        path: "**/target/surefire-reports/*.xml"
+
+    # ---------------------------------------------------
+    # 6. Start Spring Boot backend (runs in background)
+    # ---------------------------------------------------
+    - name: Start Spring Boot backend
+      run: |
+        nohup mvn spring-boot:run &
+        sleep 25
+      # Wait for backend to start up (increase if needed)
+
+    # ---------------------------------------------------
+    # 7. Run Latency Benchmark Test
+    # ---------------------------------------------------
+    - name: Run latency benchmark
+      run: |
+        echo "Running HTTP latency benchmark..."
+
+        # Test URL (change if needed)
+        URL="https://www.flomadtravel.com/auth/signin"
+
+        # Perform 500 requests and measure latency
+        for i in {1..500}; do
+          curl -o /dev/null -s -w "%{time_total}\n" "$URL" >> unit_test_results.txt
+        done
+
+        echo "Latency tests completed."
+
+    # ---------------------------------------------------
+    # 8. Upload Unit Testing Results
+    # ---------------------------------------------------
+    - name: Upload Unit Testing Results
+      uses: actions/upload-artifact@v4
+      with:
+        name: latency-benchmark
+        path: unit_test_results.txt
