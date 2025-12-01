@@ -37,16 +37,7 @@ jobs:
           ${{ runner.os }}-m2-
 
     # ---------------------------------------------------
-    # 5. Upload Test Results (JUnit XML reports)
-    # ---------------------------------------------------
-    - name: Upload JUnit Test Reports
-      uses: actions/upload-artifact@v4
-      with:
-        name: junit-test-results
-        path: "**/target/surefire-reports/*.xml"
-
-    # ---------------------------------------------------
-    # 6. Start Spring Boot backend (runs in background)
+    # 4. Start Spring Boot backend (runs in background)
     # ---------------------------------------------------
     - name: Start Spring Boot backend
       run: |
@@ -55,7 +46,7 @@ jobs:
       # Wait for backend to start up (increase if needed)
 
     # ---------------------------------------------------
-    # 7. Run Latency Benchmark Test
+    # 5. Run Latency Benchmark Test
     # ---------------------------------------------------
     - name: Run latency benchmark
       run: |
@@ -72,7 +63,33 @@ jobs:
         echo "Latency tests completed."
 
     # ---------------------------------------------------
-    # 8. Upload Unit Testing Results
+    # 6. Calculate Latency Percentiles
+    # ---------------------------------------------------
+
+    - name: Calculate Latency Percentiles
+      id: Unit Test Stats
+      run: |
+        python3 << 'EOF'
+        import numpy as np
+        import json
+        with open("unit_test_results.txt") as f:
+            data = np.array([float(x.strip()) for x in f if x.strip()])
+        percentiles = {
+            "p50": float(np.percentile(data, 50)),
+            "p90": float(np.percentile(data, 90)),
+            "p95": float(np.percentile(data, 95)),
+            "p99": float(np.percentile(data, 99)),
+            "mean": float(data.mean()),
+            "min": float(data.min()),
+            "max": float(data.max())
+        }    
+        with open("latency_summary.json", "w") as f:
+            json.dump(percentiles, indent=2)
+        print(json.dumps(percentiles, indent=2))
+        EOF
+
+    # ---------------------------------------------------
+    # 7. Upload Unit Testing Results
     # ---------------------------------------------------
     - name: Upload Unit Testing Results
       uses: actions/upload-artifact@v4
