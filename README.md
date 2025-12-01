@@ -5,42 +5,71 @@
 Latency Test Results
 
 Server Software:        Vercel
+
 Server Hostname:        www.flomadtravel.com
+
 Server Port:            443
+
 SSL/TLS Protocol:       TLSv1.3,TLS_AES_128_GCM_SHA256,2048,128
+
 Server Temp Key:        X25519 253 bits
+
 TLS Server Name:        www.flomadtravel.com
 
 Document Path:          /auth/signin
+
 Document Length:        10078 bytes
 
 Concurrency Level:      10
+
 Time taken for tests:   1.905 seconds
+
 Complete requests:      200
+
 Failed requests:        0
+
 Total transferred:      2137000 bytes
+
 HTML transferred:       2015600 bytes
+
 Requests per second:    105.01 [#/sec] (mean)
+
 Time per request:       95.228 [ms] (mean)
+
 Time per request:       9.523 [ms] (mean, across all concurrent requests)
+
 Transfer rate:          1095.74 [Kbytes/sec] received
 
 Connection Times (ms)
+
               min  mean[+/-sd] median   max
+              
 Connect:       15   20   3.9     18      36
+
 Processing:    54   68  15.7     64     165
+
 Waiting:       54   68  15.5     64     165
+
 Total:         71   88  17.1     83     187
 
 Percentage of the requests served within a certain time (ms)
+
   50%     83
+  
   66%     86
+  
   75%     89
+  
   80%     92
+  
   90%    100
+  
   95%    121
+  
   98%    164
+  
   99%    184
+  
  100%    187 (longest request)
 
 
