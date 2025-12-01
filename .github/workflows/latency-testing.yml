@@ -20,19 +20,24 @@ jobs:
 
       - name: Start Spring Boot backend
         run: |
-          nohup mvn spring-boot:run &
+          nohup mvn spring-boot:run > server.log 2>&1 &
           sleep 12   # give time for boot
 
       - name: Wait for Spring Boot to Start
         run: |
-          for i in {1..30}; do
+          echo "Waiting for Spring Boot to start on Port 8080..."
+          for i in {1..40}; do
             if nc -z localhost 8080; then
               echo "Spring Boot is up and running!"
-              break
+              exit 0
             fi 
             echo "Waiting for Spring Boot..."
-            sleep 5
+            sleep 2
           done  
+          echo "ERROR: Spring Boot did not start in time" >&2
+          echo "=== SERVER LOGS ==="
+          cat server.log
+          exit 1
 
       - name: Run latency benchmark (Apache Benchmark)
         run: |
