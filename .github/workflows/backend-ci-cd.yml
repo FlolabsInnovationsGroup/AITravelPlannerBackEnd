@@ -1,0 +1,162 @@
+name: FloTravel - BackEnd CI/CD Latency Testing 
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  # ---------------------------
+  # 1) BUILD + UNIT TEST + LOCAL E2E
+  # ---------------------------
+  build-test:
+    runs-on: ubuntu-latest
+
+    services:
+      mongo:
+        image: mongo:6
+        ports: ['27017:27017']
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: adopt
+          java-version: 17
+
+      - name: Install Apache Benchmark
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y apache2-utils
+
+      - name: Start Spring Boot backend locally
+        run: |
+          nohup java -jar target/*.jar ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com:/home/ubuntu/app/ > backend.log 2>&1 &
+          sleep 10
+
+      - name: Run Local E2E Tests
+        run: |
+          echo "Running local E2E tests..."
+          ab -n 100 -c 10 https://www.flomadtravel.com/auth/signin | tee local_e2e_results.txt
+          echo "=== Local E2E Summary ==="
+          tail -n 10 local_e2e_results.txt
+
+      - name: Upload build artifact and local E2E logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-build-and-local-e2e
+          path: |
+            target/*.jar
+            local_e2e_results.txt
+            backend.log
+
+  # ---------------------------
+  # 2) DEPLOY TO STAGING EC2
+  # ---------------------------
+  deploy-staging:
+    needs: build-test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: backend-build-and-local-e2e
+          path: ./app.jar
+
+      - name: Setup SSH Key
+        env:
+          ssh-private-key: ${{ secrets.STAGING_EC2_SSH_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$ssh-private-key" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ec2-50-17-181-203.compute-1.amazonaws.com >> ~/.ssh/known_hosts
+
+      - name: Deploy to Staging EC2
+        run: |
+          echo "Deploying to staging EC2..."
+          scp -o StrictHostKeyChecking=no ./app.jar ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com:/home/ubuntu/app.jar
+          ssh -o StrictHostKeyChecking=no ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com "
+            pkill -f 'java -jar' || true
+            nohup java -jar ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com:/home/ubuntu/app.jar > ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com:/home/ubuntu/app.log 2>&1 &
+          "
+
+  # ---------------------------
+  # 3) RUN E2E TESTS ON STAGING
+  # ---------------------------
+  verify-staging:
+    needs: deploy-staging
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install Apache Benchmark
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y apache2-utils
+
+      - name: Run E2E Tests on Staging
+        run: |
+          echo "Running E2E tests on staging..."
+          ab -n 200 -c 20 http://ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com | tee staging_e2e_results.txt
+          echo "=== Staging E2E Summary ==="
+          tail -n 10 staging_e2e_results.txt
+
+      - name: Upload staging E2E logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: staging-e2e-logs
+          path: staging_e2e_results.txt
+
+  # ---------------------------
+  # 4) DEPLOY TO PRODUCTION EC2
+  # ---------------------------
+  deploy-production:
+    needs: verify-staging
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: backend-build-and-local-e2e
+          path: ./app.jar
+
+      - name: Setup SSH Key
+        env:
+          ssh-private-key: ${{ secrets.PROD_EC2_SSH_KEY }}
+        run: |
+          makdir -p ~/.ssh
+          echo "$ssh-private-key" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ec2-50-17-181-203.compute-1.amazonaws.com >> ~/.ssh/known_hosts
+            
+
+      - name: Deploy to Production EC2
+        run: |
+          echo "Deploying to production EC2..."
+          scp -o StrictHostKeyChecking=no ./app.jar ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com:/home/ubuntu/app.jar
+          ssh -o StrictHostKeyChecking=no ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com "
+            pkill -f 'java -jar' || true
+            nohup java -jar ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com:/home/ubuntu/app.jar > ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com:/home/ubuntu/app.log 2>&1 &
+          "
+
+      - name: Run Production Smoke Test
+        run: |
+          echo "Running production smoke test..."
+          curl -s -w "\nHTTP Status: %{http_code}\n" -o prod_response.txt http://ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com
+          cat prod_response.txt
+
+      - name: Upload production smoke test log
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-smoke-test-log
+          path: prod_response.txt
