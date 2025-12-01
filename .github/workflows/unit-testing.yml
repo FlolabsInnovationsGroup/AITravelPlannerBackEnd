@@ -1,4 +1,4 @@
-name: Java Spring Boot Backend - Build, Test & Latency Benchmark
+name: FloTravel - Unit/Integration Testing
 
 on:
   push:
@@ -40,7 +40,7 @@ jobs:
     # 4. Build with Maven (compile + test)
     # ---------------------------------------------------
     - name: Build & test with Maven
-      run: mvn -B clean verify
+      run: mvn clean verify
 
     # ---------------------------------------------------
     # 5. Upload Test Results (JUnit XML reports)
