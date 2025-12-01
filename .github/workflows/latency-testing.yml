@@ -19,7 +19,7 @@ jobs:
           java-version: 17
 
       - name: Build Spring Boot app
-        run: mvn -B package
+        run: mvn package
 
       - name: Start Spring Boot backend
         run: |
