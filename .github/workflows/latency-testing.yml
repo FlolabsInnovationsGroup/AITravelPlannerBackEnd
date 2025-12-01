@@ -54,7 +54,7 @@ jobs:
           done    
 
       - name: Run latency benchmark (Apache Benchmark)
-        run: ab -n 200 -c 10 http://localhost:8080 > ab-results.txt
+        run: ab -n 200 -c 10 https://www.flomadtravel.com/auth/signin > ab-results.txt
 
       - name: Upload latency results
         uses: actions/upload-artifact@v4
