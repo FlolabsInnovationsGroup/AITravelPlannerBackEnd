@@ -89,8 +89,8 @@ jobs:
             "min": float(data.min()),
             "max": float(data.max())
         }    
-        with open("latency_summary.json", "w") as f:
-            json.dump(percentiles, indent=2)
+        with open("latency_summary.json", "w") as fp:
+            json.dump(percentiles, fp, indent=2)
         print(json.dumps(percentiles, indent=2))
         EOF
 
