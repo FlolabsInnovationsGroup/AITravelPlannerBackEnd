@@ -26,6 +26,9 @@ jobs:
           distribution: temurin
           java-version: 17
 
+      - name: Install mongosh
+        run: sudo apt-get update && sudo apt-get install -y mongodb-mongosh
+
       - name: Wait for MongoDB to start
         run: |
           for i in {1..30}; do
@@ -40,12 +43,12 @@ jobs:
       - name: Start Spring Boot backend
         run: |
           nohup mvn spring-boot:run > server.log 2>&1 &
-          sleep 12   # give time for boot
+          sleep 5   # give time for boot
 
       - name: Wait for Spring Boot to start
         run: |
           for i in {1..30}; do
-            if nc -z localhost 4000; then
+            if nc -z localhost 8080; then
               echo "Spring Boot is up!"
               break
             fi
@@ -54,8 +57,7 @@ jobs:
           done    
 
       - name: Run latency benchmark (Apache Benchmark)
-        run: |
-          ab -n 200 -c 10 http://localhost:4000/actuator/health > ab-results.txt
+        run: ab -n 200 -c 10 http://localhost:8080/actuator/health > ab-results.txt
 
       - name: Upload latency results
         uses: actions/upload-artifact@v4
