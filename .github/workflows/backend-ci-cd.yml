@@ -70,13 +70,9 @@ jobs:
           path: ./app.jar
 
       - name: Setup SSH Key
-        env:
+        uses: webfactory/ssh-agent@v0.8.1
+        with:
           ssh-private-key: ${{ secrets.STAGING_EC2_SSH_KEY }}
-        run: |
-          mkdir -p ~/.ssh
-          echo "$ssh-private-key" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ec2-50-17-181-203.compute-1.amazonaws.com >> ~/.ssh/known_hosts
 
       - name: Deploy to Staging EC2
         run: |
@@ -131,14 +127,9 @@ jobs:
           path: ./app.jar
 
       - name: Setup SSH Key
-        env:
-          ssh-private-key: ${{ secrets.PROD_EC2_SSH_KEY }}
-        run: |
-          makdir -p ~/.ssh
-          echo "$ssh-private-key" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ec2-50-17-181-203.compute-1.amazonaws.com >> ~/.ssh/known_hosts
-            
+        uses: webfactory/ssh-agent@v0.8.1
+        with:
+          ssh-private-key: ${{ secrets.PROD_EC2_SSH_KEY }}        
 
       - name: Deploy to Production EC2
         run: |
