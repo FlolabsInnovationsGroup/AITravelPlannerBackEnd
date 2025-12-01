@@ -63,7 +63,14 @@ jobs:
         echo "Latency tests completed."
 
     # ---------------------------------------------------
-    # 6. Calculate Latency Percentiles
+    # 6. Install numpy
+    # ---------------------------------------------------
+
+    - name: Install numpy
+      run: pip install numpy
+
+    # ---------------------------------------------------
+    # 7. Calculate Latency Percentiles
     # ---------------------------------------------------
 
     - name: Calculate Latency Percentiles
@@ -88,7 +95,7 @@ jobs:
         EOF
 
     # ---------------------------------------------------
-    # 7. Upload Unit Testing Results
+    # 8. Upload Unit Testing Results
     # ---------------------------------------------------
     - name: Upload Unit Testing Results
       uses: actions/upload-artifact@v4
