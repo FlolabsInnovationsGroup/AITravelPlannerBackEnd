@@ -23,6 +23,17 @@ jobs:
           nohup mvn spring-boot:run &
           sleep 12   # give time for boot
 
+      - name: Wait for Spring Boot to Start
+        run: |
+          for i in {1..30}; do
+            if nc -z localhost 8080; then
+              echo "Spring Boot is up and running!"
+              break
+            fi 
+            echo "Waiting for Spring Boot..."
+            sleep 5
+          done  
+
       - name: Run latency benchmark (Apache Benchmark)
         run: |
           ab -n 200 -c 10 http://localhost:8080/actuator/health > ab-results.txt
