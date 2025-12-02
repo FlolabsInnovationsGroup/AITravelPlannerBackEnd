@@ -84,14 +84,6 @@ jobs:
       # ----------------------------
       # Upload Artifacts (Test XMLs, logs, latency, e2e results)
       # ----------------------------
-      - name: Upload Test Reports
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-reports
-          path: |
-            target/surefire-reports/
-            target/failsafe-reports/
-
       - name: Upload E2E Test Results  
         uses: actions/upload-artifact@v4
         with:
@@ -103,10 +95,4 @@ jobs:
         with:
           name: latency-results
           path: latency-results/
-
-      - name: Upload Server Logs
-        uses: actions/upload-artifact@v4
-        with:
-          name: server-logs
-          path: server.log
 
