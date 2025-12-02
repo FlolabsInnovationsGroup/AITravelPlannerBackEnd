@@ -70,7 +70,7 @@ jobs:
           path: ./app.jar
 
       - name: Setup SSH Key
-        uses: webfactory/ssh-agent@v0.8.1
+        uses: webfactory/ssh-agent@v0.9.1
         with:
           ssh-private-key: ${{ secrets.STAGING_EC2_SSH_KEY }}
 
@@ -127,7 +127,7 @@ jobs:
           path: ./app.jar
 
       - name: Setup SSH Key
-        uses: webfactory/ssh-agent@v0.8.1
+        uses: webfactory/ssh-agent@v0.9.1
         with:
           ssh-private-key: ${{ secrets.PROD_EC2_SSH_KEY }}        
 
