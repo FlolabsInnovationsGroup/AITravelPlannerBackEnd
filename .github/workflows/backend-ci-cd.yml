@@ -1,143 +1,142 @@
-name: FloTravel - BackEnd CI/CD Latency Testing 
+name: FloTravel - BackEnd CI/CD Latency Testing
 
 on:
   push:
-    branches: [ master ]
+    branches: [ "master" ]
   pull_request:
-    branches: [ master ]
+    branches: [ "master" ]
 
 jobs:
-  # ---------------------------
-  # 1) BUILD + UNIT TEST + LOCAL E2E
-  # ---------------------------
-  build-test:
+  integration-tests:
     runs-on: ubuntu-latest
-
-    services:
-      mongo:
-        image: mongo:6
-        ports: ['27017:27017']
-
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-      - name: Set up JDK 17
+      - name: Set Up JDK
         uses: actions/setup-java@v4
         with:
-          distribution: adopt
+          distribution: temurin
+          java-version: 17
+          cache: maven
+
+      - name: Run Integration Tests
+        run: mvn -B verify -P integration-tests
+
+      - name: Upload Integration Test Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: integration-test-results
+          path: target/failsafe-reports
+
+  e2e-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set Up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
           java-version: 17
 
-      - name: Install Apache Benchmark
+      - name: Start Spring Boot Server
         run: |
-          sudo apt-get update -y
-          sudo apt-get install -y apache2-utils
+          nohup mvn spring-boot:run &
+          sleep 20
 
-      - name: Start Spring Boot backend locally
-        run: |
-          nohup java -jar target/*.jar ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com:/home/ubuntu/app/ > backend.log 2>&1 &
-          sleep 10
+      - name: Run E2E Tests
+        run: mvn -B test -P e2e
 
-      - name: Run Local E2E Tests
-        run: |
-          echo "Running local E2E tests..."
-          ab -n 100 -c 10 https://www.flomadtravel.com/auth/signin | tee local_e2e_results.txt
-          echo "=== Local E2E Summary ==="
-          tail -n 10 local_e2e_results.txt
-
-      - name: Upload build artifact and local E2E logs
+      - name: Upload E2E Test Results
         uses: actions/upload-artifact@v4
         with:
-          name: backend-build-and-local-e2e
-          path: |
-            target/*.jar
-            local_e2e_results.txt
-            backend.log
+          name: e2e-test-results
+          path: target/surefire-reports
 
-  # ---------------------------
-  # 2) DEPLOY TO STAGING EC2
-  # ---------------------------
-  deploy-staging:
-    needs: build-test
+
+  # ======================================
+  # 4. LATENCY + LOAD TEST (k6)
+  # ======================================
+  latency-test:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-      - name: Download artifact
-        uses: actions/download-artifact@v4
+      - name: Set Up JDK
+        uses: actions/setup-java@v4
         with:
-          name: backend-build-and-local-e2e
-          path: ./app.jar
+          distribution: temurin
+          java-version: 17
 
-      - name: Deploy to Staging EC2
+      - name: Start Spring Boot Server
         run: |
-          echo "Deploying to staging EC2..."
-          scp -o StrictHostKeyChecking=no ./app.jar ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com:/home/ubuntu/app.jar
-          ssh -o StrictHostKeyChecking=no ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com "
-            pkill -f 'java -jar' || true
-            nohup java -jar ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com:/home/ubuntu/app.jar > ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com:/home/ubuntu/app.log 2>&1 &
-          "
+          nohup mvn spring-boot:run &
+          sleep 20
 
-  # ---------------------------
-  # 3) RUN E2E TESTS ON STAGING
-  # ---------------------------
-  verify-staging:
-    needs: deploy-staging
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Install Apache Benchmark
+      - name: Install k6
         run: |
-          sudo apt-get update -y
-          sudo apt-get install -y apache2-utils
+          sudo apt-get update
+          sudo apt-get install -y gnupg ca-certificates
+          sudo mkdir -p /usr/share/keyrings
+          curl -fsSL https://dl.k6.io/key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/k6.gpg
+          echo "deb [signed-by=/usr/share/keyrings/k6.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
+          sudo apt-get update
+          sudo apt-get install -y k6
 
-      - name: Run E2E Tests on Staging
+      - name: Create k6 Latency Test Script
         run: |
-          echo "Running E2E tests on staging..."
-          ab -n 200 -c 20 http://ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com | tee staging_e2e_results.txt
-          echo "=== Staging E2E Summary ==="
-          tail -n 10 staging_e2e_results.txt
+          cat << 'EOF' > latency-test.js
+          import http from 'k6/http';
+          import { sleep } from 'k6';
 
-      - name: Upload staging E2E logs
+          export const options = {
+            vus: 20,            // 20 virtual users
+            duration: '30s',    // run for 30 seconds
+            thresholds: {
+              http_req_duration: ['p(95)<500'],   // 95% of requests < 500ms
+            },
+          };
+
+          export default function () {
+            http.get('https://www.flomadtravel.com/auth/signin'); // CHANGE THIS TO YOUR ENDPOINT
+            sleep(0.1);
+          }
+          EOF
+
+      - name: Run k6 Latency Test
+        run: |
+          mkdir -p k6-results
+          k6 run latency-test.js --out json=k6-results/latency.json | tee k6-results/summary.txt
+
+      - name: Upload Latency Test Results
         uses: actions/upload-artifact@v4
         with:
-          name: staging-e2e-logs
-          path: staging_e2e_results.txt
+          name: latency-test-results
+          path: k6-results
 
-  # ---------------------------
-  # 4) DEPLOY TO PRODUCTION EC2
-  # ---------------------------
-  deploy-production:
-    needs: verify-staging
+
+  release:
     runs-on: ubuntu-latest
+    needs: [ integration-tests, e2e-tests, latency-test ]
     if: github.ref == 'refs/heads/master'
 
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Download artifact
+      - name: Download JAR
         uses: actions/download-artifact@v4
         with:
-          name: backend-build-and-local-e2e
-          path: ./app.jar
+          name: built-jar
+          path: ./release-output
 
-      - name: Deploy to Production EC2
-        run: |
-          echo "Deploying to production EC2..."
-          scp -o StrictHostKeyChecking=no ./app.jar ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com:/home/ubuntu/app.jar
-          ssh -o StrictHostKeyChecking=no ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com "
-            pkill -f 'java -jar' || true
-            nohup java -jar ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com:/home/ubuntu/app.jar > ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com:/home/ubuntu/app.log 2>&1 &
-          "
-
-      - name: Run Production Smoke Test
-        run: |
-          echo "Running production smoke test..."
-          curl -s -w "\nHTTP Status: %{http_code}\n" -o prod_response.txt http://ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com
-          cat prod_response.txt
-
-      - name: Upload production smoke test log
-        uses: actions/upload-artifact@v4
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
         with:
-          name: production-smoke-test-log
-          path: prod_response.txt
+          tag_name: v${{ github.run_number }}
+          name: Release v${{ github.run_number }}
+          files: |
+            release-output/*.jar
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
