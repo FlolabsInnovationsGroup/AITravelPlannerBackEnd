@@ -2,12 +2,17 @@ name: FloTravel - CI/CD Latency Testing
 
 on:
   push:
+    branches: [ "master" ]
   pull_request:
 
 jobs:
   backend-ci:
     runs-on: ubuntu-latest
-
+    services:
+      mongo:
+        image: mongo:6
+        ports: [ '27017:27017' ]
+        
     steps:
       # ----------------------------
       # Checkout + Java Setup
@@ -15,7 +20,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup JDK
+      - name: Setup JDK 17
         uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -40,27 +45,10 @@ jobs:
       # ----------------------------
       # Start Backend as Background Process
       # ----------------------------
-      - name: Start Backend Server
+      - name: Run application in background
         run: |
-          nohup java -jar target/*.jar --server.port=8080 > server.log 2>&1 &
-          echo $! > server.pid
-
-      # ----------------------------
-      # Wait for Backend to Become Healthy
-      # ----------------------------
-      - name: Wait for Backend
-        run: |
-          echo "Waiting for server to start..."
-          for i in {1..25}; do
-            if curl -s http://localhost:8080/actuator/health | grep '"status"' > /dev/null; then
-              echo "Server is UP!"
-              exit 0
-            fi
-            sleep 3
-          done
-          echo "Server failed to start"
-          cat server.log
-          exit 1
+          nohup java -jar target/*.jar &
+          sleep 10
 
       # ----------------------------
       # E2E API Tests (Curl-based)
@@ -80,7 +68,7 @@ jobs:
           # GET again
           curl -s https://www.flomadtravel.com/auth/signin \
             -o e2e-results/users-after.json || true
-
+          
       # ----------------------------
       # Latency Test (Apache Benchmark)
       # ----------------------------
@@ -91,7 +79,7 @@ jobs:
         run: |
           mkdir -p latency-results
           echo "Running latency test..."
-          ab -n 200 -c 20 https://www.flomadtravel.com/auth/signin > latency-results/ab-results.txt
+          ab -n 500 -c 20 https://www.flomadtravel.com/auth/signin > latency-results/ab-results.txt
 
       # ----------------------------
       # Upload Artifacts (Test XMLs, logs, latency, e2e results)
@@ -104,10 +92,10 @@ jobs:
             target/surefire-reports/
             target/failsafe-reports/
 
-      - name: Upload E2E Results
+      - name: Upload E2E Test Results  
         uses: actions/upload-artifact@v4
         with:
-          name: e2e-results
+          name: e2e-test-results
           path: e2e-results/
 
       - name: Upload Latency Results
