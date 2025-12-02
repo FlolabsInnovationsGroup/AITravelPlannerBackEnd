@@ -35,13 +35,13 @@ public class AIMessageResponse {
             "Must be a complete friendly answer, based on the input. While generating this value imagine that 'suggestions' don't exist at all.")
     private String message;
 
-    @NotNull(message = "Suggestions list cannot be null")
-    @Size(min = 3, max = 5, message = "Must provide between 3 and 5 suggestions")
-    @JsonPropertyDescription("Required." +
-            "List of suggested next requests USER can logically send to TRAVEL ASSISTANT in the current chat context, and You MUST also think about the future flow of the dialogue." +
-            "Keep in mind that one of these suggestions will be a message from USER (client) to the TRAVEL ASSISTANT." +
-            "Suggestions must be really useful." +
-            "Must be 4 items.")
+    @Size(min = 0, max = 5, message = "Suggestions must not exceed 5 items")
+    @JsonPropertyDescription("Optional but highly recommended. " +
+            "List of 3-4 suggested next requests USER can logically send to TRAVEL ASSISTANT in the current chat context. " +
+            "Think about the future flow of the dialogue and provide actionable next steps. " +
+            "Keep in mind that one of these suggestions will be a message from USER (client) to the TRAVEL ASSISTANT. " +
+            "Suggestions must be really useful and contextually relevant. " +
+            "Aim for 4 items when possible, but 3 is acceptable if context is limited.")
     private List<@NotEmpty(message = "Each suggestion cannot be empty") @Size(min = 5, max = 200, message = "Each suggestion must be between 5 and 200 characters") String> suggestions;
 
 }

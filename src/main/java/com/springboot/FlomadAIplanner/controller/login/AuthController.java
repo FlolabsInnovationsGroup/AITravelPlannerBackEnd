@@ -5,6 +5,7 @@ import com.springboot.FlomadAIplanner.dto.auth.LoginRequest;
 import com.springboot.FlomadAIplanner.dto.auth.LoginResponse;
 import com.springboot.FlomadAIplanner.dto.auth.GuestTokenResponse;
 import com.springboot.FlomadAIplanner.exceptions.validators.UserAlreadyExistsException;
+import com.springboot.FlomadAIplanner.service.login.AuthService;
 import com.springboot.FlomadAIplanner.service.login.SessionAuthService;
 import com.springboot.FlomadAIplanner.validator.UserValidator;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,10 +23,14 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final SessionAuthService sessionAuthService;
+    private final AuthService authService;
     private final UserValidator userValidator;
 
-    public AuthController(SessionAuthService sessionAuthService, UserValidator userValidator) {
+    public AuthController(SessionAuthService sessionAuthService, 
+                         AuthService authService,
+                         UserValidator userValidator) {
         this.sessionAuthService = sessionAuthService;
+        this.authService = authService;
         this.userValidator = userValidator;
     }
 
@@ -71,17 +76,30 @@ public class AuthController {
         return ResponseEntity.ok(new GuestTokenResponse(sessionId));
     }
 
-    @Operation(summary = "Create guest token", description = "Creates a guest token for anonymous users")
+    @Operation(summary = "Create guest token", description = "Creates a JWT token for anonymous guest users")
     @PostMapping("/guest-token")
-    public ResponseEntity<GuestTokenResponse> createGuestToken(HttpServletRequest request,
-                                                          HttpServletResponse response) {
-        log.info("Creating guest token");
-        ResponseEntity<LoginResponse> sessionResponse = sessionAuthService.generateGuestSession(request, response);
+    public ResponseEntity<GuestTokenResponse> createGuestToken() {
+        log.info("Creating JWT guest token");
         
-        // Extract session ID from the response and create a token
-        String sessionId = request.getSession().getId();
-        
-        return ResponseEntity.ok(new GuestTokenResponse(sessionId));
+        try {
+            // Generate guest JWT token via AuthService
+            ResponseEntity<LoginResponse> tokenResponse = authService.generateGuestToken();
+            
+            if (tokenResponse.getBody() != null && tokenResponse.getBody().getToken() != null) {
+                String jwtToken = tokenResponse.getBody().getToken();
+                log.info("✅ Guest JWT token created successfully");
+                return ResponseEntity.ok(new GuestTokenResponse(jwtToken));
+            }
+            
+            log.error("❌ Failed to generate guest token - no token in response");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new GuestTokenResponse(null));
+                    
+        } catch (Exception e) {
+            log.error("❌ Error creating guest token: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new GuestTokenResponse(null));
+        }
     }
 
     @Operation(summary = "Get session state", description = "Returns the current session state and user information")

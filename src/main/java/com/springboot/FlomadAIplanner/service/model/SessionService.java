@@ -37,16 +37,23 @@ public class SessionService implements CrudService<Session, String> {
     @Override
     public Session save(Session session) {
         log.info("Saving session: {}", session);
+        
+        // If userId is not set, try to get from security context
         if (session.getUserId() == null) {
             User user = currentUserUtil.getCurrentUserFromSecurityContext();
             if (user != null) {
                 session.setUserId(user.getId());
+                log.info("Set userId from security context: {}", user.getId());
             } else {
-                log.error("No authenticated user found for session creation");
-                throw new RuntimeException("No authenticated user found for session creation");
+                log.warn("⚠️ No authenticated user in security context. Session will be saved without userId.");
+                // Don't throw exception - allow session creation for guest users
+                // The userId will be set when the user authenticates with their JWT token
             }
         }
-        return sessionRepository.save(session);
+        
+        Session savedSession = sessionRepository.save(session);
+        log.info("✅ Session saved with ID: {}", savedSession.getId());
+        return savedSession;
     }
 
     public void checkGuestUserLimitations(String sessionId, int newMessagesAmount) {

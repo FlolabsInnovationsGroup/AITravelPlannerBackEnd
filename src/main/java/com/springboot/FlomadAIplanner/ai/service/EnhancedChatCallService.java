@@ -134,9 +134,22 @@ public class EnhancedChatCallService extends AbstractChatService {
 
             // Validate AI response if it's an AIMessageResponse
             if (aiResponse instanceof com.springboot.FlomadAIplanner.ai.dto.AIMessageResponse) {
+                AIMessageResponse messageResponse = (AIMessageResponse) aiResponse;
+                
+                // Ensure suggestions are always provided - add defaults if missing
+                if (messageResponse.getSuggestions() == null || messageResponse.getSuggestions().isEmpty()) {
+                    log.warn("⚠️ AI response missing suggestions - adding default suggestions for session: {}", aiMessage.getSessionId());
+                    messageResponse.setSuggestions(java.util.Arrays.asList(
+                        "Tell me more about this destination",
+                        "What are the best times to visit?",
+                        "Help me plan activities for this trip",
+                        "What's the estimated budget?"
+                    ));
+                }
+                
                 log.info("🔍 Validating AI response schema for session: {}", aiMessage.getSessionId());
                 ValidationResult validationResult = validationService.validateWithContext(
-                    (com.springboot.FlomadAIplanner.ai.dto.AIMessageResponse) aiResponse,
+                    messageResponse,
                     aiMessage.getSessionId(),
                     "AI Chat Response"
                 );
@@ -151,7 +164,6 @@ public class EnhancedChatCallService extends AbstractChatService {
                 // 🚀 AUTOMATIC LOCATION EXTRACTION FOR TOUR/ITINERARY REQUESTS
                 // If user message contains tour/itinerary keywords, automatically call location extraction
                 if (shouldTriggerLocationExtraction(aiMessage.getMessage())) {
-                    AIMessageResponse messageResponse = (AIMessageResponse) aiResponse;
                     triggerAutomaticLocationExtraction(messageResponse.getMessage(), aiMessage.getSessionId());
                 }
             }
