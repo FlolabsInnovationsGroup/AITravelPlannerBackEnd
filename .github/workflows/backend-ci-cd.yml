@@ -69,16 +69,6 @@ jobs:
           name: backend-build-and-local-e2e
           path: ./app.jar
 
-      - name: Setup SSH Key
-        uses: webfactory/ssh-agent@v0.9.1
-        with:
-          ssh-private-key: ${{ secrets.STAGING_EC2_SSH_KEY }}
-          run: |
-            mkdir -p ~/.ssh
-            echo "$STAGING_EC2_SSH_KEY" > ~/.ssh/id_rsa
-            cat ~/.ssh/id_rsa
-            ssh-keyscan -H ec2-50-17-181-203.compute-1.amazonaws.com >> ~/.ssh/known_hosts
-
       - name: Deploy to Staging EC2
         run: |
           echo "Deploying to staging EC2..."
@@ -130,16 +120,6 @@ jobs:
         with:
           name: backend-build-and-local-e2e
           path: ./app.jar
-
-      - name: Setup SSH Key
-        uses: webfactory/ssh-agent@v0.9.1
-        with:
-          ssh-private-key: ${{ secrets.PROD_EC2_SSH_KEY }}
-          run: |
-            mkdir -p ~/.ssh
-            echo "$PROD_EC2_SSH_KEY" > ~/.ssh/id_rsa
-            cat ~/.ssh/id_rsa
-            ssh-keyscan -H ec2-50-17-181-203.compute-1.amazonaws.com >> ~/.ssh/known_hosts
 
       - name: Deploy to Production EC2
         run: |
