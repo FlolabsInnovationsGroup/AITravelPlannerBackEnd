@@ -7,6 +7,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -27,15 +28,14 @@ public class UserLastActiveUpdateFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
 
-        // Logic to update user's last active timestamp
+        // Update user's last active timestamp
         User user = currentUserUtil.getCurrentUserFromSecurityContext();
         if (user != null) {
             userService.updateLastActive(user);
-            log.info("Updated last active timestamp for user: {}", user.getUsername());
+            log.debug("Updated last active timestamp for user: {}", user.getUsername());
         }
 
         // Proceed with the next filter in the chain
         chain.doFilter(request, response);
     }
-
 }

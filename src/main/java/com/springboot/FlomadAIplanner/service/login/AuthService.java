@@ -119,15 +119,19 @@ public class AuthService extends AbstractAuthService {
     }
 
     public ResponseEntity<LoginResponse> generateGuestToken() {
-        if (isUserAuthenticated()) {
-            log.info("User is already authenticated");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new LoginResponse(false, null, "User is already authenticated"));
+        // Allow creating guest tokens even if user is authenticated (for new sessions)
+        log.info("Generating JWT guest token");
+        
+        try {
+            User guestUser = createGuestUser();
+            String token = generateTokenForUser(guestUser);
+            log.info("✅ Successfully generated JWT token for guest user: {}", guestUser.getUsername());
+            return ResponseEntity.ok(new LoginResponse(false, token, "Guest token generated successfully"));
+        } catch (Exception e) {
+            log.error("❌ Error generating guest token: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new LoginResponse(false, null, "Failed to generate guest token: " + e.getMessage()));
         }
-        log.info("User not authenticated, generating guest token");
-        User guestUser = createGuestUser();
-        String token = generateTokenForUser(guestUser);
-        return ResponseEntity.ok(new LoginResponse(false, token, "Quest token generated successfully"));
-
     }
 
     private boolean isUserAuthenticated() {

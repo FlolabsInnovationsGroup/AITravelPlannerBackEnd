@@ -31,7 +31,8 @@ public class WebSecurityConfig {
     private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
 
     public WebSecurityConfig(UserDetailsService userDetailsService,
-                             JwtRequestFilter jwtRequestFilter, UserLastActiveUpdateFilter userLastActiveUpdateFilter,
+                             JwtRequestFilter jwtRequestFilter,
+                             UserLastActiveUpdateFilter userLastActiveUpdateFilter,
                              PasswordEncoder passwordEncoder,
                              CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler,
                              CustomAuthenticationFailureHandler customAuthenticationFailureHandler) {
@@ -48,7 +49,7 @@ public class WebSecurityConfig {
             "/api/auth/signup",
             "/api/auth/signin",
             "/api/auth/verify",
-            "/api/auth/guest-token",
+            "/api/auth/session-state",
             "/api/chat/call",
             "/api/chat/stream",
             "/api/chat/call/entity",
@@ -66,7 +67,7 @@ public class WebSecurityConfig {
                 http.getSharedObject(AuthenticationManagerBuilder.class);
 
         builder.userDetailsService(userDetailsService)
-                .passwordEncoder(passwordEncoder); // Use the injected PasswordEncoder
+                .passwordEncoder(passwordEncoder);
 
         return builder.build();
     }
@@ -79,16 +80,21 @@ public class WebSecurityConfig {
                     config.setAllowedOrigins(List.of(
                             "https://www.flomadtravel.com", // ✅ Allow production frontend
                             "http://localhost:3000"         // ✅ Keep localhost for development
-                    )); // ✅ Allow frontend
+                    ));
                     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-                    config.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept", "Origin"));
+                    config.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept", "Origin", "Cookie"));
+                    config.setExposedHeaders(List.of("Set-Cookie"));
                     config.setAllowCredentials(true);
                     return config;
                 }))
 
                 .csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(session -> session
+                        .maximumSessions(1)
+                        .expiredUrl("/api/auth/session-state")
+                )
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(PUBLIC_URLS.toArray(new String[0])).permitAll() // ✅ Now uses the list
+                        .requestMatchers(PUBLIC_URLS.toArray(new String[0])).permitAll()
                         .requestMatchers(
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
@@ -96,9 +102,12 @@ public class WebSecurityConfig {
                                 "/swagger-ui.html"
                         ).permitAll()
 
+                        .requestMatchers("/api/auth/session-state").permitAll()
+                        .requestMatchers("/api/auth/guest-token").permitAll()
+                        .requestMatchers("/users/current").authenticated()
                         .requestMatchers("/users/**").hasRole("ADMIN")
                         // ⚠️ Fix: Change to exact paths to avoid conflicting with PUBLIC_URLS /api/chat/call/entity
-                        .requestMatchers("/api/chat", "/api/stream", "/api/chat/history/**").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers("/api/chat", "/api/stream", "/api/chat/history/**").hasAnyRole("ADMIN", "USER", "GUEST")
 
                         .anyRequest().authenticated()
                 )
