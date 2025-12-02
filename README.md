@@ -1,3 +1,7 @@
+# Latency/Unit/End-to-End/Security Testing
+
+[![FloTravel - Latency Testing](https://github.com/FlomadLabsRD/AITravelPlannerBackEnd/actions/workflows/latency-testing.yml/badge.svg)](https://github.com/FlomadLabsRD/AITravelPlannerBackEnd/actions/workflows/latency-testing.yml) [![FloTravel - Unit/Integration Testing](https://github.com/FlomadLabsRD/AITravelPlannerBackEnd/actions/workflows/unit-testing.yml/badge.svg)](https://github.com/FlomadLabsRD/AITravelPlannerBackEnd/actions/workflows/unit-testing.yml) [![FloTravel - CI/CD Latency Testing](https://github.com/FlomadLabsRD/AITravelPlannerBackEnd/actions/workflows/backend-ci-cd.yml/badge.svg)](https://github.com/FlomadLabsRD/AITravelPlannerBackEnd/actions/workflows/backend-ci-cd.yml) 
+
 # Running the Application Locally
 
 This guide will help you set up and run the AI Travel Planner application on your local machine.

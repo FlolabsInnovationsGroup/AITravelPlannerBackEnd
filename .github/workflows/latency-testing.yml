@@ -1,0 +1,63 @@
+name: FloTravel - Latency Testing
+
+on:
+  push:
+    branches: [ "master" ]
+
+jobs:
+  perf-test:
+    runs-on: ubuntu-latest
+
+    services:
+      mongo:
+        image: mongo:6
+        ports:
+          - 27017:27017   
+        env:
+          MONGO_INITDB_DATABASE: testdb
+          
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Wait for MongoDB to start
+        run: |
+          for i in {1..30}; do
+            if mongosh --quiet --eval "db.runCommand({ ping: 1 })" localhost:27017/testdb; then
+              echo "MongoDB is up!"
+              break
+            fi
+            echo "Waiting for MongoDB..."
+            sleep 2
+          done    
+
+      - name: Start Spring Boot backend
+        run: |
+          nohup mvn spring-boot:run > server.log 2>&1 &
+          sleep 5   # give time for boot
+
+      - name: Wait for Spring Boot to start
+        run: |
+          for i in {1..30}; do
+            if nc -z localhost 8080; then
+              echo "Spring Boot is up!"
+              break
+            fi
+            echo "Waiting for Spring Boot..."
+            sleep 2
+          done    
+
+      - name: Run latency benchmark (Apache Benchmark)
+        run: ab -n 200 -c 10 https://www.flomadtravel.com/auth/signin > ab-results.txt
+
+      - name: Upload latency results
+        uses: actions/upload-artifact@v4
+        with:
+          name: latency-metrics
+          path: ab-results.txt

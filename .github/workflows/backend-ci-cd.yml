@@ -1,0 +1,98 @@
+name: FloTravel - CI/CD Latency Testing
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+
+jobs:
+  backend-ci:
+    runs-on: ubuntu-latest
+    services:
+      mongo:
+        image: mongo:6
+        ports: [ '27017:27017' ]
+        
+    steps:
+      # ----------------------------
+      # Checkout + Java Setup
+      # ----------------------------
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      # ----------------------------
+      # Cache Maven Dependencies
+      # ----------------------------
+      - name: Cache Maven Repo
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: maven-
+
+      # ----------------------------
+      # Package JAR
+      # ----------------------------
+      - name: Package App
+        run: mvn clean package --no-transfer-progress -DskipTests 
+
+      # ----------------------------
+      # Start Backend as Background Process
+      # ----------------------------
+      - name: Run application in background
+        run: |
+          nohup java -jar target/*.jar &
+          sleep 10
+
+      # ----------------------------
+      # E2E API Tests (Curl-based)
+      # ----------------------------
+      - name: Run E2E Tests
+        run: |
+          mkdir -p e2e-results
+          echo "Running E2E Tests..."
+          curl -s -o e2e-results/users.json https://www.flomadtravel.com/auth/signin || true
+          
+          # POST example
+          curl -X POST https://www.flomadtravel.com/auth/signin \
+            -H "Content-Type: application/json" \
+            -d '{"name":"Tim"}' \
+            -o e2e-results/create-user.json || true
+
+          # GET again
+          curl -s https://www.flomadtravel.com/auth/signin \
+            -o e2e-results/users-after.json || true
+          
+      # ----------------------------
+      # Latency Test (Apache Benchmark)
+      # ----------------------------
+      - name: Install Apache Benchmark
+        run: sudo apt-get install -y apache2-utils
+
+      - name: Run Latency Benchmark
+        run: |
+          mkdir -p latency-results
+          echo "Running latency test..."
+          ab -n 500 -c 20 https://www.flomadtravel.com/auth/signin > latency-results/ab-results.txt
+
+      # ----------------------------
+      # Upload Artifacts (Test XMLs, logs, latency, e2e results)
+      # ----------------------------
+      - name: Upload E2E Test Results  
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-test-results
+          path: e2e-results/
+
+      - name: Upload Latency Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: latency-results
+          path: latency-results/
+

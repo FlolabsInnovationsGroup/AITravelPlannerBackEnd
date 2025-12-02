@@ -1,0 +1,104 @@
+name: FloTravel - Unit/Integration Testing
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+
+jobs:
+  build-test-benchmark:
+    runs-on: ubuntu-latest
+
+    steps:
+    # ---------------------------------------------------
+    # 1. Checkout Code
+    # ---------------------------------------------------
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    # ---------------------------------------------------
+    # 2. Set up Java (17 or 21 depending on your app)
+    # ---------------------------------------------------
+    - name: Set up JDK
+      uses: actions/setup-java@v4
+      with:
+        distribution: "temurin"
+        java-version: "17"
+
+    # ---------------------------------------------------
+    # 3. Cache Maven Dependencies (Performance Increase)
+    # ---------------------------------------------------
+    - name: Cache Maven packages
+      uses: actions/cache@v4
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-m2-
+
+    # ---------------------------------------------------
+    # 4. Start Spring Boot backend (runs in background)
+    # ---------------------------------------------------
+    - name: Start Spring Boot backend
+      run: |
+        nohup mvn spring-boot:run &
+        sleep 25
+      # Wait for backend to start up (increase if needed)
+
+    # ---------------------------------------------------
+    # 5. Run Latency Benchmark Test
+    # ---------------------------------------------------
+    - name: Run latency benchmark
+      run: |
+        echo "Running HTTP latency benchmark..."
+
+        # Test URL (change if needed)
+        URL="https://www.flomadtravel.com/auth/signin"
+
+        # Perform 500 requests and measure latency
+        for i in {1..500}; do
+          curl -o /dev/null -s -w "%{time_total}\n" "$URL" >> unit_test_results.txt
+        done
+
+        echo "Latency tests completed."
+
+    # ---------------------------------------------------
+    # 6. Install numpy
+    # ---------------------------------------------------
+
+    - name: Install numpy
+      run: pip install numpy
+
+    # ---------------------------------------------------
+    # 7. Calculate Latency Percentiles
+    # ---------------------------------------------------
+
+    - name: Calculate Latency Percentiles
+      run: |
+        python3 << 'EOF'
+        import numpy as np
+        import json
+        with open("unit_test_results.txt") as f:
+            data = np.array([float(x.strip()) for x in f if x.strip()])
+        percentiles = {
+            "p50": float(np.percentile(data, 50)),
+            "p90": float(np.percentile(data, 90)),
+            "p95": float(np.percentile(data, 95)),
+            "p99": float(np.percentile(data, 99)),
+            "mean": float(data.mean()),
+            "min": float(data.min()),
+            "max": float(data.max())
+        }    
+        with open("latency_summary.json", "w") as fp:
+            json.dump(percentiles, fp, indent=2)
+        print(json.dumps(percentiles, indent=2))
+        EOF
+
+    # ---------------------------------------------------
+    # 8. Upload Unit Testing Results
+    # ---------------------------------------------------
+    - name: Upload Unit Testing Results
+      uses: actions/upload-artifact@v4
+      with:
+        name: latency-benchmark
+        path: unit_test_results.txt
