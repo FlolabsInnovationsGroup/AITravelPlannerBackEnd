@@ -54,9 +54,9 @@ jobs:
         with:
           name: test-results
           path: |
-            **/target/surefire-reports/pull_request_report.xml
-            **/target/surefire-reports/pull_request_report.txt
-            **/target/surefire-reports/pull_request_report.html
+            pull_request_report.xml
+            pull_request_report.txt
+            pull_request_report.html
 
       # ------------------------------
       # BUILD VERIFICATION
@@ -69,4 +69,4 @@ jobs:
         with:
           name: built-jar
           path: |
-            **/target/*.jar
+            pull_requests.jar
