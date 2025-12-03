@@ -1,4 +1,4 @@
-name: FloTravel - Pull Requst Testing
+name: FloTravel - Pull Request Testing
 
 on:
   pull_request:
