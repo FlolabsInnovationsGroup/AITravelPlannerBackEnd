@@ -42,4 +42,13 @@ jobs:
           sudo systemctl stop flomad
           mv *.jar Flomad-AI-planner-0.0.1-SNAPSHOT.jar
           sudo systemctl start flomad
+          sleep 15
+          echo "=== SERVICE STATUS ==="
+          sudo systemctl status flomad --no-pager || true
+          echo "=== CHECKING PROCESS ==="
+          ps aux | grep java | grep -v grep || echo "No Java process running"
+          echo "=== PORT 8080 ==="
+          sudo netstat -tlnp | grep 8080 || echo "Port 8080 not listening"
+          echo "=== TESTING HEALTH ==="
+          curl -f http://localhost:8080/actuator/health && echo "SUCCESS!" || echo "FAILED!"
           '
