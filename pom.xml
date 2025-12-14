@@ -22,6 +22,7 @@
         <jakarta.version>3.1.0</jakarta.version>
         <mongock.version>5.5.0</mongock.version>
         <testcontainers.version>1.20.3</testcontainers.version>
+        <logback.version>1.5.16</logback.version> <!-- Security fix: CVE-2024-12798, CVE-2024-12801, CVE-2025-0104 -->
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -290,12 +291,12 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.5.8</version> <!-- Updated to latest secure version -->
+            <version>${logback.version}</version> <!-- Security fix: CVE-2024-12798, CVE-2024-12801, CVE-2025-0104 -->
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
-            <version>1.5.8</version> <!-- Updated to latest secure version -->
+            <version>${logback.version}</version> <!-- Security fix: CVE-2024-12798, CVE-2024-12801, CVE-2025-0104 -->
         </dependency>
         <dependency>
             <groupId>org.elasticsearch.client</groupId>
