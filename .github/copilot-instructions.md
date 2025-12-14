@@ -1,12 +1,12 @@
 # AI Travel Planner Backend - Copilot Instructions
 
 ## Project Overview
-This is the **Spring Boot 3.4.0 backend** for the AI Travel Planner, featuring **Spring AI integration**, **GPT-4o-mini function calling**, **WebSocket real-time communication**, and comprehensive **travel intelligence APIs**. The system provides 15+ AI functions with enterprise-grade security, rate limiting, and MongoDB persistence.
+This is the **Spring Boot 3.4.0 backend** for the AI Travel Planner, featuring **Spring AI integration**, **GPT-5-mini function calling**, **WebSocket real-time communication**, and comprehensive **travel intelligence APIs**. The system provides 15+ AI functions with enterprise-grade security, rate limiting, and MongoDB persistence.
 
 ## Architecture & Tech Stack
 
 ### Backend Framework (Spring Boot 3.4.0)
-- **Spring AI**: 1.0.0-M5 with OpenAI GPT-4o-mini integration
+- **Spring AI**: 1.0.0-M5 with OpenAI GPT-5-mini integration
 - **Function Calling**: 15+ AI functions with auto-discovery and registration
 - **Rich Location Data**: Enhanced Google Places integration with photos, ratings, hours, contact info
 - **Database**: MongoDB with Mongock migrations and chat memory persistence  
@@ -15,7 +15,7 @@ This is the **Spring Boot 3.4.0 backend** for the AI Travel Planner, featuring *
 - **Rate Limiting**: Bucket4j with JWT integration and IP-based fallback
 
 ### AI & External APIs
-- **AI Model**: OpenAI GPT-4o-mini (8192 tokens, 30-message memory)
+- **AI Model**: OpenAI GPT-5-mini (400k context, 128k output, 30-message memory)
 - **Travel APIs**: Google Places, Amadeus flights, Viator tours, WeatherAPI
 - **Geolocation**: PositionStack for address geocoding
 - **Currency**: FreeCurrency for exchange rates

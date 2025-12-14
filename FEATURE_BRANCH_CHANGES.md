@@ -68,7 +68,7 @@ This document summarizes all changes made in the `feature/authentication-system`
 
 **Integration:**
 - Auto-discovery via Spring DI
-- Function descriptions for OpenAI GPT-4o-mini
+- Function descriptions for OpenAI GPT-5-mini
 - JSON schema validation
 - Comprehensive error handling
 
@@ -130,7 +130,7 @@ getCachedResponse() with strict key matching
 
 **Improvements:**
 - 30-message limit (down from unlimited)
-- 8192 token limit (optimized for GPT-4o-mini)
+- 8192 token limit (optimized for GPT-5-mini)
 - Automatic cleanup to prevent bloat
 - Session-scoped conversations
 - MongoDB persistence
@@ -262,7 +262,7 @@ None identified - all changes are backwards compatible
 ## Dependencies Updated
 - Spring AI 1.0.0-M5
 - Spring Boot 3.4.0
-- OpenAI GPT-4o-mini
+- OpenAI GPT-5-mini (upgraded from GPT-4o-mini on Dec 14, 2025)
 - MongoDB driver updates
 - Testing libraries
 
