@@ -20,7 +20,6 @@ public class LocationService {
     }
 
     public Location save(Location location) {
-        log.info("Saving location: {}", location);
         location.setCreatedAt(LocalDateTime.now());
         location.setUpdatedAt(LocalDateTime.now());
         return locationRepository.save(location);

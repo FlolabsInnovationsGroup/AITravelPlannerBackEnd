@@ -19,8 +19,6 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -125,6 +123,7 @@ public class DirectionsFunction implements Function<DirectionsFunction.Direction
             log.info("🌐 Calling Google Directions API: {}", url.substring(0, Math.min(150, url.length())));
 
             // Call Google Directions API
+            @SuppressWarnings("rawtypes")
             ResponseEntity<Map> response = restTemplate.exchange(
                 url,
                 HttpMethod.GET,
@@ -133,6 +132,7 @@ public class DirectionsFunction implements Function<DirectionsFunction.Direction
             );
 
             if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
+                @SuppressWarnings("unchecked")
                 Map<String, Object> responseBody = response.getBody();
                 String status = (String) responseBody.get("status");
 
@@ -216,6 +216,7 @@ public class DirectionsFunction implements Function<DirectionsFunction.Direction
     /**
      * Format API response into human-readable text
      */
+    @SuppressWarnings("unchecked")
     private String formatDirectionsResponse(Map<String, Object> response, String origin, String destination) {
         try {
             List<Map<String, Object>> routes = (List<Map<String, Object>>) response.get("routes");

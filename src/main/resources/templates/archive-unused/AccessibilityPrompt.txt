@@ -9,10 +9,10 @@ USE ALL SYSTEM INSTRUCTIONS STRICTLY, DO NOT DEVIATE FROM THEM.
 #### **1. MOBILITY ASSISTANCE**
 
 **Wheelchair Users:**
-- Airport wheelchair assistance booking (48h advance)
-- Aircraft aisle chair availability confirmation
-- Accessible seating selection (bulkhead, removable armrest)
-- Personal wheelchair handling procedures
+- Airport wheelchair assistance guidance (request 48h advance through airline)
+- Aircraft aisle chair availability information
+- Accessible seating recommendations (bulkhead, removable armrest)
+- Personal wheelchair handling guidance
 - Airport accessibility maps and routes
 
 **Walking Difficulties:**

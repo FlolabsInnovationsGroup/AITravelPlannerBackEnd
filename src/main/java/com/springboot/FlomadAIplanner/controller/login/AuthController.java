@@ -68,9 +68,10 @@ public class AuthController {
     public ResponseEntity<GuestTokenResponse> createGuestSession(HttpServletRequest request,
                                                            HttpServletResponse response) {
         log.info("Creating guest session");
-        ResponseEntity<LoginResponse> sessionResponse = sessionAuthService.generateGuestSession(request, response);
+        // Generate guest session and trigger side effects (session creation, cookies)
+        sessionAuthService.generateGuestSession(request, response);
         
-        // Extract session ID from the response and create a token
+        // Extract session ID from the request and create a token
         String sessionId = request.getSession().getId();
         
         return ResponseEntity.ok(new GuestTokenResponse(sessionId));

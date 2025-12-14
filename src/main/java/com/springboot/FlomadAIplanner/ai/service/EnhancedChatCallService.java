@@ -31,8 +31,16 @@ public class EnhancedChatCallService extends AbstractChatService {
     private final AutoLocationExtractionFunction autoLocationExtractionFunction;
     
     // Pattern to detect tour/itinerary requests that should trigger location extraction
+    // Enhanced with comprehensive travel-related keywords to catch ALL planning scenarios
+    // Includes: planning, showing, recommending, finding, searching for locations
     private static final Pattern TOUR_PATTERN = Pattern.compile(
-        "\\b(tour|itinerary|trip|journey|visit|travel to|explore|foodie|cultural|day trip|multi-city)\\b",
+        "\\b(tour|itinerary|trip|journey|visit|travel to|travel|explore|foodie|cultural|day trip|multi-city|" +
+        "getaway|vacation|holiday|honeymoon|weekend|escape|adventure|visit to|plan.*trip|plan.*visit|" +
+        "romantic.*to|sightseeing|backpack|cruise|road trip|excursion|" +
+        "show me|what to do|things to (do|see)|best .*(in|at|near)|where (to|should|can)|" +
+        "recommend|suggest|find .*(in|near|at)|looking for|searching for|" +
+        "hotels?|restaurants?|places? to|attractions?|landmarks?|beaches?|museums?|" +
+        "activities|nightlife|shopping|dining|eating)\\b",
         Pattern.CASE_INSENSITIVE
     );
 
@@ -164,7 +172,11 @@ public class EnhancedChatCallService extends AbstractChatService {
                 // 🚀 AUTOMATIC LOCATION EXTRACTION FOR TOUR/ITINERARY REQUESTS
                 // If user message contains tour/itinerary keywords, automatically call location extraction
                 if (shouldTriggerLocationExtraction(aiMessage.getMessage())) {
-                    triggerAutomaticLocationExtraction(messageResponse.getMessage(), aiMessage.getSessionId());
+                    triggerAutomaticLocationExtraction(
+                        messageResponse.getMessage(), 
+                        aiMessage.getMessage(), 
+                        aiMessage.getSessionId()
+                    );
                 }
             }
 
@@ -213,9 +225,10 @@ public class EnhancedChatCallService extends AbstractChatService {
      * Automatically triggers the location extraction function after AI generates a response.
      * This bypasses the need for GPT to call the function - we do it programmatically.
      */
-    private void triggerAutomaticLocationExtraction(String aiResponseMessage, String sessionId) {
+    private void triggerAutomaticLocationExtraction(String aiResponseMessage, String userQuery, String sessionId) {
         try {
             log.info("🗺️ AUTOMATIC TRIGGER: Calling autoLocationExtractionFunction for session: {}", sessionId);
+            log.info("🗺️ User query: {}", userQuery);
             log.info("🗺️ Extracting locations from AI response (length: {} chars)", 
                 aiResponseMessage != null ? aiResponseMessage.length() : 0);
             
@@ -223,6 +236,7 @@ public class EnhancedChatCallService extends AbstractChatService {
             AutoLocationExtractionFunction.LocationExtractionRequest request = 
                 new AutoLocationExtractionFunction.LocationExtractionRequest();
             request.setMessage(aiResponseMessage);
+            request.setUserQuery(userQuery); // ✅ Pass user query for context filtering
             request.setSessionId(sessionId);
             
             // Call the function directly

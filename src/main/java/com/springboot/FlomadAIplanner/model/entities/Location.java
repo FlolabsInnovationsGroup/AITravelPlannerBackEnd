@@ -35,7 +35,7 @@ public class Location extends Model {
 
     @Field("name")
     @Size(max = 200, message = "Location name cannot exceed 200 characters")
-    @Pattern(regexp = "^[a-zA-Z0-9\\s\\-.,()\\u00C0-\\u017F]*$", message = "Location name contains invalid characters")
+    @Pattern(regexp = "^[a-zA-Z0-9\\s\\-.,()''&|?!:;/+#@$%\\u00C0-\\u024F\\u1E00-\\u1EFF]*$", message = "Location name contains invalid characters")
     private String name; // Optional name or description of the location
 
     @Field("type")

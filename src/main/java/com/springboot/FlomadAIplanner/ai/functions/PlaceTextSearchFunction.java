@@ -31,6 +31,12 @@ import java.util.stream.Collectors;
         Transforms location searches into magical travel experiences! Instead of boring technical data,
         this function delivers exciting, conversational responses that build genuine excitement about destinations.
 
+        ⚠️ CRITICAL SEARCH REQUIREMENTS:
+        🎯 ALWAYS include city/region in search queries to prevent wrong locations!
+        ✅ CORRECT: "Hidden Gems, Paris" | ❌ WRONG: "Hidden Gems" (finds New York instead)
+        ✅ CORRECT: "Eiffel Tower, Paris" | ❌ WRONG: "Eiffel Tower" (ambiguous)
+        ✅ CORRECT: "Louvre, Paris" | ❌ WRONG: "Louvre" (could find other countries)
+        
         ✨ CONVERSATIONAL MAGIC:
         🎯 Enthusiastic descriptions that capture the wonder of each place
         🗺️ Direct Google Maps links for instant exploration
@@ -38,9 +44,9 @@ import java.util.stream.Collectors;
         ⭐ Authentic ratings and insider knowledge
         💡 Contextual suggestions for deeper exploration
         🎊 PERFECT FOR TRAVEL INSPIRATION:
-        "Find details for Eiffel Tower" → Magical description with cultural context
-        "Get coordinates for Central Park" → Enthusiastic guide with activity suggestions
-        "Search for Times Square info" → Exciting overview with insider tips
+        "Find details for Eiffel Tower, Paris" → Magical description with cultural context
+        "Get coordinates for Central Park, New York" → Enthusiastic guide with activity suggestions
+        "Search for Times Square, New York info" → Exciting overview with insider tips
 
         🚀 EXPERIENCE ENHANCEMENT:
         - Varied, enthusiastic responses (never repetitive!)

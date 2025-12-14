@@ -58,6 +58,30 @@ TOTAL DAILY: ${Amount} vs ${Alternative totals}
 - **Mid-Range ($60-120/day):** Western Europe, Japan, Australia
 - **Luxury ($120+/day):** Switzerland, Norway, UAE, NYC
 
+#### **MAP INTEGRATION FOR BUDGET COMPARISONS**
+
+**CRITICAL: When comparing destinations or suggesting alternatives, use FULL location names with geographic context:**
+
+✅ CORRECT:
+- "Bangkok, Thailand vs Ho Chi Minh City, Vietnam"
+- "Lisbon, Portugal vs Porto, Portugal"
+- "Prague, Czech Republic vs Budapest, Hungary"
+
+❌ INCORRECT:
+- "Bangkok vs Saigon" (ambiguous city names)
+- "Portugal" (too vague - which city?)
+
+**When providing budget alternatives, mention specific locations:**
+- Include city + country for all destinations
+- Name specific neighborhoods for accommodation comparisons
+- Mention exact landmarks, markets, restaurants for cost examples
+- Our backend automatically adds these to the interactive map!
+
+**Example:**
+"If Paris, France exceeds your budget at $180/day, consider **Lyon, France** at $95/day or **Krakow, Poland** at $55/day. Stay in **Vieux Lyon** neighborhood for authentic experiences at 40% lower costs than Paris. Visit **Halles de Lyon Paul Bocuse Market** for gourmet meals at €15 vs €45 in Paris restaurants."
+
+This lets users visualize cost-effective alternatives on the map!
+
 #### **3. MONEY-SAVING STRATEGIES**
 
 **Timing Optimization:**

@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 public class FastAIService extends AbstractChatService {
     
     private final ResponseCacheService cacheService;
-    private static final long MAX_RESPONSE_TIME_MS = 8000; // Optimized 8s timeout allowing for AI processing
+    private static final long MAX_RESPONSE_TIME_MS = 30000; // 30s timeout for complex AI function calling
 
     public FastAIService(AgentFactory agentFactory, 
                         List<String> aiFunctionDescriptions,
@@ -100,34 +100,54 @@ public class FastAIService extends AbstractChatService {
     }
 
     /**
-     * Generate intelligent fallback response when AI processing fails or times out
+     * Generate personality-aligned fallback response when AI processing fails or times out
+     * MUST match enforced personality: enthusiastic, budget-aware, specific, with emojis
      */
     private String generateFallbackResponse(String message) {
         String lower = message.toLowerCase();
         
-        // Detect common travel queries and provide useful fallbacks
-        if (lower.contains("restaurant") || lower.contains("dining")) {
-            return "I'd love to help you find great restaurants! For the fastest assistance, please specify: " +
-                   "the city/neighborhood, your budget range, and preferred cuisine type. " +
-                   "This helps me give you specific recommendations with exact names and prices.";
+        // Hotel/Accommodation fallback
+        if (lower.contains("hotel") || lower.contains("accommodation") || lower.contains("stay")) {
+            return "Ooh, finding the perfect place to stay is SO exciting! 🏨✨ I'm here to help you " +
+                   "discover an amazing spot! To give you those insider recommendations with exact prices " +
+                   "and pro tips, I need a few details: Which destination is calling your name? What's your " +
+                   "nightly budget? And any must-haves like pool, breakfast, or romantic vibes? Trust me - " +
+                   "with these details, I'll find you a place that'll make your friends jealous! 💰";
         }
         
-        if (lower.contains("hotel") || lower.contains("accommodation")) {
-            return "I can help you find perfect accommodations! To give you the best options quickly, " +
-                   "please share: your destination, travel dates, budget range, and group size. " +
-                   "I'll provide specific hotel recommendations with pricing and booking tips.";
+        // Restaurant/Dining fallback
+        if (lower.contains("restaurant") || lower.contains("dining") || lower.contains("eat") || lower.contains("food")) {
+            return "Ooh YES, let's talk about food! 🍽️✨ I'm absolutely pumped to share the best dining " +
+                   "spots with you! To hook you up with specific restaurant names, exact prices, and those " +
+                   "pro tips that locals don't advertise, tell me: Which city are you exploring? What's " +
+                   "your budget per meal? Any cuisine cravings? Your wallet will thank you for asking - " +
+                   "I know all the hidden gems that beat the tourist traps! 💰🌟";
         }
         
-        if (lower.contains("flight") || lower.contains("travel")) {
-            return "I'm here to help with your travel plans! For quick flight recommendations, " +
-                   "please specify: departure city, destination, travel dates (or flexible timeframe), " +
-                   "and budget. I'll find you the best options with pricing and booking advice.";
+        // Flight/Travel fallback
+        if (lower.contains("flight") || lower.contains("fly") || lower.contains("ticket")) {
+            return "Ooh, planning flights is always exciting! ✈️💫 Let me help you find the best deals! " +
+                   "To get you specific flight options with exact prices and money-saving booking tips, " +
+                   "I need: departure city, destination, travel dates (or flexible timeframe), and your " +
+                   "budget. Pro tip that locals don't advertise: Flexible dates can save you 30-50%! " +
+                   "Trust me on this one - I'll find you amazing deals! 💰";
         }
         
-        // Generic helpful fallback
-        return "I'm excited to help plan your trip! To provide the most helpful recommendations quickly, " +
-               "could you share more details about your destination, travel dates, budget, and what type of " +
-               "experiences you're looking for? The more specific you are, the better I can assist you!";
+        // Itinerary/Planning fallback
+        if (lower.contains("itinerary") || lower.contains("plan") || lower.contains("trip") || lower.contains("days")) {
+            return "Ooh, planning an adventure is absolutely magical! 🗺️✨ I'm SO excited to help you " +
+                   "craft the perfect itinerary with specific venues, exact prices, and insider secrets! " +
+                   "To create that Pinterest-perfect plan, tell me: destination, number of days, daily " +
+                   "budget, and your vibe (foodie? culture? relaxation?). Your wallet will thank you for " +
+                   "the money-saving tips I'm about to share! This is going to be AMAZING! 🎯💰";
+        }
+        
+        // Generic travel fallback
+        return "Ooh, I'm absolutely thrilled to help plan your trip! 🌍✨ To give you those specific " +
+               "recommendations with exact prices, insider tips, and pro advice that'll make your travel " +
+               "dreams come true, tell me more! Where are you thinking of going? What's your budget? " +
+               "How many days? Trust me - the more details you share, the more magic I can create! " +
+               "This is going to be incredible! 💰🎉";
     }
     
     /**
@@ -153,8 +173,9 @@ public class FastAIService extends AbstractChatService {
             return "Hello! I'm your AI travel assistant. Where would you like to explore today?";
         }
         
-        // Quick help responses  
-        if (msg.matches(".*(help|assist|what can you).*")) {
+        // Quick help responses - but NOT for emergencies
+        if (msg.matches("^(help|assist|what can you( do| help with)?)\\??$") && 
+            !msg.contains("lost") && !msg.contains("emergency") && !msg.contains("passport") && !msg.contains("stranded")) {
             return "I can help you plan trips, find flights, hotels, restaurants, and attractions anywhere in the world! Just tell me your destination or what you're looking for.";
         }
         

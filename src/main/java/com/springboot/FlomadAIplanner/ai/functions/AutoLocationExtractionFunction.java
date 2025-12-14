@@ -2,6 +2,7 @@ package com.springboot.FlomadAIplanner.ai.functions;
 
 import com.fasterxml.jackson.annotation.JsonClassDescription;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import com.springboot.FlomadAIplanner.dto.google.TextSearchRequest;
 import com.springboot.FlomadAIplanner.service.google.GooglePlacesServiceAsync;
@@ -80,6 +81,7 @@ public class AutoLocationExtractionFunction implements Function<AutoLocationExtr
     @Override
     public String apply(LocationExtractionRequest request) {
         log.info("🔍 Starting AutoLocationExtractionFunction for message: {}", request.getMessage());
+        log.info("🔍 User query context: {}", request.getUserQuery());
 
         try {
             String sessionId = request.getSessionId();
@@ -92,6 +94,12 @@ public class AutoLocationExtractionFunction implements Function<AutoLocationExtr
                 return "Error: Missing session ID.";
             }
 
+            // Extract country/region context from user query for filtering
+            String userContextCountry = request.getUserQuery() != null ? 
+                extractCountryFromQuery(request.getUserQuery()) : null;
+            
+            log.info("🌍 Detected user query country context: {}", userContextCountry != null ? userContextCountry : "none");
+            
             // Extract location names from the message
             String[] potentialLocations = extractLocationNames(request.getMessage());
             
@@ -103,6 +111,7 @@ public class AutoLocationExtractionFunction implements Function<AutoLocationExtr
             StringBuilder result = new StringBuilder();
             int addedCount = 0;
             int failedCount = 0;
+            int filteredCount = 0;
 
             for (String locationName : potentialLocations) {
                 try {
@@ -114,9 +123,10 @@ public class AutoLocationExtractionFunction implements Function<AutoLocationExtr
                     String locationType = "tourist_attraction";
                     boolean foundCoordinates = false;
                     com.fasterxml.jackson.databind.JsonNode searchResult = null;
+                    String locationCountry = null;
                     
-                    // Extract country context from the original message for better geocoding
-                    String countryContext = extractCountryContext(request.getMessage());
+                    // Prioritize user context country over message context
+                    String countryContext = userContextCountry != null ? userContextCountry : extractCountryFromQuery(request.getMessage());
                     String enhancedQuery = countryContext != null ? locationName + ", " + countryContext : locationName;
                     
                     try {
@@ -141,6 +151,12 @@ public class AutoLocationExtractionFunction implements Function<AutoLocationExtr
                                     ? place.get("displayName").get("text").asText() 
                                     : locationName;
                                 locationType = determineLocationType(place);
+                                
+                                // ✅ NEW: Extract country from Google Places API response
+                                locationCountry = extractCountryFromPlace(place);
+                                log.info("🌍 Location {} is in country: {}", displayName, 
+                                        locationCountry != null ? locationCountry : "unknown");
+                                
                                 foundCoordinates = true;
                                 log.info("✅ Found coordinates via Google Places API: {} ({}, {})", displayName, latitude, longitude);
                             }
@@ -159,11 +175,20 @@ public class AutoLocationExtractionFunction implements Function<AutoLocationExtr
                             displayName = locationName;
                             locationType = "tourist_attraction";
                             foundCoordinates = true;
+                            locationCountry = null; // No country data from fallback
                             log.info("✅ Using fallback coordinates for {}: ({}, {})", displayName, latitude, longitude);
                         }
                     }
                     
                     if (foundCoordinates) {
+                        // ✅ NEW: Smart filtering AFTER we have country data from API
+                        if (!shouldIncludeLocation(locationCountry, userContextCountry, request.getUserQuery())) {
+                            filteredCount++;
+                            log.info("⏭️ Filtered out {} ({}) - not relevant to context: {}", 
+                                    displayName, locationCountry, userContextCountry);
+                            continue; // Skip this location
+                        }
+                        
                         // Create AddLocationRequest with rich data
                         AddLocationFunction.AddLocationRequest addRequest = 
                             new AddLocationFunction.AddLocationRequest();
@@ -205,7 +230,8 @@ public class AutoLocationExtractionFunction implements Function<AutoLocationExtr
             }
 
             // Prepare final summary
-            String summary = String.format("🗺️ Location extraction complete: %d added, %d failed", addedCount, failedCount);
+            String summary = String.format("🗺️ Location extraction complete: %d added, %d filtered, %d failed", 
+                    addedCount, filteredCount, failedCount);
             log.info(summary);
             
             return summary + "\n\n" + result.toString().trim();
@@ -217,12 +243,64 @@ public class AutoLocationExtractionFunction implements Function<AutoLocationExtr
     }
 
     /**
-     * Extract country context from message for better geocoding accuracy
+     * Extract country context from user query text for better geocoding accuracy.
+     * Note: This method extracts country from TEXT queries, not from Google Places API responses.
+     * For extracting country from API responses, see extractCountryFromPlace().
      */
-    private String extractCountryContext(String message) {
+    private String extractCountryFromQuery(String message) {
         String lowerMessage = message.toLowerCase();
         
-        // Map of countries and their common variations
+        // FIRST: Check for region patterns (Southeast Asia, Europe, etc.)
+        // These need to be checked BEFORE individual countries to avoid false matches
+        java.util.Map<String, String[]> regionPatterns = new java.util.HashMap<>();
+        regionPatterns.put("SOUTHEAST_ASIA", new String[]{
+            "southeast asia", "south east asia", "se asia", "sea region", "asean"
+        });
+        regionPatterns.put("SOUTH_ASIA", new String[]{
+            "south asia", "indian subcontinent"
+        });
+        regionPatterns.put("EAST_ASIA", new String[]{
+            "east asia", "far east"
+        });
+        regionPatterns.put("WESTERN_EUROPE", new String[]{
+            "western europe", "west europe", "europe"  // "europe" as fallback
+        });
+        regionPatterns.put("EASTERN_EUROPE", new String[]{
+            "eastern europe", "east europe"
+        });
+        regionPatterns.put("SCANDINAVIA", new String[]{
+            "scandinavia", "scandinavian", "nordic countries"
+        });
+        regionPatterns.put("MIDDLE_EAST", new String[]{
+            "middle east", "mideast"
+        });
+        regionPatterns.put("NORTH_AFRICA", new String[]{
+            "north africa", "northern africa"
+        });
+        regionPatterns.put("SOUTH_AMERICA", new String[]{
+            "south america", "latin america"
+        });
+        regionPatterns.put("CENTRAL_AMERICA", new String[]{
+            "central america"
+        });
+        regionPatterns.put("NORTH_AMERICA", new String[]{
+            "north america"
+        });
+        regionPatterns.put("OCEANIA", new String[]{
+            "oceania", "pacific islands", "south pacific"
+        });
+        
+        // Check region patterns first
+        for (java.util.Map.Entry<String, String[]> entry : regionPatterns.entrySet()) {
+            for (String pattern : entry.getValue()) {
+                if (lowerMessage.contains(pattern)) {
+                    log.info("🌏 Detected REGION context: {} from keyword: '{}'", entry.getKey(), pattern);
+                    return entry.getKey();  // Return region identifier
+                }
+            }
+        }
+        
+        // SECOND: Check for individual country patterns
         java.util.Map<String, String[]> countryPatterns = new java.util.HashMap<>();
         countryPatterns.put("Italy", new String[]{"italy", "italian"});
         countryPatterns.put("France", new String[]{"france", "french", "paris"});
@@ -232,11 +310,19 @@ public class AutoLocationExtractionFunction implements Function<AutoLocationExtr
         countryPatterns.put("United States", new String[]{"usa", "united states", "america", "american"});
         countryPatterns.put("Germany", new String[]{"germany", "german", "berlin"});
         countryPatterns.put("Greece", new String[]{"greece", "greek", "athens"});
+        countryPatterns.put("Thailand", new String[]{"thailand", "thai", "bangkok"});
+        countryPatterns.put("Vietnam", new String[]{"vietnam", "vietnamese", "hanoi", "saigon"});
+        countryPatterns.put("Cambodia", new String[]{"cambodia", "cambodian", "phnom penh"});
+        countryPatterns.put("Laos", new String[]{"laos", "lao", "vientiane"});
+        countryPatterns.put("Malaysia", new String[]{"malaysia", "malaysian", "kuala lumpur"});
+        countryPatterns.put("Singapore", new String[]{"singapore", "singaporean"});
+        countryPatterns.put("Indonesia", new String[]{"indonesia", "indonesian", "jakarta", "bali"});
+        countryPatterns.put("Philippines", new String[]{"philippines", "philippine", "filipino", "manila"});
         
         for (java.util.Map.Entry<String, String[]> entry : countryPatterns.entrySet()) {
             for (String pattern : entry.getValue()) {
                 if (lowerMessage.contains(pattern)) {
-                    log.info("🌍 Detected country context: {} from keyword: {}", entry.getKey(), pattern);
+                    log.info("🌍 Detected country context: {} from keyword: '{}'", entry.getKey(), pattern);
                     return entry.getKey();
                 }
             }
@@ -249,6 +335,12 @@ public class AutoLocationExtractionFunction implements Function<AutoLocationExtr
      * Extract potential location names from user message
      */
     private String[] extractLocationNames(String message) {
+        // 🔒 FIX: Handle null message gracefully
+        if (message == null || message.trim().isEmpty()) {
+            log.warn("⚠️ extractLocationNames called with null or empty message");
+            return new String[0];
+        }
+        
         java.util.List<String> locations = new java.util.ArrayList<>();
         String normalizedMessage = message.toLowerCase().trim();
         
@@ -337,16 +429,24 @@ public class AutoLocationExtractionFunction implements Function<AutoLocationExtr
      * Check if message contains a word with potential typos
      */
     private boolean containsTypo(String message, String targetWord) {
-        if (targetWord.length() < 4) return false; // Skip short words
+        // Require minimum length of 5 characters for fuzzy matching to prevent false positives
+        // (e.g., "some" should NOT match "rome")
+        if (targetWord.length() < 5) return false;
         
         String[] messageWords = message.split("\\s+");
         for (String messageWord : messageWords) {
+            // Skip very short words to prevent false positives
+            if (messageWord.length() < 5) continue;
+            
             // Check for single character differences for words of similar length
             if (Math.abs(messageWord.length() - targetWord.length()) <= 1) {
                 int differences = calculateLevenshteinDistance(messageWord, targetWord);
-                // Allow 1-2 character differences for typos
-                if (differences <= 2 && differences < targetWord.length() * 0.4) {
-                    log.info("🔍 Found potential typo match: '{}' for target: '{}'", messageWord, targetWord);
+                // Stricter threshold: require < 30% error rate AND max 2 differences
+                // This prevents "some"(4)→"rome"(4) with distance=1 (25% error)
+                double errorRate = (double) differences / Math.max(messageWord.length(), targetWord.length());
+                if (differences <= 2 && errorRate < 0.3) {
+                    log.info("🔍 Found potential typo match: '{}' for target: '{}' (distance: {}, error rate: {:.1f}%)", 
+                            messageWord, targetWord, differences, errorRate * 100);
                     return true;
                 }
             }
@@ -704,6 +804,279 @@ public class AutoLocationExtractionFunction implements Function<AutoLocationExtr
             log.warn("⚠️ Failed to extract rich data for {}: {}", addRequest.getName(), e.getMessage());
         }
     }
+    
+    /**
+     * Extract country information from Google Places API response.
+     * Parses the addressComponents array to find the country component.
+     * 
+     * @param place JsonNode containing the place details from Google Places API
+     * @return Country code (e.g., "TH", "IT") or full name (e.g., "Thailand", "Italy"), or null if not found
+     */
+    private String extractCountryFromPlace(JsonNode place) {
+        try {
+            // ✅ DEBUG: Log all fields in the place response
+            StringBuilder fieldsList = new StringBuilder();
+            place.fieldNames().forEachRemaining(name -> fieldsList.append(name).append(", "));
+            log.info("🔍 DEBUG: Place response fields: {}", fieldsList);
+            
+            if (!place.has("addressComponents")) {
+                log.warn("⚠️ No addressComponents field in place response. Available fields: {}", fieldsList);
+                
+                // Try alternative field names for Google Places v1 API
+                if (place.has("formattedAddress")) {
+                    String address = place.get("formattedAddress").asText();
+                    log.info("📍 Formatted address: {}", address);
+                    
+                    // Try to extract country from formatted address as fallback
+                    String[] parts = address.split(",");
+                    if (parts.length > 0) {
+                        String lastPart = parts[parts.length - 1].trim();
+                        log.info("🌍 Potential country from address: {}", lastPart);
+                        return lastPart;
+                    }
+                }
+                
+                return null;
+            }
+            
+            JsonNode addressComponents = place.get("addressComponents");
+            if (!addressComponents.isArray()) {
+                log.debug("addressComponents is not an array");
+                return null;
+            }
+            
+            // Iterate through address components to find the country
+            for (JsonNode component : addressComponents) {
+                if (component.has("types") && component.get("types").isArray()) {
+                    for (JsonNode type : component.get("types")) {
+                        if ("country".equals(type.asText())) {
+                            // Prefer short text (country code like "TH", "IT")
+                            if (component.has("shortText")) {
+                                String countryCode = component.get("shortText").asText();
+                                log.info("✅ Extracted country code from place: {}", countryCode);
+                                return countryCode;
+                            }
+                            // Fallback to long text (full country name like "Thailand", "Italy")
+                            if (component.has("longText")) {
+                                String countryName = component.get("longText").asText();
+                                log.info("✅ Extracted country name from place: {}", countryName);
+                                return countryName;
+                            }
+                        }
+                    }
+                }
+            }
+            
+            log.debug("No country component found in addressComponents");
+            return null;
+            
+        } catch (Exception e) {
+            log.warn("⚠️ Failed to extract country from place: {}", e.getMessage());
+            return null;
+        }
+    }
+    
+    /**
+     * Smart location filtering with regional awareness.
+     * Determines if a location should be included based on country matching and regional groupings.
+     * Supports multi-country trips within the same region.
+     * 
+     * @param locationCountry Country extracted from Google Places API response (e.g., "TH", "Thailand")
+     * @param userQueryCountry Country detected from user's query (e.g., "Italy", "Southeast Asia")
+     * @param userQuery Original user query for context
+     * @return true if location should be included, false if it should be filtered out
+     */
+    private boolean shouldIncludeLocation(String locationCountry, String userQueryCountry, String userQuery) {
+        // Case 1: No country detected from user query → Include ALL locations
+        // User might be asking about multi-country trips or general travel advice
+        if (userQueryCountry == null || userQueryCountry.trim().isEmpty()) {
+            log.debug("No user context country detected - including all locations");
+            return true;
+        }
+        
+        // Case 2: Location has no country data → Include by default
+        // Better to show extra locations than miss valid ones
+        if (locationCountry == null || locationCountry.trim().isEmpty()) {
+            log.debug("Location country unknown - including by default");
+            return true;
+        }
+        
+        // Case 3: Exact country match → ALWAYS include
+        // e.g., Bangkok (TH) for "Thailand vacation"
+        if (areSameCountry(locationCountry, userQueryCountry)) {
+            log.info("✅ Exact country match: {} == {} - including location", locationCountry, userQueryCountry);
+            return true;
+        }
+        
+        // Case 4: Same region → Include (handles multi-country trips)
+        // e.g., Italy + France for "Europe tour", Thailand + Vietnam for "Southeast Asia backpacking"
+        if (areSameRegion(locationCountry, userQueryCountry)) {
+            log.info("✅ Same region: {} and {} in same travel region - including location", 
+                    locationCountry, userQueryCountry);
+            return true;
+        }
+        
+        // Case 5: Different continents/regions → Exclude
+        // e.g., NYC (US) when asking about Italy
+        log.info("❌ Different regions: {} vs {} - excluding location", locationCountry, userQueryCountry);
+        return false;
+    }
+    
+    /**
+     * Check if two country identifiers refer to the same country.
+     * Handles both country codes (TH, US, IT) and full names (Thailand, United States, Italy).
+     * 
+     * @param country1 First country identifier
+     * @param country2 Second country identifier
+     * @return true if they represent the same country
+     */
+    private boolean areSameCountry(String country1, String country2) {
+        if (country1 == null || country2 == null) {
+            return false;
+        }
+        
+        String c1 = country1.trim().toLowerCase();
+        String c2 = country2.trim().toLowerCase();
+        
+        // Direct comparison
+        if (c1.equals(c2)) {
+            return true;
+        }
+        
+        // Handle country code vs full name mappings
+        // This is NOT for extraction, just for comparison during filtering
+        java.util.Map<String, java.util.List<String>> countryAliases = java.util.Map.ofEntries(
+            java.util.Map.entry("us", java.util.List.of("usa", "united states", "america")),
+            java.util.Map.entry("uk", java.util.List.of("united kingdom", "england", "gb", "great britain")),
+            java.util.Map.entry("th", java.util.List.of("thailand")),
+            java.util.Map.entry("it", java.util.List.of("italy")),
+            java.util.Map.entry("fr", java.util.List.of("france")),
+            java.util.Map.entry("es", java.util.List.of("spain")),
+            java.util.Map.entry("de", java.util.List.of("germany")),
+            java.util.Map.entry("gr", java.util.List.of("greece")),
+            java.util.Map.entry("jp", java.util.List.of("japan")),
+            java.util.Map.entry("br", java.util.List.of("brazil")),
+            java.util.Map.entry("pe", java.util.List.of("peru")),
+            java.util.Map.entry("eg", java.util.List.of("egypt")),
+            java.util.Map.entry("au", java.util.List.of("australia")),
+            java.util.Map.entry("bt", java.util.List.of("bhutan"))
+        );
+        
+        // Check if c1 or c2 match any aliases
+        for (java.util.Map.Entry<String, java.util.List<String>> entry : countryAliases.entrySet()) {
+            String code = entry.getKey();
+            java.util.List<String> aliases = entry.getValue();
+            
+            boolean c1Match = c1.equals(code) || aliases.contains(c1);
+            boolean c2Match = c2.equals(code) || aliases.contains(c2);
+            
+            if (c1Match && c2Match) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    /**
+     * Check if two countries are in the same travel region.
+     * Supports multi-country trips like "Europe tour" or "Southeast Asia backpacking".
+     * Also handles region identifiers (e.g., "SOUTHEAST_ASIA" matching "thailand").
+     * 
+     * @param country1 First country identifier (can be country code, name, or region identifier)
+     * @param country2 Second country identifier (can be country code, name, or region identifier)
+     * @return true if countries are in the same region
+     */
+    private boolean areSameRegion(String country1, String country2) {
+        if (country1 == null || country2 == null) {
+            return false;
+        }
+        
+        String c1 = country1.trim().toLowerCase();
+        String c2 = country2.trim().toLowerCase();
+        
+        // Define regional groupings for common multi-country trips
+        java.util.Map<String, java.util.List<String>> regionGroups = java.util.Map.ofEntries(
+            java.util.Map.entry("western_europe", java.util.List.of(
+                "fr", "france", "it", "italy", "es", "spain", "de", "germany", 
+                "ch", "switzerland", "be", "belgium", "nl", "netherlands", 
+                "at", "austria", "pt", "portugal"
+            )),
+            java.util.Map.entry("eastern_europe", java.util.List.of(
+                "pl", "poland", "cz", "czech republic", "hu", "hungary", 
+                "ro", "romania", "bg", "bulgaria", "hr", "croatia"
+            )),
+            java.util.Map.entry("uk_ireland", java.util.List.of(
+                "uk", "united kingdom", "gb", "great britain", "england", 
+                "ie", "ireland", "scotland", "wales"
+            )),
+            java.util.Map.entry("scandinavia", java.util.List.of(
+                "se", "sweden", "no", "norway", "dk", "denmark", 
+                "fi", "finland", "is", "iceland"
+            )),
+            java.util.Map.entry("southeast_asia", java.util.List.of(
+                "th", "thailand", "vn", "vietnam", "kh", "cambodia", 
+                "la", "laos", "my", "malaysia", "sg", "singapore", 
+                "id", "indonesia", "ph", "philippines", "mm", "myanmar"
+            )),
+            java.util.Map.entry("south_asia", java.util.List.of(
+                "in", "india", "np", "nepal", "bt", "bhutan", 
+                "lk", "sri lanka", "bd", "bangladesh", "pk", "pakistan"
+            )),
+            java.util.Map.entry("east_asia", java.util.List.of(
+                "jp", "japan", "cn", "china", "kr", "korea", "south korea", 
+                "tw", "taiwan", "hk", "hong kong", "mo", "macau"
+            )),
+            java.util.Map.entry("middle_east", java.util.List.of(
+                "ae", "uae", "united arab emirates", "dubai", "sa", "saudi arabia", 
+                "qa", "qatar", "om", "oman", "jo", "jordan", "il", "israel"
+            )),
+            java.util.Map.entry("north_africa", java.util.List.of(
+                "eg", "egypt", "ma", "morocco", "tn", "tunisia", 
+                "dz", "algeria", "ly", "libya"
+            )),
+            java.util.Map.entry("south_america", java.util.List.of(
+                "br", "brazil", "ar", "argentina", "pe", "peru", 
+                "cl", "chile", "co", "colombia", "ec", "ecuador", 
+                "bo", "bolivia", "uy", "uruguay", "ve", "venezuela"
+            )),
+            java.util.Map.entry("central_america", java.util.List.of(
+                "mx", "mexico", "gt", "guatemala", "cr", "costa rica", 
+                "pa", "panama", "ni", "nicaragua", "hn", "honduras"
+            )),
+            java.util.Map.entry("north_america", java.util.List.of(
+                "us", "usa", "united states", "america", "ca", "canada"
+            )),
+            java.util.Map.entry("oceania", java.util.List.of(
+                "au", "australia", "nz", "new zealand", "fj", "fiji", 
+                "pg", "papua new guinea"
+            ))
+        );
+        
+        // Check if both identifiers are in the same region
+        for (java.util.Map.Entry<String, java.util.List<String>> entry : regionGroups.entrySet()) {
+            String regionKey = entry.getKey();
+            java.util.List<String> region = entry.getValue();
+            
+            // Check if c1 is either the region key OR a country in the region
+            boolean has1 = c1.equals(regionKey) || region.stream().anyMatch(country -> 
+                country.equals(c1) || c1.contains(country) || country.contains(c1)
+            );
+            
+            // Check if c2 is either the region key OR a country in the region
+            boolean has2 = c2.equals(regionKey) || region.stream().anyMatch(country -> 
+                country.equals(c2) || c2.contains(country) || country.contains(c2)
+            );
+            
+            if (has1 && has2) {
+                log.info("✅ Region match found: '{}' and '{}' both belong to region '{}'", 
+                        country1, country2, regionKey.toUpperCase());
+                return true;
+            }
+        }
+        
+        return false;
+    }
 
     @Data
     @NoArgsConstructor
@@ -716,5 +1089,8 @@ public class AutoLocationExtractionFunction implements Function<AutoLocationExtr
 
         @JsonPropertyDescription("Optional. The session ID for the chat session. If not provided, will be retrieved from context.")
         private String sessionId;
+        
+        @JsonPropertyDescription("Optional. The original user query to help filter locations by relevance")
+        private String userQuery;
     }
 }

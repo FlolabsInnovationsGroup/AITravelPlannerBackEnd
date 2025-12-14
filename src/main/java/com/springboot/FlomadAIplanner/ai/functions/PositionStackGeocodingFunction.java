@@ -56,7 +56,8 @@ public class PositionStackGeocodingFunction
         // 🚨 Step 2: Fallback to Google Places if PositionStack failed
         log.warn("⚠️ PositionStack returned no results, falling back to Google Places API.");
 
-        TextSearchRequest googleRequest = new TextSearchRequest(input.getQuery());
+        TextSearchRequest googleRequest = new TextSearchRequest();
+        googleRequest.setTextQuery(input.getQuery());
 
         try {
             JsonNode googleResponse = googlePlacesService.textSearchPlaces(googleRequest);

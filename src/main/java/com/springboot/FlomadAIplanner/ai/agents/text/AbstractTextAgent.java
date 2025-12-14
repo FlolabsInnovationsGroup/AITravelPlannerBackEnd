@@ -108,29 +108,15 @@ public abstract class AbstractTextAgent<C, S extends Flux<?>> implements TextAge
         try {
             log.info("🔧 Using fixed Spring AI call with proper function registration");
             
-            // Simple prompt selection logic based on content analysis (no StringTemplate needed)
-            String selectedPrompt;
-            if (userMessage.toLowerCase().contains("plan") || 
-                userMessage.toLowerCase().contains("trip") || 
-                userMessage.toLowerCase().contains("vacation") ||
-                userMessage.toLowerCase().contains("travel") ||
-                userMessage.toLowerCase().contains("itinerary")) {
-                selectedPrompt = "UnifiedPlanningPrompt.txt";
-                log.info("🎯 Selected UnifiedPlanningPrompt for travel planning request");
-            } else if (userMessage.toLowerCase().contains("book") || 
-                      userMessage.toLowerCase().contains("reservation") || 
-                      userMessage.toLowerCase().contains("hotel")) {
-                selectedPrompt = "BookingConfirmationPrompt.txt";
-                log.info("🎯 Selected BookingConfirmationPrompt for booking request");
-            } else if (userMessage.toLowerCase().contains("emergency") || 
-                      userMessage.toLowerCase().contains("help") || 
-                      userMessage.toLowerCase().contains("lost")) {
-                selectedPrompt = "EmergencyAssistancePrompt.txt";
-                log.info("🎯 Selected EmergencyAssistancePrompt for emergency request");
-            } else {
-                selectedPrompt = "UnifiedPlanningPrompt.txt";
-                log.info("🎯 Defaulting to UnifiedPlanningPrompt");
-            }
+            // Simple prompt selection logic - ALWAYS use DefaultPrompt.txt which has comprehensive travel guidance
+            // DefaultPrompt.txt includes all necessary instructions for:
+            // - Multi-day itineraries with specific venues
+            // - Emergency assistance protocols
+            // - Budget optimization strategies
+            // - Booking assistance
+            // - Destination-accurate recommendations with real prices
+            String selectedPrompt = "DefaultPrompt.txt";
+            log.info("🎯 Using DefaultPrompt.txt for comprehensive travel assistance");
             
             // Return the selection result with ALL necessary functions
             ChatClientSuggestedProperties result = new ChatClientSuggestedProperties();
@@ -143,19 +129,33 @@ public abstract class AbstractTextAgent<C, S extends Flux<?>> implements TextAge
                 "flightSearchFunction",
                 "hotelsSearchByLocationFunction",
                 "toursFreeTextSearchFunction",
-                "autoLocationExtractionFunction"
+                "autoLocationExtractionFunction",
+                "itineraryGeneratorFunction",
+                "budgetOptimizationFunction",
+                "emergencyAssistanceFunction",
+                "accessibilityFunction",
+                "removeLocationFunction",
+                "removeLocationByNameFunction",
+                "clearLocationsFunction",
+                "readLocationsFunction"
             ));
             
-            log.info("✅ Fixed prompt selection completed - Functions will be properly registered");
+            log.info("✅ DefaultPrompt loaded with {} functions enabled", result.getFunctionNames().size());
             return result;
             
         } catch (Exception e) {
             log.error("❌ Error in fixed Spring AI call, using fallback", e);
             
-            // Fallback response
+            // Fallback response - use DefaultPrompt.txt with all functions
             ChatClientSuggestedProperties fallback = new ChatClientSuggestedProperties();
-            fallback.setSystemPrompt("UnifiedPlanningPrompt.txt");
-            fallback.setFunctionNames(Arrays.asList("currentDateTimeFunction", "placeTextSearchFunction"));
+            fallback.setSystemPrompt("DefaultPrompt.txt");
+            fallback.setFunctionNames(Arrays.asList(
+                "currentDateTimeFunction",
+                "placeTextSearchFunction",
+                "addLocationFunction",
+                "itineraryGeneratorFunction",
+                "budgetOptimizationFunction"
+            ));
             
             return fallback;
         }
@@ -209,10 +209,10 @@ public abstract class AbstractTextAgent<C, S extends Flux<?>> implements TextAge
             // Now load only the selected prompt content (not all prompts)
             String suggestedPrompt = promptsList.get(properties.getSystemPrompt());
             if (suggestedPrompt == null) {
-                log.warn("Selected prompt '{}' not found in promptsList. Falling back to SingleQuestionPrompt.txt", 
+                log.warn("Selected prompt '{}' not found in promptsList. Falling back to DefaultPrompt.txt", 
                         properties.getSystemPrompt());
-                suggestedPrompt = promptsList.get("SingleQuestionPrompt.txt");
-                properties.setSystemPrompt("SingleQuestionPrompt.txt");
+                suggestedPrompt = promptsList.get("DefaultPrompt.txt");
+                properties.setSystemPrompt("DefaultPrompt.txt");
             }
             properties.setSystemPrompt(suggestedPrompt);
 

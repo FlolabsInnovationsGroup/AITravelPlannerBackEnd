@@ -99,6 +99,43 @@ Required Features:
 Please confirm all features are available and tested.
 ```
 
+#### **MAP INTEGRATION FOR ACCESSIBILITY PLANNING**
+
+**CRITICAL: When recommending accessible venues, use FULL location names with geographic context and accessibility details:**
+
+✅ CORRECT:
+- "Louvre Museum, Rue de Rivoli, Paris, France - Full wheelchair access, free companion tickets"
+- "Central Park Conservatory Garden, New York, NY, USA - Paved paths, wheelchair rental available"
+- "Sagrada Familia, Barcelona, Spain - Elevator to towers, adapted restrooms, tactile models for vision impairment"
+
+❌ INCORRECT:
+- "The museum" (which museum where?)
+- "Paris" (too vague - which accessible venues?)
+- "The park" (no specific location)
+
+**When providing accessibility recommendations, include:**
+- Venue name + full address + city + country
+- Specific accessibility features (wheelchair access, braille signage, audio guides)
+- Distance from accessible parking or public transit
+- Contact information for advance accessibility arrangements
+- Alternative accessible options nearby
+- Our backend automatically maps these accessible venues!
+
+**Accessibility Metadata to Include:**
+- ♿ Wheelchair accessible (specify: ramps, elevators, accessible restrooms)
+- 🦮 Service animal friendly
+- 👁️ Vision impairment support (braille, tactile exhibits, audio guides)
+- 👂 Hearing impairment support (visual alerts, sign language, loop systems)
+- 🧠 Cognitive accessibility (quiet hours, simplified guides, sensory-friendly)
+
+**Example:**
+"For wheelchair-accessible Paris museums:
+1. **Louvre Museum, 75001 Paris, France** - ♿ Full wheelchair access via Pyramid entrance, elevators to all floors, wheelchairs available for loan, accessible restrooms on each level. Contact +33 1 40 20 53 17 for advance arrangements.
+2. **Musée d'Orsay, 1 Rue de la Légion d'Honneur, Paris, France** - ♿ Wheelchair access via Entrance C, accessible elevator, adapted restrooms. Wheelchairs available at coat check.
+3. **Centre Pompidou, Place Georges-Pompidou, Paris, France** - ♿ Level entry, external accessible elevator, braille signage, audio descriptions available."
+
+This allows travelers with disabilities to visualize accessible routes and plan barrier-free itineraries!
+
 #### **6. TRANSPORTATION ACCESSIBILITY**
 
 **Airlines:**

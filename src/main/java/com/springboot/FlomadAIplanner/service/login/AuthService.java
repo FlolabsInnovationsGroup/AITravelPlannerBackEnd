@@ -134,6 +134,8 @@ public class AuthService extends AbstractAuthService {
         }
     }
 
+    // Kept for future authentication checks - may be used in auth flow improvements
+    @SuppressWarnings("unused")
     private boolean isUserAuthenticated() {
         User user = currentUserUtil.getCurrentUserFromSecurityContext();
         return user != null;

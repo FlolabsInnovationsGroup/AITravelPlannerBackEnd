@@ -51,6 +51,17 @@ public class SessionService implements CrudService<Session, String> {
             }
         }
         
+        // ✅ FIX: Automatically set timestamps if not already set
+        LocalDateTime now = LocalDateTime.now();
+        if (session.getCreatedAt() == null) {
+            session.setCreatedAt(now);
+            log.info("Set createdAt timestamp: {}", now);
+        }
+        if (session.getUpdatedAt() == null) {
+            session.setUpdatedAt(now);
+            log.info("Set updatedAt timestamp: {}", now);
+        }
+        
         Session savedSession = sessionRepository.save(session);
         log.info("✅ Session saved with ID: {}", savedSession.getId());
         return savedSession;
@@ -107,6 +118,13 @@ public class SessionService implements CrudService<Session, String> {
         if (session != null) {
             session.setTitle(title);
             session.setUpdatedAt(LocalDateTime.now());
+            
+            // ✅ FIX: Ensure createdAt is preserved (should never be null for existing sessions)
+            if (session.getCreatedAt() == null) {
+                log.warn("⚠️ Session {} has null createdAt, setting to updatedAt", id);
+                session.setCreatedAt(LocalDateTime.now());
+            }
+            
             return sessionRepository.save(session);
         } else {
             log.error("Session not found for id: {} and userId: {}", id, userId);

@@ -9,9 +9,12 @@
             </encoder>
         </appender>
 
-        <root level="INFO">
+        <root level="WARN">
             <appender-ref ref="CONSOLE"/>
         </root>
+        
+        <!-- Application logging -->
+        <logger name="com.springboot.FlomadAIplanner" level="INFO"/>
     </springProfile>
 
 </configuration>

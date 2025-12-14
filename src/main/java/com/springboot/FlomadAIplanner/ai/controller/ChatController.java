@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Flux;
 
+import java.util.Map;
+
 
 @Slf4j
 @RestController
@@ -42,12 +44,12 @@ public class ChatController {
 
     @Operation(summary = "Process chat message with PERFORMANCE OPTIMIZATION")
     @PostMapping(value = "/call", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public String handleCall(@RequestBody AIMessageDTO message) {
+    public ResponseEntity<Map<String, String>> handleCall(@RequestBody AIMessageDTO message) {
         log.info("🔎 Received AIMessage: {}; sessionId: {}", message.getMessage(), message.getSessionId());
 
         if (message.getMessage() == null || message.getMessage().isEmpty()) {
             log.warn("⚠️ No text message received. Possible missing transcription.");
-            return "No text message provided.";
+            return ResponseEntity.ok(Map.of("message", "No text message provided."));
         }
 
         // PERFORMANCE OPTIMIZATION: Use FastAIService for speed-critical requests
@@ -74,12 +76,12 @@ public class ChatController {
                 totalTime, 
                 totalTime < 2000 ? "🏆 EXCELLENT" : totalTime < 5000 ? "✅ GOOD" : "⚠️ NEEDS IMPROVEMENT");
                 
-            return response;
+            return ResponseEntity.ok(Map.of("message", response));
             
         } catch (Exception e) {
             long errorTime = System.currentTimeMillis() - startTime;
             log.error("❌ Chat processing error after {}ms: {}", errorTime, e.getMessage());
-            return "😊 Whoops! I hit a small snag there. No problem though - I'm still here to help! Try asking your question in a different way, or let me know what you're looking to plan. I absolutely love helping people discover amazing destinations! ✈️\n\nSome things I'm great at:\n• Finding the perfect destination for your vibe\n• Creating detailed itineraries\n• Recommending hotels, restaurants, and activities\n• Budget planning and travel tips\n\nWhat adventure are you dreaming about?";
+            return ResponseEntity.ok(Map.of("message", "😊 Whoops! I hit a small snag there. No problem though - I'm still here to help! Try asking your question in a different way, or let me know what you're looking to plan. I absolutely love helping people discover amazing destinations! ✈️\n\nSome things I'm great at:\n• Finding the perfect destination for your vibe\n• Creating detailed itineraries\n• Recommending hotels, restaurants, and activities\n• Budget planning and travel tips\n\nWhat adventure are you dreaming about?"));
         }
     }
 
@@ -169,15 +171,26 @@ public class ChatController {
     
     /**
      * Determines if a query is simple enough for lightning-fast processing
+     * CRITICAL: Be VERY restrictive - only use for non-planning queries
+     * Most travel queries should use the full AI with functions for specific recommendations
      */
     private boolean isSimpleTravelQuery(String message) {
         String lower = message.toLowerCase();
         
-        // Simple travel queries that don't need function calls
-        return lower.matches(".*(restaurant|hotel|flight|recommend|where to|what to|best|top).*") &&
-               !lower.contains("complex") &&
-               !lower.contains("detailed") &&
-               !lower.contains("itinerary") &&
-               message.length() < 200; // Keep it simple
+        // ONLY use lightning mode for truly simple, non-planning queries
+        // DO NOT use for: itineraries, recommendations, planning, finding venues
+        // These keywords MUST use full AI with functions:
+        if (lower.matches(".*(itinerary|plan|trip|recommend|find|search|show me|" +
+                          "what to do|things to do|where to|suggest|budget|" +
+                          "create|build|design|\\d+ day|multi-day|weekend|" +
+                          "best|top|famous|popular|must-see|hidden gem|" +
+                          "restaurant|hotel|activity|attraction|tour|experience).*")) {
+            return false; // NEVER use lightning mode for these
+        }
+        
+        // Only simple factual queries qualify for lightning mode
+        // Examples: "What's the weather in Paris?", "What currency does Japan use?"
+        return lower.matches(".*(weather|temperature|currency|time zone|language|capital|population|visa).*") &&
+               message.length() < 100; // Very short, factual only
     }
 }

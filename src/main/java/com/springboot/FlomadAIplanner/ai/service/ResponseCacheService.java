@@ -45,6 +45,7 @@ public class ResponseCacheService {
     
     /**
      * Get cached response if available and not expired
+     * STRICT EXACT MATCHING ONLY - No partial matching to prevent wrong-city results
      */
     public String getCachedResponse(String message) {
         String key = generateCacheKey(message);
@@ -60,48 +61,17 @@ public class ResponseCacheService {
             log.debug("🗑️ Expired cache entry removed for: {}", key);
         }
         
-        // Check for partial matches for common queries
-        return findPartialMatch(message);
-    }
-    
-    /**
-     * Find partial matches for similar queries to improve cache hit rate
-     */
-    private String findPartialMatch(String message) {
-        String normalized = generateCacheKey(message);
-        
-        // Check for keyword matches with high-value cached responses
-        for (Map.Entry<String, CachedResponse> entry : cache.entrySet()) {
-            if (!entry.getValue().isExpired()) {
-                String cachedKey = entry.getKey();
-                // Simple keyword matching for travel queries
-                if (hasCommonKeywords(normalized, cachedKey)) {
-                    log.info("🎯 Partial cache match found for: {}", message.substring(0, Math.min(30, message.length())));
-                    return entry.getValue().getResponse();
-                }
-            }
-        }
-        
+        // NO PARTIAL MATCHING - Only exact matches to ensure correct location-specific responses
+        log.debug("❌ Cache MISS for: {}", message.substring(0, Math.min(30, message.length())));
         return null;
     }
     
-    private boolean hasCommonKeywords(String query1, String query2) {
-        String[] words1 = query1.split("\\s+");
-        String[] words2 = query2.split("\\s+");
-        
-        // Check for destination matches
-        for (String word1 : words1) {
-            if (word1.length() > 4) { // Only check meaningful words
-                for (String word2 : words2) {
-                    if (word1.equals(word2)) {
-                        return true;
-                    }
-                }
-            }
-        }
-        
-        return false;
-    }
+    /**
+     * REMOVED: Partial matching methods
+     * Reason: Caused wrong-city matches (e.g., "hotels Paris" matched "hotels Tokyo")
+     * Strategy: Use strict exact matching only - better to have lower cache hit rate
+     * than return incorrect location-specific recommendations
+     */
     
     /**
      * Cache a response if cache size allows

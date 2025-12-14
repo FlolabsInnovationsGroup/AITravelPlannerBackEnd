@@ -26,6 +26,11 @@ import java.util.function.Function;
         multi-destination itineraries with real-time map visualization. Each location becomes an interactive marker
         with cultural context, travel timing, and insider knowledge.
         
+        ⚠️ CRITICAL: Verify coordinates match the intended destination city/region before adding!
+        - For Paris trips: lat ≈ 48.8°, lon ≈ 2.3° | For Rome: lat ≈ 41.9°, lon ≈ 12.5°
+        - For New York: lat ≈ 40.7°, lon ≈ -74.0° | For London: lat ≈ 51.5°, lon ≈ -0.1°
+        - If coordinates don't match, use placeTextSearchFunction with full city context
+        
         EXPERT TRAVEL INTELLIGENCE:
         - Cultural Context Analysis: Understands seasonal timing, local customs, visa requirements
         - Strategic Route Planning: Optimizes travel flow, transportation connections, cultural experiences
@@ -73,12 +78,9 @@ public class AddLocationFunction implements Function<AddLocationFunction.AddLoca
 
     @Override
     public String apply(AddLocationRequest request) {
-        log.info("🚀 Starting AddLocationFunction with request: {}", request);
-
         // Prevent duplicate function calls by checking if this exact request was processed recently
         String requestHash = generateRequestHash(request);
         if (isDuplicateRequest(requestHash)) {
-            log.warn("⚠️ Duplicate AddLocationFunction call detected, skipping");
             return "✅ Location already processed: " + request.getName();
         }
         markRequestProcessed(requestHash);
@@ -88,19 +90,14 @@ public class AddLocationFunction implements Function<AddLocationFunction.AddLoca
             String sessionId = request.getSessionId();
             if (sessionId == null || sessionId.isEmpty()) {
                 sessionId = SessionContextHolder.getSessionId();
-                log.info("🔍 Using sessionId from context: {}", sessionId);
-            } else {
-                log.info("🔍 Using sessionId from request: {}", sessionId);
             }
 
             if (sessionId == null || sessionId.isEmpty()) {
-                log.error("❌ Session ID is missing in both request and context. Cannot proceed with adding location.");
                 return "Error: Missing session ID in request and context.";
             }
 
             // Validate coordinates - if missing, we can't proceed with this function
             if (request.getLatitude() == null || request.getLongitude() == null) {
-                log.error("❌ Invalid coordinates: lat={}, lng={}", request.getLatitude(), request.getLongitude());
                 if (request.getName() != null && !request.getName().isEmpty()) {
                     return String.format("Error: Coordinates required for location '%s'. Please use placeTextSearchFunction first to get coordinates.", request.getName());
                 }
@@ -108,17 +105,41 @@ public class AddLocationFunction implements Function<AddLocationFunction.AddLoca
             }
 
             if (request.getLatitude() < -90 || request.getLatitude() > 90) {
-                log.error("❌ Invalid latitude: {}", request.getLatitude());
                 return "Error: Latitude must be between -90 and 90.";
             }
 
             if (request.getLongitude() < -180 || request.getLongitude() > 180) {
-                log.error("❌ Invalid longitude: {}", request.getLongitude());
                 return "Error: Longitude must be between -180 and 180.";
             }
 
             // Check for duplicate locations within 100 meters
             List<Location> existingLocations = locationService.findAllBySessionId(sessionId);
+            
+            // Geographic sanity check: Detect if new location is suspiciously far from existing locations
+            // This prevents adding Athens/New York/London locations to a Paris trip
+            if (!existingLocations.isEmpty()) {
+                // Calculate distance to first location as a reference point
+                Location firstLocation = existingLocations.get(0);
+                double distanceToFirst = calculateHaversineDistance(
+                    request.getLatitude(), request.getLongitude(),
+                    firstLocation.getLatitude(), firstLocation.getLongitude()
+                );
+                
+                // If the new location is more than 500km from the first location, warn about potential error
+                if (distanceToFirst > 500000) { // 500km threshold for regional trips
+                    log.warn("⚠️ LOCATION VERIFICATION WARNING: '{}' at ({}, {}) is {}km from existing location '{}' at ({}, {}). This may indicate wrong coordinates!",
+                        request.getName(), request.getLatitude(), request.getLongitude(),
+                        Math.round(distanceToFirst / 1000),
+                        firstLocation.getName(), firstLocation.getLatitude(), firstLocation.getLongitude());
+                    
+                    return String.format("⚠️ Location verification failed: '%s' appears to be %dkm away from '%s'. " +
+                        "Are you sure these locations are part of the same trip? " +
+                        "If searching for '%s', make sure to include the city name (e.g., 'RELAX Spa, Paris' not 'RELAX Spa'). " +
+                        "Please verify coordinates or use placeTextSearchFunction with full city context.",
+                        request.getName(), Math.round(distanceToFirst / 1000), firstLocation.getName(), request.getName());
+                }
+            }
+            
             for (Location existing : existingLocations) {
                 double distance = calculateHaversineDistance(
                     request.getLatitude(), request.getLongitude(),
@@ -136,12 +157,16 @@ public class AddLocationFunction implements Function<AddLocationFunction.AddLoca
                 }
             }
 
+            // Sanitize location name to remove invalid characters
+            String sanitizedName = sanitizeLocationName(request.getName());
+            String sanitizedType = sanitizeLocationType(request.getType());
+            
             Location location = Location.builder()
                     .sessionId(sessionId)
                     .latitude(request.getLatitude())
                     .longitude(request.getLongitude())
-                    .name(request.getName())
-                    .type(request.getType() != null ? request.getType() : "attraction")
+                    .name(sanitizedName)
+                    .type(sanitizedType)
                     // Rich data fields for enhanced UX
                     .photos(request.getPhotos())
                     .rating(request.getRating())
@@ -170,6 +195,91 @@ public class AddLocationFunction implements Function<AddLocationFunction.AddLoca
         }
     }
 
+    /**
+     * Sanitize location name by removing invalid characters that would fail validation
+     * Keeps: letters, numbers, spaces, and common punctuation: -.,()''&|?!:;/+#@$%
+     * Removes: emojis, special symbols, and other invalid characters
+     */
+    private String sanitizeLocationName(String name) {
+        if (name == null || name.isEmpty()) {
+            return "Unnamed Location";
+        }
+        
+        // Remove emojis and other special characters not in the allowed pattern
+        // Pattern from LocationDTO: ^[a-zA-Z0-9\\s\\-.,()''&|?!:;/+#@$%\\u00C0-\\u024F\\u1E00-\\u1EFF]*$
+        String sanitized = name.replaceAll("[^a-zA-Z0-9\\s\\-.,()''&|?!:;/+#@$%\\u00C0-\\u024F\\u1E00-\\u1EFF]", "");
+        
+        // Trim whitespace and limit to 200 characters
+        sanitized = sanitized.trim();
+        if (sanitized.length() > 200) {
+            sanitized = sanitized.substring(0, 200);
+        }
+        
+        // If sanitization removed everything, provide a default
+        if (sanitized.isEmpty()) {
+            return "Unnamed Location";
+        }
+        
+        return sanitized;
+    }
+    
+    /**
+     * Sanitize location type to ensure it matches allowed values
+     * Valid types: attraction, cafe, hotel, restaurant, transport, park, museum, beach, 
+     * mountain, landmark, shopping, entertainment, religious, hospital, airport, 
+     * station, viewpoint, nature, sports, accommodation
+     */
+    private String sanitizeLocationType(String type) {
+        if (type == null || type.isEmpty()) {
+            return "attraction";
+        }
+        
+        // Convert to lowercase for matching
+        String lowerType = type.toLowerCase().trim();
+        
+        // List of valid types from LocationDTO validation
+        String[] validTypes = {
+            "attraction", "cafe", "hotel", "restaurant", "transport", "park", 
+            "museum", "beach", "mountain", "landmark", "shopping", "entertainment", 
+            "religious", "hospital", "airport", "station", "viewpoint", "nature", 
+            "sports", "accommodation"
+        };
+        
+        // Check if type is already valid
+        for (String validType : validTypes) {
+            if (lowerType.equals(validType)) {
+                return validType;
+            }
+        }
+        
+        // Try to map common variations to valid types
+        if (lowerType.contains("food") || lowerType.contains("dining") || lowerType.contains("eat")) {
+            return "restaurant";
+        }
+        if (lowerType.contains("coffee") || lowerType.contains("tea")) {
+            return "cafe";
+        }
+        if (lowerType.contains("stay") || lowerType.contains("lodge") || lowerType.contains("inn")) {
+            return "accommodation";
+        }
+        if (lowerType.contains("store") || lowerType.contains("shop") || lowerType.contains("market")) {
+            return "shopping";
+        }
+        if (lowerType.contains("church") || lowerType.contains("temple") || lowerType.contains("mosque")) {
+            return "religious";
+        }
+        if (lowerType.contains("train") || lowerType.contains("bus") || lowerType.contains("metro")) {
+            return "station";
+        }
+        if (lowerType.contains("view") || lowerType.contains("lookout") || lowerType.contains("scenic")) {
+            return "viewpoint";
+        }
+        
+        // Default to "attraction" if no match
+        log.warn("⚠️ Unknown location type '{}', defaulting to 'attraction'", type);
+        return "attraction";
+    }
+    
     /**
      * Calculate the distance between two coordinates using the Haversine formula
      * @param lat1 Latitude of first point

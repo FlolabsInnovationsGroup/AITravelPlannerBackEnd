@@ -51,8 +51,14 @@ public interface GooglePlacesClient {
      *
      * This method sends a POST request to the Google Places APIs `/v1/places:searchText` endpoint.
      *
+     * IMPORTANT: TextSearchRequest now supports locationBias field to restrict search results
+     * to specific geographic regions, preventing wrong location matches (e.g., "Hidden Gems" 
+     * finding New York instead of Paris).
+     *
      * @param fieldMask A comma-separated list of fields to request in the response.
-     * @param request   A {@link TextSearchRequest} object containing the text query to search for.
+     * @param request   A {@link TextSearchRequest} object containing the text query and optional locationBias.
+     *                  locationBias format: "circle:latitude,longitude,radius_in_meters"
+     *                  Example: "circle:48.8566,2.3522,50000" restricts to 50km around Paris center.
      * @return A JSON response containing place search results based on text input.
      */
     @PostMapping(value = "/v1/places:searchText", consumes = MediaType.APPLICATION_JSON_VALUE)

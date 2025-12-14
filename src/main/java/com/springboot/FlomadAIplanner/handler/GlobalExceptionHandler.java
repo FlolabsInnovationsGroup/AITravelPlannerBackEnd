@@ -16,16 +16,14 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Arrays;
-
-import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvisor.CHAT_MEMORY_CONVERSATION_ID_KEY;
-import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvisor.CHAT_MEMORY_RETRIEVE_SIZE_KEY;
-
 @Slf4j
 @ControllerAdvice
 @RestController
 public class GlobalExceptionHandler {
 
+    // TEMPORARY: ChatClient disabled due to GPT-5 temperature compatibility issues
+    // Re-enable when LLM error explanation is needed
+    @SuppressWarnings("unused")
     private final ChatClient chatClient;
 
     public GlobalExceptionHandler(ChatClient.Builder builder, @Qualifier("exceptionHandlingMemory") ChatMemory chatMemory,

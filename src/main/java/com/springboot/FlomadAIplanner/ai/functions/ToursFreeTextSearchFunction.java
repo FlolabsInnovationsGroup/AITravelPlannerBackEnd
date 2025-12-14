@@ -136,7 +136,9 @@ public class ToursFreeTextSearchFunction implements Function<ToursFreeTextSearch
             if (locationMessage.length() > 0) {
                 log.info("Auto-extracting locations from tour results: {}", locationMessage.toString());
                 AutoLocationExtractionFunction.LocationExtractionRequest request = 
-                    new AutoLocationExtractionFunction.LocationExtractionRequest(locationMessage.toString(), null);
+                    new AutoLocationExtractionFunction.LocationExtractionRequest();
+                request.setMessage(locationMessage.toString());
+                request.setUserQuery(null);
                 String extractionResult = autoLocationExtractionFunction.apply(request);
                 log.info("Auto-extraction completed: {}", extractionResult);
             }
