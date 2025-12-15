@@ -49,7 +49,7 @@ jobs:
 
       - name: Copy files to EC2
         run: |
-          scp -i ~/.ssh/id_rsa target/*.jar ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com:/home/ubuntu/app/
+          scp -i ~/.ssh/id_rsa target/Flomad-AI-planner-0.0.1-SNAPSHOT.jar ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com:/home/ubuntu/app/
           scp -i ~/.ssh/id_rsa .env ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com:/home/ubuntu/app/
 
       - name: Deploy to EC2
@@ -65,9 +65,8 @@ jobs:
           # Secure the .env file
           chmod 600 .env
           
-          # Stop service, rename JAR, reload systemd, start service
+          # Stop service, reload systemd, start service
           sudo systemctl stop flomad || true
-          mv *.jar Flomad-AI-planner-0.0.1-SNAPSHOT.jar 2>/dev/null || true
           sudo systemctl daemon-reload
           sudo systemctl enable flomad
           sudo systemctl start flomad
