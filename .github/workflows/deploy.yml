@@ -95,13 +95,13 @@ jobs:
           sleep 3
           
           echo ""
-          echo "=== Removing old JAR files (but NOT the new one) ==="
-          # Remove old JARs but preserve the one we just copied
-          find /home/ubuntu/app -name "*.jar.original" -delete
-          find /home/ubuntu/app -path "/home/ubuntu/app/Flomad-AI-planner-0.0.1-SNAPSHOT.jar" -prune -o -name "*.jar" -type f -delete
+          echo "=== Removing old JAR files from target directory ==="
+          # Only clean up old JARs in subdirectories, not the root level
+          rm -rf target/ || echo "No target directory to clean"
+          find . -name "*.jar.original" -delete || echo "No .original files to clean"
           
           echo ""
-          echo "=== Verifying transferred JAR ==="
+          echo "=== Verifying transferred JAR exists ==="
           ls -lh Flomad-AI-planner-0.0.1-SNAPSHOT.jar
           sha256sum Flomad-AI-planner-0.0.1-SNAPSHOT.jar
           
