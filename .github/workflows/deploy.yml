@@ -87,6 +87,14 @@ jobs:
           echo "=== JAR STRUCTURE ON EC2 ==="
           unzip -l Flomad-AI-planner-0.0.1-SNAPSHOT.jar | grep -E "BOOT-INF|springframework" | head -10
           
+          echo ""
+          echo "=== SYSTEMD SERVICE CONFIGURATION ==="
+          sudo cat /etc/systemd/system/flomad.service || echo "Service file not found!"
+          
+          echo ""
+          echo "=== ALL JAR FILES IN APP DIRECTORY ==="
+          find /home/ubuntu/app -name "*.jar*" -ls
+          
           # Clean up old JAR files (except the one we just copied)
           find . -name "*.jar.original" -delete
           
