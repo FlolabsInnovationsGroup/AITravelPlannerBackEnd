@@ -114,10 +114,6 @@ jobs:
           java -version
           which java
           
-          echo ""
-          echo "=== Testing JAR manually ==="
-          java -jar Flomad-AI-planner-0.0.1-SNAPSHOT.jar --version || echo "JAR test failed"
-          
           # Secure the .env file
           chmod 600 .env
           
