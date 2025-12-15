@@ -51,7 +51,6 @@ jobs:
         run: |
           scp -i ~/.ssh/id_rsa target/*.jar ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com:/home/ubuntu/app/
           scp -i ~/.ssh/id_rsa .env ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com:/home/ubuntu/app/
-          scp -i ~/.ssh/id_rsa deployment/flomad.service ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com:/home/ubuntu/app/
 
       - name: Deploy to EC2
         run: |
@@ -65,10 +64,6 @@ jobs:
           
           # Secure the .env file
           chmod 600 .env
-          
-          # Install systemd service
-          sudo cp flomad.service /etc/systemd/system/
-          sudo chmod 644 /etc/systemd/system/flomad.service
           
           # Stop service, rename JAR, reload systemd, start service
           sudo systemctl stop flomad || true
