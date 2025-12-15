@@ -47,16 +47,27 @@ jobs:
           EOF
           echo ".env file created successfully"
 
+      - name: Verify JAR before copy
+        run: |
+          echo "=== JAR FILE ON GITHUB ACTIONS ==="
+          ls -lh target/Flomad-AI-planner-0.0.1-SNAPSHOT.jar
+          echo ""
+          echo "=== JAR CHECKSUM ==="
+          sha256sum target/Flomad-AI-planner-0.0.1-SNAPSHOT.jar
+          echo ""
+          echo "=== JAR STRUCTURE CHECK ==="
+          unzip -l target/Flomad-AI-planner-0.0.1-SNAPSHOT.jar | grep -E "BOOT-INF|springframework" | head -10
+      
       - name: Copy files to EC2
         run: |
-          scp -i ~/.ssh/id_rsa target/Flomad-AI-planner-0.0.1-SNAPSHOT.jar ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com:/home/ubuntu/app/
-          scp -i ~/.ssh/id_rsa .env ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com:/home/ubuntu/app/
+          scp -v -i ~/.ssh/id_rsa target/Flomad-AI-planner-0.0.1-SNAPSHOT.jar ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com:/home/ubuntu/app/
+          scp -v -i ~/.ssh/id_rsa .env ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com:/home/ubuntu/app/
 
       - name: Deploy to EC2
         run: |
           ssh -i ~/.ssh/id_rsa ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com '
           sudo apt update
-          sudo apt install -y openjdk-17-jdk
+          sudo apt install -y openjdk-17-jdk unzip
           cd ~/app
           
           # Create logs directory
@@ -65,17 +76,22 @@ jobs:
           # Stop service first
           sudo systemctl stop flomad || true
           
-          # Clean up old JAR files
-          rm -f *.jar *.jar.original
+          echo "=== JAR FILES AFTER COPY ==="
+          ls -lh *.jar 2>&1 || echo "No JAR files found!"
+          
+          echo ""
+          echo "=== JAR CHECKSUM ON EC2 ==="
+          sha256sum Flomad-AI-planner-0.0.1-SNAPSHOT.jar 2>&1 || echo "Cannot calculate checksum!"
+          
+          echo ""
+          echo "=== JAR STRUCTURE ON EC2 ==="
+          unzip -l Flomad-AI-planner-0.0.1-SNAPSHOT.jar | grep -E "BOOT-INF|springframework" | head -10
+          
+          # Clean up old JAR files (except the one we just copied)
+          find . -name "*.jar.original" -delete
           
           # Secure the .env file
           chmod 600 .env
-          
-          echo "=== JAR FILES AFTER COPY ==="
-          ls -lh *.jar
-          
-          echo "=== JAR STRUCTURE ==="
-          unzip -l Flomad-AI-planner-0.0.1-SNAPSHOT.jar | grep -E "BOOT-INF|org/springframework" | head -20
           
           # Reload systemd, enable and start service
           sudo systemctl daemon-reload
