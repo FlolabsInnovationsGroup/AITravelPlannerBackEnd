@@ -62,11 +62,16 @@ jobs:
           # Create logs directory
           mkdir -p logs
           
+          # Stop service first
+          sudo systemctl stop flomad || true
+          
+          # Clean up old JAR files
+          rm -f *.jar *.jar.original
+          
           # Secure the .env file
           chmod 600 .env
           
-          # Stop service, reload systemd, start service
-          sudo systemctl stop flomad || true
+          # Reload systemd, enable and start service
           sudo systemctl daemon-reload
           sudo systemctl enable flomad
           sudo systemctl start flomad
