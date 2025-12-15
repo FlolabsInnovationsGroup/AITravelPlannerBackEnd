@@ -71,6 +71,12 @@ jobs:
           # Secure the .env file
           chmod 600 .env
           
+          echo "=== JAR FILES AFTER COPY ==="
+          ls -lh *.jar
+          
+          echo "=== JAR STRUCTURE ==="
+          unzip -l Flomad-AI-planner-0.0.1-SNAPSHOT.jar | grep -E "BOOT-INF|org/springframework" | head -20
+          
           # Reload systemd, enable and start service
           sudo systemctl daemon-reload
           sudo systemctl enable flomad
