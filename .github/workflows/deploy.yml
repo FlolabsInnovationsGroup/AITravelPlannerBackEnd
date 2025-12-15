@@ -150,5 +150,13 @@ jobs:
           echo "=== RECENT ERROR LOGS ==="
           tail -100 logs/error.log 2>/dev/null || echo "No error log available"
           
+          echo ""
+          echo "=== JOURNAL LOGS (Last 100 lines) ==="
+          sudo journalctl -u flomad -n 100 --no-pager
+          
+          echo ""
+          echo "=== FILE PERMISSIONS ==="
+          ls -la Flomad-AI-planner-0.0.1-SNAPSHOT.jar
+          
           exit 1
           '
