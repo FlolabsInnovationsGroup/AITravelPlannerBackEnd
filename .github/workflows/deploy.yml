@@ -95,23 +95,19 @@ jobs:
           sleep 3
           
           echo ""
-          echo "=== ALL JAR FILES IN APP DIRECTORY (before cleanup) ==="
-          find /home/ubuntu/app -name "*.jar*" -ls
-          
-          echo ""
-          echo "=== Removing old JAR files ==="
-          # Remove ALL JAR files to ensure clean state
-          find /home/ubuntu/app -name "*.jar" -delete
+          echo "=== Removing old JAR files (but NOT the new one) ==="
+          # Remove old JARs but preserve the one we just copied
           find /home/ubuntu/app -name "*.jar.original" -delete
-          
-          echo ""
-          echo "=== ALL JAR FILES IN APP DIRECTORY (after cleanup) ==="
-          find /home/ubuntu/app -name "*.jar*" -ls || echo "No JAR files found (expected)"
+          find /home/ubuntu/app -path "/home/ubuntu/app/Flomad-AI-planner-0.0.1-SNAPSHOT.jar" -prune -o -name "*.jar" -type f -delete
           
           echo ""
           echo "=== Verifying transferred JAR ==="
           ls -lh Flomad-AI-planner-0.0.1-SNAPSHOT.jar
           sha256sum Flomad-AI-planner-0.0.1-SNAPSHOT.jar
+          
+          echo ""
+          echo "=== Testing JAR integrity ==="
+          unzip -t Flomad-AI-planner-0.0.1-SNAPSHOT.jar | tail -1
           
           # Secure the .env file
           chmod 600 .env
