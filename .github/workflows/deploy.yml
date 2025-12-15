@@ -31,14 +31,33 @@ jobs:
           ssh-keyscan -H ec2-50-17-181-203.compute-1.amazonaws.com >> ~/.ssh/known_hosts
 
       - name: Create .env file
-        env:
-          SPRING_AI_OPENAI_API_KEY: ${{ secrets.SPRING_AI_OPENAI_API_KEY }}
-          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
-          VIATOR_API_KEY: ${{ secrets.VIATOR_API_KEY }}
-          VIATOR_PARTNER_KEY: ${{ secrets.VIATOR_PARTNER_KEY }}
-          AMADEUS_API_KEY: ${{ secrets.AMADEUS_API_KEY }}
-          AMADEUS_API_SECRET: ${{ secrets.AMADEUS_API_SECRET }}
-          
+        run: |
+          cat > .env << EOF
+          SPRING_AI_OPENAI_API_KEY=${{ secrets.SPRING_AI_OPENAI_API_KEY }}
+          GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }}
+          VIATOR_API_KEY=${{ secrets.VIATOR_API_KEY }}
+          VIATOR_PARTNER_KEY=${{ secrets.VIATOR_PARTNER_KEY }}
+          AMADEUS_API_KEY=${{ secrets.AMADEUS_API_KEY }}
+          AMADEUS_API_SECRET=${{ secrets.AMADEUS_API_SECRET }}
+          JWT_SECRET=${{ secrets.JWT_SECRET }}
+          MONGO_URL=${{ secrets.MONGO_URL }}
+          WEATHER_API_KEY=${{ secrets.WEATHER_API_KEY }}
+          POSITION_STACK_API_KEY=${{ secrets.POSITION_STACK_API_KEY }}
+          SPRING_PROFILES_ACTIVE=prod
+          EOF
+          echo ".env file created successfully"
+
+      - name: Copy files to EC2
+        run: |
+          scp -i ~/.ssh/id_rsa target/*.jar ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com:/home/ubuntu/app/
+          scp -i ~/.ssh/id_rsa .env ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com:/home/ubuntu/app/
+          scp -i ~/.ssh/id_rsa deployment/flomad.service ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com:/home/ubuntu/app/
+
+      - name: Deploy to EC2
+        run: |
+          ssh -i ~/.ssh/id_rsa ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com '
+          sudo apt update
+          sudo apt install -y openjdk-17-jdk
           cd ~/app
           
           # Create logs directory
@@ -92,35 +111,4 @@ jobs:
           tail -100 logs/error.log 2>/dev/null || echo "No error log available"
           
           exit 1
-          MONGO_URL=${{ secrets.MONGO_URL }}
-          WEATHER_API_KEY=${{ secrets.WEATHER_API_KEY }}
-          POSITION_STACK_API_KEY=${{ secrets.POSITION_STACK_API_KEY }}
-          SPRING_PROFILES_ACTIVE=prod
-          EOF
-          echo ".env file created successfully"
-
-      - name: Copy files to EC2
-        run: |
-          scp -i ~/.ssh/id_rsa target/*.jar ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com:/home/ubuntu/app/
-          scp -i ~/.ssh/id_rsa .env ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com:/home/ubuntu/app/
-          scp -i ~/.ssh/id_rsa deployment/flomad.service ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com:/home/ubuntu/app/
-
-      - name: Deploy to EC2
-        run: |
-          ssh -i ~/.ssh/id_rsa ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com '
-          sudo apt update
-          sudo apt install -y openjdk-17-jdk
-          cd ~/app
-          sudo systemctl stop flomad
-          mv *.jar Flomad-AI-planner-0.0.1-SNAPSHOT.jar
-          sudo systemctl start flomad
-          sleep 15
-          echo "=== SERVICE STATUS ==="
-          sudo systemctl status flomad --no-pager || true
-          echo "=== CHECKING PROCESS ==="
-          ps aux | grep java | grep -v grep || echo "No Java process running"
-          echo "=== PORT 8080 ==="
-          sudo netstat -tlnp | grep 8080 || echo "Port 8080 not listening"
-          echo "=== TESTING HEALTH ==="
-          curl -f http://localhost:8080/actuator/health && echo "SUCCESS!" || echo "FAILED!"
           '
