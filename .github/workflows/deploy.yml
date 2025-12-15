@@ -30,8 +30,80 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ec2-50-17-181-203.compute-1.amazonaws.com >> ~/.ssh/known_hosts
 
-      - name: Copy JAR to EC2
-        run: scp -i ~/.ssh/id_rsa target/*.jar ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com:/home/ubuntu/app/
+      - name: Create .env file
+        env:
+          SPRING_AI_OPENAI_API_KEY: ${{ secrets.SPRING_AI_OPENAI_API_KEY }}
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          VIATOR_API_KEY: ${{ secrets.VIATOR_API_KEY }}
+          VIATOR_PARTNER_KEY: ${{ secrets.VIATOR_PARTNER_KEY }}
+          AMADEUS_API_KEY: ${{ secrets.AMADEUS_API_KEY }}
+          AMADEUS_API_SECRET: ${{ secrets.AMADEUS_API_SECRET }}
+          
+          cd ~/app
+          
+          # Create logs directory
+          mkdir -p logs
+          
+          # Secure the .env file
+          chmod 600 .env
+          
+          # Install systemd service
+          sudo cp flomad.service /etc/systemd/system/
+          sudo chmod 644 /etc/systemd/system/flomad.service
+          
+          # Stop service, rename JAR, reload systemd, start service
+          sudo systemctl stop flomad || true
+          mv *.jar Flomad-AI-planner-0.0.1-SNAPSHOT.jar 2>/dev/null || true
+          sudo systemctl daemon-reload
+          sudo systemctl enable flomad
+          sudo systemctl start flomad
+          
+          echo "=== Waiting for application startup (60 seconds) ==="
+          sleep 60
+          
+          echo ""
+          echo "=== SERVICE STATUS ==="
+          sudo systemctl status flomad --no-pager || true
+          
+          echo ""
+          echo "=== CHECKING PROCESS ==="
+          ps aux | grep java | grep -v grep || echo "No Java process running"
+          
+          echo ""
+          echo "=== PORT 8080 STATUS ==="
+          sudo netstat -tlnp | grep 8080 || echo "Port 8080 not listening"
+          
+          echo ""
+          echo "=== TESTING HEALTH ENDPOINT ==="
+          for i in {1..5}; do
+            echo "Attempt $i of 5..."
+            if curl -f http://localhost:8080/actuator/health; then
+              echo "✅ SUCCESS! Backend is healthy"
+              exit 0
+            fi
+            echo "Health check failed, waiting 10 seconds..."
+            sleep 10
+          done
+          
+          echo ""
+          echo "❌ FAILED! Backend not responding"
+          echo ""
+          echo "=== RECENT ERROR LOGS ==="
+          tail -100 logs/error.log 2>/dev/null || echo "No error log available"
+          
+          exit 1
+          MONGO_URL=${{ secrets.MONGO_URL }}
+          WEATHER_API_KEY=${{ secrets.WEATHER_API_KEY }}
+          POSITION_STACK_API_KEY=${{ secrets.POSITION_STACK_API_KEY }}
+          SPRING_PROFILES_ACTIVE=prod
+          EOF
+          echo ".env file created successfully"
+
+      - name: Copy files to EC2
+        run: |
+          scp -i ~/.ssh/id_rsa target/*.jar ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com:/home/ubuntu/app/
+          scp -i ~/.ssh/id_rsa .env ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com:/home/ubuntu/app/
+          scp -i ~/.ssh/id_rsa deployment/flomad.service ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com:/home/ubuntu/app/
 
       - name: Deploy to EC2
         run: |
