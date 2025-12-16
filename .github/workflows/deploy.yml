@@ -18,9 +18,6 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
 
-      - name: Build with Maven
-        run: mvn clean package --no-transfer-progress -DskipTests
-
       - name: Setup SSH
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
@@ -57,21 +54,9 @@ jobs:
           EOF
           echo ".env file created successfully"
 
-      - name: Verify JAR before copy
+      - name: Copy .env to EC2
         run: |
-          echo "=== JAR FILE ON GITHUB ACTIONS ==="
-          ls -lh target/Flomad-AI-planner-0.0.1-SNAPSHOT.jar
-          echo ""
-          echo "=== JAR CHECKSUM ==="
-          sha256sum target/Flomad-AI-planner-0.0.1-SNAPSHOT.jar
-          echo ""
-          echo "=== JAR STRUCTURE CHECK ==="
-          unzip -l target/Flomad-AI-planner-0.0.1-SNAPSHOT.jar | grep -E "BOOT-INF|springframework" | head -10
-      
-      - name: Copy files to EC2
-        run: |
-          scp -v -i ~/.ssh/id_rsa target/Flomad-AI-planner-0.0.1-SNAPSHOT.jar ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com:/home/ubuntu/app/
-          scp -v -i ~/.ssh/id_rsa .env ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com:/home/ubuntu/app/
+          scp -o ConnectTimeout=30 -i ~/.ssh/id_rsa .env ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com:/home/ubuntu/app/
 
       - name: Deploy to EC2
         run: |
@@ -80,7 +65,16 @@ jobs:
           
           echo "=== STARTING DEPLOYMENT ==="
           
-          echo ""
+          echo "=== Pulling latest code ==="
+          cd ~/AITravelPlannerBackEnd
+          timeout 30 git pull origin master 2>&1 || echo "Git pull timeout"
+          
+          echo "=== Building JAR on EC2 ==="
+          timeout 300 mvn clean package -DskipTests 2>&1 || { echo "Build timeout"; exit 1; }
+          
+          echo "=== Copying JAR to app directory ==="
+          cp target/Flomad-AI-planner-0.0.1-SNAPSHOT.jar ~/app/
+          
           echo "=== Quick Docker Check ==="
           timeout 10 docker --version 2>&1 || echo "Docker check timeout"
           timeout 10 docker-compose --version 2>&1 || echo "Docker Compose check timeout"
