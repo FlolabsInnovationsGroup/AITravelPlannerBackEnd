@@ -1,9 +1,9 @@
-name: Deploy to AWS EC2
+﻿name: Deploy to AWS EC2
 
 on:
   push:
     branches:
-      - master  # Make sure this matches your main branch name
+      - master
 
 jobs:
   deploy:
@@ -12,150 +12,39 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v2
-        with:
-          java-version: '17'
-          distribution: 'adopt'
-
-      - name: Setup SSH
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        run: |
-          mkdir -p ~/.ssh
-          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          
-          # Add timeout and retry for ssh-keyscan
-          echo "Scanning SSH host keys (may take a moment)..."
-          timeout 30 ssh-keyscan -T 20 -H ec2-50-17-181-203.compute-1.amazonaws.com >> ~/.ssh/known_hosts 2>/dev/null || \
-          timeout 30 ssh-keyscan -T 20 -H ec2-50-17-181-203.compute-1.amazonaws.com >> ~/.ssh/known_hosts || \
-          echo "Warning: ssh-keyscan failed, adding host to known_hosts manually"
-          
-          # Fallback: Add host manually to bypass strict host checking
-          echo "ec2-50-17-181-203.compute-1.amazonaws.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC..." >> ~/.ssh/known_hosts || true
-          
-          echo "SSH setup completed"
-
-      - name: Create .env file
-        run: |
-          cat > .env << EOF
-          SPRING_AI_OPENAI_API_KEY=${{ secrets.SPRING_AI_OPENAI_API_KEY }}
-          GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }}
-          VIATOR_API_KEY=${{ secrets.VIATOR_API_KEY }}
-          VIATOR_PARTNER_KEY=${{ secrets.VIATOR_PARTNER_KEY }}
-          AMADEUS_API_KEY=${{ secrets.AMADEUS_API_KEY }}
-          AMADEUS_API_SECRET=${{ secrets.AMADEUS_API_SECRET }}
-          JWT_SECRET=${{ secrets.JWT_SECRET }}
-          MONGO_URL=${{ secrets.MONGO_URL }}
-          WEATHER_API_KEY=${{ secrets.WEATHER_API_KEY }}
-          POSITION_STACK_API_KEY=${{ secrets.POSITION_STACK_API_KEY }}
-          SPRING_PROFILES_ACTIVE=prod
-          EOF
-          echo ".env file created successfully"
-
       - name: Deploy to EC2
-        env:
-          SPRING_AI_OPENAI_API_KEY: ${{ secrets.SPRING_AI_OPENAI_API_KEY }}
-          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
-          VIATOR_API_KEY: ${{ secrets.VIATOR_API_KEY }}
-          VIATOR_PARTNER_KEY: ${{ secrets.VIATOR_PARTNER_KEY }}
-          AMADEUS_API_KEY: ${{ secrets.AMADEUS_API_KEY }}
-          AMADEUS_API_SECRET: ${{ secrets.AMADEUS_API_SECRET }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          MONGO_URL: ${{ secrets.MONGO_URL }}
-          WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}
-          POSITION_STACK_API_KEY: ${{ secrets.POSITION_STACK_API_KEY }}
-        run: |
-          ssh -o ServerAliveInterval=15 -o ServerAliveCountMax=5 -o ConnectTimeout=10 -i ~/.ssh/id_rsa ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com bash << 'ENDSSH'
-          set -e
-          
-          echo "=== Creating .env file ==="
-          cat > ~/app/.env << 'EOF'
-          SPRING_AI_OPENAI_API_KEY=${{secrets.SPRING_AI_OPENAI_API_KEY}}
-          GOOGLE_API_KEY=${{secrets.GOOGLE_API_KEY}}
-          VIATOR_API_KEY=${{secrets.VIATOR_API_KEY}}
-          VIATOR_PARTNER_KEY=${{secrets.VIATOR_PARTNER_KEY}}
-          AMADEUS_API_KEY=${{secrets.AMADEUS_API_KEY}}
-          AMADEUS_API_SECRET=${{secrets.AMADEUS_API_SECRET}}
-          JWT_SECRET=${{secrets.JWT_SECRET}}
-          MONGO_URL=${{secrets.MONGO_URL}}
-          WEATHER_API_KEY=${{secrets.WEATHER_API_KEY}}
-          POSITION_STACK_API_KEY=${{secrets.POSITION_STACK_API_KEY}}
-          SPRING_PROFILES_ACTIVE=prod
-          EOF
-          
-          echo "=== STARTING DEPLOYMENT ==="
-          
-          echo "=== Setting up repository ===\"
-          if [ ! -d ~/AITravelPlannerBackEnd ]; then
-            echo "Cloning repository..."
-            cd ~
-            timeout 60 git clone https://github.com/FlomadLabsRD/AITravelPlannerBackEnd.git 2>&1 || { echo "Clone failed"; exit 1; }
-          fi
-          
-          echo "=== Pulling latest code ==="
-          cd ~/AITravelPlannerBackEnd
-          timeout 30 git pull origin master 2>&1 || echo "Git pull timeout"
-          
-          echo "=== Building JAR on EC2 ==="
-          timeout 300 mvn clean package -DskipTests 2>&1 || { echo "Build timeout"; exit 1; }
-          
-          echo "=== Copying JAR to app directory ==="
-          cp target/Flomad-AI-planner-0.0.1-SNAPSHOT.jar ~/app/
-          
-          echo "=== Quick Docker Check ==="
-          timeout 10 docker --version 2>&1 || echo "Docker check timeout"
-          timeout 10 docker-compose --version 2>&1 || echo "Docker Compose check timeout"
-          
-          echo ""
-          echo "=== DEPLOYMENT ==="
-          if [ -d ~/docker-app ] && [ -f ~/docker-app/docker-compose.yml ]; then
-            echo "Using Docker Compose deployment"
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ec2-50-17-181-203.compute-1.amazonaws.com
+          username: ubuntu
+          key: $${{ secrets.SSH_PRIVATE_KEY }}
+          command_timeout: 15m
+          script: |
+            cat > ~/app/.env << 'ENVEOF'
+            SPRING_AI_OPENAI_API_KEY=$${{ secrets.SPRING_AI_OPENAI_API_KEY }}
+            GOOGLE_API_KEY=$${{ secrets.GOOGLE_API_KEY }}
+            VIATOR_API_KEY=$${{ secrets.VIATOR_API_KEY }}
+            VIATOR_PARTNER_KEY=$${{ secrets.VIATOR_PARTNER_KEY }}
+            AMADEUS_API_KEY=$${{ secrets.AMADEUS_API_KEY }}
+            AMADEUS_API_SECRET=$${{ secrets.AMADEUS_API_SECRET }}
+            JWT_SECRET=$${{ secrets.JWT_SECRET }}
+            MONGO_URL=$${{ secrets.MONGO_URL }}
+            WEATHER_API_KEY=$${{ secrets.WEATHER_API_KEY }}
+            POSITION_STACK_API_KEY=$${{ secrets.POSITION_STACK_API_KEY }}
+            SPRING_PROFILES_ACTIVE=prod
+            ENVEOF
+            if [ ! -d ~/AITravelPlannerBackEnd ]; then
+              cd ~ && git clone https://github.com/FlomadLabsRD/AITravelPlannerBackEnd.git
+            else
+              cd ~/AITravelPlannerBackEnd && git pull origin master
+            fi
+            cd ~/AITravelPlannerBackEnd && mvn clean package -DskipTests
+            cp target/Flomad-AI-planner-0.0.1-SNAPSHOT.jar ~/app/
             cd ~/docker-app
-            
-            # Stop existing containers with timeout
-            echo "Stopping containers..."
-            timeout 60 docker-compose down 2>&1 || echo "Stop timeout or no containers"
-            
-            # Clean old files
-            rm -f *.jar .env 2>&1 || true
-            
-            # Copy files
-            echo "Copying files..."
-            cp ~/app/Flomad-AI-planner-0.0.1-SNAPSHOT.jar . 
+            docker-compose down || true
+            rm -f *.jar .env
+            cp ~/app/Flomad-AI-planner-0.0.1-SNAPSHOT.jar .
             cp ~/app/.env .
-            
-            # Verify .env
-            ls -l .env
-            
-            # Start containers with timeout
-            echo "Starting containers..."
-            timeout 120 docker-compose up -d 2>&1 || { echo "Container start timeout"; exit 1; }
-            
-            # Quick wait
-            echo "Waiting 30 seconds..."
+            docker-compose up -d
             sleep 30
-            
-            # Check health
-            echo "Testing health endpoint..."
-            for i in {1..3}; do
-              if timeout 10 curl -f http://localhost:8080/actuator/health 2>&1; then
-                echo "✅ SUCCESS! Backend is healthy"
-                exit 0
-              fi
-              echo "Attempt $i failed, waiting..."
-              sleep 10
-            done
-            
-            # Show logs on failure
-            echo "Getting container logs..."
-            timeout 30 docker-compose logs --tail=50 flomad-app 2>&1 || echo "Log timeout"
-            echo "❌ Deployment failed"
-            exit 1
-            
-          else
-            echo "ERROR: No docker-compose.yml found!"
-            exit 1
-          fi
-          ENDSSH
+            curl -f http://localhost:8080/actuator/health
