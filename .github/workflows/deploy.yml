@@ -66,76 +66,103 @@ jobs:
       - name: Deploy to EC2
         run: |
           ssh -i ~/.ssh/id_rsa ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com '
-          sudo apt update
-          sudo apt install -y openjdk-17-jdk unzip
-          cd ~/app
-          
-          # Create logs directory
-          mkdir -p logs
-          
-          # Stop service first
-          sudo systemctl stop flomad || true
-          
-          echo "=== JAR FILES AFTER COPY ==="
-          ls -lh *.jar 2>&1 || echo "No JAR files found!"
+          echo "=== INVESTIGATING EC2 SETUP ==="
           
           echo ""
-          echo "=== JAR CHECKSUM ON EC2 ==="
-          sha256sum Flomad-AI-planner-0.0.1-SNAPSHOT.jar 2>&1 || echo "Cannot calculate checksum!"
+          echo "=== Checking Docker Setup ==="
+          docker --version 2>&1 || echo "Docker not installed"
+          docker-compose --version 2>&1 || echo "Docker Compose not installed"
+          ls -la ~/docker-app 2>&1 || echo "No docker-app directory"
           
           echo ""
-          echo "=== JAR STRUCTURE ON EC2 ==="
-          unzip -l Flomad-AI-planner-0.0.1-SNAPSHOT.jar | grep -E "BOOT-INF|springframework" | head -10
-          
-          echo "=== Stopping existing service ==="
-          sudo systemctl stop flomad || echo "Service not running"
+          echo "=== Checking Systemd Setup ==="
+          sudo systemctl status flomad --no-pager 2>&1 || echo "No flomad systemd service"
+          ls -la /etc/systemd/system/flomad.service 2>&1 || echo "No systemd service file"
           
           echo ""
-          echo "=== Waiting for service to fully stop ==="
-          sleep 3
+          echo "=== Checking Running Processes ==="
+          ps aux | grep -E "java|docker" | grep -v grep || echo "No Java/Docker processes"
+          
+          echo ""
+          echo "=== Checking Nginx Setup ==="
+          sudo systemctl status nginx --no-pager 2>&1 || echo "Nginx not running"
+          
+          echo ""
+          echo "=== Checking Directories ==="
+          ls -la ~/app 2>&1 || echo "No ~/app directory"
+          ls -la ~/ | grep -E "app|docker"
+          
+          echo ""
+          echo "=== System Resources ==="
+          df -h | grep -E "Filesystem|/dev"
+          free -h
+          
+          echo ""
+          echo "=== DEPLOYMENT DECISION ==="
+          if [ -d ~/docker-app ] && [ -f ~/docker-app/docker-compose.yml ]; then
+            echo "Using Docker Compose deployment"
+            cd ~/docker-app
+            
+            # Stop existing container
+            docker-compose down 2>&1 || echo "No containers to stop"
+            
+            # Clean old files
+            rm -f *.jar 2>&1 || echo "No old JARs to remove"
+            
+            # Copy new JAR
+            echo "Copying JAR from ~/app to ~/docker-app"
+            cp ~/app/Flomad-AI-planner-0.0.1-SNAPSHOT.jar . 2>&1 || echo "Failed to copy JAR"
+            
+            # Copy .env file
+            cp ~/app/.env . 2>&1 || echo "Failed to copy .env"
+            
+            # Start containers
+            docker-compose up -d
+            
+            echo ""
+            echo "=== Waiting for container startup (30 seconds) ==="
+            sleep 30
+            
+            echo ""
+            echo "=== Container Status ==="
+            docker-compose ps
+            
+            echo ""
+            echo "=== Container Logs ==="
+            docker-compose logs --tail=50
+            
+          elif sudo systemctl list-unit-files | grep -q flomad.service; then
+            echo "Using systemd deployment"
+            cd ~/app
+            
+            # Stop service
+            sudo systemctl stop flomad
+            sleep 3
+            
+            # Start service
+            sudo systemctl daemon-reload
+            sudo systemctl start flomad
+            
+            echo ""
+            echo "=== Waiting for service startup (30 seconds) ==="
+            sleep 30
+            
+            echo ""
+            echo "=== Service Status ==="
+            sudo systemctl status flomad --no-pager
+            
+          else
+            echo "ERROR: No deployment method found!"
+            echo "Neither docker-compose.yml nor systemd service exists"
+            exit 1
+          fi
           
           echo ""
           echo "=== Removing old JAR files from target directory ==="
           # Only clean up old JARs in subdirectories, not the root level
           rm -rf target/ || echo "No target directory to clean"
           find . -name "*.jar.original" -delete || echo "No .original files to clean"
-          
-          echo ""
-          echo "=== Verifying transferred JAR exists ==="
-          ls -lh Flomad-AI-planner-0.0.1-SNAPSHOT.jar
-          sha256sum Flomad-AI-planner-0.0.1-SNAPSHOT.jar
-          
-          echo ""
-          echo "=== Testing JAR integrity ==="
-          unzip -t Flomad-AI-planner-0.0.1-SNAPSHOT.jar | tail -1
-          
-          echo ""
-          echo "=== Java Version Check ==="
-          java -version
-          which java
-          
-          # Secure the .env file
-          chmod 600 .env
-          
-          # Reload systemd, enable and start service
-          sudo systemctl daemon-reload
-          sudo systemctl enable flomad
-          sudo systemctl start flomad
-          
-          echo "=== Waiting for application startup (60 seconds) ==="
-          sleep 60
-          
-          echo ""
-          echo "=== SERVICE STATUS ==="
-          sudo systemctl status flomad --no-pager || true
-          
-          echo ""
-          echo "=== CHECKING PROCESS ==="
-          ps aux | grep java | grep -v grep || echo "No Java process running"
-          
-          echo ""
-          echo "=== PORT 8080 STATUS ==="
-          sudo netstat -tlnp | grep 8080 || echo "Port 8080 not listening"
+
           
           echo ""
           echo "=== TESTING HEALTH ENDPOINT ==="
