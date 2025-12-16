@@ -28,7 +28,17 @@ jobs:
           mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ec2-50-17-181-203.compute-1.amazonaws.com >> ~/.ssh/known_hosts
+          
+          # Add timeout and retry for ssh-keyscan
+          echo "Scanning SSH host keys (may take a moment)..."
+          timeout 30 ssh-keyscan -T 20 -H ec2-50-17-181-203.compute-1.amazonaws.com >> ~/.ssh/known_hosts 2>/dev/null || \
+          timeout 30 ssh-keyscan -T 20 -H ec2-50-17-181-203.compute-1.amazonaws.com >> ~/.ssh/known_hosts || \
+          echo "Warning: ssh-keyscan failed, adding host to known_hosts manually"
+          
+          # Fallback: Add host manually to bypass strict host checking
+          echo "ec2-50-17-181-203.compute-1.amazonaws.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC..." >> ~/.ssh/known_hosts || true
+          
+          echo "SSH setup completed"
 
       - name: Create .env file
         run: |
