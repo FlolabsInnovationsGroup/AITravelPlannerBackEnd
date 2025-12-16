@@ -56,7 +56,7 @@ jobs:
 
       - name: Copy .env to EC2
         run: |
-          scp -o ConnectTimeout=30 -i ~/.ssh/id_rsa .env ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com:/home/ubuntu/app/
+          scp -o ConnectTimeout=10 -o ServerAliveInterval=15 -o ServerAliveCountMax=3 -o Compression=yes -i ~/.ssh/id_rsa .env ubuntu@ec2-50-17-181-203.compute-1.amazonaws.com:/home/ubuntu/app/
 
       - name: Deploy to EC2
         run: |
@@ -64,6 +64,13 @@ jobs:
           set -e
           
           echo "=== STARTING DEPLOYMENT ==="
+          
+          echo "=== Setting up repository ===\"
+          if [ ! -d ~/AITravelPlannerBackEnd ]; then
+            echo "Cloning repository..."
+            cd ~
+            timeout 60 git clone https://github.com/FlomadLabsRD/AITravelPlannerBackEnd.git 2>&1 || { echo "Clone failed"; exit 1; }
+          fi
           
           echo "=== Pulling latest code ==="
           cd ~/AITravelPlannerBackEnd
