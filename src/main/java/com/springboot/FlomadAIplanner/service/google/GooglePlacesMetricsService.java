@@ -3,7 +3,7 @@ package com.springboot.FlomadAIplanner.service.google;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
+// import org.springframework.scheduling.annotation.Scheduled; // TEMPORARILY DISABLED - causing circular dependency
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.atomic.AtomicLong;
@@ -56,8 +56,9 @@ public class GooglePlacesMetricsService {
 
     /**
      * Log daily usage and cost metrics every 24 hours at midnight.
+     * TEMPORARILY DISABLED - re-enable after fixing circular dependency
      */
-    @Scheduled(cron = "0 0 0 * * *") // Run at midnight
+    // @Scheduled(cron = "0 0 0 * * *") // Run at midnight
     public void reportDailyMetrics() {
         long textSearchCount = dailyTextSearchCalls.getAndSet(0);
         long placeDetailsCount = dailyPlaceDetailsCalls.getAndSet(0);
@@ -101,8 +102,9 @@ public class GooglePlacesMetricsService {
 
     /**
      * Log monthly summary on the 1st of each month at 1 AM.
+     * TEMPORARILY DISABLED - re-enable after fixing circular dependency
      */
-    @Scheduled(cron = "0 0 1 1 * *") // 1st of month at 1 AM
+    // @Scheduled(cron = "0 0 1 1 * *") // 1st of month at 1 AM
     public void reportMonthlyMetrics() {
         long textSearchCount = monthlyTextSearchCalls.getAndSet(0);
         long placeDetailsCount = monthlyPlaceDetailsCalls.getAndSet(0);

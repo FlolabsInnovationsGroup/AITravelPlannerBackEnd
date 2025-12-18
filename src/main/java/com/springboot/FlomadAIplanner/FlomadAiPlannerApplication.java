@@ -7,7 +7,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cloud.openfeign.EnableFeignClients;
-import org.springframework.scheduling.annotation.EnableScheduling;
+// import org.springframework.scheduling.annotation.EnableScheduling;  // TEMPORARILY DISABLED - causing JAR corruption
 
 @Slf4j
 @SpringBootApplication(exclude = {
@@ -16,7 +16,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableMongock
 @EnableFeignClients
 @EnableCaching
-@EnableScheduling
+// @EnableScheduling  // TEMPORARILY DISABLED - will re-enable after fixing dependency conflict
 public class FlomadAiPlannerApplication {
     public static void main(String[] args) {
         PreInitializationConfig.loadEnvVariables();
