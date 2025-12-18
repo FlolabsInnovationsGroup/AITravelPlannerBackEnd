@@ -1,0 +1,9 @@
+systemctl stop flomad.service
+cd /home/ubuntu/app
+rm -f Flomad-AI-planner-0.0.1-SNAPSHOT.jar
+curl -f -L -o Flomad-AI-planner-0.0.1-SNAPSHOT.jar 'https://flomad-deploy-temp-31756fdf.s3.us-east-1.amazonaws.com/WORKING-JAR.jar?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIA6GBMBSXPBSFYHIFN%2F20251218%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20251218T162646Z&X-Amz-Expires=600&X-Amz-SignedHeaders=host&X-Amz-Signature=2115010fdafde86a73f3f5193a392a43ef0370f8c05a3d91f59a469615c36728'
+ls -lh Flomad-AI-planner-0.0.1-SNAPSHOT.jar
+chown ubuntu:ubuntu Flomad-AI-planner-0.0.1-SNAPSHOT.jar
+systemctl start flomad.service
+sleep 45
+curl -s http://localhost:8080/actuator/health

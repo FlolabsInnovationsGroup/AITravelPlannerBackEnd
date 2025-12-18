@@ -27,9 +27,10 @@ public class GooglePlacesMetricsService {
     @Value("${google.places.monthly-cost-threshold:100.00}")
     private double monthlyCostThreshold;
 
-    @Autowired(required = false)
-    private GooglePlacesServiceAsync googlePlacesService;
-
+    // CIRCULAR DEPENDENCY FIX: Removed @Autowired GooglePlacesServiceAsync
+    // This was causing: GooglePlacesMetricsService -> GooglePlacesServiceAsync -> GooglePlacesMetricsService
+    // Cache metrics reporting is now disabled to break the circular reference
+    
     // Daily counters (reset at midnight)
     private final AtomicLong dailyTextSearchCalls = new AtomicLong(0);
     private final AtomicLong dailyPlaceDetailsCalls = new AtomicLong(0);
@@ -67,9 +68,8 @@ public class GooglePlacesMetricsService {
         double placeDetailsCost = placeDetailsCount * COST_PER_PLACE_DETAILS;
         double totalDailyCost = textSearchCost + placeDetailsCost;
 
-        // Get cache metrics if available
-        String cacheStats = googlePlacesService != null ? 
-            googlePlacesService.getCacheMetrics() : "Cache metrics unavailable";
+        // Cache metrics disabled due to circular dependency fix
+        String cacheStats = "Cache metrics temporarily disabled";
 
         log.info("╔═══════════════════════════════════════════════════════════════╗");
         log.info("║     DAILY GOOGLE PLACES API COST REPORT                       ║");
@@ -160,7 +160,7 @@ public class GooglePlacesMetricsService {
             dailyCost,
             monthlyTextSearch + monthlyPlaceDetails,
             monthlyCost,
-            googlePlacesService != null ? googlePlacesService.getCacheMetrics() : "N/A"
+            "temporarily disabled" // Circular dependency fix
         );
     }
 
