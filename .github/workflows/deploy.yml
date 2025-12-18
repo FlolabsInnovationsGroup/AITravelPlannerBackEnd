@@ -15,7 +15,7 @@ jobs:
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v1.0.0
         with:
-          host: ec2-50-17-181-203.compute-1.amazonaws.com
+          host: 50.17.181.203
           username: ubuntu
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           command_timeout: 15m
