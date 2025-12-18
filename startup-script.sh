@@ -1,0 +1,65 @@
+#!/bin/bash
+set -x
+
+# Wait for system to be ready
+sleep 10
+
+# Create .env file with all environment variables
+cat > /home/ubuntu/app/.env << 'ENVFILE'
+SPRING_PROFILES_ACTIVE=local
+
+SPRING_APPLICATION_NAME=Flomad-AI-planner
+SERVER_PORT=8080
+
+GOOGLE_API_KEY=AIzaSyBFLEXJ2OjSRw1q2644PElPy3xtlQdyXTQ
+SPRING_AI_OPENAI_API_KEY=sk-proj-qc8zQcJlc1pyIhBbvIEf9EHWC3dSkbsAntyLClOgAn3XBvVvlL-q4n_R6MaHUt-lso0fQQKjalT3BlbkFJmK6-essW5LvCRDuZ4m6lu_-th9sGSwef1rnVRjb10GsF2rotMCnEBOJhsDa-SmNQMjSsPaEUA
+SPRING_AI_VERTEX_AI_API_KEY=AIzaSyAZCPz43FXfLpSAqGHwAKtakmldt MgVb94
+
+POSITIONSTACK_API_KEY=9553db22b951b09066d078b33714fe05
+
+VIATOR_API_KEY=d28b2bc4-a332-4954-a7dc-69aa45a348b4
+VIATOR_PARTNER_KEY=1e012b2f-9b7a-46ed-963d-bfeba81ea599
+
+MAIL_PASSWORD=b8MK^Fw,Z?)L>#Tk
+
+AMADEUS_API_KEY=8MZHzmoKlM1AoyFYUGLDbelapLam3G4S
+AMADEUS_API_SECRET=9GbiOIcx75Ctuj4F
+
+FREECURRENCY_API_KEY=fca_live_VZmEQFaunZoygpY5h3atD5S39hPRewcK7PL5AUXc
+
+# Google Custom Search API Configuration
+GOOGLE_SEARCH_API_KEY=AIzaSyCrm124WyzEXTa3gPKf6gO7NJoNG5VCJ4Q
+GOOGLE_SEARCH_ENGINE_ID=007cdf8c3744400f
+WEB_SEARCH_ENDPOINT=https://www.googleapis.com/customsearch/v1
+
+GOOGLE_CLIENT_ID=640415318777-i870nka5iim62jl9d1ml5b9lf9bq76np.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=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
+
+GIT_HUB-CLIENT_ID=Ov23liYklMWxMGgqLym8
+GIT_HUB_CLIENT_SECRET=4c72eb7d2d0f2fe3635ea1cd97fe2c183d2bba9d
+
+FACEBOOK_CLIENT_ID=1172359027377420
+FACEBOOK_CLIENT_SECRET=4e490e2d54ec70b4b12b6efb7b2d9a81
+
+JWT_SECRET=UeFAFJHgl8ZimyjRCiuq88PgIvti/LyaeaVdYbIvSYw=
+JWT_EXPIRATION=3600000
+
+
+MONGO_URL=mongodb://localhost:27017/testdb
+ENVFILE
+
+# Copy .env to docker-app directory
+cp /home/ubuntu/app/.env /home/ubuntu/docker-app/.env
+
+# Navigate to docker-app directory
+cd /home/ubuntu/docker-app
+
+# Stop any running containers
+docker-compose down
+
+# Start containers
+docker-compose up -d
+
+# Log the startup
+echo "Application startup completed at $(date)" >> /var/log/startup-script.log
+docker ps >> /var/log/startup-script.log

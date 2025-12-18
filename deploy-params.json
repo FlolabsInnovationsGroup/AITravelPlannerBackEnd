@@ -1,0 +1,14 @@
+﻿{"commands":[
+    "cd /home/ubuntu \u0026\u0026 mkdir -p docker-app \u0026\u0026 cd docker-app",
+    "echo \u0027SPRING_PROFILES_ACTIVE=local\u0027 \u003e .env",
+    "echo \u0027MONGO_URL=mongodb://localhost:27017/testdb\u0027 \u003e\u003e .env",
+    "echo \u0027SERVER_PORT=8080\u0027 \u003e\u003e .env",
+    "echo \u0027GOOGLE_API_KEY=AIzaSyBFLEXJ2OjSRw1q2644PElPy3xtlQdyXTQ\u0027 \u003e\u003e .env",
+    "echo \u0027SPRING_AI_OPENAI_API_KEY=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\u0027 \u003e\u003e .env",
+    "echo \u0027JWT_SECRET=UeFAFJHgl8ZimyjRCiuq88PgIvti/LyaeaVdYbIvSYw=\u0027 \u003e\u003e .env",
+    "echo \u0027.env file created\u0027 \u0026\u0026 cat .env",
+    "docker-compose down 2\u003e/dev/null || true",
+    "docker-compose up -d",
+    "sleep 45 \u0026\u0026 docker ps",
+    "curl -f http://localhost:8080/actuator/health \u0026\u0026 echo \u0027APP HEALTHY\u0027 || echo \u0027APP NOT READY\u0027"
+]}
