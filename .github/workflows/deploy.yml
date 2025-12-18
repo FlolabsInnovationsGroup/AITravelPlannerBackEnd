@@ -32,7 +32,7 @@ jobs:
       - name: Upload JAR to S3
         run: |
           aws s3 cp target/Flomad-AI-planner-0.0.1-SNAPSHOT.jar \
-            s3://flomadai-deployment/Flomad-AI-planner-0.0.1-SNAPSHOT.jar
+            s3://flomad-deploy-temp-31756fdf/Flomad-AI-planner-0.0.1-SNAPSHOT.jar
 
       - name: Deploy via AWS SSM
         run: |
@@ -42,7 +42,7 @@ jobs:
             --comment "Deploy Spring Boot application" \
             --parameters 'commands=[
               "# Download JAR from S3",
-              "aws s3 cp s3://flomadai-deployment/Flomad-AI-planner-0.0.1-SNAPSHOT.jar /home/ubuntu/app/Flomad-AI-planner-0.0.1-SNAPSHOT.jar",
+              "aws s3 cp s3://flomad-deploy-temp-31756fdf/Flomad-AI-planner-0.0.1-SNAPSHOT.jar /home/ubuntu/app/Flomad-AI-planner-0.0.1-SNAPSHOT.jar",
               "# Update .env file",
               "cat > /home/ubuntu/app/.env << '\'ENVEOF\''",
               "SPRING_AI_OPENAI_API_KEY=${{ secrets.SPRING_AI_OPENAI_API_KEY }}",
