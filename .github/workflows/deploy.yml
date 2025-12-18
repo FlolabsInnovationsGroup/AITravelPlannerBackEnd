@@ -41,10 +41,15 @@ jobs:
             --document-name "AWS-RunShellScript" \
             --comment "Deploy Spring Boot application" \
             --parameters 'commands=[
-              "# Download JAR from S3",
-              "aws s3 cp s3://flomad-deploy-temp-31756fdf/Flomad-AI-planner-0.0.1-SNAPSHOT.jar /home/ubuntu/app/Flomad-AI-planner-0.0.1-SNAPSHOT.jar",
+              "#!/bin/bash",
+              "set -e",
+              "# Download JAR from S3 as ssm-user (has AWS CLI)",
+              "sudo -u ssm-user aws s3 cp s3://flomad-deploy-temp-31756fdf/Flomad-AI-planner-0.0.1-SNAPSHOT.jar /tmp/Flomad-AI-planner-0.0.1-SNAPSHOT.jar",
+              "# Move to ubuntu app directory",
+              "sudo mv /tmp/Flomad-AI-planner-0.0.1-SNAPSHOT.jar /home/ubuntu/app/Flomad-AI-planner-0.0.1-SNAPSHOT.jar",
+              "sudo chown ubuntu:ubuntu /home/ubuntu/app/Flomad-AI-planner-0.0.1-SNAPSHOT.jar",
               "# Update .env file",
-              "cat > /home/ubuntu/app/.env << '\'ENVEOF\''",
+              "sudo tee /home/ubuntu/app/.env > /dev/null << '\'ENVEOF\''",
               "SPRING_AI_OPENAI_API_KEY=${{ secrets.SPRING_AI_OPENAI_API_KEY }}",
               "GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }}",
               "VIATOR_API_KEY=${{ secrets.VIATOR_API_KEY }}",
@@ -57,13 +62,14 @@ jobs:
               "POSITION_STACK_API_KEY=${{ secrets.POSITION_STACK_API_KEY }}",
               "SPRING_PROFILES_ACTIVE=prod",
               "ENVEOF",
+              "sudo chown ubuntu:ubuntu /home/ubuntu/app/.env",
               "# Stop existing process",
-              "pkill -f Flomad-AI-planner || true",
+              "sudo pkill -f Flomad-AI-planner || true",
               "sleep 5",
-              "# Start new process in background",
+              "# Start new process as ubuntu user",
               "cd /home/ubuntu/app",
-              "nohup java -Xmx2048m -Xms512m -XX:+UseG1GC -jar Flomad-AI-planner-0.0.1-SNAPSHOT.jar > stdout.log 2>&1 &",
-              "sleep 10",
+              "sudo -u ubuntu nohup java -Xmx2048m -Xms512m -XX:+UseG1GC -jar Flomad-AI-planner-0.0.1-SNAPSHOT.jar > stdout.log 2>&1 &",
+              "sleep 15",
               "# Verify service is running",
               "curl -f http://localhost:8080/actuator/health || exit 1"
             ]' \
