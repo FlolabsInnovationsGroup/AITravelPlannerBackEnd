@@ -36,43 +36,46 @@ jobs:
 
       - name: Deploy via AWS SSM
         run: |
+          # Generate presigned URL for S3 download
+          PRESIGNED_URL=$(aws s3 presign s3://flomad-deploy-temp-31756fdf/Flomad-AI-planner-0.0.1-SNAPSHOT.jar --expires-in 300)
+          
           COMMAND_ID=$(aws ssm send-command \
             --instance-ids "i-0fc71de8cfc123fd8" \
             --document-name "AWS-RunShellScript" \
             --comment "Deploy Spring Boot application" \
-            --parameters 'commands=[
-              "#!/bin/bash",
-              "set -e",
-              "# Download JAR from S3 as ssm-user (has AWS CLI)",
-              "sudo -u ssm-user aws s3 cp s3://flomad-deploy-temp-31756fdf/Flomad-AI-planner-0.0.1-SNAPSHOT.jar /tmp/Flomad-AI-planner-0.0.1-SNAPSHOT.jar",
-              "# Move to ubuntu app directory",
-              "sudo mv /tmp/Flomad-AI-planner-0.0.1-SNAPSHOT.jar /home/ubuntu/app/Flomad-AI-planner-0.0.1-SNAPSHOT.jar",
-              "sudo chown ubuntu:ubuntu /home/ubuntu/app/Flomad-AI-planner-0.0.1-SNAPSHOT.jar",
-              "# Update .env file",
-              "sudo tee /home/ubuntu/app/.env > /dev/null << '\'ENVEOF\''",
-              "SPRING_AI_OPENAI_API_KEY=${{ secrets.SPRING_AI_OPENAI_API_KEY }}",
-              "GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }}",
-              "VIATOR_API_KEY=${{ secrets.VIATOR_API_KEY }}",
-              "VIATOR_PARTNER_KEY=${{ secrets.VIATOR_PARTNER_KEY }}",
-              "AMADEUS_API_KEY=${{ secrets.AMADEUS_API_KEY }}",
-              "AMADEUS_API_SECRET=${{ secrets.AMADEUS_API_SECRET }}",
-              "JWT_SECRET=${{ secrets.JWT_SECRET }}",
-              "SPRING_DATA_MONGODB_URI=mongodb://localhost:27017/travel_planner",
-              "WEATHER_API_KEY=${{ secrets.WEATHER_API_KEY }}",
-              "POSITION_STACK_API_KEY=${{ secrets.POSITION_STACK_API_KEY }}",
-              "SPRING_PROFILES_ACTIVE=prod",
-              "ENVEOF",
-              "sudo chown ubuntu:ubuntu /home/ubuntu/app/.env",
-              "# Stop existing process",
-              "sudo pkill -f Flomad-AI-planner || true",
-              "sleep 5",
-              "# Start new process as ubuntu user",
-              "cd /home/ubuntu/app",
-              "sudo -u ubuntu nohup java -Xmx2048m -Xms512m -XX:+UseG1GC -jar Flomad-AI-planner-0.0.1-SNAPSHOT.jar > stdout.log 2>&1 &",
-              "sleep 15",
-              "# Verify service is running",
-              "curl -f http://localhost:8080/actuator/health || exit 1"
-            ]' \
+            --parameters "commands=[
+              \"#!/bin/bash\",
+              \"set -e\",
+              \"# Download JAR from S3 using presigned URL\",
+              \"curl -f -o /tmp/Flomad-AI-planner-0.0.1-SNAPSHOT.jar '$PRESIGNED_URL'\",
+              \"# Move to ubuntu app directory\",
+              \"sudo mv /tmp/Flomad-AI-planner-0.0.1-SNAPSHOT.jar /home/ubuntu/app/Flomad-AI-planner-0.0.1-SNAPSHOT.jar\",
+              \"sudo chown ubuntu:ubuntu /home/ubuntu/app/Flomad-AI-planner-0.0.1-SNAPSHOT.jar\",
+              \"# Update .env file\",
+              \"sudo tee /home/ubuntu/app/.env > /dev/null << 'ENVEOF'\",
+              \"SPRING_AI_OPENAI_API_KEY=${{ secrets.SPRING_AI_OPENAI_API_KEY }}\",
+              \"GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }}\",
+              \"VIATOR_API_KEY=${{ secrets.VIATOR_API_KEY }}\",
+              \"VIATOR_PARTNER_KEY=${{ secrets.VIATOR_PARTNER_KEY }}\",
+              \"AMADEUS_API_KEY=${{ secrets.AMADEUS_API_KEY }}\",
+              \"AMADEUS_API_SECRET=${{ secrets.AMADEUS_API_SECRET }}\",
+              \"JWT_SECRET=${{ secrets.JWT_SECRET }}\",
+              \"SPRING_DATA_MONGODB_URI=mongodb://localhost:27017/travel_planner\",
+              \"WEATHER_API_KEY=${{ secrets.WEATHER_API_KEY }}\",
+              \"POSITION_STACK_API_KEY=${{ secrets.POSITION_STACK_API_KEY }}\",
+              \"SPRING_PROFILES_ACTIVE=prod\",
+              \"ENVEOF\",
+              \"sudo chown ubuntu:ubuntu /home/ubuntu/app/.env\",
+              \"# Stop existing process\",
+              \"sudo pkill -f Flomad-AI-planner || true\",
+              \"sleep 5\",
+              \"# Start new process as ubuntu user\",
+              \"cd /home/ubuntu/app\",
+              \"sudo -u ubuntu nohup java -Xmx2048m -Xms512m -XX:+UseG1GC -jar Flomad-AI-planner-0.0.1-SNAPSHOT.jar > stdout.log 2>&1 &\",
+              \"sleep 15\",
+              \"# Verify service is running\",
+              \"curl -f http://localhost:8080/actuator/health || exit 1\"
+            ]" \
             --output text \
             --query "Command.CommandId")
           
