@@ -16,6 +16,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+// what i import
+import java.util.Optional;
+// 
+
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -145,4 +150,14 @@ public class UserService implements CrudService<User, String> {
         user.setLastActive(LocalDateTime.now());
         userRepository.save(user);
     }
+
+// what i did  "mohamed abdelmohsen"
+public Optional<User> findByEmail(String email) {
+    return Optional.ofNullable(userRepository.findByEmail(email));
 }
+// 
+
+
+
+}
+
