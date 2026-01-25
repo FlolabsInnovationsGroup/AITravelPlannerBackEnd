@@ -1,6 +1,6 @@
 # Latency/Unit/End-to-End/Security Testing
 
-[![FloTravel - Latency Testing](https://github.com/FlomadLabsRD/AITravelPlannerBackEnd/actions/workflows/latency-testing.yml/badge.svg)](https://github.com/FlomadLabsRD/AITravelPlannerBackEnd/actions/workflows/latency-testing.yml) [![FloTravel - Unit/Integration Testing](https://github.com/FlomadLabsRD/AITravelPlannerBackEnd/actions/workflows/unit-testing.yml/badge.svg)](https://github.com/FlomadLabsRD/AITravelPlannerBackEnd/actions/workflows/unit-testing.yml) [![FloTravel - CI/CD Latency Testing](https://github.com/FlomadLabsRD/AITravelPlannerBackEnd/actions/workflows/backend-ci-cd.yml/badge.svg)](https://github.com/FlomadLabsRD/AITravelPlannerBackEnd/actions/workflows/backend-ci-cd.yml) 
+[![FloTravel - Latency Testing](https://github.com/FlomadLabsRD/AITravelPlannerBackEnd/actions/workflows/latency-testing.yml/badge.svg)](https://github.com/FlomadLabsRD/AITravelPlannerBackEnd/actions/workflows/latency-testing.yml) [![FloTravel - Unit/Integration Testing](https://github.com/FlomadLabsRD/AITravelPlannerBackEnd/actions/workflows/unit-testing.yml/badge.svg)](https://github.com/FlomadLabsRD/AITravelPlannerBackEnd/actions/workflows/unit-testing.yml) [![FloTravel - CI/CD Latency Testing](https://github.com/FlomadLabsRD/AITravelPlannerBackEnd/actions/workflows/backend-ci-cd.yml/badge.svg)](https://github.com/FlomadLabsRD/AITravelPlannerBackEnd/actions/workflows/backend-ci-cd.yml)
 
 # Running the Application Locally
 
@@ -115,8 +115,8 @@ spring.data.mongodb.uri=mongodb://localhost:27017
 spring.data.mongodb.database=testdb
 ```
 
-By following these steps, you should be able to run the application locally without any issues.
-----------------------------------------------------------------------------------------------------------------------------
+## By following these steps, you should be able to run the application locally without any issues.
+
 # SPRING AI DEVELOPMENT STEPS
 
 Spring AI development in Java leverages the robust Spring framework to build scalable and maintainable applications. Here’s a comprehensive guide to get you started with integrating AI capabilities into a Spring-based Java application.
@@ -141,16 +141,16 @@ What AI library do you prefer (TensorFlow, Deeplearning4j, etc.)?
 High-Level Steps:
 
 1. Project Setup
-    * Initialize a Spring Boot project.
+   - Initialize a Spring Boot project.
 2. Dependency Management
-    * Add necessary dependencies for Spring Boot, and AI libraries.
+   - Add necessary dependencies for Spring Boot, and AI libraries.
 3. Service Layer
-    * Implement AI services to handle model loading and inference.
+   - Implement AI services to handle model loading and inference.
 4. Controller Layer
-    * Create RESTful endpoints to interact with the AI service.
+   - Create RESTful endpoints to interact with the AI service.
 5. Data Processing
-    * Implement data processing utilities.
+   - Implement data processing utilities.
 6. Model Integration
-    * Integrate the AI model and handle inference requests.
+   - Integrate the AI model and handle inference requests .
 
 # Flomad MasterClass
