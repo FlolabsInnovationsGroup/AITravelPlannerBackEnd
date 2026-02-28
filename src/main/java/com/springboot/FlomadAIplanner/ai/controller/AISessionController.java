@@ -46,30 +46,64 @@ public class AISessionController {
             tags = {"sessions", "chat", "title"})
     public ResponseEntity<String> generateTitle(@PathVariable("id") String sessionId) {
         log.info("Generating session title for session with ID: {}", sessionId);
-        // getting all messages from the session
-        List<Message> messages = messageService.getMessagesBySessionId(sessionId);
-        String messagesCombinedText = messages.stream()
-                .filter(m -> m.getContent() != null && !m.getContent().isBlank())
-                .map(m -> m.getMessageType() + ":\n" + m.getContent())
-                .reduce("", (a, b) -> a + "\n------------------\n" + b);
-        log.info("Combined messages text: {}", messagesCombinedText);
+        try {
+            List<Message> messages = messageService.getMessagesBySessionId(sessionId);
+            String messagesCombinedText = messages.stream()
+                    .filter(m -> m.getContent() != null && !m.getContent().isBlank())
+                    .map(m -> m.getMessageType() + ":\n" + m.getContent())
+                    .reduce("", (a, b) -> a + "\n------------------\n" + b);
+            log.info("Combined messages text: {}", messagesCombinedText);
 
-        log.info("Generating session title...");
-        String sessionTitle = chatClient.prompt()
-                .system(sessionTitleGenerationPrompt)
-                .user(messagesCombinedText)
-                .advisors(a -> a.param(CHAT_MEMORY_CONVERSATION_ID_KEY, "session-title"))
-                .call()
-                .content();
-        log.info("Generated session title: {}", sessionTitle);
+            String sessionTitle;
+            if (messagesCombinedText.isBlank()) {
+                sessionTitle = "New Chat";
+            } else {
+                try {
+                    log.info("Generating session title via AI...");
+                    sessionTitle = chatClient.prompt()
+                            .system(sessionTitleGenerationPrompt)
+                            .user(messagesCombinedText)
+                            .advisors(a -> a.param(CHAT_MEMORY_CONVERSATION_ID_KEY, "session-title"))
+                            .call()
+                            .content();
+                    if (sessionTitle == null || sessionTitle.isBlank()) {
+                        sessionTitle = fallbackTitle(messagesCombinedText);
+                    }
+                } catch (Exception e) {
+                    log.warn("AI title generation failed, using fallback: {}", e.getMessage());
+                    sessionTitle = fallbackTitle(messagesCombinedText);
+                }
+            }
+            log.info("Generated session title: {}", sessionTitle);
 
-        // updating the session title
-        Session session = sessionService.findById(sessionId);
-        session.setTitle(sessionTitle);
-        sessionService.save(session);
-        log.info("Session title updated in the DB.");
+            Session session = sessionService.findById(sessionId);
+            session.setTitle(sessionTitle);
+            sessionService.save(session);
+            log.info("Session title updated in the DB.");
+            return ResponseEntity.ok(sessionTitle);
+        } catch (Exception e) {
+            log.error("Failed to generate session title for session {}: {}", sessionId, e.getMessage(), e);
+            String fallback = "New Chat";
+            try {
+                Session session = sessionService.findById(sessionId);
+                session.setTitle(fallback);
+                sessionService.save(session);
+            } catch (Exception ex) {
+                log.warn("Could not update session with fallback title: {}", ex.getMessage());
+            }
+            return ResponseEntity.ok(fallback);
+        }
+    }
 
-        return ResponseEntity.ok(sessionTitle);
+    private static String fallbackTitle(String messagesCombinedText) {
+        if (messagesCombinedText == null || messagesCombinedText.isBlank()) {
+            return "New Chat";
+        }
+        String firstLine = messagesCombinedText.lines().filter(l -> !l.isBlank()).findFirst().orElse("");
+        if (firstLine.length() > 50) {
+            return firstLine.substring(0, 47).trim() + "...";
+        }
+        return firstLine.isEmpty() ? "New Chat" : firstLine;
     }
 
 }

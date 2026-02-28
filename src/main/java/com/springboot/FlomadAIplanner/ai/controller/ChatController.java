@@ -123,21 +123,39 @@ public class ChatController {
     }
 
     @Operation(summary = "Process chat message and return suggestions")
-    @PostMapping(value = "/call/entity", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<AIMessageResponse> handleEntityCall(
-            @RequestBody(required = false) AIMessageDTO message,
+    @PostMapping(value = "/call/entity", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> handleEntityCall(
+            @RequestParam("sessionId") String sessionId,
+            @RequestParam("message") String messageText,
             @RequestPart(value = "file", required = false) MultipartFile file) {
 
-        log.info("📨 Received entity message with sessionId: {}", message != null ? message.getSessionId() : "No Message");
+        log.info("📨 Received entity message with sessionId: {}", sessionId);
 
-        AIMessageResponse response = enhancedChatCallService.processEntityMessage(message, AIMessageResponse.class);
-        
-        // Debug logging to track response
-        log.info("🔍 Debug - AI Response object: {}", response);
-        log.info("🔍 Debug - Response message: {}", response != null ? response.getMessage() : "null");
-        log.info("🔍 Debug - Response suggestions: {}", response != null ? response.getSuggestions() : "null");
-        
-        return ResponseEntity.ok(response);
+        if (messageText == null || messageText.isBlank()) {
+            log.warn("⚠️ No text message received for entity call.");
+            return ResponseEntity.badRequest().build();
+        }
+
+        try {
+            AIMessageDTO message = new AIMessageDTO();
+            message.setSessionId(sessionId);
+            message.setMessage(messageText.trim());
+            message.setMedia(file);
+
+            AIMessageResponse response = enhancedChatCallService.processEntityMessage(message, AIMessageResponse.class);
+
+            if (response == null) {
+                log.warn("Entity call returned null response");
+                return ResponseEntity.status(503).body(java.util.Map.of("message", "AI service unavailable. Please try again."));
+            }
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            log.error("❌ Entity call failed for session {}: {}", sessionId, e.getMessage(), e);
+            return ResponseEntity.status(500).body(java.util.Map.of(
+                "message", "Server error. Please try again later.",
+                "error", e.getMessage() != null ? e.getMessage() : "Unknown error"
+            ));
+        }
     }
 
 
