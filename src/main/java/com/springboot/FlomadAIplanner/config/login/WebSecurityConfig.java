@@ -45,6 +45,7 @@ public class WebSecurityConfig {
     }
 
     private static final List<String> PUBLIC_URLS = List.of(
+            "/api/health",
             "/api/audio/transcribe",
             "/api/auth/signup",
             "/api/auth/signin",
@@ -78,13 +79,15 @@ public class WebSecurityConfig {
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
                     config.setAllowedOrigins(List.of(
-                            "https://www.flomadtravel.com", // ✅ Allow production frontend
-                            "http://localhost:3000"         // ✅ Keep localhost for development
+                            "https://www.flomadtravel.com", // production frontend
+                            "http://localhost:3000",
+                            "http://127.0.0.1:3000"        // same-origin alternative in some browsers
                     ));
                     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     config.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept", "Origin", "Cookie"));
                     config.setExposedHeaders(List.of("Set-Cookie"));
                     config.setAllowCredentials(true);
+                    config.setMaxAge(3600L); // cache preflight for 1 hour
                     return config;
                 }))
 
@@ -119,14 +122,18 @@ public class WebSecurityConfig {
                 )
                 .exceptionHandling(exceptions -> exceptions
                         .authenticationEntryPoint((request, response, authException) -> {
-                            // For API requests, return JSON 401 instead of redirecting to login page
+                            // For API-style requests, return JSON 401 instead of redirecting (avoids "too many redirects" in browser)
                             String requestURI = request.getRequestURI();
-                            if (requestURI.startsWith("/api/")) {
+                            boolean isApiOrDataRequest = requestURI.startsWith("/api/")
+                                    || requestURI.startsWith("/users/")
+                                    || requestURI.startsWith("/sessions");
+                            boolean isLoginPage = "/login".equals(requestURI) || requestURI.startsWith("/login?");
+                            if (isApiOrDataRequest || isLoginPage) {
+                                // Return 401 JSON to avoid redirect loops (browser following redirect to /login repeatedly)
                                 response.setContentType("application/json");
                                 response.setStatus(401);
                                 response.getWriter().write("{\"error\":\"Unauthorized\",\"message\":\"Authentication required\"}");
                             } else {
-                                // For web requests, redirect to login
                                 response.sendRedirect("/login");
                             }
                         })

@@ -66,16 +66,11 @@ class EnhancedChatCallServiceTest {
 
     @Test
     void testProcessCallMessage_Success() {
-        // Arrange
+        // Arrange - service uses Spring AI chat memory for persistence, not messageService.save()
         AIMessageDTO aiMessage = new AIMessageDTO();
         aiMessage.setSessionId(TEST_SESSION_ID);
         aiMessage.setMessage(TEST_MESSAGE);
 
-        Message savedUserMessage = createMockMessage("user-msg-1", TEST_MESSAGE, MessageType.USER);
-        Message savedAiMessage = createMockMessage("ai-msg-1", AI_RESPONSE, MessageType.ASSISTANT);
-
-        when(messageService.save(any(Message.class)))
-            .thenReturn(savedUserMessage, savedAiMessage);
         when(agentFactory.getAgent(aiMessage)).thenReturn(mockAgent);
         when(mockAgent.processCallMessage(aiMessage)).thenReturn(AI_RESPONSE);
 
@@ -84,35 +79,17 @@ class EnhancedChatCallServiceTest {
 
         // Assert
         assertEquals(AI_RESPONSE, result);
-        
-        // Verify user message was saved
-        verify(messageService, times(2)).save(argThat(message -> {
-            if (message.getMessageType() == MessageType.USER) {
-                return TEST_MESSAGE.equals(message.getContent()) && 
-                       TEST_SESSION_ID.equals(message.getSessionId());
-            } else if (message.getMessageType() == MessageType.ASSISTANT) {
-                return AI_RESPONSE.equals(message.getContent()) && 
-                       TEST_SESSION_ID.equals(message.getSessionId());
-            }
-            return false;
-        }));
-        
         verify(agentFactory).getAgent(aiMessage);
         verify(mockAgent).processCallMessage(aiMessage);
     }
 
     @Test
     void testProcessCallMessage_AgentException_SavesErrorMessage() {
-        // Arrange
+        // Arrange - service propagates exception; persistence is via Spring AI chat memory
         AIMessageDTO aiMessage = new AIMessageDTO();
         aiMessage.setSessionId(TEST_SESSION_ID);
         aiMessage.setMessage(TEST_MESSAGE);
 
-        Message savedUserMessage = createMockMessage("user-msg-1", TEST_MESSAGE, MessageType.USER);
-        Message savedErrorMessage = createMockMessage("error-msg-1", "I apologize, but I encountered an error processing your request. Please try again.", MessageType.ASSISTANT);
-
-        when(messageService.save(any(Message.class)))
-            .thenReturn(savedUserMessage, savedErrorMessage);
         when(agentFactory.getAgent(aiMessage)).thenReturn(mockAgent);
         when(mockAgent.processCallMessage(aiMessage)).thenThrow(new RuntimeException("AI processing failed"));
 
@@ -120,13 +97,8 @@ class EnhancedChatCallServiceTest {
         assertThrows(RuntimeException.class, () -> {
             chatService.processCallMessage(aiMessage);
         });
-
-        // Verify error message was saved
-        verify(messageService, times(2)).save(any(Message.class));
-        verify(messageService).save(argThat(message -> 
-            message.getMessageType() == MessageType.ASSISTANT &&
-            message.getContent().contains("I apologize, but I encountered an error")
-        ));
+        verify(agentFactory).getAgent(aiMessage);
+        verify(mockAgent).processCallMessage(aiMessage);
     }
 
     @Test
@@ -137,11 +109,6 @@ class EnhancedChatCallServiceTest {
         aiMessage.setMessage("Find flights to Rome");
 
         Object mockEntityResponse = createMockEntityResponse();
-        Message savedUserMessage = createMockMessage("user-msg-1", "Find flights to Rome", MessageType.USER);
-        Message savedAiMessage = createMockMessage("ai-msg-1", mockEntityResponse.toString(), MessageType.ASSISTANT);
-
-        when(messageService.save(any(Message.class)))
-            .thenReturn(savedUserMessage, savedAiMessage);
         when(agentFactory.getAgent(aiMessage)).thenReturn(mockAgent);
         when(mockAgent.processEntityMessage(aiMessage, Object.class)).thenReturn(mockEntityResponse);
 
@@ -150,7 +117,6 @@ class EnhancedChatCallServiceTest {
 
         // Assert
         assertEquals(mockEntityResponse, result);
-        verify(messageService, times(2)).save(any(Message.class));
         verify(mockAgent).processEntityMessage(aiMessage, Object.class);
     }
 
@@ -161,11 +127,6 @@ class EnhancedChatCallServiceTest {
         aiMessage.setSessionId(TEST_SESSION_ID);
         aiMessage.setMessage("Process this entity");
 
-        Message savedUserMessage = createMockMessage("user-msg-1", "Process this entity", MessageType.USER);
-        Message savedErrorMessage = createMockMessage("error-msg-1", "This type of request is not currently supported.", MessageType.ASSISTANT);
-
-        when(messageService.save(any(Message.class)))
-            .thenReturn(savedUserMessage, savedErrorMessage);
         when(agentFactory.getAgent(aiMessage)).thenReturn(mockAgent);
         when(mockAgent.processEntityMessage(aiMessage, Object.class))
             .thenThrow(new UnsupportedOperationException("Not supported"));
@@ -174,13 +135,7 @@ class EnhancedChatCallServiceTest {
         assertThrows(RuntimeException.class, () -> {
             chatService.processEntityMessage(aiMessage, Object.class);
         });
-
-        // Verify error message was saved
-        verify(messageService, times(2)).save(any(Message.class));
-        verify(messageService).save(argThat(message -> 
-            message.getMessageType() == MessageType.ASSISTANT &&
-            message.getContent().contains("not currently supported")
-        ));
+        verify(mockAgent).processEntityMessage(aiMessage, Object.class);
     }
 
     @Test
@@ -222,9 +177,6 @@ class EnhancedChatCallServiceTest {
         aiMessage.setSessionId(TEST_SESSION_ID);
         aiMessage.setMessage("Test message");
 
-        when(messageService.save(any(Message.class)))
-            .thenReturn(createMockMessage("user-msg", "Test message", MessageType.USER))
-            .thenReturn(createMockMessage("ai-msg", "Simple response", MessageType.ASSISTANT));
         when(agentFactory.getAgent(aiMessage)).thenReturn(mockAgent);
         when(mockAgent.processEntityMessage(aiMessage, String.class)).thenReturn("Simple response");
 
@@ -233,10 +185,7 @@ class EnhancedChatCallServiceTest {
 
         // Assert
         assertEquals("Simple response", result);
-        verify(messageService).save(argThat(message -> 
-            message.getMessageType() == MessageType.ASSISTANT &&
-            "Simple response".equals(message.getContent())
-        ));
+        verify(mockAgent).processEntityMessage(aiMessage, String.class);
     }
 
     @Test
@@ -253,9 +202,6 @@ class EnhancedChatCallServiceTest {
             }
         };
 
-        when(messageService.save(any(Message.class)))
-            .thenReturn(createMockMessage("user-msg", "Complex request", MessageType.USER))
-            .thenReturn(createMockMessage("ai-msg", complexResponse.toString(), MessageType.ASSISTANT));
         when(agentFactory.getAgent(aiMessage)).thenReturn(mockAgent);
         when(mockAgent.processEntityMessage(aiMessage, Object.class)).thenReturn(complexResponse);
 
@@ -264,43 +210,26 @@ class EnhancedChatCallServiceTest {
 
         // Assert
         assertEquals(complexResponse, result);
-        verify(messageService).save(argThat(message -> 
-            message.getMessageType() == MessageType.ASSISTANT &&
-            message.getContent().contains("Complex response data")
-        ));
+        verify(mockAgent).processEntityMessage(aiMessage, Object.class);
     }
 
     @Test
     void testUserMetadata_WithAudioFile() {
-        // Arrange
+        // Arrange - persistence is via Spring AI chat memory
         AIMessageDTO aiMessage = new AIMessageDTO();
         aiMessage.setSessionId(TEST_SESSION_ID);
         aiMessage.setMessage("Audio message");
-        // Note: In real implementation, you would set aiMessage.setMedia(mockMultipartFile)
 
-        Message savedUserMessage = createMockMessage("user-msg-1", "Audio message", MessageType.USER);
-        Message savedAiMessage = createMockMessage("ai-msg-1", AI_RESPONSE, MessageType.ASSISTANT);
-
-        when(messageService.save(any(Message.class)))
-            .thenReturn(savedUserMessage, savedAiMessage);
         when(agentFactory.getAgent(aiMessage)).thenReturn(mockAgent);
         when(mockAgent.processCallMessage(aiMessage)).thenReturn(AI_RESPONSE);
 
         // Act
-        chatService.processCallMessage(aiMessage);
+        String result = chatService.processCallMessage(aiMessage);
 
-        // Assert - Should save both user and assistant messages
-        verify(messageService, times(2)).save(any(Message.class));
-        
-        // Verify user message metadata contains audio file info
-        verify(messageService).save(argThat(message -> {
-            if (message.getMessageType() == MessageType.USER) {
-                return message.getMetadata() != null &&
-                       message.getMetadata().containsKey("source") &&
-                       "user_input".equals(message.getMetadata().get("source"));
-            }
-            return false; // Only check user messages for this test
-        }));
+        // Assert
+        assertEquals(AI_RESPONSE, result);
+        verify(agentFactory).getAgent(aiMessage);
+        verify(mockAgent).processCallMessage(aiMessage);
     }
 
     private Message createMockMessage(String id, String content, MessageType messageType) {

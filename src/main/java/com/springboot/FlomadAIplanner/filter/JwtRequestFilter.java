@@ -9,7 +9,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
@@ -78,7 +80,16 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-                UserDetails userDetails = this.customUserDetailsService.loadUserByUsername(username);
+                UserDetails userDetails;
+                if (username.startsWith("guest_")) {
+                    // Guest tokens: no DB user; create synthetic UserDetails with ROLE_GUEST so validation and auth succeed
+                    userDetails = User.withUsername(username)
+                            .password("")
+                            .authorities(new SimpleGrantedAuthority("ROLE_GUEST"))
+                            .build();
+                } else {
+                    userDetails = this.customUserDetailsService.loadUserByUsername(username);
+                }
 
                 if (jwtUtil.validateToken(jwt, userDetails)) {
                     var usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(

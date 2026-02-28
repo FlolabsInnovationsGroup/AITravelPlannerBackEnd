@@ -419,6 +419,14 @@
                     <mainClass>com.springboot.FlomadAIplanner.FlomadAiPlannerApplication</mainClass>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <!-- Exclude integration tests (real AI calls) from default run; run with -DexcludedGroups= to include -->
+                    <excludedGroups>integration</excludedGroups>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>
