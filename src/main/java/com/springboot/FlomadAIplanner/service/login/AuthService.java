@@ -28,109 +28,167 @@ import java.util.UUID;
 
 @Slf4j
 @Service
-public class AuthService extends AbstractAuthService {
+public final class AuthService extends AbstractAuthService {
 
+    /** Authentication manager. */
     private final AuthenticationManager authenticationManager;
+    /** User to UserDetails converter. */
     private final Converter<User, UserDetails> userConverter;
+    /** UserAuthDTO to User converter. */
     private final Converter<UserAuthDTO, User> userDTOToUserConverter;
+    /** Role service. */
     private final RoleService roleService;
+    /** JWT utility. */
     private final JwtUtil jwtUtil;
+    /** User validator. */
     private final UserValidator userValidator;
+    /** Current user helper. */
     private final CurrentUserUtil currentUserUtil;
 
-    public AuthService(UserService userService, SessionService sessionService,
-                       MessageService messageService, AuthenticationManager authenticationManager,
-                       Converter<User, UserDetails> userConverter, Converter<UserAuthDTO, User> userDTOToUserConverter,
-                       RoleService roleService, JwtUtil jwtUtil, UserValidator userValidator,
-                       CurrentUserUtil currentUserUtil) {
-        super(userService, sessionService, messageService, roleService);
-        this.authenticationManager = authenticationManager;
-        this.userConverter = userConverter;
-        this.userDTOToUserConverter = userDTOToUserConverter;
-        this.roleService = roleService;
-        this.jwtUtil = jwtUtil;
-        this.userValidator = userValidator;
-        this.currentUserUtil = currentUserUtil;
+    /**
+     * Constructor.
+     *
+     * @param pUserService user service
+     * @param pSessionService session service
+     * @param pMessageService message service
+     * @param pAuthenticationManager auth manager
+     * @param pUserConverter user converter
+     * @param pUserDTOToUserConverter DTO to user converter
+     * @param pRoleService role service
+     * @param pJwtUtil JWT util
+     * @param pUserValidator user validator
+     * @param pCurrentUserUtil current user util
+     */
+    public AuthService(
+            final UserService pUserService,
+            final SessionService pSessionService,
+            final MessageService pMessageService,
+            final AuthenticationManager pAuthenticationManager,
+            final Converter<User, UserDetails> pUserConverter,
+            final Converter<UserAuthDTO, User> pUserDTOToUserConverter,
+            final RoleService pRoleService,
+            final JwtUtil pJwtUtil,
+            final UserValidator pUserValidator,
+            final CurrentUserUtil pCurrentUserUtil) {
+        super(pUserService, pSessionService, pMessageService, pRoleService);
+        this.authenticationManager = pAuthenticationManager;
+        this.userConverter = pUserConverter;
+        this.userDTOToUserConverter = pUserDTOToUserConverter;
+        this.roleService = pRoleService;
+        this.jwtUtil = pJwtUtil;
+        this.userValidator = pUserValidator;
+        this.currentUserUtil = pCurrentUserUtil;
     }
 
-    public ResponseEntity<LoginResponse> login(LoginRequest loginRequest) {
+    /**
+     * Authenticates user and returns JWT.
+     *
+     * @param loginRequest credentials
+     * @return login response with token
+     */
+    public ResponseEntity<LoginResponse> login(
+            final LoginRequest loginRequest) {
         try {
-            log.info("Attempting login for user: {}", loginRequest.getUsername());
-
-            // Authentication
+            log.info("Login attempt: {}", loginRequest.getUsername());
             authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-            log.info("Authentication successful for user: {}", loginRequest.getUsername());
-
-            // Validate user password matches
-            User user = userService.findByUsernameOrEmail(loginRequest.getUsername());
+                    new UsernamePasswordAuthenticationToken(
+                            loginRequest.getUsername(),
+                            loginRequest.getPassword()));
+            log.info("Authentication successful: {}",
+                    loginRequest.getUsername());
+            User user = getUserService()
+                    .findByUsernameOrEmail(loginRequest.getUsername());
             if (user == null) {
                 log.error("User not found: {}", loginRequest.getUsername());
-                throw new UserNotFoundException("User not found: " + loginRequest.getUsername());
+                throw new UserNotFoundException(
+                        "User not found: " + loginRequest.getUsername());
             }
-
             log.debug("User found: {}", user);
-
-            userValidator.validateUserPasswordMatches(user, loginRequest.getPassword());
-            log.info("Password validation successful for user: {}", loginRequest.getUsername());
-
-            // Convert user to UserDetails
+            userValidator.validateUserPasswordMatches(user,
+                    loginRequest.getPassword());
+            log.info("Password validation successful: {}",
+                    loginRequest.getUsername());
             UserDetails userDetails = userConverter.convert(user);
             String jwtToken = jwtUtil.generateToken(userDetails);
-
-            log.info("Login successful for user: {}", loginRequest.getUsername());
-            return ResponseEntity.ok(new LoginResponse(user.getIsEmailVerified(), jwtToken, "Login successful"));
+            log.info("Login successful: {}", loginRequest.getUsername());
+            return ResponseEntity.ok(new LoginResponse(
+                    user.getIsEmailVerified(), jwtToken, "Login successful"));
         } catch (AuthenticationException | UserNotFoundException e) {
-            log.error("Login failed for user: {}. Error: {}", loginRequest.getUsername(), e.getMessage());
+            log.error("Login failed: {}. Error: {}",
+                    loginRequest.getUsername(), e.getMessage());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new LoginResponse(false, null, "Login failed: " + e.getMessage()));
+                    .body(new LoginResponse(false, null,
+                            "Login failed: " + e.getMessage()));
         }
     }
 
-    public ResponseEntity<String> verifyUser(String token) {
-        User user = userService.findByVerificationToken(token);
+    /**
+     * Verifies user by token.
+     *
+     * @param token verification token
+     * @return response message
+     */
+    public ResponseEntity<String> verifyUser(final String token) {
+        User user = getUserService().findByVerificationToken(token);
         if (user == null) {
-            return ResponseEntity.badRequest().body("Invalid verification token.");
+            return ResponseEntity.badRequest()
+                    .body("Invalid verification token.");
         }
-        userService.verifyUser(user);
+        getUserService().verifyUser(user);
         return ResponseEntity.ok("Email verified successfully.");
     }
 
+    /**
+     * Registers user or upgrades guest; returns created user.
+     *
+     * @param userAuthDTO registration data
+     * @return created/updated user
+     */
     @SuppressWarnings("all")
-    public User registerUser(UserAuthDTO userAuthDTO) {
-        User existingUser = currentUserUtil.getCurrentUserFromSecurityContext();
+    public User registerUser(final UserAuthDTO userAuthDTO) {
+        User existingUser =
+                currentUserUtil.getCurrentUserFromSecurityContext();
 
-        if (existingUser != null && userService.isGuest(existingUser)) {
+        if (existingUser != null && getUserService().isGuest(existingUser)) {
             User newUser = createNewUserToRegister(userAuthDTO);
             copyChatsHistoryFromGuestUserToNewUser(newUser, existingUser);
-
-            log.info("Upgraded guest user to registered user: {}", existingUser.getUsername());
+            log.info("Upgraded guest to registered: {}",
+                    existingUser.getUsername());
             return newUser;
-        } else if (existingUser != null && !userService.isGuest(existingUser)) {
-            // If user is already a registered user, throw an exception
-            String exceptionMessage = String.format("User %s is currently logged in, please log out to register a new user", existingUser.getUsername());
+        } else if (existingUser != null
+                && !getUserService().isGuest(existingUser)) {
+            String exceptionMessage = String.format(
+                    "User %s is currently logged in, please log out to register",
+                    existingUser.getUsername());
             throw new IllegalStateException(exceptionMessage);
         } else {
-            // Existing logic to create a new user
-            User user = userDTOToUserConverter.convert(userAuthDTO);
-            userService.registerUser(user);
-            return user;
+            User newUserFromDto =
+                    userDTOToUserConverter.convert(userAuthDTO);
+            getUserService().registerUser(newUserFromDto);
+            return newUserFromDto;
         }
     }
 
+    /**
+     * Generates a guest JWT token.
+     *
+     * @return login response with guest token
+     */
     public ResponseEntity<LoginResponse> generateGuestToken() {
-        // Allow creating guest tokens even if user is authenticated (for new sessions)
         log.info("Generating JWT guest token");
-        
         try {
             User guestUser = createGuestUser();
             String token = generateTokenForUser(guestUser);
-            log.info("✅ Successfully generated JWT token for guest user: {}", guestUser.getUsername());
-            return ResponseEntity.ok(new LoginResponse(false, token, "Guest token generated successfully"));
+            log.info("Generated JWT for guest: {}",
+                    guestUser.getUsername());
+            return ResponseEntity.ok(new LoginResponse(false, token,
+                    "Guest token generated successfully"));
         } catch (Exception e) {
-            log.error("❌ Error generating guest token: {}", e.getMessage(), e);
+            log.error("Error generating guest token: {}", e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new LoginResponse(false, null, "Failed to generate guest token: " + e.getMessage()));
+                    .body(new LoginResponse(false, null,
+                            "Failed to generate guest token: "
+                                    + e.getMessage()));
         }
     }
 
@@ -142,20 +200,22 @@ public class AuthService extends AbstractAuthService {
     private User createGuestUser() {
         log.info("Creating new guest user");
         User guestUser = new User();
-        guestUser.setRoles(Collections.singleton(roleService.findByName("GUEST")));
+        guestUser.setRoles(Collections.singleton(
+                roleService.findByName("GUEST")));
         guestUser.setLastActive(LocalDateTime.now());
         guestUser.setUsername("guest_" + UUID.randomUUID());
         guestUser.setPassword("");
-        userService.save(guestUser);
-        log.info("Created new guest user with ID: {}", guestUser.getId());
+        getUserService().save(guestUser);
+        log.info("Created guest user ID: {}", guestUser.getId());
         return guestUser;
     }
 
-    private String generateTokenForUser(User user) {
+    private String generateTokenForUser(final User user) {
         log.info("Generating token for user: {}", user.getUsername());
         UserDetails userDetails = userConverter.convert(user);
         String token = jwtUtil.generateToken(userDetails);
         log.info("Generated token for user: {}", user.getUsername());
         return token;
     }
-} 
+}
+

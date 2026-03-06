@@ -10,13 +10,28 @@ import java.util.Map;
 @Slf4j
 @Component
 public class ThymeleafService {
+
+    /** Thymeleaf template engine. */
     private final TemplateEngine templateEngine;
 
-    public ThymeleafService(TemplateEngine templateEngine) {
-        this.templateEngine = templateEngine;
+    /**
+     * Constructor.
+     *
+     * @param pTemplateEngine Thymeleaf template engine
+     */
+    public ThymeleafService(final TemplateEngine pTemplateEngine) {
+        this.templateEngine = pTemplateEngine;
     }
 
-    public String renderPlainText(String templateName, Map<String, Object> variables) {
+    /**
+     * Renders a Thymeleaf template to plain text.
+     *
+     * @param templateName template name
+     * @param variables template variables
+     * @return rendered string
+     */
+    public String renderPlainText(final String templateName,
+            final Map<String, Object> variables) {
         log.debug("Rendering template: {}", templateName);
         Context context = new Context();
         context.setVariables(variables);

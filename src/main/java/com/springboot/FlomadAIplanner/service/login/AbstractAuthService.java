@@ -13,22 +13,61 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/** Abstract auth service with user/session/message copy helpers. */
 @Component
 public abstract class AbstractAuthService {
 
-    protected final UserService userService;
-    protected final SessionService sessionService;
-    protected final MessageService messageService;
-    protected final RoleService roleService;
+    private final UserService userService;
+    private final SessionService sessionService;
+    private final MessageService messageService;
+    private final RoleService roleService;
 
-    public AbstractAuthService(UserService userService, SessionService sessionService, MessageService messageService, RoleService roleService) {
-        this.userService = userService;
-        this.sessionService = sessionService;
-        this.messageService = messageService;
-        this.roleService = roleService;
+    /**
+     * Constructor.
+     *
+     * @param pUserService user service
+     * @param pSessionService session service
+     * @param pMessageService message service
+     * @param pRoleService role service
+     */
+    public AbstractAuthService(
+            final UserService pUserService,
+            final SessionService pSessionService,
+            final MessageService pMessageService,
+            final RoleService pRoleService) {
+        this.userService = pUserService;
+        this.sessionService = pSessionService;
+        this.messageService = pMessageService;
+        this.roleService = pRoleService;
     }
 
-    protected User createNewUserToRegister(UserAuthDTO userAuthDTO) {
+    /** User service for subclasses. */
+    protected final UserService getUserService() {
+        return userService;
+    }
+
+    /** Session service for subclasses. */
+    protected final SessionService getSessionService() {
+        return sessionService;
+    }
+
+    /** Message service for subclasses. */
+    protected final MessageService getMessageService() {
+        return messageService;
+    }
+
+    /** Role service for subclasses. */
+    protected final RoleService getRoleService() {
+        return roleService;
+    }
+
+    /**
+     * Creates a new user from registration DTO.
+     *
+     * @param userAuthDTO registration data
+     * @return saved user
+     */
+    protected User createNewUserToRegister(final UserAuthDTO userAuthDTO) {
         User user = new User();
         user.setUsername(userAuthDTO.getUsername());
         user.setPassword(userAuthDTO.getPassword());
@@ -41,8 +80,17 @@ public abstract class AbstractAuthService {
         return user;
     }
 
-    protected void copyChatsHistoryFromGuestUserToNewUser(User newUser, User guestUser) {
-        List<Session> guestSessions = sessionService.findSessionsByUserId(guestUser.getId());
+    /**
+     * Copies chat history from guest user to newly registered user.
+     *
+     * @param newUser new user
+     * @param guestUser guest user
+     */
+    protected void copyChatsHistoryFromGuestUserToNewUser(
+            final User newUser,
+            final User guestUser) {
+        List<Session> guestSessions =
+                sessionService.findSessionsByUserId(guestUser.getId());
 
         for (Session guestSession : guestSessions) {
             Session newSession = new Session();
@@ -51,22 +99,28 @@ public abstract class AbstractAuthService {
             newSession.setCreatedAt(guestSession.getCreatedAt());
             newSession.setUpdatedAt(guestSession.getUpdatedAt());
             sessionService.save(newSession);
-
-            // Copy messages from old session to new session
             copyMessagesFromOldSessionToNewSession(guestSession, newSession);
-
         }
     }
 
-    protected void copyMessagesFromOldSessionToNewSession(Session oldSession, Session newSession) {
-        messageService.getMessagesBySessionId(oldSession.getId()).forEach(message -> {
-            Message newMessage = new Message();
-            newMessage.setSessionId(newSession.getId());
-            newMessage.setContent(message.getContent());
-            newMessage.setCreatedAt(message.getCreatedAt());
-            newMessage.setMetadata(message.getMetadata());
-            newMessage.setMessageType(message.getMessageType());
-            messageService.save(newMessage);
-        });
+    /**
+     * Copies messages from one session to another.
+     *
+     * @param oldSession source session
+     * @param newSession target session
+     */
+    protected void copyMessagesFromOldSessionToNewSession(
+            final Session oldSession,
+            final Session newSession) {
+        messageService.getMessagesBySessionId(oldSession.getId())
+                .forEach(message -> {
+                    Message newMessage = new Message();
+                    newMessage.setSessionId(newSession.getId());
+                    newMessage.setContent(message.getContent());
+                    newMessage.setCreatedAt(message.getCreatedAt());
+                    newMessage.setMetadata(message.getMetadata());
+                    newMessage.setMessageType(message.getMessageType());
+                    messageService.save(newMessage);
+                });
     }
 }

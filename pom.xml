@@ -427,6 +427,16 @@
                     <excludedGroups>integration</excludedGroups>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>3.6.0</version>
+                <configuration>
+                    <suppressionsLocation>checkstyle-suppressions.xml</suppressionsLocation>
+                    <!-- Write full report so you can: cat target/checkstyle-result.xml or run scripts/checkstyle-errors.sh -->
+                    <outputFile>target/checkstyle-result.xml</outputFile>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>

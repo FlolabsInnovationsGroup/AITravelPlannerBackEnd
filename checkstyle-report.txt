@@ -1,0 +1,8 @@
+The operation couldn’t be completed. Unable to locate a Java Runtime.
+Please visit http://www.java.com for information on installing Java.
+
+./mvnw: line 100: cd: ""/usr/bin": No such file or directory
+Warning: JAVA_HOME environment variable is not set.
+The operation couldn’t be completed. Unable to locate a Java Runtime.
+Please visit http://www.java.com for information on installing Java.
+

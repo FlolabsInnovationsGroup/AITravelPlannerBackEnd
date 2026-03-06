@@ -18,23 +18,38 @@ import java.util.Map;
 
 @Slf4j
 @Service
-public class AmadeusAuthService {
+public final class AmadeusAuthService {
 
+    /** RestTemplate for OAuth2 token requests. */
     private final RestTemplate restTemplate;
 
+    /** Amadeus OAuth2 token URL. */
     @Value("${amadeus.api.oauth2.url}")
     private String amadeusOauthApiUrl;
 
+    /** Amadeus API client ID. */
     @Value("${amadeus.api.key}")
     private String clientId;
 
+    /** Amadeus API client secret. */
     @Value("${amadeus.api.secret}")
     private String clientSecret;
 
-    public AmadeusAuthService(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
+    /**
+     * Constructor.
+     *
+     * @param pRestTemplate RestTemplate
+     */
+    public AmadeusAuthService(final RestTemplate pRestTemplate) {
+        this.restTemplate = pRestTemplate;
     }
 
+    /**
+     * Returns a valid Amadeus API access token.
+     *
+     * @return access token
+     * @throws AmadeusAPIException on auth failure
+     */
     public String getAccessToken() throws AmadeusAPIException {
         log.info("Getting access token from Amadeus");
         return retrieveAccessToken();
@@ -47,26 +62,31 @@ public class AmadeusAuthService {
         requestBody.add("client_id", clientId);
         requestBody.add("client_secret", clientSecret);
         requestBody.add("grant_type", "client_credentials");
-        HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(requestBody, headers);
+        HttpEntity<MultiValueMap<String, String>> requestEntity =
+                new HttpEntity<>(requestBody, headers);
 
         try {
-            ResponseEntity<Map<String, Object>> responseEntity = restTemplate.exchange(
-                amadeusOauthApiUrl, 
-                HttpMethod.POST, 
-                requestEntity, 
-                new ParameterizedTypeReference<Map<String, Object>>() {}
-            );
+            ResponseEntity<Map<String, Object>> responseEntity =
+                    restTemplate.exchange(
+                            amadeusOauthApiUrl,
+                            HttpMethod.POST,
+                            requestEntity,
+                            new ParameterizedTypeReference<
+                                    Map<String, Object>>() { });
             Map<String, Object> responseBody = responseEntity.getBody();
-            if (responseBody != null && responseBody.containsKey("access_token")) {
+            if (responseBody != null
+                    && responseBody.containsKey("access_token")) {
                 String accessToken = responseBody.get("access_token").toString();
                 log.info("Received access token from Amadeus");
                 return accessToken;
             } else {
-                throw new AmadeusAPIException("Failed to get access token: Failed to authorize in third-party service.");
+                throw new AmadeusAPIException(
+                        "Failed to get access token: auth failed.");
             }
         } catch (Exception e) {
             log.error("Failed to get access token from Amadeus", e);
-            throw new AmadeusAPIException("Error retrieving access token from Amadeus", e);
+            throw new AmadeusAPIException(
+                    "Error retrieving access token from Amadeus", e);
         }
     }
 }

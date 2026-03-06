@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<!DOCTYPE suppressions PUBLIC
+    "-//Checkstyle//DTD SuppressionFilter Configuration 1.2//EN"
+    "https://checkstyle.org/dtds/suppressions_1_2.dtd">
+<suppressions>
+    <!-- Feign/client interfaces and chat client with many API params -->
+    <suppress checks="ParameterNumber"
+        files="AmadeusClient\.java|CustomChatClient\.java"/>
+    <!-- Auth services with many injected dependencies -->
+    <suppress checks="ParameterNumber"
+        files="AuthService\.java|OAuth2Service\.java"/>
+
+    <!-- Relaxed rules for existing codebase (allow gradual cleanup) -->
+    <suppress checks="LineLength" files=".*"/>
+    <suppress checks="FinalParameters" files=".*"/>
+    <suppress checks="JavadocVariable" files=".*"/>
+    <suppress checks="RegexpSingleline" files=".*"/>
+    <suppress checks="DesignForExtension" files=".*"/>
+    <suppress checks="MissingJavadocMethod" files=".*"/>
+    <suppress checks="MagicNumber" files=".*"/>
+    <suppress checks="JavadocMethod" files=".*"/>
+    <suppress checks="HiddenField" files=".*"/>
+    <suppress checks="JavadocStyle" files=".*"/>
+    <suppress checks="OperatorWrap" files=".*"/>
+    <suppress checks="JavadocPackage" files=".*"/>
+    <suppress checks="NewlineAtEndOfFile" files=".*"/>
+    <suppress checks="AvoidStarImport" files=".*"/>
+    <suppress checks="WhitespaceAround" files=".*"/>
+    <suppress checks="NeedBraces" files=".*"/>
+    <suppress checks="UnusedImports" files=".*"/>
+    <suppress checks="JavadocType" files=".*"/>
+    <suppress checks="LocalFinalVariableName" files=".*"/>
+    <suppress checks="ConstantName" files=".*"/>
+    <suppress checks="ModifierOrder" files=".*"/>
+    <suppress checks="HideUtilityClassConstructor" files=".*"/>
+    <suppress checks="MemberName" files=".*"/>
+    <suppress checks="MethodParamPad" files=".*"/>
+    <suppress checks="WhitespaceAfter" files=".*"/>
+    <suppress checks="VisibilityModifier" files=".*"/>
+    <suppress checks="TypeName" files=".*"/>
+    <suppress checks="TodoComment" files=".*"/>
+    <suppress checks="RedundantModifier" files=".*"/>
+    <suppress checks="RedundantImport" files=".*"/>
+    <suppress checks="MissingSwitchDefault" files=".*"/>
+    <suppress checks="MethodLength" files=".*"/>
+    <suppress checks="LeftCurly" files=".*"/>
+</suppressions>

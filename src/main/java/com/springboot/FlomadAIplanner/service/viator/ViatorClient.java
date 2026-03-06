@@ -17,35 +17,56 @@ import org.springframework.web.bind.annotation.RequestHeader;
 public interface ViatorClient {
 
     /**
-     * Implementation of the GET method to get destinations
+     * GET taxonomy destinations.
      *
+     * @return JSON string of destinations
      * @description <a href="https://docs.viator.com/partner-api/technical/#tag/V1-endpoints/operation/v1TaxonomyDestinations"/>
      */
-    @GetMapping(value = "/v1/taxonomy/destinations", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/v1/taxonomy/destinations",
+            consumes = MediaType.APPLICATION_JSON_VALUE)
     String getDestinations();
 
     /**
-     * Implementation of the POST method to get attractions
+     * POST taxonomy attractions.
      *
+     * @param acceptLanguage language header
+     * @param attractionsRequest request body
+     * @return JSON string
      * @description <a href="https://docs.viator.com/partner-api/technical/#tag/V1-endpoints/operation/v1TaxonomyAttractions"/>
      */
-    @PostMapping(value = "/v1/taxonomy/attractions", consumes = MediaType.APPLICATION_JSON_VALUE)
-    String getAttractions(@RequestHeader("Accept-Language") String acceptLanguage, @RequestBody AttractionsRequest attractionsRequest);
+    @PostMapping(value = "/v1/taxonomy/attractions",
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    String getAttractions(
+            @RequestHeader("Accept-Language") String acceptLanguage,
+            @RequestBody AttractionsRequest attractionsRequest);
 
     /**
-     * Implementation of the POST method to get attraction products
+     * POST attraction products.
      *
+     * @param acceptLanguage language header
+     * @param attractionProductsRequest request body
+     * @return JSON string
      * @description <a href="https://docs.viator.com/partner-api/technical/#tag/V1-endpoints-(affiliates-only)/operation/v1AttractionProducts"/>
      */
-    @PostMapping(value = "/v1/attraction/products", consumes = MediaType.APPLICATION_JSON_VALUE)
-    String getAttractionProducts(@RequestHeader("Accept-Language") String acceptLanguage, @RequestBody AttractionProductsRequest attractionProductsRequest);
+    @PostMapping(value = "/v1/attraction/products",
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    String getAttractionProducts(
+            @RequestHeader("Accept-Language") String acceptLanguage,
+            @RequestBody AttractionProductsRequest attractionProductsRequest);
 
     /**
-     * Implementation of the POST method to search free text
+     * POST free text search.
      *
+     * @param accept Accept header
+     * @param acceptLanguage Accept-Language header
+     * @param freeTextSearchRequest request body
+     * @return search response
      * @description <a href="https://docs.viator.com/partner-api/technical/#tag/Auxiliary/operation/searchFreeText"/>
      */
-    @PostMapping(value = "/search/freetext", consumes = MediaType.APPLICATION_JSON_VALUE)
-    FreeTextSearchResponse searchFreeText(@RequestHeader("Accept") String accept, @RequestHeader("Accept-Language") String acceptLanguage, @RequestBody FreeTextSearchRequest freeTextSearchRequest);
-
+    @PostMapping(value = "/search/freetext",
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    FreeTextSearchResponse searchFreeText(
+            @RequestHeader("Accept") String accept,
+            @RequestHeader("Accept-Language") String acceptLanguage,
+            @RequestBody FreeTextSearchRequest freeTextSearchRequest);
 }

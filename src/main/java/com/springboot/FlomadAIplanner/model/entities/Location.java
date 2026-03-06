@@ -42,9 +42,9 @@ public class Location extends Model {
     private static final String RATING_MIN = "0.0";
     /** Allowed location types for Pattern. */
     private static final String LOCATION_TYPE_PATTERN =
-            "^(attraction|cafe|hotel|restaurant|transport|park|museum|beach|mountain|"
-            + "landmark|shopping|entertainment|religious|hospital|airport|station|viewpoint|"
-            + "nature|sports|accommodation)$";
+            "^(attraction|cafe|hotel|restaurant|transport|park|museum|beach|"
+            + "mountain|landmark|shopping|entertainment|religious|hospital|"
+            + "airport|station|viewpoint|nature|sports|accommodation)$";
 
     /** Associates the location with a chat/session. */
     @Field("sessionId")
@@ -54,8 +54,10 @@ public class Location extends Model {
     /** Latitude. */
     @Field("latitude")
     @NotNull(message = "Latitude cannot be null")
-    @DecimalMin(value = "-90.0", message = "Latitude must be between -90 and 90 degrees")
-    @DecimalMax(value = "90.0", message = "Latitude must be between -90 and 90 degrees")
+    @DecimalMin(value = "-90.0",
+            message = "Latitude must be between -90 and 90 degrees")
+    @DecimalMax(value = "90.0",
+            message = "Latitude must be between -90 and 90 degrees")
     private Double latitude;
 
     /** Longitude. */
@@ -69,14 +71,16 @@ public class Location extends Model {
 
     /** Optional name or description of the location. */
     @Field("name")
-    @Size(max = MAX_NAME_LENGTH, message = "Location name cannot exceed 200 characters")
+    @Size(max = MAX_NAME_LENGTH,
+            message = "Location name cannot exceed 200 characters")
     @Pattern(regexp = "^[a-zA-Z0-9\\s\\-.,()\\u00C0-\\u017F]*$",
             message = "Location name contains invalid characters")
     private String name;
 
     /** E.g. attraction, cafe, hotel, park, museum, beach. */
     @Field("type")
-    @Size(max = MAX_TYPE_LENGTH, message = "Location type cannot exceed 50 characters")
+    @Size(max = MAX_TYPE_LENGTH,
+            message = "Location type cannot exceed 50 characters")
     @Pattern(regexp = LOCATION_TYPE_PATTERN,
             message = "Location type must be one of the allowed types")
     private String type;
@@ -87,39 +91,48 @@ public class Location extends Model {
 
     /** Google Places rating (0-5 scale). */
     @Field("rating")
-    @DecimalMin(value = RATING_MIN, message = "Rating must be between 0 and 5")
-    @DecimalMax(value = RATING_MAX, message = "Rating must be between 0 and 5")
+    @DecimalMin(value = RATING_MIN,
+            message = "Rating must be between 0 and 5")
+    @DecimalMax(value = RATING_MAX,
+            message = "Rating must be between 0 and 5")
     private Double rating;
 
     /** Number of reviews. */
     @Field("userRatingsTotal")
-    @Min(value = MIN_RATINGS_TOTAL, message = "User ratings total must be non-negative")
+    @Min(value = MIN_RATINGS_TOTAL,
+            message = "User ratings total must be non-negative")
     private Integer userRatingsTotal;
 
     /** Google Places price level (1-4 scale). */
     @Field("priceLevel")
-    @Min(value = PRICE_LEVEL_MIN, message = "Price level must be between 1 and 4")
-    @Max(value = PRICE_LEVEL_MAX, message = "Price level must be between 1 and 4")
+    @Min(value = PRICE_LEVEL_MIN,
+            message = "Price level must be between 1 and 4")
+    @Max(value = PRICE_LEVEL_MAX,
+            message = "Price level must be between 1 and 4")
     private Integer priceLevel;
 
     /** Business phone number. */
     @Field("phoneNumber")
-    @Size(max = MAX_PHONE_LENGTH, message = "Phone number cannot exceed 50 characters")
+    @Size(max = MAX_PHONE_LENGTH,
+            message = "Phone number cannot exceed 50 characters")
     private String phoneNumber;
 
     /** Business website URL. */
     @Field("website")
-    @Size(max = MAX_WEBSITE_LENGTH, message = "Website URL cannot exceed 500 characters")
+    @Size(max = MAX_WEBSITE_LENGTH,
+            message = "Website URL cannot exceed 500 characters")
     private String website;
 
     /** Business address or vicinity. */
     @Field("vicinity")
-    @Size(max = MAX_VICINITY_LENGTH, message = "Vicinity cannot exceed 200 characters")
+    @Size(max = MAX_VICINITY_LENGTH,
+            message = "Vicinity cannot exceed 200 characters")
     private String vicinity;
 
     /** Google Places ID for detailed lookups. */
     @Field("placeId")
-    @Size(max = MAX_PLACE_ID_LENGTH, message = "Place ID cannot exceed 100 characters")
+    @Size(max = MAX_PLACE_ID_LENGTH,
+            message = "Place ID cannot exceed 100 characters")
     private String placeId;
 
     /** Current open status (if available). */
