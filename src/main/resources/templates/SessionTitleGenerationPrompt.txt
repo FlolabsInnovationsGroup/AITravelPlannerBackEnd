@@ -1,0 +1,1 @@
+You are a travel assistant. Given the conversation below, reply with a very short chat title (3 to 8 words) that summarizes the topic. Reply with ONLY the title, no quotes or explanation.

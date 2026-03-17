@@ -10,29 +10,47 @@ import java.util.Map;
 
 @Slf4j
 @Service
-public class WebSocketService {
+public final class WebSocketService {
+
+    /** Base destination for location updates. */
     private static final String LOCATION_DESTINATION = "/topic/locations/";
+    /** Max retry attempts for failed sends. */
+    private static final int MAX_RETRY_ATTEMPTS = 3;
+    /** Base delay in ms for retry backoff. */
+    private static final long RETRY_DELAY_MS = 1000;
+
+    /** Messaging template for STOMP. */
     private final SimpMessagingTemplate messagingTemplate;
-    
-    // Track sessions with paused broadcasting to prevent race conditions
+
+    /** Sessions with paused broadcasting (race condition prevention). */
     private final Map<String, Boolean> pausedSessions = new HashMap<>();
 
-    public WebSocketService(SimpMessagingTemplate messagingTemplate) {
-        this.messagingTemplate = messagingTemplate;
+    /**
+     * Constructor.
+     *
+     * @param pMessagingTemplate SimpMessagingTemplate
+     */
+    public WebSocketService(final SimpMessagingTemplate pMessagingTemplate) {
+        this.messagingTemplate = pMessagingTemplate;
     }
 
-    public void sendLocationUpdate(Location location) {
+    /**
+     * Sends a location update to the session topic.
+     *
+     * @param location location entity
+     */
+    public void sendLocationUpdate(final Location location) {
         if (location == null || location.getSessionId() == null) {
             log.warn("Invalid location or sessionId for LOCATION_ADDED event.");
             return;
         }
-        
-        // Check if broadcasting is paused for this session (race condition prevention)
+
         if (isBroadcastingPaused(location.getSessionId())) {
-            log.info("🚫 Skipping LOCATION_ADDED broadcast for sessionId {} - broadcasting is paused", location.getSessionId());
+            log.info("Skipping LOCATION_ADDED broadcast sessionId {} (paused)",
+                    location.getSessionId());
             return;
         }
-        
+
         String destination = LOCATION_DESTINATION + location.getSessionId();
         log.info("Sending LOCATION_ADDED to destination: {}", destination);
 
@@ -40,17 +58,22 @@ public class WebSocketService {
 
         try {
             messagingTemplate.convertAndSend(destination, message);
-            log.debug("LOCATION_ADDED message sent successfully to session: {}", location.getSessionId());
+            log.debug("LOCATION_ADDED message sent successfully to session: {}",
+                    location.getSessionId());
         } catch (Exception e) {
-            log.error("Failed to send LOCATION_ADDED message for sessionId: {} to destination: {}. Error: {}", 
-                     location.getSessionId(), destination, e.getMessage(), e);
-            
-            // Attempt retry with exponential backoff
-            retryMessage(destination, message, 1, 3);
+            log.error("LOCATION_ADDED send failed sessionId: {} dest: {}: {}",
+                    location.getSessionId(), destination, e.getMessage(), e);
+
+            retryMessage(destination, message, 1, MAX_RETRY_ATTEMPTS);
         }
     }
 
-    public void sendMapCleared(String sessionId) {
+    /**
+     * Notifies session that map was cleared.
+     *
+     * @param sessionId session id
+     */
+    public void sendMapCleared(final String sessionId) {
         if (!isValidSessionId(sessionId)) {
             log.warn("Invalid sessionId provided for MAP_CLEARED event.");
             return;
@@ -59,23 +82,33 @@ public class WebSocketService {
 
         log.info("Sending MAP_CLEARED to destination: {}", destination);
 
-        Map<String, Object> message = createMessage("MAP_CLEARED", new HashMap<>());
+        Map<String, Object> message =
+                createMessage("MAP_CLEARED", new HashMap<>());
 
         try {
             messagingTemplate.convertAndSend(destination, message);
-            log.debug("MAP_CLEARED message sent successfully to session: {}", sessionId);
+            log.debug("MAP_CLEARED sent to session: {}", sessionId);
         } catch (Exception e) {
-            log.error("Failed to send MAP_CLEARED message for sessionId: {} to destination: {}. Error: {}", 
-                     sessionId, destination, e.getMessage(), e);
-                     
-            // Attempt retry with exponential backoff
-            retryMessage(destination, message, 1, 3);
+            log.error("MAP_CLEARED send failed sessionId: {} dest: {}: {}",
+                    sessionId, destination, e.getMessage(), e);
+
+            retryMessage(destination, message, 1, MAX_RETRY_ATTEMPTS);
         }
     }
 
-    public void sendLocationRemoved(String sessionId, String locationId) {
-        if (!isValidSessionId(sessionId) || locationId == null || locationId.trim().isEmpty()) {
-            log.warn("Invalid sessionId or locationId provided for LOCATION_REMOVED event.");
+    /**
+     * Notifies session that a location was removed.
+     *
+     * @param sessionId session id
+     * @param locationId location id
+     */
+    public void sendLocationRemoved(final String sessionId,
+            final String locationId) {
+        boolean invalid = !isValidSessionId(sessionId)
+                || locationId == null
+                || locationId.trim().isEmpty();
+        if (invalid) {
+            log.warn("Invalid sessionId/locationId for LOCATION_REMOVED.");
             return;
         }
         String destination = LOCATION_DESTINATION + sessionId;
@@ -84,24 +117,26 @@ public class WebSocketService {
         Map<String, String> payload = new HashMap<>();
         payload.put("locationId", locationId);
 
-        Map<String, Object> message = createMessage("LOCATION_REMOVED", payload);
+        Map<String, Object> message =
+                createMessage("LOCATION_REMOVED", payload);
 
         try {
             messagingTemplate.convertAndSend(destination, message);
-            log.debug("LOCATION_REMOVED message sent successfully to session: {}", sessionId);
+            log.debug("LOCATION_REMOVED sent to session: {}", sessionId);
         } catch (Exception e) {
-            log.error("Failed to send LOCATION_REMOVED message for sessionId: {}, locationId: {} to destination: {}. Error: {}", 
-                     sessionId, locationId, destination, e.getMessage(), e);
-                     
-            // Attempt retry with exponential backoff
-            retryMessage(destination, message, 1, 3);
+            log.error("LOCATION_REMOVED send failed {} {} dest: {}: {}",
+                    sessionId, locationId, destination, e.getMessage(), e);
+
+            retryMessage(destination, message, 1, MAX_RETRY_ATTEMPTS);
         }
     }
 
     /**
-     * Pause WebSocket broadcasting for a session to prevent race conditions during clearing operations
+     * Pauses WebSocket broadcasting for a session (race condition prevention).
+     *
+     * @param sessionId session id
      */
-    public void pauseBroadcasting(String sessionId) {
+    public void pauseBroadcasting(final String sessionId) {
         if (isValidSessionId(sessionId)) {
             pausedSessions.put(sessionId, true);
             log.info("🚫 Paused broadcasting for sessionId: {}", sessionId);
@@ -109,9 +144,11 @@ public class WebSocketService {
     }
 
     /**
-     * Resume WebSocket broadcasting for a session after clearing operations complete
+     * Resumes WebSocket broadcasting for a session.
+     *
+     * @param sessionId session id
      */
-    public void resumeBroadcasting(String sessionId) {
+    public void resumeBroadcasting(final String sessionId) {
         if (isValidSessionId(sessionId)) {
             pausedSessions.remove(sessionId);
             log.info("✅ Resumed broadcasting for sessionId: {}", sessionId);
@@ -119,46 +156,60 @@ public class WebSocketService {
     }
 
     /**
-     * Check if broadcasting is paused for a session
+     * Checks if broadcasting is paused for a session.
+     *
+     * @param sessionId session id
+     * @return true if paused
      */
-    private boolean isBroadcastingPaused(String sessionId) {
+    private boolean isBroadcastingPaused(final String sessionId) {
         return pausedSessions.getOrDefault(sessionId, false);
     }
 
-    // Retry mechanism for failed WebSocket messages
-    private void retryMessage(String destination, Map<String, Object> message, int attempt, int maxAttempts) {
+    private void retryMessage(
+            final String destination,
+            final Map<String, Object> message,
+            final int attempt,
+            final int maxAttempts) {
         if (attempt > maxAttempts) {
-            log.error("Failed to send WebSocket message after {} attempts to destination: {}", maxAttempts, destination);
+            log.error("WebSocket send failed after {} attempts to {}",
+                    maxAttempts, destination);
             return;
         }
 
-        // Exponential backoff: 1s, 2s, 4s...
-        long delay = (long) Math.pow(2, attempt - 1) * 1000;
-        
-        log.info("Retrying WebSocket message to {} in {}ms (attempt {}/{})", destination, delay, attempt, maxAttempts);
-        
-        // Use a separate thread for retry to avoid blocking
+        long delay = (long) Math.pow(2, attempt - 1) * RETRY_DELAY_MS;
+
+        log.info("Retrying WebSocket message to {} in {}ms (attempt {}/{})",
+                destination, delay, attempt, maxAttempts);
+
         new Thread(() -> {
             try {
                 Thread.sleep(delay);
                 messagingTemplate.convertAndSend(destination, message);
-                log.info("WebSocket message retry successful for destination: {} on attempt {}", destination, attempt);
+                log.info("WebSocket retry successful for dest: {} attempt {}",
+                        destination, attempt);
             } catch (Exception e) {
-                log.warn("WebSocket message retry failed for destination: {} on attempt {}: {}", destination, attempt, e.getMessage());
+                log.warn("WebSocket retry failed {} attempt {}: {}",
+                        destination, attempt, e.getMessage());
                 retryMessage(destination, message, attempt + 1, maxAttempts);
             }
         }).start();
     }
 
-    private Map<String, Object> createMessage(String type, Object payload) {
+    private Map<String, Object> createMessage(final String type,
+            final Object payload) {
         Map<String, Object> message = new HashMap<>();
         message.put("type", type);
         message.put("payload", payload);
         return message;
     }
 
-    private boolean isValidSessionId(String sessionId) {
+    /**
+     * Validates session id non-null and non-empty.
+     *
+     * @param sessionId session id
+     * @return true if valid
+     */
+    private boolean isValidSessionId(final String sessionId) {
         return sessionId != null && !sessionId.trim().isEmpty();
     }
 }
-

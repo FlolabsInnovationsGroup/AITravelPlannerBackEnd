@@ -3,6 +3,7 @@ package com.springboot.FlomadAIplanner.ai;
 import com.springboot.FlomadAIplanner.ai.service.ChatCallService;
 import com.springboot.FlomadAIplanner.ai.dto.AIMessageDTO;
 import com.springboot.FlomadAIplanner.ai.dto.AIMessageResponse;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,10 +21,11 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Comprehensive integration test suite for the prompt system
- * Tests all prompts to ensure they work correctly with AI models
- * This validates the entire prompt system end-to-end
+ * Comprehensive integration test suite for the prompt system.
+ * Calls real AI (OpenAI); requires SPRING_AI_OPENAI_API_KEY and network.
+ * Excluded from default test run via @Tag("integration"); run with: mvn test -DexcludedGroups=
  */
+@Tag("integration")
 @SpringBootTest
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)

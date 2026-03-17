@@ -207,8 +207,9 @@ class AIResponseValidationServiceTest {
      */
     @SuppressWarnings("unchecked")
     private ConstraintViolation<AIMessageResponse> createMockViolation(String propertyPath, String message, Object invalidValue) {
+        jakarta.validation.Path path = createPropertyPath(propertyPath);
         ConstraintViolation<AIMessageResponse> violation = org.mockito.Mockito.mock(ConstraintViolation.class);
-        when(violation.getPropertyPath()).thenReturn(createPropertyPath(propertyPath));
+        when(violation.getPropertyPath()).thenReturn(path);
         when(violation.getMessage()).thenReturn(message);
         when(violation.getInvalidValue()).thenReturn(invalidValue);
         return violation;
