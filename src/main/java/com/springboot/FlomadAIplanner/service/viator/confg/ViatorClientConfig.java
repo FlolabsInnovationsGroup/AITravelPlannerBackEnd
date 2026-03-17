@@ -7,11 +7,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 
 @Slf4j
-public class ViatorClientConfig {
+public final class ViatorClientConfig {
 
+    /** Viator API partner key. */
     @Value("${viator.api.partnerKey}")
     private String apiKey;
 
+    /**
+     * Feign request interceptor that adds API key header.
+     *
+     * @return request interceptor
+     */
     @Bean("viatorRequestInterceptor")
     @Qualifier("viatorRequestInterceptor")
     public RequestInterceptor requestInterceptor() {

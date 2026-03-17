@@ -14,78 +14,140 @@ import java.time.LocalDateTime;
 @Builder
 @Document(collection = "locations")
 public class Location extends Model {
-    
+
+    /** Serial version UID. */
     private static final long serialVersionUID = -4827394756291847362L;
-    
+
+    /** Max length for location name. */
+    private static final int MAX_NAME_LENGTH = 200;
+    /** Max length for location type string. */
+    private static final int MAX_TYPE_LENGTH = 50;
+    /** Max length for phone number. */
+    private static final int MAX_PHONE_LENGTH = 50;
+    /** Max length for website URL. */
+    private static final int MAX_WEBSITE_LENGTH = 500;
+    /** Max length for vicinity string. */
+    private static final int MAX_VICINITY_LENGTH = 200;
+    /** Max length for place ID. */
+    private static final int MAX_PLACE_ID_LENGTH = 100;
+    /** Min price level (Google Places). */
+    private static final int PRICE_LEVEL_MIN = 1;
+    /** Max price level (Google Places). */
+    private static final int PRICE_LEVEL_MAX = 4;
+    /** Minimum user ratings total (non-negative). */
+    private static final int MIN_RATINGS_TOTAL = 0;
+    /** Rating scale max. */
+    private static final String RATING_MAX = "5.0";
+    /** Rating scale min. */
+    private static final String RATING_MIN = "0.0";
+    /** Allowed location types for Pattern. */
+    private static final String LOCATION_TYPE_PATTERN =
+            "^(attraction|cafe|hotel|restaurant|transport|park|museum|beach|"
+            + "mountain|landmark|shopping|entertainment|religious|hospital|"
+            + "airport|station|viewpoint|nature|sports|accommodation)$";
+
+    /** Associates the location with a chat/session. */
     @Field("sessionId")
     @NotBlank
-    private String sessionId; // Associates the location with a chat/session
+    private String sessionId;
 
+    /** Latitude. */
     @Field("latitude")
     @NotNull(message = "Latitude cannot be null")
-    @DecimalMin(value = "-90.0", message = "Latitude must be between -90 and 90 degrees")
-    @DecimalMax(value = "90.0", message = "Latitude must be between -90 and 90 degrees")
+    @DecimalMin(value = "-90.0",
+            message = "Latitude must be between -90 and 90 degrees")
+    @DecimalMax(value = "90.0",
+            message = "Latitude must be between -90 and 90 degrees")
     private Double latitude;
 
+    /** Longitude. */
     @Field("longitude")
     @NotNull(message = "Longitude cannot be null")
-    @DecimalMin(value = "-180.0", message = "Longitude must be between -180 and 180 degrees")  
-    @DecimalMax(value = "180.0", message = "Longitude must be between -180 and 180 degrees")
+    @DecimalMin(value = "-180.0",
+            message = "Longitude must be between -180 and 180 degrees")
+    @DecimalMax(value = "180.0",
+            message = "Longitude must be between -180 and 180 degrees")
     private Double longitude;
 
+    /** Optional name or description of the location. */
     @Field("name")
-    @Size(max = 200, message = "Location name cannot exceed 200 characters")
-    @Pattern(regexp = "^[a-zA-Z0-9\\s\\-.,()\\u00C0-\\u017F]*$", message = "Location name contains invalid characters")
-    private String name; // Optional name or description of the location
+    @Size(max = MAX_NAME_LENGTH,
+            message = "Location name cannot exceed 200 characters")
+    @Pattern(regexp = "^[a-zA-Z0-9\\s\\-.,()\\u00C0-\\u017F]*$",
+            message = "Location name contains invalid characters")
+    private String name;
 
+    /** E.g. attraction, cafe, hotel, park, museum, beach. */
     @Field("type")
-    @Size(max = 50, message = "Location type cannot exceed 50 characters")
-    @Pattern(regexp = "^(attraction|cafe|hotel|restaurant|transport|park|museum|beach|mountain|landmark|shopping|entertainment|religious|hospital|airport|station|viewpoint|nature|sports|accommodation)$", message = "Location type must be one of: attraction, cafe, hotel, restaurant, transport, park, museum, beach, mountain, landmark, shopping, entertainment, religious, hospital, airport, station, viewpoint, nature, sports, accommodation")
-    private String type; // E.g., "attraction", "cafe", "hotel", "park", "museum", "beach"
+    @Size(max = MAX_TYPE_LENGTH,
+            message = "Location type cannot exceed 50 characters")
+    @Pattern(regexp = LOCATION_TYPE_PATTERN,
+            message = "Location type must be one of the allowed types")
+    private String type;
 
-    // Enhanced information for rich popups
+    /** Photo URLs from Google Places API. */
     @Field("photos")
-    private java.util.List<String> photos; // Photo URLs from Google Places API
+    private java.util.List<String> photos;
 
+    /** Google Places rating (0-5 scale). */
     @Field("rating")
-    @DecimalMin(value = "0.0", message = "Rating must be between 0 and 5")
-    @DecimalMax(value = "5.0", message = "Rating must be between 0 and 5")
-    private Double rating; // Google Places rating (0-5 scale)
+    @DecimalMin(value = RATING_MIN,
+            message = "Rating must be between 0 and 5")
+    @DecimalMax(value = RATING_MAX,
+            message = "Rating must be between 0 and 5")
+    private Double rating;
 
+    /** Number of reviews. */
     @Field("userRatingsTotal")
-    @Min(value = 0, message = "User ratings total must be non-negative")
-    private Integer userRatingsTotal; // Number of reviews
+    @Min(value = MIN_RATINGS_TOTAL,
+            message = "User ratings total must be non-negative")
+    private Integer userRatingsTotal;
 
+    /** Google Places price level (1-4 scale). */
     @Field("priceLevel")
-    @Min(value = 1, message = "Price level must be between 1 and 4")
-    @Max(value = 4, message = "Price level must be between 1 and 4")
-    private Integer priceLevel; // Google Places price level (1-4 scale)
+    @Min(value = PRICE_LEVEL_MIN,
+            message = "Price level must be between 1 and 4")
+    @Max(value = PRICE_LEVEL_MAX,
+            message = "Price level must be between 1 and 4")
+    private Integer priceLevel;
 
+    /** Business phone number. */
     @Field("phoneNumber")
-    @Size(max = 50, message = "Phone number cannot exceed 50 characters")
-    private String phoneNumber; // Business phone number
+    @Size(max = MAX_PHONE_LENGTH,
+            message = "Phone number cannot exceed 50 characters")
+    private String phoneNumber;
 
+    /** Business website URL. */
     @Field("website")
-    @Size(max = 500, message = "Website URL cannot exceed 500 characters")
-    private String website; // Business website URL
+    @Size(max = MAX_WEBSITE_LENGTH,
+            message = "Website URL cannot exceed 500 characters")
+    private String website;
 
+    /** Business address or vicinity. */
     @Field("vicinity")
-    @Size(max = 200, message = "Vicinity cannot exceed 200 characters")
-    private String vicinity; // Business address or vicinity
+    @Size(max = MAX_VICINITY_LENGTH,
+            message = "Vicinity cannot exceed 200 characters")
+    private String vicinity;
 
+    /** Google Places ID for detailed lookups. */
     @Field("placeId")
-    @Size(max = 100, message = "Place ID cannot exceed 100 characters")
-    private String placeId; // Google Places ID for detailed lookups
+    @Size(max = MAX_PLACE_ID_LENGTH,
+            message = "Place ID cannot exceed 100 characters")
+    private String placeId;
 
+    /** Current open status (if available). */
     @Field("isOpen")
-    private Boolean isOpen; // Current open status (if available)
+    private Boolean isOpen;
 
+    /** Opening hours text. */
     @Field("weekdayText")
-    private java.util.List<String> weekdayText; // Opening hours text
+    private java.util.List<String> weekdayText;
 
+    /** Created timestamp. */
     @Field("createdAt")
     private LocalDateTime createdAt;
 
+    /** Last updated timestamp. */
     @Field("updatedAt")
     private LocalDateTime updatedAt;
 }

@@ -31,12 +31,14 @@ public class EntityReturnProcessingStrategy<T> implements MessageProcessingStrat
         try {
             // Set session ID in context so AI functions can access it
             SessionContextHolder.setSessionId(aiMessage.getSessionId());
-            log.info("🎯 Set session ID in context for functions: {}", aiMessage.getSessionId());
-            
+            log.info("🎯 Set session ID in context for functions: {}",
+                    aiMessage.getSessionId());
+
             return client.prompt()
                     .system(systemPrompt.getContents())
                     .user(aiMessage.getMessage())
-                    .advisors(a -> a.param(CHAT_MEMORY_CONVERSATION_ID_KEY, aiMessage.getSessionId()))
+                    .advisors(a -> a.param(CHAT_MEMORY_CONVERSATION_ID_KEY,
+                            aiMessage.getSessionId()))
                     .functions(requiredFunctions.toArray(new String[0]))
                     .call()
                     .entity(clazz);
@@ -47,7 +49,7 @@ public class EntityReturnProcessingStrategy<T> implements MessageProcessingStrat
     }
 
     @SuppressWarnings("unchecked")
-    private Class<T> getReturnClassType(Class<?> clazz) {
+    private Class<T> getReturnClassType(final Class<?> clazz) {
         log.debug("Getting return class type: {}", clazz.getName());
         return (Class<T>) clazz;
     }

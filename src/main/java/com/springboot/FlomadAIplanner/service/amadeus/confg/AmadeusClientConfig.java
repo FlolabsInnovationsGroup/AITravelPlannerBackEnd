@@ -8,13 +8,25 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 
 @Slf4j
-public class AmadeusClientConfig {
+public final class AmadeusClientConfig {
+
+    /** Amadeus auth service for access tokens. */
     private final AmadeusAuthService amadeusAuthService;
 
-    public AmadeusClientConfig(AmadeusAuthService amadeusAuthService) {
-        this.amadeusAuthService = amadeusAuthService;
+    /**
+     * Constructor.
+     *
+     * @param pAmadeusAuthService Amadeus auth service
+     */
+    public AmadeusClientConfig(final AmadeusAuthService pAmadeusAuthService) {
+        this.amadeusAuthService = pAmadeusAuthService;
     }
 
+    /**
+     * Request interceptor bean that adds Bearer token to Amadeus API requests.
+     *
+     * @return request interceptor
+     */
     @Bean("amadeusRequestInterceptor")
     @Qualifier("amadeusRequestInterceptor")
     public RequestInterceptor requestInterceptor() {
