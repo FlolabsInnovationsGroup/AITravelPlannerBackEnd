@@ -5,11 +5,16 @@ import com.springboot.FlomadAIplanner.ai.dto.AIMessageDTO;
 import com.springboot.FlomadAIplanner.ai.dto.AIMessageResponse;
 import com.springboot.FlomadAIplanner.ai.factory.AgentFactory;
 import com.springboot.FlomadAIplanner.ai.functions.AutoLocationExtractionFunction;
+import com.springboot.FlomadAIplanner.ai.functions.ShowLocationFunction;
 import com.springboot.FlomadAIplanner.ai.validation.AIResponseValidationService;
 import com.springboot.FlomadAIplanner.ai.validation.ValidationResult;
+import com.springboot.FlomadAIplanner.model.entities.Message;
+import com.springboot.FlomadAIplanner.service.geoapify.GeoapifyService;
 import com.springboot.FlomadAIplanner.service.model.MessageService;
 import lombok.extern.slf4j.Slf4j;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import org.springframework.ai.chat.messages.MessageType;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
@@ -29,10 +34,29 @@ public class EnhancedChatCallService extends AbstractChatService {
     private final AIResponseValidationService validationService;
     private final ResponseCacheService cacheService;
     private final AutoLocationExtractionFunction autoLocationExtractionFunction;
+    private final GeoapifyService geoapifyService;
+    private final ShowLocationFunction showLocationFunction;
     
     // Pattern to detect tour/itinerary requests that should trigger location extraction
     private static final Pattern TOUR_PATTERN = Pattern.compile(
         "\\b(tour|itinerary|trip|journey|visit|travel to|explore|foodie|cultural|day trip|multi-city)\\b",
+        Pattern.CASE_INSENSITIVE
+    );
+
+    // Single-location “spotlight” prompts that we can deterministically fulfill if the AI didn't call functions.
+    // Examples:
+    // - "show me Paris"
+    // - "take me to London"
+    // - "focus on Tokyo"
+    private static final Pattern SIMPLE_SPOTLIGHT_PATTERN = Pattern.compile(
+        "^\\s*(show\\s+me|take\\s+me\\s+to|focus\\s+on|where\\s+is)\\s+\"?([^\"?\\n]+?)\"?\\s*[\\?\\.!]?\\s*$",
+        Pattern.CASE_INSENSITIVE
+    );
+
+    // Follow-up map intent after a conversational list, e.g.:
+    // "show me these locations", "show these on map", "put them on the map"
+    private static final Pattern MAP_FOLLOWUP_INTENT_PATTERN = Pattern.compile(
+        "\\b(show|display|put|add|mark|pin)\\b.*\\b(map|locations|these|them)\\b|\\bshow\\s+me\\s+these\\s+locations\\b",
         Pattern.CASE_INSENSITIVE
     );
 
@@ -42,12 +66,16 @@ public class EnhancedChatCallService extends AbstractChatService {
                                   MessageService messageService,
                                   AIResponseValidationService validationService,
                                   ResponseCacheService cacheService,
-                                  AutoLocationExtractionFunction autoLocationExtractionFunction) {
+                                  AutoLocationExtractionFunction autoLocationExtractionFunction,
+                                  GeoapifyService geoapifyService,
+                                  ShowLocationFunction showLocationFunction) {
         super(agentFactory, aiFunctionDescriptions, promptsList);
         this.messageService = messageService;
         this.validationService = validationService;
         this.cacheService = cacheService;
         this.autoLocationExtractionFunction = autoLocationExtractionFunction;
+        this.geoapifyService = geoapifyService;
+        this.showLocationFunction = showLocationFunction;
         log.info("✅ EnhancedChatCallService initialized with validation and caching support");
     }
 
@@ -166,6 +194,25 @@ public class EnhancedChatCallService extends AbstractChatService {
                 if (shouldTriggerLocationExtraction(aiMessage.getMessage())) {
                     triggerAutomaticLocationExtraction(messageResponse.getMessage(), aiMessage.getSessionId());
                 }
+
+                // If user asks to "show these locations on map", extract locations from recent assistant context.
+                // This handles conversational flows where assistant listed destinations first,
+                // then user requests mapping in a follow-up message.
+                if (shouldTriggerMapFollowupExtraction(aiMessage.getMessage())) {
+                    triggerMapFollowupFromConversationContext(aiMessage.getSessionId(), messageResponse.getMessage());
+                }
+
+            // Deterministic fallback for single-location spotlight prompts.
+            // If the AI didn't call showLocationFunction/addLocationFunction and the map remains empty,
+            // we geocode the requested destination and directly spotlight it.
+            try {
+                triggerSingleLocationSpotlightFallback(
+                    aiMessage.getMessage(),
+                    aiMessage.getSessionId()
+                );
+            } catch (Exception fallbackErr) {
+                log.warn("⚠️ Single-location fallback failed (non-fatal): {}", fallbackErr.getMessage());
+            }
             }
 
             log.info("✅ Successfully processed entity message for session: {}", aiMessage.getSessionId());
@@ -234,5 +281,105 @@ public class EnhancedChatCallService extends AbstractChatService {
             log.error("❌ Error during automatic location extraction: {}", e.getMessage(), e);
             // Don't fail the entire request - location extraction is supplementary
         }
+    }
+
+    private boolean shouldTriggerMapFollowupExtraction(String userMessage) {
+        if (userMessage == null || userMessage.isBlank()) return false;
+        return MAP_FOLLOWUP_INTENT_PATTERN.matcher(userMessage).find();
+    }
+
+    private void triggerMapFollowupFromConversationContext(String sessionId, String currentAssistantResponse) {
+        try {
+            String extractionSource = getLatestAssistantListMessage(sessionId, currentAssistantResponse);
+            if (extractionSource == null || extractionSource.isBlank()) {
+                log.info("🗺️ Map follow-up detected but no suitable assistant list message found in context.");
+                return;
+            }
+
+            log.info("🗺️ Map follow-up trigger: extracting locations from prior assistant response for session={}", sessionId);
+            triggerAutomaticLocationExtraction(extractionSource, sessionId);
+        } catch (Exception e) {
+            log.warn("⚠️ Map follow-up extraction failed (non-fatal): {}", e.getMessage());
+        }
+    }
+
+    private String getLatestAssistantListMessage(String sessionId, String currentAssistantResponse) {
+        List<Message> messages = messageService.getMessagesBySessionIdWithLimit(sessionId, 40);
+        if (messages == null || messages.isEmpty()) return null;
+
+        // Scan newest -> oldest
+        for (int i = messages.size() - 1; i >= 0; i--) {
+            Message message = messages.get(i);
+            if (message.getMessageType() != MessageType.ASSISTANT) continue;
+            String content = message.getContent();
+            if (content == null || content.isBlank()) continue;
+
+            // Skip the current AI response that may be a generic "no locations marked" message.
+            if (currentAssistantResponse != null && content.trim().equals(currentAssistantResponse.trim())) continue;
+
+            String lower = content.toLowerCase();
+            if (lower.contains("there are currently no locations marked on your map")) continue;
+            if (lower.contains("no locations marked on your map")) continue;
+
+            // Prefer richer destination-list style responses to extract place names from.
+            boolean likelyLocationList = content.contains("•")
+                    || content.contains("\n-")
+                    || lower.contains("must-visit")
+                    || lower.contains("here are")
+                    || lower.contains("places");
+            if (likelyLocationList && content.length() > 80) {
+                return content;
+            }
+        }
+
+        return null;
+    }
+
+    private void triggerSingleLocationSpotlightFallback(String userMessage, String sessionId) {
+        if (sessionId == null || sessionId.isBlank()) return;
+        if (userMessage == null || userMessage.isBlank()) return;
+
+        // Don't interfere with multi-city/tour logic.
+        if (shouldTriggerLocationExtraction(userMessage)) return;
+
+        // Only handle very simple spotlight prompts.
+        var match = SIMPLE_SPOTLIGHT_PATTERN.matcher(userMessage);
+        if (!match.find()) return;
+
+        // Avoid “two cities in one sentence” ambiguity.
+        String rawDestination = match.group(2);
+        if (rawDestination == null) return;
+        String destination = rawDestination.trim();
+        if (destination.isEmpty()) return;
+        if (destination.contains(",") || destination.toLowerCase().contains(" and ")) return;
+
+        log.info("🛟 Fallback spotlight: geocoding destination='{}' for session='{}'", destination, sessionId);
+        JsonNode geocode = geoapifyService.geocode(destination);
+
+        if (geocode == null || geocode.has("error")) {
+            log.warn("🛟 Fallback spotlight: geocode failed: {}", geocode != null ? geocode.toString() : "null");
+            return;
+        }
+
+        JsonNode results = geocode.get("results");
+        if (results == null || !results.isArray() || results.isEmpty()) return;
+
+        JsonNode first = results.get(0);
+        double lat = first.path("lat").asDouble(Double.NaN);
+        double lon = first.path("lon").asDouble(Double.NaN);
+        if (Double.isNaN(lat) || Double.isNaN(lon)) return;
+
+        String name = first.hasNonNull("name") ? first.get("name").asText() : destination;
+
+        ShowLocationFunction.ShowLocationRequest request = new ShowLocationFunction.ShowLocationRequest();
+        request.setLatitude(lat);
+        request.setLongitude(lon);
+        request.setName(name);
+        request.setType("attraction");
+        request.setSessionId(sessionId);
+
+        // Reuse the existing spotlight logic to keep behavior consistent:
+        // clear locations, save new one, and broadcast via websocket.
+        showLocationFunction.apply(request);
     }
 }

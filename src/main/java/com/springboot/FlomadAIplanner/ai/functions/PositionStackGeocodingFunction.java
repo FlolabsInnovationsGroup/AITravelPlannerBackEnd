@@ -4,12 +4,8 @@ import com.fasterxml.jackson.annotation.JsonClassDescription;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.springboot.FlomadAIplanner.dto.google.TextSearchRequest;
 import com.springboot.FlomadAIplanner.dto.positionstack.PositionStackForwardGeocodingRequest;
-import com.springboot.FlomadAIplanner.dto.positionstack.PositionStackResponse.PositionStackData;
-import com.springboot.FlomadAIplanner.exceptions.api.GoogleAPIException;
-import com.springboot.FlomadAIplanner.service.google.GooglePlacesService;
-import com.springboot.FlomadAIplanner.service.positionstack.PositionStackService;
+import com.springboot.FlomadAIplanner.service.geoapify.GeoapifyService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
@@ -21,62 +17,45 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.function.Function;
 
-/**
- * Geocoding function that prioritizes PositionStack and falls back to Google Places API if needed.
- */
 @Slf4j
 @Component
 @Description("""
-        Uses PositionStack to find coordinates from a place name or address.
-        If PositionStack fails, falls back to Google Places API.
+        Uses Geoapify to find coordinates from a place name or address.
         """)
 public class PositionStackGeocodingFunction
         implements Function<PositionStackForwardGeocodingRequest, List<JsonNode>> {
 
-    private final PositionStackService positionStackService;
-    private final GooglePlacesService googlePlacesService;
+    private final GeoapifyService geoapifyService;
 
-    public PositionStackGeocodingFunction(PositionStackService positionStackService, GooglePlacesService googlePlacesService) {
-        this.positionStackService = positionStackService;
-        this.googlePlacesService = googlePlacesService;
+    public PositionStackGeocodingFunction(GeoapifyService geoapifyService) {
+        this.geoapifyService = geoapifyService;
     }
 
     @Override
     public List<JsonNode> apply(PositionStackForwardGeocodingRequest input) {
-        log.info("🔍 Geocoding request for: {}", input.getQuery());
-
-        // 🛠 Step 1: Try PositionStack
-        List<PositionStackData> positionStackResults = positionStackService.bulkForwardGeocode(List.of(input));
-
-        if (positionStackResults != null && !positionStackResults.isEmpty()) {
-            log.info("✅ PositionStack returned {} results", positionStackResults.size());
-            return List.of(JsonNodeFactory.instance.pojoNode(positionStackResults));
-        }
-
-        // 🚨 Step 2: Fallback to Google Places if PositionStack failed
-        log.warn("⚠️ PositionStack returned no results, falling back to Google Places API.");
-
-        TextSearchRequest googleRequest = new TextSearchRequest(input.getQuery());
+        log.info("Geocoding request for: {}", input.getQuery());
 
         try {
-            JsonNode googleResponse = googlePlacesService.textSearchPlaces(googleRequest);
-            if (googleResponse != null) {
-                log.info("✅ Google Places returned geocoding results");
-                return List.of(googleResponse);
+            JsonNode geoapifyResult = geoapifyService.geocode(input.getQuery());
+
+            if (geoapifyResult != null && !geoapifyResult.has("error")) {
+                log.info("Geoapify returned geocoding results");
+                return List.of(geoapifyResult);
             }
-        } catch (GoogleAPIException e) {
-            log.error("❌ Google Places API failed to fetch geocoding data", e);
+
+            log.error("Geoapify geocoding returned no results for: {}", input.getQuery());
+        } catch (Exception e) {
+            log.error("Geoapify geocoding failed: {}", e.getMessage(), e);
         }
 
-        // ❌ Step 3: If both fail, return an explicit error message
-        log.error("❌ Geocoding failed: Both PositionStack and Google Places returned no results.");
-        return List.of(JsonNodeFactory.instance.objectNode().put("error", "Geocoding failed: No results from PositionStack or Google Places."));
+        return List.of(JsonNodeFactory.instance.objectNode()
+                .put("error", "Geocoding failed: No results from Geoapify for query: " + input.getQuery()));
     }
 
     @Data
     @AllArgsConstructor
     @JsonClassDescription("""
-        Wrapper for multiple PositionStack geocoding requests.
+        Wrapper for multiple geocoding requests.
         JSON Schema of type: 'object'
         """)
     public static class PositionStackForwardGeocodingRequestsWrapper {

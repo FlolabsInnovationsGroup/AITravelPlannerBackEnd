@@ -1,6 +1,7 @@
 package com.springboot.FlomadAIplanner.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -19,7 +20,8 @@ public class ThymeleafService {
      *
      * @param pTemplateEngine Thymeleaf template engine
      */
-    public ThymeleafService(final TemplateEngine pTemplateEngine) {
+    public ThymeleafService(
+            @Qualifier("customTemplateEngine") final TemplateEngine pTemplateEngine) {
         this.templateEngine = pTemplateEngine;
     }
 

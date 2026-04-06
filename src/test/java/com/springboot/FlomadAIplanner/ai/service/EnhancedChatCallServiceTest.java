@@ -4,8 +4,10 @@ import com.springboot.FlomadAIplanner.ai.dto.AIMessageDTO;
 import com.springboot.FlomadAIplanner.ai.factory.AgentFactory;
 import com.springboot.FlomadAIplanner.ai.agents.Agent;
 import com.springboot.FlomadAIplanner.ai.functions.AutoLocationExtractionFunction;
+import com.springboot.FlomadAIplanner.ai.functions.ShowLocationFunction;
 import com.springboot.FlomadAIplanner.ai.validation.AIResponseValidationService;
 import com.springboot.FlomadAIplanner.model.entities.Message;
+import com.springboot.FlomadAIplanner.service.geoapify.GeoapifyService;
 import com.springboot.FlomadAIplanner.service.model.MessageService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 /**
@@ -49,6 +50,12 @@ class EnhancedChatCallServiceTest {
     @Mock
     private AutoLocationExtractionFunction autoLocationExtractionFunction;
 
+    @Mock
+    private GeoapifyService geoapifyService;
+
+    @Mock
+    private ShowLocationFunction showLocationFunction;
+
     private EnhancedChatCallService chatService;
 
     private static final String TEST_SESSION_ID = "test-session-123";
@@ -61,7 +68,17 @@ class EnhancedChatCallServiceTest {
         Map<String, String> promptsList = new HashMap<>();
         promptsList.put("default", "You are a helpful travel assistant.");
 
-        chatService = new EnhancedChatCallService(agentFactory, aiFunctionDescriptions, promptsList, messageService, validationService, cacheService, autoLocationExtractionFunction);
+        chatService = new EnhancedChatCallService(
+            agentFactory,
+            aiFunctionDescriptions,
+            promptsList,
+            messageService,
+            validationService,
+            cacheService,
+            autoLocationExtractionFunction,
+            geoapifyService,
+            showLocationFunction
+        );
     }
 
     @Test

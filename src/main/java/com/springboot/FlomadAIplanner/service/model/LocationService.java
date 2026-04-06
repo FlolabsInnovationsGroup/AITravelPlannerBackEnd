@@ -19,6 +19,7 @@ public class LocationService {
         this.locationRepository = locationRepository;
     }
 
+    @CacheEvict(value = "location-cache", key = "#location.sessionId")
     public Location save(Location location) {
         log.info("Saving location: {}", location);
         location.setCreatedAt(LocalDateTime.now());
@@ -56,6 +57,7 @@ public class LocationService {
     }
 
 
+    @CacheEvict(value = "location-cache", key = "#sessionId")
     public void deleteAllBySessionId(String sessionId) {
         log.info("Starting deletion of all locations for session ID: {}", sessionId);
 

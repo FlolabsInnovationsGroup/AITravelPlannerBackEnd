@@ -4,25 +4,19 @@ import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.springboot.FlomadAIplanner.dto.google.TextSearchRequest;
-import com.springboot.FlomadAIplanner.service.google.GooglePlacesServiceAsync;
+import com.springboot.FlomadAIplanner.service.geoapify.GeoapifyService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Description;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
-/**
- * Function for searching place details using text queries.
- */
 @Slf4j
 @Component
 @Description("""
@@ -33,7 +27,6 @@ import java.util.stream.Collectors;
 
         ✨ CONVERSATIONAL MAGIC:
         🎯 Enthusiastic descriptions that capture the wonder of each place
-        🗺️ Direct Google Maps links for instant exploration
         🌐 Official website connections when available
         ⭐ Authentic ratings and insider knowledge
         💡 Contextual suggestions for deeper exploration
@@ -52,200 +45,153 @@ import java.util.stream.Collectors;
 
 public class PlaceTextSearchFunction implements Function<PlaceTextSearchFunction.TextSearchRequestsWrapper, JsonNode> {
 
+    private final GeoapifyService geoapifyService;
 
-    private final GooglePlacesServiceAsync googlePlacesService;
-
-    @Value("${google.api.key}") // ✅ Reads API Key from application.properties
-    private String googleApiKey;
-
-    public PlaceTextSearchFunction(GooglePlacesServiceAsync googlePlacesService) {
-        this.googlePlacesService = googlePlacesService;
+    public PlaceTextSearchFunction(GeoapifyService geoapifyService) {
+        this.geoapifyService = geoapifyService;
     }
 
     @Override
     @Valid
     public JsonNode apply(TextSearchRequestsWrapper requestsWrapper) {
-        log.info("🔎 Performing text search for {} queries...", requestsWrapper.getRequests().size());
+        log.info("Performing text search for {} queries...", requestsWrapper.getRequests().size());
 
-        List<CompletableFuture<JsonNode>> searchFutures = new ArrayList<>();
+        List<JsonNode> placeResults = new ArrayList<>();
 
         try {
             for (TextSearchRequest request : requestsWrapper.getRequests()) {
-                searchFutures.add(googlePlacesService.asyncTextSearchPlaces(request));
+                JsonNode result = geoapifyService.textSearchPlaces(request.getTextQuery());
+                placeResults.add(result);
             }
 
-            // ✅ Collect results from async operations
-            List<JsonNode> placeResults = searchFutures.stream()
-                    .map(CompletableFuture::join)
-                    .collect(Collectors.toList());
+            log.info("Received {} place results from Geoapify.", placeResults.size());
 
-            log.info("📡 Received {} place results from Google API.", placeResults.size());
-
-            // 🎉 Generate conversational responses for each location instead of raw data
-            JsonNode conversationalResults = generateConversationalPlaceResponse(placeResults, requestsWrapper.getRequests());
-            
-            return conversationalResults;
+            return generateConversationalPlaceResponse(placeResults, requestsWrapper.getRequests());
 
         } catch (Exception e) {
-            log.error("❌ Error performing text search", e);
+            log.error("Error performing text search", e);
             return JsonNodeFactory.instance.objectNode().put("error", e.getMessage());
         }
     }
 
-    /**
-     * 🎨 Generates conversational, enthusiastic responses about places instead of raw technical data
-     */
     private JsonNode generateConversationalPlaceResponse(List<JsonNode> placeResults, List<TextSearchRequest> originalRequests) {
         JsonNode resultArray = JsonNodeFactory.instance.arrayNode();
-        
+
         for (int i = 0; i < placeResults.size() && i < originalRequests.size(); i++) {
             JsonNode placeData = placeResults.get(i);
             String searchQuery = originalRequests.get(i).getTextQuery();
-            
+
             JsonNode conversationalResponse = transformToConversationalResponse(placeData, searchQuery);
             ((com.fasterxml.jackson.databind.node.ArrayNode) resultArray).add(conversationalResponse);
         }
-        
+
         return resultArray;
     }
 
-    /**
-     * 🌟 Transforms raw Google Places data into enthusiastic, travel-friendly responses
-     */
     private JsonNode transformToConversationalResponse(JsonNode placeData, String searchQuery) {
         JsonNode objectNode = JsonNodeFactory.instance.objectNode();
-        
+
         try {
-            // Extract data from Google Places response
-            JsonNode places = placeData.get("places");
-            if (places != null && places.isArray() && places.size() > 0) {
-                JsonNode firstPlace = places.get(0);
-                
-                String displayName = extractDisplayName(firstPlace);
-                String address = extractAddress(firstPlace);
-                Double rating = extractRating(firstPlace);
-                String websiteUri = extractWebsiteUri(firstPlace);
-                String googleMapsUri = extractGoogleMapsUri(firstPlace);
-                
-                // 🎉 Generate enthusiastic, varied responses
+            JsonNode geocode = placeData.get("geocode");
+            if (geocode != null) {
+                String displayName = geocode.has("name") && !geocode.get("name").isNull()
+                        ? geocode.get("name").asText() : searchQuery;
+                String address = geocode.has("formatted") ? geocode.get("formatted").asText() : "a wonderful destination";
+                String websiteUri = null;
+                if (geocode.has("datasource") && geocode.get("datasource").has("raw")
+                        && geocode.get("datasource").get("raw").has("website")) {
+                    websiteUri = geocode.get("datasource").get("raw").get("website").asText();
+                }
+                Double lat = geocode.has("lat") ? geocode.get("lat").asDouble() : null;
+                Double lon = geocode.has("lon") ? geocode.get("lon").asDouble() : null;
+
                 String conversationalMessage = generateEnthusiasticLocationDescription(
-                    displayName, address, rating, websiteUri, googleMapsUri, searchQuery);
-                    
+                        displayName, address, null, websiteUri, lat, lon, searchQuery);
+
                 ((com.fasterxml.jackson.databind.node.ObjectNode) objectNode).put("message", conversationalMessage);
-                
-                // Add helpful suggestions
+
                 JsonNode suggestions = generateLocationSuggestions(displayName);
                 ((com.fasterxml.jackson.databind.node.ObjectNode) objectNode).set("suggestions", suggestions);
-                
+
+            } else if (placeData.has("results") && placeData.get("results").size() > 0) {
+                JsonNode firstResult = placeData.get("results").get(0);
+                String displayName = firstResult.has("name") && !firstResult.get("name").isNull()
+                        ? firstResult.get("name").asText()
+                        : (firstResult.has("formatted") ? firstResult.get("formatted").asText() : searchQuery);
+                String address = firstResult.has("formatted") ? firstResult.get("formatted").asText() : "a wonderful destination";
+                String websiteUri = null;
+                if (firstResult.has("datasource") && firstResult.get("datasource").has("raw")
+                        && firstResult.get("datasource").get("raw").has("website")) {
+                    websiteUri = firstResult.get("datasource").get("raw").get("website").asText();
+                }
+                Double lat = firstResult.has("lat") ? firstResult.get("lat").asDouble() : null;
+                Double lon = firstResult.has("lon") ? firstResult.get("lon").asDouble() : null;
+
+                String conversationalMessage = generateEnthusiasticLocationDescription(
+                        displayName, address, null, websiteUri, lat, lon, searchQuery);
+
+                ((com.fasterxml.jackson.databind.node.ObjectNode) objectNode).put("message", conversationalMessage);
+
+                JsonNode suggestions = generateLocationSuggestions(displayName);
+                ((com.fasterxml.jackson.databind.node.ObjectNode) objectNode).set("suggestions", suggestions);
             } else {
-                ((com.fasterxml.jackson.databind.node.ObjectNode) objectNode).put("message", 
-                    "🌍 I couldn't find specific details for \"" + searchQuery + "\", but let me help you discover amazing places nearby! What type of experience are you looking for?");
+                ((com.fasterxml.jackson.databind.node.ObjectNode) objectNode).put("message",
+                        "I couldn't find specific details for \"" + searchQuery + "\", but let me help you discover amazing places nearby! What type of experience are you looking for?");
             }
-            
+
         } catch (Exception e) {
             log.error("Error transforming place data to conversational response", e);
-            ((com.fasterxml.jackson.databind.node.ObjectNode) objectNode).put("message", 
-                "✨ I'm excited to help you explore " + searchQuery + "! Let me know what kind of experience you're looking for.");
+            ((com.fasterxml.jackson.databind.node.ObjectNode) objectNode).put("message",
+                    "I'm excited to help you explore " + searchQuery + "! Let me know what kind of experience you're looking for.");
         }
-        
+
         return objectNode;
     }
 
-    /**
-     * 🎊 Generates enthusiastic, varied descriptions for locations
-     */
-    private String generateEnthusiasticLocationDescription(String name, String address, Double rating, 
-                                                          String websiteUri, String googleMapsUri, String searchQuery) {
-        
+    private String generateEnthusiasticLocationDescription(String name, String address, Double rating,
+                                                           String websiteUri, Double lat, Double lon, String searchQuery) {
+
         String[] enthusiasticTemplates = {
-            "🗼 Oh wow, %s! What an absolutely iconic destination! Located at %s, this incredible landmark has earned a fantastic %s rating from travelers worldwide! 🌟 Ready to experience the magic?",
-            
-            "✨ Amazing choice! %s is such a breathtaking place to visit! You'll find this gem at %s with an outstanding %s-star rating! 🎯 This is going to be an unforgettable experience!",
-            
-            "🌟 Perfect! %s is calling your name! Nestled at %s, this spectacular destination boasts an impressive %s rating! 🚀 Get ready for some serious wanderlust moments!",
-            
-            "🎉 Fantastic pick! %s is absolutely magical! Located at %s with a stellar %s rating, this place is pure travel gold! ⭐ Your adventure awaits!",
-            
-            "🏛️ What a magnificent choice! %s at %s is truly special - with a %s rating, you know this is going to be extraordinary! 🎭 Let's make some incredible memories!"
+                "Oh wow, %s! What an absolutely iconic destination! Located at %s, this incredible landmark is a must-visit! Ready to experience the magic?",
+                "Amazing choice! %s is such a breathtaking place to visit! You'll find this gem at %s. This is going to be an unforgettable experience!",
+                "Perfect! %s is calling your name! Nestled at %s, this spectacular destination awaits! Get ready for some serious wanderlust moments!",
+                "Fantastic pick! %s is absolutely magical! Located at %s, this place is pure travel gold! Your adventure awaits!",
+                "What a magnificent choice! %s at %s is truly special - this is going to be extraordinary! Let's make some incredible memories!"
         };
-        
-        // Randomly select a template for variety
-        String template = enthusiasticTemplates[(int)(Math.random() * enthusiasticTemplates.length)];
-        
-        String ratingText = rating != null ? String.valueOf(rating) : "amazing";
-        String baseMessage = String.format(template, name, address, ratingText);
-        
-        // Add website link if available (but skip Google Maps since it's integrated in our app)
-        if (websiteUri != null && !websiteUri.isEmpty()) {
-            baseMessage += String.format(" 🌐 [Official Website](%s)", websiteUri);
+
+        String template = enthusiasticTemplates[(int) (Math.random() * enthusiasticTemplates.length)];
+        String baseMessage = String.format(template, name, address);
+
+        if (lat != null && lon != null) {
+            baseMessage += String.format(" Coordinates: %.4f, %.4f", lat, lon);
         }
-        
+
+        if (websiteUri != null && !websiteUri.isEmpty()) {
+            baseMessage += String.format(" [Official Website](%s)", websiteUri);
+        }
+
         return baseMessage;
     }
 
-    /**
-     * 💡 Generates contextual suggestions based on the location
-     */
     private JsonNode generateLocationSuggestions(String locationName) {
         JsonNode suggestions = JsonNodeFactory.instance.arrayNode();
-        
+
+        String city = extractCityFromLocation(locationName);
         String[] suggestionTemplates = {
-            "Find nearby hotels in " + extractCityFromLocation(locationName),
-            "Discover cultural tours in " + extractCityFromLocation(locationName), 
-            "Explore dining options near " + locationName,
-            "Learn about transportation options to " + locationName
+                "Find nearby hotels in " + city,
+                "Discover cultural tours in " + city,
+                "Explore dining options near " + locationName,
+                "Learn about transportation options to " + locationName
         };
-        
+
         for (String suggestion : suggestionTemplates) {
             ((com.fasterxml.jackson.databind.node.ArrayNode) suggestions).add(suggestion);
         }
-        
+
         return suggestions;
     }
 
-    // Helper methods for data extraction
-    private String extractDisplayName(JsonNode place) {
-        JsonNode displayName = place.get("displayName");
-        if (displayName != null && displayName.get("text") != null) {
-            return displayName.get("text").asText();
-        }
-        return "Amazing Location";
-    }
-
-    private String extractAddress(JsonNode place) {
-        JsonNode formattedAddress = place.get("formattedAddress");
-        if (formattedAddress != null) {
-            return formattedAddress.asText();
-        }
-        return "a wonderful destination";
-    }
-
-    private Double extractRating(JsonNode place) {
-        JsonNode rating = place.get("rating");
-        if (rating != null) {
-            return rating.asDouble();
-        }
-        return null;
-    }
-
-    private String extractWebsiteUri(JsonNode place) {
-        JsonNode websiteUri = place.get("websiteUri");
-        if (websiteUri != null) {
-            return websiteUri.asText();
-        }
-        return null;
-    }
-
-    private String extractGoogleMapsUri(JsonNode place) {
-        JsonNode googleMapsUri = place.get("googleMapsUri");
-        if (googleMapsUri != null) {
-            return googleMapsUri.asText();
-        }
-        return null;
-    }
-
     private String extractCityFromLocation(String locationName) {
-        // Simple extraction - can be enhanced with more sophisticated logic
         if (locationName.toLowerCase().contains("eiffel")) return "Paris";
         if (locationName.toLowerCase().contains("statue of liberty")) return "New York";
         if (locationName.toLowerCase().contains("big ben")) return "London";
