@@ -293,7 +293,7 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
-            <version>1.5.8</version> <!-- Updated to latest secure version -->
+            <version>1.5.33</version> <!-- Updated to latest secure version -->
         </dependency>
         <dependency>
             <groupId>org.elasticsearch.client</groupId>
