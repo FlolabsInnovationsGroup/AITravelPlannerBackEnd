@@ -8,9 +8,8 @@ WORKDIR /app
 COPY pom.xml .
 COPY src ./src
 
-# Copy the .env file
-COPY .env .
-
+# NOTE: .env is intentionally NOT copied into the image.
+# Pass configuration at runtime instead (docker-compose `env_file:` or `docker run --env-file .env`).
 
 # Package the application
 RUN mvn clean package
