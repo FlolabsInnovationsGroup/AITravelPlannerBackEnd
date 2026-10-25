@@ -74,9 +74,12 @@ public class CorsConfig {
                     ? allowedOrigins 
                     : new String[]{"*"};
                 
+                String[] apiOrigins = Arrays.copyOf(origins, origins.length + 1);
+                apiOrigins[origins.length] = "https://api.flomadtravel.com";
+
                 // Configure for API endpoints
                 registry.addMapping("/api/**")
-                    .allowedOrigins(origins)
+                    .allowedOrigins(apiOrigins)
                     .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
                     .allowedHeaders("*")
                     .allowCredentials(allowedOrigins != null && allowedOrigins.length > 0)

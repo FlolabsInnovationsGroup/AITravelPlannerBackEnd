@@ -4,6 +4,7 @@ import com.springboot.FlomadAIplanner.filter.JwtRequestFilter;
 import com.springboot.FlomadAIplanner.filter.UserLastActiveUpdateFilter;
 import com.springboot.FlomadAIplanner.handler.login.CustomAuthenticationFailureHandler;
 import com.springboot.FlomadAIplanner.handler.login.CustomAuthenticationSuccessHandler;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,11 +19,16 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
+
+    @Value("${application.cors.allowed.origins}")
+    private String[] allowedOrigins;
+
     private final UserDetailsService userDetailsService;
     private final JwtRequestFilter jwtRequestFilter;
     private final UserLastActiveUpdateFilter userLastActiveUpdateFilter;
@@ -78,16 +84,12 @@ public class WebSecurityConfig {
         http
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
-                    config.setAllowedOrigins(List.of(
-                            "https://www.flomadtravel.com", // production frontend
-                            "http://localhost:3000",
-                            "http://127.0.0.1:3000"        // same-origin alternative in some browsers
-                    ));
-                    config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                    config.setAllowedOrigins(Arrays.asList(allowedOrigins));
+                    config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
                     config.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept", "Origin", "Cookie"));
                     config.setExposedHeaders(List.of("Set-Cookie"));
                     config.setAllowCredentials(true);
-                    config.setMaxAge(3600L); // cache preflight for 1 hour
+                    config.setMaxAge(3600L);
                     return config;
                 }))
 
