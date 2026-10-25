@@ -3,12 +3,14 @@ package com.springboot.FlomadAIplanner.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.thymeleaf.TemplateEngine;
+import org.springframework.context.annotation.Primary;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
 @Configuration
 public class ThymeleafConfig {
 
     @Bean
+    @Primary
     public TemplateEngine customTemplateEngine() {
         TemplateEngine engine = new TemplateEngine();
         engine.addTemplateResolver(textTemplateResolver());
