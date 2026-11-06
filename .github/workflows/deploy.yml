@@ -95,21 +95,37 @@ jobs:
               \"# Start new process as ubuntu user\",
               \"cd /home/ubuntu/app\",
               \"sudo -u ubuntu nohup java -Xmx2048m -Xms512m -XX:+UseG1GC -jar Flomad-AI-planner-0.0.1-SNAPSHOT.jar > stdout.log 2>&1 &\",
-              \"sleep 15\",
-              \"# Verify service is running\",
-              \"curl -f http://localhost:8080/actuator/health || exit 1\"
+              \"# Wait up to 4 minutes for the app to report healthy; on failure show the app log\",
+              \"if ! timeout 240 bash -c 'until curl -sf http://localhost:8080/actuator/health; do sleep 5; done'; then echo 'App did not become healthy. Last log lines:'; tail -n 80 /home/ubuntu/app/stdout.log; exit 1; fi\"
             ]" \
             --output text \
             --query "Command.CommandId")
           
           echo "Command ID: $COMMAND_ID"
           
-          # Wait for command to complete
-          aws ssm wait command-executed \
-            --command-id "$COMMAND_ID" \
-            --instance-id "${EC2_INSTANCE_ID}"
-          
-          # Get command output
+          # Poll until the command finishes (the built-in waiter gives up after 100s and hides the output)
+          STATUS=Pending
+          for i in $(seq 1 60); do
+            STATUS=$(aws ssm get-command-invocation \
+              --command-id "$COMMAND_ID" \
+              --instance-id "${EC2_INSTANCE_ID}" \
+              --query Status --output text 2>/dev/null || echo Pending)
+            case "$STATUS" in
+              Success|Failed|Cancelled|TimedOut) break ;;
+            esac
+            sleep 10
+          done
+
+          echo "Command status: $STATUS"
+          echo "----- Output from the server -----"
           aws ssm get-command-invocation \
             --command-id "$COMMAND_ID" \
-            --instance-id "${EC2_INSTANCE_ID}"
+            --instance-id "${EC2_INSTANCE_ID}" \
+            --query StandardOutputContent --output text
+          echo "----- Errors from the server -----"
+          aws ssm get-command-invocation \
+            --command-id "$COMMAND_ID" \
+            --instance-id "${EC2_INSTANCE_ID}" \
+            --query StandardErrorContent --output text
+
+          [ "$STATUS" = "Success" ] || exit 1
