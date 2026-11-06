@@ -96,7 +96,7 @@ jobs:
               \"cd /home/ubuntu/app\",
               \"sudo -u ubuntu nohup java -Xmx2048m -Xms512m -XX:+UseG1GC -jar Flomad-AI-planner-0.0.1-SNAPSHOT.jar > stdout.log 2>&1 &\",
               \"# Wait up to 4 minutes for the app to report healthy; on failure show the app log\",
-              \"if ! timeout 240 bash -c 'until curl -sf http://localhost:8080/actuator/health; do sleep 5; done'; then echo 'App did not become healthy.'; echo '--- java process running?'; (pgrep -f Flomad-AI-planner.jar > /dev/null && echo YES) || echo NO; echo '--- health response'; curl -s -m 5 http://localhost:8080/actuator/health; echo; echo '--- memory'; free -m; echo '--- killed by out-of-memory?'; dmesg | grep -i -E 'out of memory|killed process' | tail -3; echo '--- last log lines'; tail -n 80 /home/ubuntu/app/stdout.log; exit 1; fi\"
+              \"if ! timeout 240 bash -c 'until curl -sf http://localhost:8080/actuator/health; do sleep 5; done'; then echo 'App did not become healthy.'; echo '--- java process running?'; (pgrep -f Flomad-AI-planner.jar > /dev/null && echo YES) || echo NO; echo '--- health response'; (curl -s -m 5 http://localhost:8080/actuator/health || echo 'no response'); echo; echo '--- memory'; free -m; echo '--- killed by out-of-memory?'; (dmesg | grep -i -E 'out of memory|killed process' | tail -3 || true); echo '--- last log lines'; (tail -n 80 /home/ubuntu/app/stdout.log || true); exit 1; fi\"
             ]" \
             --output text \
             --query "Command.CommandId")
