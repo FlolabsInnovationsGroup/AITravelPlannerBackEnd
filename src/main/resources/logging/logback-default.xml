@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-    <!-- Configuration for the 'local' profile -->
-    <springProfile name="local,dev">
+    <!-- Console logging for local, dev and prod (prod had no appender, so logs went silent after the banner) -->
+    <springProfile name="local,dev,prod">
         <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
             <encoder>
                 <pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSZ} [%thread] %-5level %logger{36} - %msg%n</pattern>
